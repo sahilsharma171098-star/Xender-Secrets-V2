@@ -60,6 +60,9 @@ export default {
       } else if(/contact|whatsapp|email|call|talk|human|person|support/.test(q)){
         reply="Aap Xender Secrets ko WhatsApp ya email se contact kar sakte ho. Fastest option WhatsApp hai.";
         actions=[{label:"WhatsApp",href:"https://wa.me/918368495854"},{label:"Contact Page",href:"/contact.html"},{label:"Email",href:"mailto:Sahilsharma171098@gmail.com"}];
+      } else if(/account|register|registration|login|log in|sign in|sign up|profile/.test(q)){
+        reply="Account page par demo registration, login, profile aur logout flow available hai. Abhi account sirf isi browser mein locally store hota hai, isliye real password use mat karein. Production customer accounts ke liye persistent database/auth provider connect karna hoga.";
+        actions=[{label:"Login / Register",href:"/account.html"}];
       } else if(/refund|return|policy|privacy|terms/.test(q)){
         reply="Legal aur policy pages website par available hain. Refund terms project/product-specific conditions par depend karte hain.";
         actions=[{label:"Refunds",href:"/refund.html"},{label:"Privacy",href:"/privacy.html"},{label:"Terms",href:"/terms.html"}];
