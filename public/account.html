@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account | Xender Secrets</title><meta name="description" content="Xender Secrets account registration and login preview."><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="style.css"></head><body>
+<header><a class="logo" href="index.html">XENDER <span>SECRETS</span></a><button id="menu" aria-label="Menu">☰</button><nav><a href="catalog.html">Shop</a><a href="website-catalog.html">Websites</a><a href="novels.html">Novels</a><a href="articles.html">Articles</a><a href="faq.html">FAQs</a></nav><a class="pill desktop" href="contact.html">Contact</a></header>
+<main><section class="account-page"><div class="account-intro"><div class="kicker">XENDER ACCOUNT</div><h1>One account. <span>More convenience.</span></h1><p class="lead">Create a demo account to preview login, profile and saved-session UX before we connect production authentication and a persistent customer database.</p><div class="account-notice"><b>Demo mode:</b> This account is stored only in this browser. Do not use a real password. Nothing is uploaded to our server yet.</div><div class="account-benefits"><div>✓ Faster future checkout</div><div>✓ Saved profile preview</div><div>✓ Account dashboard UX</div><div>✓ Ready for future orders & downloads</div></div></div>
+<div class="account-card">
+<div class="auth-tabs"><button class="auth-tab active" data-auth-tab="login">Login</button><button class="auth-tab" data-auth-tab="register">Create Account</button></div>
+
+<form id="loginForm" class="auth-form">
+<label>Email</label><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+<label>Password</label><div class="password-row"><input name="password" type="password" autocomplete="current-password" placeholder="Demo password" minlength="6" required><button type="button" class="show-password">Show</button></div>
+<button class="primary auth-submit" type="submit">Login</button><p class="auth-help">Account exists only on this device in demo mode.</p>
+</form>
+
+<form id="registerForm" class="auth-form hidden">
+<label>Full name</label><input name="name" autocomplete="name" placeholder="Your name" maxlength="60" required>
+<label>Email</label><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+<label>Password</label><div class="password-row"><input name="password" type="password" autocomplete="new-password" placeholder="Minimum 6 characters" minlength="6" required><button type="button" class="show-password">Show</button></div>
+<label class="check-row"><input name="terms" type="checkbox" required><span>I agree to the <a href="terms.html">Terms</a> and acknowledge this is a browser-local demo account.</span></label>
+<button class="primary auth-submit" type="submit">Create Demo Account</button>
+</form>
+
+<div id="authMessage" class="auth-message" aria-live="polite"></div>
+
+<div id="accountDashboard" class="account-dashboard hidden">
+<div class="profile-badge" id="profileInitial">X</div><div><div class="kicker">SIGNED IN</div><h2 id="profileName">Account</h2><p id="profileEmail"></p></div>
+<div class="account-actions"><a class="secondary" href="catalog.html">Continue Shopping</a><a class="secondary" href="articles.html">Read Articles</a><button id="logoutButton" class="logout-button" type="button">Logout</button></div>
+<div class="account-stat-grid"><div><strong>0</strong><span>Orders</span></div><div><strong>0</strong><span>Downloads</span></div><div><strong>Demo</strong><span>Account type</span></div></div>
+</div>
+</div></section></main>
+<footer><div><b>XENDER SECRETS</b><p>Digital products & services</p></div><div class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div><small>© 2026 Xender Secrets.</small></footer><script src="script.js"></script><script src="account.js"></script></body></html>
