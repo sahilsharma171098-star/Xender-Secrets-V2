@@ -78,3 +78,5 @@ document.getElementById('menu').addEventListener('click',()=>document.querySelec
   form.onsubmit=e=>{e.preventDefault();ask(input.value)};
   quick.querySelectorAll('button').forEach(b=>b.onclick=()=>ask(b.dataset.q));
 })();
+
+;(()=>{function accountLink(){const nav=document.querySelector('header nav');if(!nav||nav.querySelector('.account-nav-link'))return;const a=document.createElement('a');a.className='account-nav-link';a.href='/account.html';const user=JSON.parse(localStorage.getItem('xs-demo-user')||'null'),session=JSON.parse(localStorage.getItem('xs-demo-session')||'null');a.textContent=user&&session&&user.email===session.email?'Account · '+String(user.name||'User').split(' ')[0]:'Login / Register';nav.appendChild(a)}accountLink();window.addEventListener('xs-auth-changed',()=>{const a=document.querySelector('.account-nav-link');if(a)a.remove();accountLink()})})();
