@@ -287,11 +287,177 @@ export class AppState extends DurableObject {
   }
 }
 
+
+const COMMUNITY_CATEGORIES=["general","webdev","ecommerce","ai","business","books"];
+
+async function appUser(request,env){
+  const id=env.APP_STATE.idFromName("xender-secrets");
+  const stub=env.APP_STATE.get(id);
+  const u=new URL(request.url);
+  u.pathname="/api/auth/me";u.search="";
+  const headers=new Headers();
+  const cookie=request.headers.get("Cookie");
+  if(cookie)headers.set("Cookie",cookie);
+  const r=await stub.fetch(new Request(u.toString(),{method:"GET",headers}));
+  if(!r.ok)return null;
+  const j=await r.json();
+  return j.user||null;
+}
+function indexStub(env,category){
+  const id=env.COMMUNITY_INDEX.idFromName("community-"+category);
+  return env.COMMUNITY_INDEX.get(id);
+}
+function threadStub(env,id){
+  const oid=env.CONTENT_THREAD.idFromName(id);
+  return env.CONTENT_THREAD.get(oid);
+}
+async function callJson(stub,path,method="GET",body){
+  const init={method,headers:{"content-type":"application/json"}};
+  if(body!==undefined)init.body=JSON.stringify(body);
+  const r=await stub.fetch(new Request("https://internal"+path,init));
+  const j=await r.json().catch(()=>({}));
+  return {r,j};
+}
+
+export class CommunityIndex extends DurableObject{
+  constructor(ctx,env){
+    super(ctx,env);this.sql=ctx.storage.sql;
+    ctx.blockConcurrencyWhile(async()=>{
+      this.sql.exec(`
+        CREATE TABLE IF NOT EXISTS posts(
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          excerpt TEXT NOT NULL,
+          category TEXT NOT NULL,
+          author_id TEXT NOT NULL,
+          author_name TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          likes INTEGER NOT NULL DEFAULT 0,
+          comments INTEGER NOT NULL DEFAULT 0,
+          views INTEGER NOT NULL DEFAULT 0,
+          status TEXT NOT NULL DEFAULT 'published'
+        );
+        CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at);
+        CREATE INDEX IF NOT EXISTS idx_posts_activity ON posts(likes,comments,views,created_at);
+      `);
+    });
+  }
+  async fetch(request){
+    const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
+    if(path==="/index/add"&&method==="POST"){
+      const p=await request.json();
+      this.sql.exec("INSERT OR REPLACE INTO posts(id,title,excerpt,category,author_id,author_name,created_at,updated_at,likes,comments,views,status) VALUES(?,?,?,?,?,?,?,?,0,0,0,'published')",
+        p.id,p.title,p.excerpt,p.category,p.authorId,p.authorName,p.createdAt,p.createdAt);
+      return json({ok:true});
+    }
+    if(path==="/index/stats"&&method==="POST"){
+      const x=await request.json();
+      this.sql.exec("UPDATE posts SET likes=?,comments=?,views=?,updated_at=? WHERE id=?",Number(x.likes)||0,Number(x.comments)||0,Number(x.views)||0,new Date().toISOString(),x.id);
+      return json({ok:true});
+    }
+    if(path==="/index/feed"&&method==="GET"){
+      const limit=Math.max(1,Math.min(50,Number(url.searchParams.get("limit")||20)));
+      const sort=url.searchParams.get("sort")==="trending"?"trending":"latest";
+      const order=sort==="trending"?"(likes*4 + comments*6 + views*0.15) DESC, created_at DESC":"created_at DESC";
+      const posts=this.sql.exec(`SELECT id,title,excerpt,category,author_name AS authorName,created_at AS createdAt,likes,comments,views FROM posts WHERE status='published' ORDER BY ${order} LIMIT ${limit}`).toArray();
+      const total=Number(this.sql.exec("SELECT COUNT(*) AS n FROM posts WHERE status='published'").one().n);
+      return json({ok:true,posts,total});
+    }
+    return json({ok:false,error:"Index route not found."},404);
+  }
+}
+
+export class ContentThread extends DurableObject{
+  constructor(ctx,env){
+    super(ctx,env);this.sql=ctx.storage.sql;
+    ctx.blockConcurrencyWhile(async()=>{
+      this.sql.exec(`
+        CREATE TABLE IF NOT EXISTS content(
+          id TEXT PRIMARY KEY,
+          kind TEXT NOT NULL,
+          title TEXT NOT NULL,
+          body TEXT NOT NULL,
+          category TEXT NOT NULL,
+          author_id TEXT NOT NULL,
+          author_name TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          views INTEGER NOT NULL DEFAULT 0
+        );
+        CREATE TABLE IF NOT EXISTS comments(
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          user_name TEXT NOT NULL,
+          body TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS likes(
+          user_id TEXT PRIMARY KEY,
+          created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS reports(
+          user_id TEXT PRIMARY KEY,
+          reason TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_comments_created ON comments(created_at);
+      `);
+    });
+  }
+  stats(){
+    return {
+      likes:Number(this.sql.exec("SELECT COUNT(*) AS n FROM likes").one().n),
+      comments:Number(this.sql.exec("SELECT COUNT(*) AS n FROM comments").one().n),
+      views:Number(this.sql.exec("SELECT COALESCE(MAX(views),0) AS n FROM content").one().n)
+    };
+  }
+  async fetch(request){
+    const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
+    if(path==="/thread/init"&&method==="POST"){
+      const p=await request.json();
+      this.sql.exec("INSERT OR IGNORE INTO content(id,kind,title,body,category,author_id,author_name,created_at,views) VALUES(?,?,?,?,?,?,?,?,0)",
+        p.id,p.kind||"post",p.title||"",p.body||"",p.category||"general",p.authorId||"",p.authorName||"Xender Secrets",p.createdAt||new Date().toISOString());
+      return json({ok:true});
+    }
+    if(path==="/thread/view"&&method==="GET"){
+      this.sql.exec("UPDATE content SET views=views+1");
+      const content=this.sql.exec("SELECT id,kind,title,body,category,author_id AS authorId,author_name AS authorName,created_at AS createdAt,views FROM content LIMIT 1").toArray()[0]||null;
+      if(!content)return json({ok:false,error:"Content not found."},404);
+      const comments=this.sql.exec("SELECT id,user_name AS userName,body,created_at AS createdAt FROM comments ORDER BY created_at ASC LIMIT 200").toArray();
+      return json({ok:true,content,comments,stats:this.stats()});
+    }
+    if(path==="/thread/stats"&&method==="GET")return json({ok:true,stats:this.stats()});
+    if(path==="/thread/comment"&&method==="POST"){
+      const p=await request.json(),body=clean(p.body,1200);
+      if(body.length<2)return json({ok:false,error:"Comment is too short."},400);
+      const comment={id:"c-"+crypto.randomUUID().slice(0,10),userName:clean(p.userName,60),body,createdAt:new Date().toISOString()};
+      this.sql.exec("INSERT INTO comments(id,user_id,user_name,body,created_at) VALUES(?,?,?,?,?)",comment.id,p.userId,comment.userName,comment.body,comment.createdAt);
+      return json({ok:true,comment,stats:this.stats()},201);
+    }
+    if(path==="/thread/like"&&method==="POST"){
+      const p=await request.json(),existing=this.sql.exec("SELECT user_id FROM likes WHERE user_id=?",p.userId).toArray()[0];
+      if(existing)this.sql.exec("DELETE FROM likes WHERE user_id=?",p.userId);
+      else this.sql.exec("INSERT INTO likes(user_id,created_at) VALUES(?,?)",p.userId,new Date().toISOString());
+      return json({ok:true,liked:!existing,stats:this.stats()});
+    }
+    if(path==="/thread/report"&&method==="POST"){
+      const p=await request.json(),reason=clean(p.reason,300)||"Community report";
+      this.sql.exec("INSERT OR REPLACE INTO reports(user_id,reason,created_at) VALUES(?,?,?)",p.userId,reason,new Date().toISOString());
+      const reports=Number(this.sql.exec("SELECT COUNT(*) AS n FROM reports").one().n);
+      return json({ok:true,reports});
+    }
+    return json({ok:false,error:"Thread route not found."},404);
+  }
+}
+
 function chatReply(raw){
   const q=raw.toLowerCase();
-  let reply="Main Xender Secrets ke shop, website development, novels, digital products, account aur contact options ke baare mein help kar sakta hoon.";
+  let reply="Main Xender Secrets ke shop, website development, community, articles, novels, digital products, account aur contact options ke baare mein help kar sakta hoon.";
   let actions=[{label:"Explore categories",href:"/#explore"},{label:"Contact us",href:"/contact.html"}];
-  if(/shop|product|buy|cart|ecommerce|e-commerce|price|shopping|order/.test(q)){
+  if(/community|discussion|post|comment|forum|member/.test(q)){
+    reply="Community mein members Web Development, Ecommerce, AI, Business, Books aur General topics par posts, comments aur likes ke through discuss kar sakte hain. Posting ke liye account login required hai.";
+    actions=[{label:"Open Community",href:"/community.html"},{label:"Login",href:"/account.html"}];
+  }else if(/shop|product|buy|cart|ecommerce|e-commerce|price|shopping|order/.test(q)){
     reply="Ecommerce Shop mein products, search, filters, persistent order requests aur account-linked order history available hai.";
     actions=[{label:"Open Shop",href:"/catalog.html"},{label:"My Account",href:"/account.html"}];
   }else if(/website|web site|frontend|front end|backend|back end|full.?stack|developer|development|landing page|api/.test(q)){
@@ -322,6 +488,78 @@ function chatReply(raw){
 export default {
   async fetch(request,env){
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
+
+
+    if(path==="/api/community/feed" && method==="GET"){
+      const category=clean(url.searchParams.get("category")||"all",30),sort=url.searchParams.get("sort")==="trending"?"trending":"latest",limit=Math.max(1,Math.min(30,Number(url.searchParams.get("limit")||20)));
+      const cats=category==="all"?COMMUNITY_CATEGORIES:(COMMUNITY_CATEGORIES.includes(category)?[category]:["general"]);
+      const results=await Promise.all(cats.map(async c=>{
+        const {j}=await callJson(indexStub(env,c),"/index/feed?sort="+sort+"&limit="+limit);
+        return j;
+      }));
+      let posts=results.flatMap(x=>x.posts||[]);
+      posts.sort((a,b)=>sort==="trending"
+        ? ((b.likes*4+b.comments*6+b.views*.15)-(a.likes*4+a.comments*6+a.views*.15)) || String(b.createdAt).localeCompare(String(a.createdAt))
+        : String(b.createdAt).localeCompare(String(a.createdAt)));
+      posts=posts.slice(0,limit);
+      return json({ok:true,posts,total:results.reduce((n,x)=>n+Number(x.total||0),0),categories:COMMUNITY_CATEGORIES});
+    }
+
+    if(path==="/api/community/posts" && method==="POST"){
+      const user=await appUser(request,env);
+      if(!user)return json({ok:false,error:"Login is required to publish in the community."},401);
+      const body=await request.json().catch(()=>({}));
+      const title=clean(body.title,140),text=clean(body.body,7000),category=COMMUNITY_CATEGORIES.includes(body.category)?body.category:"general";
+      if(title.length<6)return json({ok:false,error:"Title must be at least 6 characters."},400);
+      if(text.length<20)return json({ok:false,error:"Post must be at least 20 characters."},400);
+      const id="post-"+crypto.randomUUID().slice(0,12),createdAt=new Date().toISOString(),excerpt=text.slice(0,220);
+      await callJson(threadStub(env,id),"/thread/init","POST",{id,kind:"post",title,body:text,category,authorId:user.id,authorName:user.name,createdAt});
+      await callJson(indexStub(env,category),"/index/add","POST",{id,title,excerpt,category,authorId:user.id,authorName:user.name,createdAt});
+      return json({ok:true,post:{id,title,excerpt,category,authorName:user.name,createdAt,likes:0,comments:0,views:0}},201);
+    }
+
+    if(path.startsWith("/api/community/posts/")){
+      const parts=path.split("/").filter(Boolean),postId=parts[3],action=parts[4]||"";
+      const stub=threadStub(env,postId);
+      if(method==="GET"&&!action){
+        const {r,j}=await callJson(stub,"/thread/view");
+        if(!r.ok)return json(j,r.status);
+        if(j.content?.category)await callJson(indexStub(env,j.content.category),"/index/stats","POST",{id:postId,...j.stats});
+        return json(j);
+      }
+      if(method==="POST"&&(action==="comments"||action==="like"||action==="report")){
+        const user=await appUser(request,env);
+        if(!user)return json({ok:false,error:"Login is required for this action."},401);
+        let endpoint,payload={userId:user.id,userName:user.name};
+        if(action==="comments"){const b=await request.json().catch(()=>({}));endpoint="/thread/comment";payload.body=b.body}
+        if(action==="like")endpoint="/thread/like";
+        if(action==="report"){const b=await request.json().catch(()=>({}));endpoint="/thread/report";payload.reason=b.reason}
+        const {r,j}=await callJson(stub,endpoint,"POST",payload);
+        if(!r.ok)return json(j,r.status);
+        if(j.stats){
+          const view=await callJson(stub,"/thread/view");
+          if(view.j.content?.category)await callJson(indexStub(env,view.j.content.category),"/index/stats","POST",{id:postId,...j.stats,views:view.j.stats.views});
+        }
+        return json(j,r.status);
+      }
+    }
+
+    if(path.startsWith("/api/engagement/")){
+      const parts=path.split("/").filter(Boolean),slug=clean(parts[2],120),action=parts[3]||"";
+      if(!slug)return json({ok:false,error:"Content id is required."},400);
+      const id="article:"+slug,stub=threadStub(env,id);
+      await callJson(stub,"/thread/init","POST",{id,kind:"article",title:slug,body:"",category:"articles",authorId:"xender",authorName:"Xender Secrets",createdAt:new Date().toISOString()});
+      if(method==="GET"&&!action){
+        const {r,j}=await callJson(stub,"/thread/view");
+        return json({ok:r.ok,stats:j.stats||{likes:0,comments:0,views:0}},r.status);
+      }
+      if(method==="POST"&&action==="like"){
+        const user=await appUser(request,env);
+        if(!user)return json({ok:false,error:"Login is required to react."},401);
+        const {r,j}=await callJson(stub,"/thread/like","POST",{userId:user.id,userName:user.name});
+        return json(j,r.status);
+      }
+    }
 
     if(path==="/api/chat" && method==="POST"){
       const body=await request.json().catch(()=>({})),raw=clean(body.message,500);
