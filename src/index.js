@@ -6,6 +6,18 @@ const products=[
   {id:"p3",name:"Travel Organizer Pouch",category:"Travel",price:249,rating:4.7}
 ];
 
+const storeProducts=[
+  {id:"cable-organizer",name:"Cable Organizer Clips — 6 Pack",category:"desk",price:149},
+  {id:"dustbin-bags",name:"Multipurpose Dustbin Bags",category:"home",price:129},
+  {id:"phone-stand",name:"Foldable Phone Stand",category:"mobile",price:199},
+  {id:"microfiber",name:"Microfiber Cleaning Cloth — 4 Pack",category:"home",price:179},
+  {id:"utility-hooks",name:"Self-Adhesive Utility Hooks",category:"storage",price:159},
+  {id:"travel-pouch",name:"Compact Travel Organizer Pouch",category:"travel",price:249},
+  {id:"cable-ties",name:"Reusable Cable Ties — 10 Pack",category:"desk",price:119},
+  {id:"storage-basket",name:"Mini Desk Storage Basket",category:"storage",price:229},
+  {id:"cable-protectors",name:"Cable Protector Sleeves — 4 Pack",category:"mobile",price:99}
+];
+
 const tasks=[
   {id:1,title:"Finalize homepage copy",status:"Done",owner:"Aarav"},
   {id:2,title:"Review campaign dashboard",status:"In progress",owner:"Mira"},
@@ -28,6 +40,32 @@ export default {
     });
 
     if(path==="/api/products" && method==="GET") return json({ok:true,products});
+
+
+    if(path==="/api/store/products" && method==="GET") return json({ok:true,products:storeProducts,note:"Demo inventory only."});
+
+    if(path==="/api/store/checkout" && method==="POST"){
+      const body=await request.json().catch(()=>({}));
+      const items=Array.isArray(body.items)?body.items:[];
+      const customer=body.customer||{};
+      if(!items.length) return json({ok:false,error:"Cart is empty"},400);
+      if(!customer.name || !customer.email || !customer.phone || !customer.pincode || !customer.address || !customer.payment) return json({ok:false,error:"Complete all checkout fields"},400);
+      let subtotal=0;
+      for(const line of items){
+        const product=storeProducts.find(p=>p.id===line.id);
+        const qty=Math.max(1,Math.min(10,Number(line.qty)||1));
+        if(!product) return json({ok:false,error:"Unknown product in cart"},400);
+        subtotal+=product.price*qty;
+      }
+      const shipping=subtotal>=499?0:49;
+      return json({
+        ok:true,
+        orderId:"XS-DEMO-"+crypto.randomUUID().slice(0,8).toUpperCase(),
+        subtotal,shipping,total:subtotal+shipping,currency:"INR",
+        status:"demo-confirmed",
+        message:"Demo order only. No payment was charged and no customer/order data was persisted."
+      },201);
+    }
 
     if(path==="/api/lead" && method==="POST"){
       const body=await request.json().catch(()=>({}));
