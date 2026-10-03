@@ -215,7 +215,7 @@ export class AppState extends DurableObject {
       if(!validEmail(email))return json({ok:false,error:"Enter a valid email address."},400);
       const previous=this.sql.exec("SELECT sent_at FROM otp_codes WHERE email=?",email).toArray()[0];
       if(previous&&Date.now()-new Date(previous.sent_at).getTime()<60000)return json({ok:false,error:"Please wait a minute before requesting another code."},429);
-      const code=String(Math.floor(100000+Math.random()*900000)),salt=randomB64(16),hash=await sha256(code+salt),now=new Date(),expires=new Date(now.getTime()+10*60*1000);
+      const code=String(100000+(crypto.getRandomValues(new Uint32Array(1))[0]%900000)),salt=randomB64(16),hash=await sha256(code+salt),now=new Date(),expires=new Date(now.getTime()+10*60*1000);
       this.sql.exec("INSERT OR REPLACE INTO otp_codes(email,code_hash,code_salt,attempts,sent_at,expires_at) VALUES(?,?,?,?,?,?)",email,hash,salt,0,now.toISOString(),expires.toISOString());
       const send=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"authorization":"Bearer "+this.env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({
         from:this.env.AUTH_FROM_EMAIL,to:[email],subject:"Your Xender Secrets login code",
