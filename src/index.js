@@ -30,6 +30,49 @@ export default {
     const path=url.pathname;
     const method=request.method.toUpperCase();
 
+
+    if(path==="/api/chat" && method==="POST"){
+      const body=await request.json().catch(()=>({}));
+      const raw=String(body.message||"").trim();
+      if(!raw) return json({ok:false,error:"message is required"},400);
+      const q=raw.toLowerCase();
+      let reply="Main Xender Secrets ke shop, website-development demos, novels, digital products aur contact options ke baare mein help kar sakta hoon.";
+      let actions=[
+        {label:"Explore categories",href:"/#explore"},
+        {label:"Contact us",href:"/contact.html"}
+      ];
+
+      if(/shop|product|buy|cart|ecommerce|e-commerce|price|shopping/.test(q)){
+        reply="Hamare Ecommerce Shop mein demo products, search, filters, cart aur checkout flow available hai. Abhi products/sample prices demo hain; real inventory connect hone par actual purchase links add kiye jayenge.";
+        actions=[{label:"Open Shop",href:"/catalog.html"}];
+      } else if(/website|web site|frontend|front end|backend|back end|full.?stack|developer|development|landing page|api/.test(q)){
+        reply="Website Development catalog mein Frontend, Backend/API aur Full-Stack ke 9 interactive demos hain. Custom project ke liye scope discuss karke build customize kiya ja sakta hai.";
+        actions=[{label:"Website Catalog",href:"/website-catalog.html"},{label:"Discuss Project",href:"https://wa.me/918368495854?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website%20project."}];
+      } else if(/novel|book|read|chinese|china|story|stories/.test(q)){
+        reply="Completed Novels library mein world classics aur Chinese classics dono hain. Reading links original Project Gutenberg sources par open hote hain.";
+        actions=[{label:"Browse Novels",href:"/novels.html"}];
+      } else if(/prompt|tracker|digital product|workflow|template|ai tool/.test(q)){
+        reply="Digital Products section mein Sales Trackers, Prompt Packs aur Workflow Templates ke sample categories hain. Custom versions business use-case ke hisaab se ban sakte hain.";
+        actions=[{label:"Digital Products",href:"/#products"},{label:"Ask on WhatsApp",href:"https://wa.me/918368495854"}];
+      } else if(/lead|sales|customer|cx|research|service/.test(q)){
+        reply="Services mein Website & Landing Pages, Lead Generation & Research, Sales/CX Support aur AI-assisted workflows included hain.";
+        actions=[{label:"View Services",href:"/#services"},{label:"Start Enquiry",href:"https://wa.me/918368495854"}];
+      } else if(/contact|whatsapp|email|call|talk|human|person|support/.test(q)){
+        reply="Aap Xender Secrets ko WhatsApp ya email se contact kar sakte ho. Fastest option WhatsApp hai.";
+        actions=[{label:"WhatsApp",href:"https://wa.me/918368495854"},{label:"Contact Page",href:"/contact.html"},{label:"Email",href:"mailto:Sahilsharma171098@gmail.com"}];
+      } else if(/refund|return|policy|privacy|terms/.test(q)){
+        reply="Legal aur policy pages website par available hain. Refund terms project/product-specific conditions par depend karte hain.";
+        actions=[{label:"Refunds",href:"/refund.html"},{label:"Privacy",href:"/privacy.html"},{label:"Terms",href:"/terms.html"}];
+      } else if(/gst|company|founder|who are you|about/.test(q)){
+        reply="Xender Secrets is a digital products and services brand founded by Sahil Kumar Sharma in India. Business and contact details website ke Contact page par listed hain.";
+        actions=[{label:"Contact / Business Details",href:"/contact.html"}];
+      } else if(/hello|hi|hey|namaste|hii|hlo/.test(q)){
+        reply="Hi 👋 Kaise help karun? Aap Shop, Website Development, Novels, Digital Products ya Custom Project ke baare mein pooch sakte ho.";
+        actions=[{label:"All Categories",href:"/#explore"}];
+      }
+      return json({ok:true,reply,actions});
+    }
+
     if(path==="/api/health") return json({ok:true,service:"Xender Secrets demo API",time:new Date().toISOString()});
 
     if(path==="/api/catalog" && method==="GET") return json({
