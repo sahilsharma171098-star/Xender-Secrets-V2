@@ -10,6 +10,8 @@ const fromB64=s=>{const raw=atob(s);const out=new Uint8Array(raw.length);for(let
 const hex=bytes=>Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
 const randomB64=n=>b64(crypto.getRandomValues(new Uint8Array(n)));
 const randomToken=()=>randomB64(32).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const b64url=bytes=>b64(bytes).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const sha256Raw=async value=>new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(value)));
 const sha256=async value=>hex(new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(value))));
 const passwordHash=async(password,saltB64)=>{
   const key=await crypto.subtle.importKey("raw",enc.encode(password),"PBKDF2",false,["deriveBits"]);
@@ -59,6 +61,29 @@ export class AppState extends DurableObject {
           token_hash TEXT NOT NULL UNIQUE,
           created_at TEXT NOT NULL,
           expires_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS otp_codes (
+          email TEXT PRIMARY KEY COLLATE NOCASE,
+          code_hash TEXT NOT NULL,
+          code_salt TEXT NOT NULL,
+          attempts INTEGER NOT NULL DEFAULT 0,
+          sent_at TEXT NOT NULL,
+          expires_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS oauth_states (
+          state TEXT PRIMARY KEY,
+          provider TEXT NOT NULL,
+          verifier TEXT,
+          created_at TEXT NOT NULL,
+          expires_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS auth_identities (
+          provider TEXT NOT NULL,
+          provider_user_id TEXT NOT NULL,
+          user_id TEXT NOT NULL,
+          provider_email TEXT,
+          created_at TEXT NOT NULL,
+          PRIMARY KEY(provider,provider_user_id)
         );
         CREATE TABLE IF NOT EXISTS products (
           id TEXT PRIMARY KEY,
@@ -118,6 +143,8 @@ export class AppState extends DurableObject {
         CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
         CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token_hash);
         CREATE INDEX IF NOT EXISTS idx_sessions_expiry ON sessions(expires_at);
+        CREATE INDEX IF NOT EXISTS idx_oauth_states_expiry ON oauth_states(expires_at);
+        CREATE INDEX IF NOT EXISTS idx_auth_identities_user ON auth_identities(user_id);
         CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id,created_at);
         CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
         CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at);
@@ -170,6 +197,137 @@ export class AppState extends DurableObject {
     if(method!=="GET" && !this.sameOrigin(request)) return json({ok:false,error:"Invalid request origin."},403);
 
     if(path==="/api/auth/status" && method==="GET") return json({ok:true,available:true,mode:"persistent"});
+
+
+    if(path==="/api/auth/providers" && method==="GET"){
+      return json({ok:true,providers:{
+        otp:Boolean(this.env.RESEND_API_KEY&&this.env.AUTH_FROM_EMAIL),
+        google:Boolean(this.env.GOOGLE_CLIENT_ID&&this.env.GOOGLE_CLIENT_SECRET),
+        github:Boolean(this.env.GITHUB_CLIENT_ID&&this.env.GITHUB_CLIENT_SECRET),
+        facebook:Boolean(this.env.FACEBOOK_CLIENT_ID&&this.env.FACEBOOK_CLIENT_SECRET),
+        x:Boolean(this.env.X_CLIENT_ID)
+      }});
+    }
+
+    if(path==="/api/auth/otp/request" && method==="POST"){
+      if(!this.env.RESEND_API_KEY||!this.env.AUTH_FROM_EMAIL)return json({ok:false,error:"Email OTP is not configured yet."},503);
+      const body=await request.json().catch(()=>({})),email=clean(body.email,254).toLowerCase();
+      if(!validEmail(email))return json({ok:false,error:"Enter a valid email address."},400);
+      const previous=this.sql.exec("SELECT sent_at FROM otp_codes WHERE email=?",email).toArray()[0];
+      if(previous&&Date.now()-new Date(previous.sent_at).getTime()<60000)return json({ok:false,error:"Please wait a minute before requesting another code."},429);
+      const code=String(Math.floor(100000+Math.random()*900000)),salt=randomB64(16),hash=await sha256(code+salt),now=new Date(),expires=new Date(now.getTime()+10*60*1000);
+      this.sql.exec("INSERT OR REPLACE INTO otp_codes(email,code_hash,code_salt,attempts,sent_at,expires_at) VALUES(?,?,?,?,?,?)",email,hash,salt,0,now.toISOString(),expires.toISOString());
+      const send=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"authorization":"Bearer "+this.env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({
+        from:this.env.AUTH_FROM_EMAIL,to:[email],subject:"Your Xender Secrets login code",
+        html:"<div style='font-family:Arial,sans-serif;max-width:520px;margin:auto'><h2>Xender Secrets</h2><p>Your sign-in code is:</p><div style='font-size:34px;font-weight:800;letter-spacing:8px;padding:18px 0'>"+code+"</div><p>This code expires in 10 minutes. If you did not request it, you can ignore this email.</p></div>"
+      })});
+      if(!send.ok){this.sql.exec("DELETE FROM otp_codes WHERE email=?",email);return json({ok:false,error:"Unable to send the login code right now."},502)}
+      return json({ok:true,message:"Login code sent."});
+    }
+
+    if(path==="/api/auth/otp/verify" && method==="POST"){
+      const body=await request.json().catch(()=>({})),email=clean(body.email,254).toLowerCase(),code=clean(body.code,8);
+      if(!validEmail(email)||!/^[0-9]{6}$/.test(code))return json({ok:false,error:"Enter the 6-digit code sent to your email."},400);
+      const row=this.sql.exec("SELECT code_hash,code_salt,attempts,expires_at FROM otp_codes WHERE email=?",email).toArray()[0];
+      if(!row||new Date(row.expires_at).getTime()<Date.now()){this.sql.exec("DELETE FROM otp_codes WHERE email=?",email);return json({ok:false,error:"This code has expired. Request a new one."},400)}
+      if(Number(row.attempts)>=6){this.sql.exec("DELETE FROM otp_codes WHERE email=?",email);return json({ok:false,error:"Too many attempts. Request a new code."},429)}
+      const candidate=await sha256(code+row.code_salt);
+      if(!safeEqual(candidate,row.code_hash)){this.sql.exec("UPDATE otp_codes SET attempts=attempts+1 WHERE email=?",email);return json({ok:false,error:"Incorrect code."},401)}
+      this.sql.exec("DELETE FROM otp_codes WHERE email=?",email);
+      let user=this.sql.exec("SELECT id,name,email,created_at FROM users WHERE email=?",email).toArray()[0];
+      if(!user){
+        const id=crypto.randomUUID(),name=email.split("@")[0].replace(/[._-]+/g," ").replace(/\b\w/g,m=>m.toUpperCase()).slice(0,60)||"Member",salt=randomB64(16),hash=await passwordHash(randomToken(),salt),now=new Date().toISOString();
+        this.sql.exec("INSERT INTO users(id,name,email,password_hash,password_salt,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",id,name,email,hash,salt,now,now);
+        user={id,name,email,created_at:now};
+      }
+      this.sql.exec("INSERT OR IGNORE INTO auth_identities(provider,provider_user_id,user_id,provider_email,created_at) VALUES('email_otp',?,?,?,?)",email,user.id,email,new Date().toISOString());
+      const token=await this.createSession(user.id);
+      return json({ok:true,user},200,{"set-cookie":sessionCookie(token)});
+    }
+
+    if(path.startsWith("/api/auth/oauth/")){
+      const parts=path.split("/").filter(Boolean),provider=parts[3],stage=parts[4]||"";
+      const supported=["google","github","facebook","x"];
+      if(!supported.includes(provider))return json({ok:false,error:"Unsupported sign-in provider."},404);
+      const origin=url.origin,redirectUri=origin+"/api/auth/oauth/"+provider+"/callback";
+
+      if(stage==="start"&&method==="GET"){
+        const state=randomToken(),now=new Date(),expires=new Date(now.getTime()+10*60*1000);
+        let verifier=null,authorize=null;
+        if(provider==="google"){
+          if(!this.env.GOOGLE_CLIENT_ID||!this.env.GOOGLE_CLIENT_SECRET)return json({ok:false,error:"Google sign-in is not configured yet."},503);
+          authorize=new URL("https://accounts.google.com/o/oauth2/v2/auth");
+          authorize.search=new URLSearchParams({client_id:this.env.GOOGLE_CLIENT_ID,redirect_uri:redirectUri,response_type:"code",scope:"openid email profile",state,prompt:"select_account"}).toString();
+        }else if(provider==="github"){
+          if(!this.env.GITHUB_CLIENT_ID||!this.env.GITHUB_CLIENT_SECRET)return json({ok:false,error:"GitHub sign-in is not configured yet."},503);
+          authorize=new URL("https://github.com/login/oauth/authorize");
+          authorize.search=new URLSearchParams({client_id:this.env.GITHUB_CLIENT_ID,redirect_uri:redirectUri,scope:"read:user user:email",state}).toString();
+        }else if(provider==="facebook"){
+          if(!this.env.FACEBOOK_CLIENT_ID||!this.env.FACEBOOK_CLIENT_SECRET)return json({ok:false,error:"Facebook sign-in is not configured yet."},503);
+          authorize=new URL("https://www.facebook.com/dialog/oauth");
+          authorize.search=new URLSearchParams({client_id:this.env.FACEBOOK_CLIENT_ID,redirect_uri:redirectUri,response_type:"code",scope:"public_profile,email",state}).toString();
+        }else{
+          if(!this.env.X_CLIENT_ID)return json({ok:false,error:"X sign-in is not configured yet."},503);
+          verifier=randomToken()+randomToken().slice(0,20);
+          const challenge=b64url(await sha256Raw(verifier));
+          authorize=new URL("https://twitter.com/i/oauth2/authorize");
+          authorize.search=new URLSearchParams({client_id:this.env.X_CLIENT_ID,redirect_uri:redirectUri,response_type:"code",scope:"users.read tweet.read",state,code_challenge:challenge,code_challenge_method:"S256"}).toString();
+        }
+        this.sql.exec("DELETE FROM oauth_states WHERE expires_at<=?",now.toISOString());
+        this.sql.exec("INSERT INTO oauth_states(state,provider,verifier,created_at,expires_at) VALUES(?,?,?,?,?)",state,provider,verifier,now.toISOString(),expires.toISOString());
+        return Response.redirect(authorize.toString(),302);
+      }
+
+      if(stage==="callback"&&method==="GET"){
+        const code=url.searchParams.get("code"),state=url.searchParams.get("state");
+        if(!code||!state)return Response.redirect(origin+"/account.html?auth=error",302);
+        const saved=this.sql.exec("SELECT provider,verifier,expires_at FROM oauth_states WHERE state=?",state).toArray()[0];
+        this.sql.exec("DELETE FROM oauth_states WHERE state=?",state);
+        if(!saved||saved.provider!==provider||new Date(saved.expires_at).getTime()<Date.now())return Response.redirect(origin+"/account.html?auth=expired",302);
+
+        let externalId="",name="",email="",emailVerified=false;
+        try{
+          if(provider==="google"){
+            const tokenRes=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:this.env.GOOGLE_CLIENT_ID,client_secret:this.env.GOOGLE_CLIENT_SECRET,code,grant_type:"authorization_code",redirect_uri:redirectUri})});
+            const tok=await tokenRes.json();if(!tokenRes.ok||!tok.access_token)throw new Error("token");
+            const pr=await fetch("https://openidconnect.googleapis.com/v1/userinfo",{headers:{"authorization":"Bearer "+tok.access_token}}),p=await pr.json();
+            externalId=String(p.sub||"");name=clean(p.name||p.email?.split("@")[0]||"Google member",60);email=clean(p.email,254).toLowerCase();emailVerified=Boolean(p.email_verified);
+          }else if(provider==="github"){
+            const tokenRes=await fetch("https://github.com/login/oauth/access_token",{method:"POST",headers:{"accept":"application/json","content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:this.env.GITHUB_CLIENT_ID,client_secret:this.env.GITHUB_CLIENT_SECRET,code,redirect_uri:redirectUri})});
+            const tok=await tokenRes.json();if(!tokenRes.ok||!tok.access_token)throw new Error("token");
+            const headers={"authorization":"Bearer "+tok.access_token,"accept":"application/vnd.github+json","user-agent":"Xender-Secrets"};
+            const pr=await fetch("https://api.github.com/user",{headers}),p=await pr.json();externalId=String(p.id||"");name=clean(p.name||p.login||"GitHub member",60);email=clean(p.email,254).toLowerCase();
+            if(!email){const er=await fetch("https://api.github.com/user/emails",{headers});if(er.ok){const emails=await er.json();const best=emails.find(x=>x.primary&&x.verified)||emails.find(x=>x.verified);if(best){email=clean(best.email,254).toLowerCase();emailVerified=true}}}else emailVerified=true;
+          }else if(provider==="facebook"){
+            const tokenUrl=new URL("https://graph.facebook.com/oauth/access_token");tokenUrl.search=new URLSearchParams({client_id:this.env.FACEBOOK_CLIENT_ID,client_secret:this.env.FACEBOOK_CLIENT_SECRET,redirect_uri:redirectUri,code}).toString();
+            const tokenRes=await fetch(tokenUrl),tok=await tokenRes.json();if(!tokenRes.ok||!tok.access_token)throw new Error("token");
+            const pr=await fetch("https://graph.facebook.com/me?fields=id,name,email",{headers:{"authorization":"Bearer "+tok.access_token}}),p=await pr.json();
+            externalId=String(p.id||"");name=clean(p.name||"Facebook member",60);email=clean(p.email,254).toLowerCase();emailVerified=Boolean(email);
+          }else{
+            const headers={"content-type":"application/x-www-form-urlencoded"};
+            if(this.env.X_CLIENT_SECRET)headers.authorization="Basic "+btoa(this.env.X_CLIENT_ID+":"+this.env.X_CLIENT_SECRET);
+            const params={client_id:this.env.X_CLIENT_ID,code,grant_type:"authorization_code",redirect_uri:redirectUri,code_verifier:saved.verifier};
+            const tokenRes=await fetch("https://api.x.com/2/oauth2/token",{method:"POST",headers,body:new URLSearchParams(params)}),tok=await tokenRes.json();
+            if(!tokenRes.ok||!tok.access_token)throw new Error("token");
+            const pr=await fetch("https://api.x.com/2/users/me",{headers:{"authorization":"Bearer "+tok.access_token}}),p=await pr.json(),u=p.data||{};
+            externalId=String(u.id||"");name=clean(u.name||u.username||"X member",60);email="";
+          }
+          if(!externalId)throw new Error("profile");
+        }catch(e){return Response.redirect(origin+"/account.html?auth=provider_error",302)}
+
+        let identity=this.sql.exec("SELECT user_id FROM auth_identities WHERE provider=? AND provider_user_id=?",provider,externalId).toArray()[0],user=null;
+        if(identity)user=this.sql.exec("SELECT id,name,email,created_at FROM users WHERE id=?",identity.user_id).toArray()[0];
+        if(!user&&email&&emailVerified)user=this.sql.exec("SELECT id,name,email,created_at FROM users WHERE email=?",email).toArray()[0];
+        if(!user){
+          const id=crypto.randomUUID(),safeEmail=email&&emailVerified?email:(provider+"-"+externalId+"@social.xendersecrets.local"),salt=randomB64(16),hash=await passwordHash(randomToken(),salt),now=new Date().toISOString();
+          this.sql.exec("INSERT INTO users(id,name,email,password_hash,password_salt,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",id,name||"Member",safeEmail,hash,salt,now,now);
+          user={id,name:name||"Member",email:safeEmail,created_at:now};
+        }
+        this.sql.exec("INSERT OR REPLACE INTO auth_identities(provider,provider_user_id,user_id,provider_email,created_at) VALUES(?,?,?,?,?)",provider,externalId,user.id,email||null,new Date().toISOString());
+        const session=await this.createSession(user.id);
+        return new Response(null,{status:302,headers:{location:origin+"/account.html?auth="+provider,"set-cookie":sessionCookie(session),"cache-control":"no-store"}});
+      }
+    }
 
     if(path==="/api/auth/register" && method==="POST"){
       const body=await request.json().catch(()=>({}));
@@ -321,7 +479,7 @@ async function callJson(stub,path,method="GET",body){
 
 export class CommunityIndex extends DurableObject{
   constructor(ctx,env){
-    super(ctx,env);this.sql=ctx.storage.sql;
+    super(ctx,env);this.sql=ctx.storage.sql;this.env=env;
     ctx.blockConcurrencyWhile(async()=>{
       this.sql.exec(`
         CREATE TABLE IF NOT EXISTS posts(
@@ -557,6 +715,8 @@ export default {
         return json(j,r.status);
       }
     }
+
+    if(path==="/api/site-config" && method==="GET")return json({ok:true,telegramUrl:clean(env.TELEGRAM_CHANNEL_URL||"",300)});
 
     if(path==="/api/chat" && method==="POST"){
       const body=await request.json().catch(()=>({})),raw=clean(body.message,500);
