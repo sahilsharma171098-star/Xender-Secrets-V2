@@ -432,13 +432,13 @@ export class ContentThread extends DurableObject{
       if(body.length<2)return json({ok:false,error:"Comment is too short."},400);
       const comment={id:"c-"+crypto.randomUUID().slice(0,10),userName:clean(p.userName,60),body,createdAt:new Date().toISOString()};
       this.sql.exec("INSERT INTO comments(id,user_id,user_name,body,created_at) VALUES(?,?,?,?,?)",comment.id,p.userId,comment.userName,comment.body,comment.createdAt);
-      return json({ok:true,comment,stats:this.stats()},201);
+      const category=this.sql.exec("SELECT category FROM content LIMIT 1").toArray()[0]?.category||"general";return json({ok:true,comment,category,stats:this.stats()},201);
     }
     if(path==="/thread/like"&&method==="POST"){
       const p=await request.json(),existing=this.sql.exec("SELECT user_id FROM likes WHERE user_id=?",p.userId).toArray()[0];
       if(existing)this.sql.exec("DELETE FROM likes WHERE user_id=?",p.userId);
       else this.sql.exec("INSERT INTO likes(user_id,created_at) VALUES(?,?)",p.userId,new Date().toISOString());
-      return json({ok:true,liked:!existing,stats:this.stats()});
+      const category=this.sql.exec("SELECT category FROM content LIMIT 1").toArray()[0]?.category||"general";return json({ok:true,liked:!existing,category,stats:this.stats()});
     }
     if(path==="/thread/report"&&method==="POST"){
       const p=await request.json(),reason=clean(p.reason,300)||"Community report";
@@ -536,10 +536,7 @@ export default {
         if(action==="report"){const b=await request.json().catch(()=>({}));endpoint="/thread/report";payload.reason=b.reason}
         const {r,j}=await callJson(stub,endpoint,"POST",payload);
         if(!r.ok)return json(j,r.status);
-        if(j.stats){
-          const view=await callJson(stub,"/thread/view");
-          if(view.j.content?.category)await callJson(indexStub(env,view.j.content.category),"/index/stats","POST",{id:postId,...j.stats,views:view.j.stats.views});
-        }
+        if(j.stats&&j.category)await callJson(indexStub(env,j.category),"/index/stats","POST",{id:postId,...j.stats});
         return json(j,r.status);
       }
     }
