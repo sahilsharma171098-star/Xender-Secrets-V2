@@ -1,5 +1,44 @@
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store"}});
 
+
+const enc=new TextEncoder();
+const AUTH_COOKIE="xs_session";
+const SESSION_MAX_AGE=60*60*24*30;
+
+const b64=bytes=>{let s="";for(const b of bytes)s+=String.fromCharCode(b);return btoa(s)};
+const fromB64=s=>{const raw=atob(s);const out=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);return out};
+const hex=bytes=>Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+const randomB64=n=>b64(crypto.getRandomValues(new Uint8Array(n)));
+const randomToken=()=>randomB64(32).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const sha256=async value=>hex(new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(value))));
+const passwordHash=async(password,saltB64)=>{
+  const key=await crypto.subtle.importKey("raw",enc.encode(password),"PBKDF2",false,["deriveBits"]);
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:fromB64(saltB64),iterations:150000,hash:"SHA-256"},key,256);
+  return b64(new Uint8Array(bits));
+};
+const cookieValue=(header,name)=>{
+  if(!header)return null;
+  for(const part of header.split(";")){const [k,...v]=part.trim().split("=");if(k===name)return decodeURIComponent(v.join("="))}
+  return null;
+};
+const sessionCookie=token=>AUTH_COOKIE+"="+encodeURIComponent(token)+"; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age="+SESSION_MAX_AGE;
+const clearSessionCookie=()=>AUTH_COOKIE+"=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0";
+const authJson=(data,status=200,cookie)=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...(cookie?{"set-cookie":cookie}:{})}});
+const validEmail=email=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+async function createSession(DB,userId){
+  const token=randomToken(),tokenHash=await sha256(token),now=new Date(),expires=new Date(now.getTime()+SESSION_MAX_AGE*1000);
+  await DB.prepare("INSERT INTO sessions (id,user_id,token_hash,created_at,expires_at) VALUES (?,?,?,?,?)")
+    .bind(crypto.randomUUID(),userId,tokenHash,now.toISOString(),expires.toISOString()).run();
+  return token;
+}
+async function getSessionUser(request,DB){
+  const token=cookieValue(request.headers.get("Cookie"),AUTH_COOKIE);
+  if(!token)return null;
+  const tokenHash=await sha256(token),now=new Date().toISOString();
+  return DB.prepare("SELECT u.id,u.name,u.email,u.created_at FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?")
+    .bind(tokenHash,now).first();
+}
+
 const products=[
   {id:"p1",name:"Cable Organizer Clips",category:"Desk & Cable",price:149,rating:4.6},
   {id:"p2",name:"Foldable Phone Stand",category:"Mobile",price:199,rating:4.5},
@@ -30,6 +69,61 @@ export default {
     const path=url.pathname;
     const method=request.method.toUpperCase();
 
+
+
+    if(path==="/api/auth/status" && method==="GET") return authJson({ok:true,available:Boolean(env.DB),mode:env.DB?"d1":"demo"});
+
+    if(path==="/api/auth/register" && method==="POST"){
+      if(!env.DB) return authJson({ok:false,setupRequired:true,error:"Secure account database is not connected yet."},503);
+      const origin=request.headers.get("Origin"); if(origin && origin!==url.origin) return authJson({ok:false,error:"Invalid origin"},403);
+      const body=await request.json().catch(()=>({}));
+      const name=String(body.name||"").trim().slice(0,60);
+      const email=String(body.email||"").trim().toLowerCase().slice(0,254);
+      const password=String(body.password||"");
+      if(name.length<2) return authJson({ok:false,error:"Enter your full name."},400);
+      if(!validEmail(email)) return authJson({ok:false,error:"Enter a valid email address."},400);
+      if(password.length<8 || password.length>128) return authJson({ok:false,error:"Password must be 8–128 characters."},400);
+      const exists=await env.DB.prepare("SELECT id FROM users WHERE email=?").bind(email).first();
+      if(exists) return authJson({ok:false,error:"An account with this email already exists."},409);
+      const salt=randomB64(16),hash=await passwordHash(password,salt),id=crypto.randomUUID(),now=new Date().toISOString();
+      try{
+        await env.DB.prepare("INSERT INTO users (id,name,email,password_hash,password_salt,created_at,updated_at) VALUES (?,?,?,?,?,?,?)")
+          .bind(id,name,email,hash,salt,now,now).run();
+      }catch(e){
+        if(String(e).toLowerCase().includes("unique")) return authJson({ok:false,error:"An account with this email already exists."},409);
+        throw e;
+      }
+      const token=await createSession(env.DB,id);
+      return authJson({ok:true,user:{id,name,email,created_at:now}},201,sessionCookie(token));
+    }
+
+    if(path==="/api/auth/login" && method==="POST"){
+      if(!env.DB) return authJson({ok:false,setupRequired:true,error:"Secure account database is not connected yet."},503);
+      const origin=request.headers.get("Origin"); if(origin && origin!==url.origin) return authJson({ok:false,error:"Invalid origin"},403);
+      const body=await request.json().catch(()=>({}));
+      const email=String(body.email||"").trim().toLowerCase().slice(0,254),password=String(body.password||"");
+      const user=await env.DB.prepare("SELECT id,name,email,password_hash,password_salt,created_at FROM users WHERE email=?").bind(email).first();
+      if(!user) return authJson({ok:false,error:"Email or password is incorrect."},401);
+      const candidate=await passwordHash(password,user.password_salt);
+      if(candidate!==user.password_hash) return authJson({ok:false,error:"Email or password is incorrect."},401);
+      const token=await createSession(env.DB,user.id);
+      return authJson({ok:true,user:{id:user.id,name:user.name,email:user.email,created_at:user.created_at}},200,sessionCookie(token));
+    }
+
+    if(path==="/api/auth/me" && method==="GET"){
+      if(!env.DB) return authJson({ok:false,setupRequired:true,error:"Secure account database is not connected yet."},503);
+      const user=await getSessionUser(request,env.DB);
+      if(!user) return authJson({ok:false,error:"Not signed in."},401);
+      return authJson({ok:true,user});
+    }
+
+    if(path==="/api/auth/logout" && method==="POST"){
+      if(env.DB){
+        const token=cookieValue(request.headers.get("Cookie"),AUTH_COOKIE);
+        if(token){const tokenHash=await sha256(token);await env.DB.prepare("DELETE FROM sessions WHERE token_hash=?").bind(tokenHash).run()}
+      }
+      return authJson({ok:true},200,clearSessionCookie());
+    }
 
     if(path==="/api/chat" && method==="POST"){
       const body=await request.json().catch(()=>({}));
