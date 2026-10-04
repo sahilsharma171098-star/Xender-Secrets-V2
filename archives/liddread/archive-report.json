@@ -1,6 +1,6 @@
 {
   "source": "LiddRead",
-  "updatedAt": "2026-10-04T14:03:05.647Z",
+  "updatedAt": "2026-10-04T14:03:12.488Z",
   "novels": {
     "absolute-god": {
       "slug": "absolute-god",
@@ -125,8 +125,8 @@
       "indexUrl": "https://liddread.com/fortune-divination/",
       "permissionScope": "completed-only",
       "complete": false,
-      "startedAt": "2026-10-04T13:59:57.261Z",
-      "finishedAt": "2026-10-04T13:59:57.261Z",
+      "startedAt": "2026-10-04T14:03:12.487Z",
+      "finishedAt": "2026-10-04T14:03:12.487Z",
       "fatalError": "Could not fetch index: Error: jina HTTP 403",
       "finalChapter": 938,
       "archivedChapters": 0,
