@@ -136,9 +136,8 @@
       "slug": "the-rockstar",
       "title": "The Rockstar",
       "indexUrl": "https://liddread.com/the-rockstar/",
-      "finalChapter": null,
-      "observedAtLeast": 820,
-      "statusEvidence": "LiddRead/Avracity admin announced novel completed; chapter 820 is indexed. Exact final chapter to be derived from index during archive.",
+      "finalChapter": 900,
+      "statusEvidence": "LiddRead/Avracity completion announcement plus LiddRead chapter navigation explicitly labels Chapter 900 as (End).",
       "archive": true
     }
   ],
@@ -253,7 +252,8 @@
     "lastSearchSweep": "2026-10-04",
     "completedLandingPagesFound": 16,
     "exactCountCompletedTitles": 15,
-    "note": "Search-index sweep covered pages 0-10 for multiple Completed/Finale queries because direct LiddRead fetching is bot-protected from the current retrieval environment."
+    "note": "Search-index sweep covered pages 0-10 for multiple Completed/Finale queries because direct LiddRead fetching is bot-protected from the current retrieval environment.",
+    "allCompletedEntriesNowHaveExactFinalCounts": true
   },
-  "totalKnownCompletedChapters": 27810
+  "totalKnownCompletedChapters": 28710
 }
