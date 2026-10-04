@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Free Website Cost Calculator India | Xender Secrets</title>
-  <meta name="description" content="Estimate website development cost in India in under a minute. Choose pages, ecommerce, booking, login, automation and more to get a practical project estimate.">
+  <title>Free Website Cost Calculator | Xender Secrets</title>
+  <meta name="description" content="Estimate website development cost in under a minute. Choose pages, ecommerce, booking, login, automation and more to get a practical project estimate.">
   <link rel="canonical" href="https://www.xendersecrets.com/website-cost-calculator.html">
   <link rel="stylesheet" href="/style.css">
 </head>
@@ -16,7 +16,7 @@
 <main class="container">
 <section class="hero">
   <p class="eyebrow">FREE TOOL</p>
-  <h1>Website Cost Calculator — India</h1>
+  <h1>Website Cost Calculator</h1>
   <p>Choose what you need and get an instant practical estimate. No signup required.</p>
 </section>
 
@@ -59,7 +59,9 @@
   <p>This calculator is for planning, not a binding quotation. Xender Secrets can scope the project and suggest the smallest useful version first.</p>
 </section>
 </main>
+<script src="/script.js"></script>
 <script>
+const calcMoney=n=>window.XSFormatINR?window.XSFormatINR(n):'₹'+Number(n).toLocaleString('en-IN');
 function recalc(){
   const base=Number(document.getElementById('type').value);
   const pages=Math.max(1,Number(document.getElementById('pages').value||1));
@@ -68,13 +70,14 @@ function recalc(){
   document.querySelectorAll('.addon:checked').forEach(x=>addons+=Number(x.value));
   const low=base+pageExtra+addons;
   const high=Math.round(low*1.45/500)*500;
-  document.getElementById('estimate').textContent='₹'+low.toLocaleString('en-IN')+' – ₹'+high.toLocaleString('en-IN');
+  document.getElementById('estimate').textContent=calcMoney(low)+' – '+calcMoney(high);
   const type=document.getElementById('type').selectedOptions[0].text;
-  const msg='Hi Xender Secrets, I used the website cost calculator. Type: '+type+', Pages: '+pages+', Estimate: ₹'+low.toLocaleString('en-IN')+'–₹'+high.toLocaleString('en-IN')+'. Please help me scope it.';
+  const msg='Hi Xender Secrets, I used the website cost calculator. Type: '+type+', Pages: '+pages+', Estimate: '+calcMoney(low)+'–'+calcMoney(high)+' (base ₹'+low.toLocaleString('en-IN')+'–₹'+high.toLocaleString('en-IN')+'). Please help me scope it.';
   document.getElementById('quoteBtn').href='https://wa.me/919821941814?text='+encodeURIComponent(msg);
 }
 document.querySelectorAll('#type,#pages,.addon').forEach(el=>el.addEventListener('change',recalc));
 recalc();
+window.addEventListener('xs-locale-changed',recalc);
 </script>
 </body>
 </html>
