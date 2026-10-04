@@ -42,11 +42,27 @@
       "archive": true
     },
     {
+      "slug": "ancestral-conquest",
+      "title": "Ancestral Conquest",
+      "indexUrl": "https://liddread.com/ancestral-conquest/",
+      "finalChapter": 785,
+      "statusEvidence": "LiddRead search index: Status Completed; Latest Chapter 785; landing page shows The End.",
+      "archive": true
+    },
+    {
       "slug": "code-mage",
       "title": "Code Mage",
       "indexUrl": "https://liddread.com/code-mage/",
       "finalChapter": 601,
       "statusEvidence": "LiddRead landing page verified Completed; Avracity/LiddRead admin also announced completion",
+      "archive": true
+    },
+    {
+      "slug": "deserted-mistress",
+      "title": "Deserted Mistress",
+      "indexUrl": "https://liddread.com/deserted-mistress/",
+      "finalChapter": 1115,
+      "statusEvidence": "LiddRead search index: Status Completed; Chapter 1115 explicitly marked Finale.",
       "archive": true
     },
     {
@@ -112,9 +128,8 @@
       "slug": "talented-medical-son-in-law",
       "title": "Talented Medical Son-In-Law",
       "indexUrl": "https://liddread.com/talented-medical-son-in-law/",
-      "finalChapter": null,
-      "observedAtLeast": 1890,
-      "statusEvidence": "LiddRead/Avracity admin announced novel completed July 2025; chapter 1889 links forward to 1890. Exact final chapter to be derived from index during archive.",
+      "finalChapter": 2036,
+      "statusEvidence": "LiddRead search index: Status Completed; Latest Chapter 2036.",
       "archive": true
     },
     {
@@ -125,22 +140,9 @@
       "observedAtLeast": 820,
       "statusEvidence": "LiddRead/Avracity admin announced novel completed; chapter 820 is indexed. Exact final chapter to be derived from index during archive.",
       "archive": true
-    },
-    {
-      "slug": "i-will-get-my-divorce",
-      "title": "I Will Get My Divorce",
-      "indexUrl": "https://liddread.com/this-time-i-will-get-my-divorce-mr/",
-      "finalChapter": 1485,
-      "statusEvidence": "Underlying work is completed at chapter 1485 (Finale); LiddRead pages are indexed through at least the 1450s. Archive job must confirm LiddRead source coverage before publication.",
-      "archive": true,
-      "coverageNeedsVerification": true
     }
   ],
   "excludedOngoing": [
-    {
-      "title": "Ancestral Conquest",
-      "reason": "LiddRead/Avracity marks ongoing"
-    },
     {
       "title": "Ancient Immortal Emperor",
       "reason": "Ongoing; active chapter updates"
@@ -228,23 +230,30 @@
   ],
   "pendingClassification": [
     {
-      "title": "Deserted Mistress",
-      "indexUrl": "https://liddread.com/deserted-mistress/",
-      "reason": "Was announced as ongoing when launched; no later completion confirmation found yet."
+      "title": "I Will Get My Divorce",
+      "indexUrl": "https://liddread.com/this-time-i-will-get-my-divorce-mr/",
+      "reason": "LiddRead currently indexes Latest Chapter 1483 and does not surface a completed status for this title. Underlying work ends at 1485, but the LiddRead source coverage/status must be confirmed before using completed-only permission."
     },
     {
       "title": "Rewrite My Youth",
       "indexUrl": "https://liddread.com/rewrite-my-youth/",
-      "reason": "Chapters above 1400 indexed; completion status not yet confirmed."
+      "reason": "Recent chapter 1487 was indexed within the last week; treat as ongoing until LiddRead marks it completed."
+    },
+    {
+      "title": "The Demon Emperor Who Devours The World",
+      "reason": "Appears in recent site navigation; completion not verified."
     },
     {
       "title": "The Simulator",
       "indexUrl": "https://liddread.com/the-simulator/",
       "reason": "Present on older LiddRead catalog; current completion status/final count not yet confirmed."
-    },
-    {
-      "title": "The Demon Emperor Who Devours The World",
-      "reason": "Appears in recent site navigation; completion not verified."
     }
-  ]
+  ],
+  "audit": {
+    "lastSearchSweep": "2026-10-04",
+    "completedLandingPagesFound": 16,
+    "exactCountCompletedTitles": 15,
+    "note": "Search-index sweep covered pages 0-10 for multiple Completed/Finale queries because direct LiddRead fetching is bot-protected from the current retrieval environment."
+  },
+  "totalKnownCompletedChapters": 27810
 }
