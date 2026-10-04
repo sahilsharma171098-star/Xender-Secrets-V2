@@ -178,14 +178,14 @@ const XH_COMPLETED = {
     summary: "A long translated urban power fantasy with revenge, hidden strength, family conflict and war-god escalation.",
     verifiedEnding: "Chapter 2495 contains THE END.",
     supplementalRanges: [
-      {start:427,end:428,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-427-428-new/"},
-      {start:593,end:594,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-593-594-new/"},
-      {start:621,end:622,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-621-622-new/"},
-      {start:675,end:676,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-675-677-new/"},
-      {start:1001,end:1002,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1002-1003-new/"},
-      {start:1033,end:1034,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1033-1034-new/"},
-      {start:1795,end:1796,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1795-1796-new/"},
-      {start:1997,end:1998,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1998-1999-new/"}
+      {start:427,end:428,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-427-428-new/",postId:9971},
+      {start:593,end:594,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-593-594-new/",postId:10523},
+      {start:621,end:622,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-621-622-new/",postId:10568},
+      {start:675,end:676,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-675-677-new/",postId:10849},
+      {start:1001,end:1002,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1002-1003-new/",postId:12461},
+      {start:1033,end:1034,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1033-1034-new/",postId:12477},
+      {start:1795,end:1796,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1795-1796-new/",postId:16140},
+      {start:1997,end:1998,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1998-1999-new/",postId:16884}
     ]
   },
   "my-husband-warm-the-bed": {
@@ -197,7 +197,7 @@ const XH_COMPLETED = {
     summary: "A very long translated marriage and family romance built around Kevin/Karen and later generations.",
     verifiedEnding: "XH source states the novel ends at chapter 1985.",
     supplementalRanges: [
-      {start:455,end:469,url:"https://xperimentalhamid.com/novels/my-husband-warm-the-bed-chapter-455-469-free-reading-online-new/"}
+      {start:455,end:469,url:"https://xperimentalhamid.com/novels/my-husband-warm-the-bed-chapter-455-469-free-reading-online-new/",postId:3280}
     ]
   },
   "take-my-breath-away": {
@@ -209,9 +209,9 @@ const XH_COMPLETED = {
     summary: "A completed translated romance following a broken marriage, reunion, family growth and long-form relationship drama.",
     verifiedEnding: "Chapter 1476 contains THE END.",
     supplementalRanges: [
-      {start:46,end:50,url:"https://xperimentalhamid.com/novels/chapter-50-51-of-take-my-breath-away-novel-free-online-new/"},
-      {start:1296,end:1300,url:"https://xperimentalhamid.com/novels/chapter-1296-1-300-of-take-my-breath-away-novel-free-online-new/"},
-      {start:1396,end:1400,url:"https://xperimentalhamid.com/novels/chapter-1396-1400-of-take-my-breath-away-novel-free-online-new/"}
+      {start:46,end:50,url:"https://xperimentalhamid.com/novels/chapter-50-51-of-take-my-breath-away-novel-free-online-new/",postId:11158},
+      {start:1296,end:1300,url:"https://xperimentalhamid.com/novels/chapter-1296-1-300-of-take-my-breath-away-novel-free-online-new/",postId:14906},
+      {start:1396,end:1400,url:"https://xperimentalhamid.com/novels/chapter-1396-1400-of-take-my-breath-away-novel-free-online-new/",postId:15214}
     ]
   }
 };
@@ -293,7 +293,7 @@ async function getXhIndex(slug) {
   for(const x of (novel.supplementalRanges||[])){
     const u=safeUrl(x.url); if(!u) continue;
     const start=Math.max(1,Number(x.start)||0), end=Math.min(novel.finalChapter,Number(x.end)||0);
-    if(start>0 && end>=start) byRange.set(start+"-"+end,{start,end,url:u,label:"Recovered source range "+start+"-"+end});
+    if(start>0 && end>=start) byRange.set(start+"-"+end,{start,end,url:u,label:"Recovered source range "+start+"-"+end,postId:x.postId||null});
   }
   const ranges=[...byRange.values()].sort((a,b)=>a.start-b.start||a.end-b.end);
   const gaps=buildCoverage(ranges,novel.finalChapter);
@@ -301,6 +301,65 @@ async function getXhIndex(slug) {
   xhIndexCache.set(slug,{at:Date.now(),data});
   return data;
 }
+
+async function fetchWpPost(postId, site="https://xperimentalhamid.com") {
+  const id=Number(postId);
+  if(!Number.isInteger(id)||id<1) throw new Error("Invalid WordPress post id");
+  const post=await fetchJson(site+"/wp-json/wp/v2/posts/"+id);
+  const html=post?.content?.rendered||"";
+  if(!html) throw new Error("WordPress post "+id+" has no rendered content");
+  return {html,finalUrl:post?.link||site+"/?p="+id,postId:id};
+}
+function novelSearchTokens(title="") {
+  return String(title).toLowerCase().replace(/[^a-z0-9 ]+/g," ").split(/\s+/)
+    .filter(x=>x.length>=3 && !["the","and","novel","chapter","online","free"].includes(x));
+}
+function resultMatchesNovel(resultTitle, novelTitle) {
+  const t=String(resultTitle||"").toLowerCase();
+  const tokens=novelSearchTokens(novelTitle);
+  if(!tokens.length) return false;
+  const hit=tokens.filter(x=>t.includes(x)).length;
+  return hit>=Math.max(2,Math.ceil(tokens.length*0.65));
+}
+async function findWpChapterPost(novel, chapter) {
+  const site=(new URL(novel.indexUrl)).origin;
+  const queries=[
+    novel.title+" "+chapter,
+    "Chapter "+chapter+" "+novel.title
+  ];
+  for(const q of queries){
+    let rows=[];
+    try{
+      rows=await fetchJson(site+"/wp-json/wp/v2/search?search="+encodeURIComponent(q)+"&per_page=20&page=1");
+    }catch{continue;}
+    for(const x of (Array.isArray(rows)?rows:[])){
+      const title=stripTags(x.title||"");
+      if(!resultMatchesNovel(title,novel.title)) continue;
+      const cr=chapterRange(title+" "+(x.url||""));
+      if(!cr || chapter<cr[0] || chapter>cr[1]) continue;
+      return {postId:Number(x.id),start:cr[0],end:cr[1],url:safeUrl(x.url)||x.url,title};
+    }
+  }
+  return null;
+}
+async function loadChapterGroupHtml(novel, group, chapter) {
+  const site=(new URL(novel.indexUrl)).origin;
+  if(group.postId){
+    try{return await fetchWpPost(group.postId,site);}catch{}
+  }
+  try{
+    const page=await fetchHtml(group.url);
+    const parsed=splitChapterPage(page.html,chapter,group);
+    if(parsed.paragraphs.length) return {...page,preParsed:parsed};
+  }catch{}
+  const found=await findWpChapterPost(novel,chapter);
+  if(found){
+    const page=await fetchWpPost(found.postId,site);
+    return {...page,resolvedGroup:{...found}};
+  }
+  throw new Error("No usable source post found for chapter "+chapter);
+}
+
 function extractArticleBlocks(html) {
   const article=(String(html).match(/<article\b[\s\S]*?<\/article>/i)||String(html).match(/<main\b[\s\S]*?<\/main>/i)||[String(html)])[0];
   const stripped=article
@@ -352,25 +411,42 @@ function splitChapterPage(html, wanted, group) {
 async function getXhChapter(slug, chapter) {
   const idx=await getXhIndex(slug);
   if(!Number.isInteger(chapter)||chapter<1||chapter>idx.finalChapter) throw new Error("Chapter out of range");
-  const group=idx.ranges.find(r=>chapter>=r.start&&chapter<=r.end);
-  if(!group) throw new Error("Chapter "+chapter+" is missing from source index");
-  const cacheKey=group.url;
+  let group=idx.ranges.find(r=>chapter>=r.start&&chapter<=r.end);
+  if(!group){
+    const found=await findWpChapterPost(idx,chapter);
+    if(!found) throw new Error("Chapter "+chapter+" is missing from source index");
+    group={...found,label:found.title};
+  }
+  const cacheKey=group.postId ? "wp:"+group.postId : group.url;
   let page=xhPageCache.get(cacheKey);
   if(!page || Date.now()-page.at>60*60*1000){
-    const fetched=await fetchHtml(group.url);
-    page={at:Date.now(),html:fetched.html,finalUrl:fetched.finalUrl};
+    const loaded=await loadChapterGroupHtml(idx,group,chapter);
+    page={at:Date.now(),html:loaded.html,finalUrl:loaded.finalUrl,preParsed:loaded.preParsed||null,resolvedGroup:loaded.resolvedGroup||null};
     xhPageCache.set(cacheKey,page);
-    if(xhPageCache.size>120){
+    if(xhPageCache.size>160){
       const first=xhPageCache.keys().next().value;
       xhPageCache.delete(first);
     }
   }
-  const parsed=splitChapterPage(page.html,chapter,group);
-  if(!parsed.paragraphs.length) throw new Error("Could not isolate chapter "+chapter+" from source page");
+  const effectiveGroup=page.resolvedGroup ? {...group,...page.resolvedGroup} : group;
+  let parsed=page.preParsed && page.preParsed.paragraphs?.length ? page.preParsed : splitChapterPage(page.html,chapter,effectiveGroup);
+  if(!parsed.paragraphs.length){
+    const found=await findWpChapterPost(idx,chapter);
+    if(found && found.postId!==effectiveGroup.postId){
+      const wp=await fetchWpPost(found.postId,(new URL(idx.indexUrl)).origin);
+      parsed=splitChapterPage(wp.html,chapter,found);
+      if(parsed.paragraphs.length) page={...page,html:wp.html,finalUrl:wp.finalUrl};
+    }
+  }
+  if(!parsed.paragraphs.length) throw new Error("Could not isolate chapter "+chapter+" from source post");
+  const paragraphs=parsed.paragraphs
+    .map(x=>String(x).replace(/\s+/g," ").trim())
+    .filter(x=>x && !/^Read Chapter\b/i.test(x) && !/^Join Our official Youtube Channel$/i.test(x));
+  if(!paragraphs.length) throw new Error("Chapter "+chapter+" contained no readable prose");
   return {
     ok:true, slug, title:idx.title, chapter, finalChapter:idx.finalChapter,
     chapterTitle:"Chapter "+chapter,
-    paragraphs:parsed.paragraphs,
+    paragraphs,
     sourceSite:idx.sourceSite,
     sourceUrl:page.finalUrl||group.url,
     attribution:"Republished on Xender with permission from XperimentalHamid.",
