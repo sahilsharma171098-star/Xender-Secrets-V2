@@ -937,7 +937,7 @@ export default {
         if(!translated)return json({ok:false,error:"GLM returned no translation."},502);
         return json({ok:true,source:"zh-CN",target:"hi",translated});
       }catch(e){
-        return json({ok:false,error:String(e?.message||e)},502);
+        return json({ok:false,error:String(e?.message||e),code:e?.code||null},200);
       }
     }
 
