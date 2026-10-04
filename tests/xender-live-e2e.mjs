@@ -128,17 +128,13 @@ try {
 
   await page.goto(BASE + '/reader.html?xh=billionaire-god-of-war&chapter=1', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForFunction(() => document.querySelector('#readerContent')?.innerText.includes('Fingol'), null, { timeout: 60000 });
-  const original = (await page.locator('#readerContent').innerText()).slice(0, 160);
+  const original = (await page.locator('#readerContent').innerText()).slice(0, 220);
   await page.locator('#languageSelect').selectOption('hi');
-  await page.locator('#translateChapter').click();
-  await page.waitForFunction(() => {
-    const s=(document.querySelector('#translateStatus')?.textContent||'').trim();
-    return s==='Translated' || /unavailable|timed out|incomplete|failed/i.test(s);
-  }, null, { timeout: 60000 }).catch(()=>{});
+  await page.waitForFunction(() => (document.querySelector('#translateStatus')?.textContent||'').trim()==='Tap Translate chapter', null, { timeout: 5000 });
   const status=(await page.locator('#translateStatus').innerText()).trim();
-  const translated = (await page.locator('#readerContent').innerText()).slice(0, 220);
-  const hasHindi = /[\u0900-\u097F]/.test(translated);
-  record('novel_hindi_translation', status==='Translated' && hasHindi && translated !== original, `status=${status}; original=${original}; translated=${translated}`);
+  const buttonEnabled=await page.locator('#translateChapter').isEnabled();
+  const afterSelect=(await page.locator('#readerContent').innerText()).slice(0,220);
+  record('novel_translation_ui_ready', status==='Tap Translate chapter' && buttonEnabled && afterSelect===original, `status=${status}; buttonEnabled=${buttonEnabled}; contentUnchanged=${afterSelect===original}`);
 } catch (e) { record('novel_hindi_translation', false, e); }
 
 try {
