@@ -40,7 +40,7 @@
 <button data-filter="Urban">Urban</button>
 <button data-filter="Regression">Regression</button>
 <button data-filter="Female Lead">Female Lead</button>
-<button data-filter="Fantasy">Fantasy</button>
+<button data-filter="Fantasy">Fantasy</button><button data-filter="Hidden Heir">Hidden Heir</button><button data-filter="Romance">Romance</button><button data-filter="Dungeon">Dungeon</button>
 </div>
 </div>
 
@@ -65,7 +65,7 @@
 </main>
 <footer><div><b>XENDER SECRETS</b><p>Original web fiction + digital projects</p></div><div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div><small>© 2026 Xender Secrets.</small></footer>
 <script src="script.js"></script>
-<script src="original-novels.js"></script>
+<script src="original-novels.js"></script><script src="original-novels-batch2.js"></script>
 <script>
 const stories=window.XENDER_FICTION||{};
 const grid=document.getElementById("nvGrid"),latest=document.getElementById("latestList"),search=document.getElementById("nvSearch");
@@ -85,7 +85,7 @@ function render(){
    grid.appendChild(a);
  });
 }
-latest.innerHTML=Object.entries(stories).slice(0,5).map(([slug,s])=>{
+latest.innerHTML=Object.entries(stories).reverse().slice(0,8).map(([slug,s])=>{
  const n=s.chapters.length,c=s.chapters[n-1];
  return '<div class="latest-item"><a href="reader.html?story='+encodeURIComponent(slug)+'&chapter='+n+'">'+esc(s.title)+' — '+esc(c.title)+'</a><small>'+esc(s.genre.slice(0,2).join(" · "))+'</small></div>';
 }).join("");
