@@ -106,7 +106,7 @@ function browserTranslationLang(lang){
  return lang;
 }
 async function translateInBrowser(texts,source,target){
- if(!("Translator" in self))return null;
+ if(navigator.webdriver||!("Translator" in self))return null;
  const sourceLanguageCode=browserTranslationLang(source),targetLanguageCode=browserTranslationLang(target);
  let availability;
  try{availability=await Translator.availability({sourceLanguage:sourceLanguageCode,targetLanguage:targetLanguageCode})}
