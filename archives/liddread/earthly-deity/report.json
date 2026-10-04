@@ -1,0 +1,13 @@
+{
+  "slug": "earthly-deity",
+  "title": "Earthly Deity",
+  "indexUrl": "https://liddread.com/earthly-diety/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T13:59:50.726Z",
+  "finishedAt": "2026-10-04T13:59:50.726Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 1230,
+  "archivedChapters": 0,
+  "errors": []
+}
