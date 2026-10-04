@@ -1,0 +1,13 @@
+{
+  "slug": "fortune-divination",
+  "title": "Fortune Divination",
+  "indexUrl": "https://liddread.com/fortune-divination/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T13:59:57.261Z",
+  "finishedAt": "2026-10-04T13:59:57.261Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 938,
+  "archivedChapters": 0,
+  "errors": []
+}
