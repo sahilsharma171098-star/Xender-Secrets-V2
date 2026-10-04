@@ -923,12 +923,15 @@ export default {
     }
 
     if(path==="/api/translation-smoke" && method==="GET"){
+      const sample="女有四行：一曰婦德，二曰婦言，三曰婦容，四曰婦功。";
+      const result={ok:true,source:"zh-CN",target:"hi"};
+      try{result.googleDirect=await googleTranslate(sample,"hi","zh-CN")}catch(e){result.googleDirectError=String(e?.message||e)}
       try{
-        const translated=await translateBatch(["女有四行：一曰婦德，二曰婦言，三曰婦容，四曰婦功。"],"hi",env.AI,"zh-CN");
-        return json({ok:true,translated:translated[0]||"",source:"zh-CN",target:"hi"});
-      }catch(e){
-        return json({ok:false,error:"Translation smoke test failed."},502);
-      }
+        result.googleEnglish=await googleTranslate(sample,"en","zh-CN");
+        result.googlePivot=await googleTranslate(result.googleEnglish,"hi","en");
+      }catch(e){result.googlePivotError=String(e?.message||e)}
+      try{result.aiDirect=await aiTranslate(sample,"hi",env.AI,"zh-CN")}catch(e){result.aiDirectError=String(e?.message||e)}
+      return json(result);
     }
 
     if(path==="/api/translate" && method==="POST"){
