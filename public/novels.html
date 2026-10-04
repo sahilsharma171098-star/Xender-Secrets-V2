@@ -1,148 +1,203 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>English Translated Chinese Novels | Xender Secrets</title>
-  <meta name="description" content="Browse real Chinese classics in English translation, with author, translator and Project Gutenberg source details.">
-  <link rel="canonical" href="https://www.xendersecrets.com/novels.html">
-  <meta name="robots" content="index,follow">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .translation-note{margin:26px 0 0;padding:16px 18px;border:1px solid #4de6ad35;background:#4de6ad0b;border-radius:12px;color:#aeb8bf}
-    .translation-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px}
-    .translation-card{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px;display:flex;flex-direction:column;min-height:380px}
-    .translation-card h3{font-size:24px;line-height:1.15;margin:10px 0 12px}
-    .translation-card p{color:#96a1aa}
-    .translation-card .meta{font-size:14px;color:#c5cdd2;margin:2px 0}
-    .translation-card .read{margin-top:auto;background:#4de6ad;color:#04100c;padding:11px 14px;border-radius:8px;text-align:center;font-weight:800}
-    .translation-card .source{font-size:12px;color:#74818a;margin-top:11px}
-    .translated-badge{display:inline-block;font-size:10px;letter-spacing:.12em;font-weight:800;border:1px solid #4de6ad35;color:#4de6ad;padding:5px 8px;border-radius:99px;width:max-content}
-    .searchbox{width:100%;max-width:580px;background:#0e1319;border:1px solid #ffffff18;color:#eef2f5;border-radius:10px;padding:13px 15px;font:inherit}
-    @media(max-width:900px){.translation-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:650px){.translation-grid{grid-template-columns:1fr}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Xender Novels | English-Translated Chinese Literature</title>
+<meta name="description" content="Discover English-translated Chinese literature with a web-novel style browsing experience: latest updates, genres, search and reader links.">
+<link rel="canonical" href="https://www.xendersecrets.com/novels.html">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="style.css">
+<style>
+.nv-hero{padding-bottom:34px}
+.nv-hero h1{font-size:clamp(46px,7vw,82px);line-height:1;margin:16px 0;max-width:960px}
+.nv-hero .lead{max-width:800px}
+.nv-shell{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+.nv-panel{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px}
+.nv-panel h3{margin:0 0 16px}
+.nv-search{display:flex;gap:10px;margin:20px 0 28px;flex-wrap:wrap}
+.nv-search input{flex:1;min-width:240px;background:#0e1319;border:1px solid #ffffff18;color:#eef2f5;border-radius:10px;padding:13px 15px;font:inherit}
+.nv-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.nv-tabs button{background:#0e1319;border:1px solid #ffffff18;color:#c8d1d7;padding:9px 12px;border-radius:999px;cursor:pointer}
+.nv-tabs button.active{background:#4de6ad;color:#04100c;border-color:#4de6ad}
+.latest-list{display:grid;gap:10px}
+.latest-item{display:flex;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid #ffffff0e}
+.latest-item:last-child{border-bottom:0}
+.latest-item a{color:#eef2f5;font-weight:750}
+.latest-item small{color:#75818a}
+.nv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.nv-card{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:20px;display:flex;flex-direction:column;min-height:330px}
+.nv-card h3{font-size:23px;line-height:1.15;margin:12px 0 9px}
+.nv-card p{color:#96a1aa}
+.nv-meta{font-size:14px;color:#c6cdd2;margin:2px 0}
+.nv-badges{display:flex;gap:7px;flex-wrap:wrap}
+.nv-badge{font-size:10px;letter-spacing:.1em;font-weight:800;border:1px solid #4de6ad35;color:#4de6ad;padding:5px 8px;border-radius:999px}
+.nv-read{margin-top:auto;background:#4de6ad;color:#04100c!important;padding:11px 14px;border-radius:8px;text-align:center;font-weight:800}
+.nv-source{font-size:12px;color:#74818a;margin-top:10px}
+.sidebar-list{display:grid;gap:10px}
+.sidebar-list a{padding:10px 0;border-bottom:1px solid #ffffff0e}
+.rights-box{margin-top:20px;padding:15px 16px;background:#4de6ad0b;border:1px solid #4de6ad35;border-radius:12px;color:#aeb8bf;font-size:14px}
+@media(max-width:950px){.nv-shell{grid-template-columns:1fr}.nv-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <header>
-  <a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
-  <button id="menu" aria-label="Menu">☰</button>
-  <nav><a href="community.html">Community</a><a href="articles.html">Articles</a><a href="website-catalog.html">Websites</a><a href="resources.html">Resources</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a></nav>
-  <a class="pill desktop" href="https://wa.me/919821941814">Let's Talk</a>
+<a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
+<button id="menu" aria-label="Menu">☰</button>
+<nav><a href="community.html">Community</a><a href="articles.html">Articles</a><a href="website-catalog.html">Websites</a><a href="resources.html">Resources</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a></nav>
+<a class="pill desktop" href="https://wa.me/919821941814">Let's Talk</a>
 </header>
 
 <main>
-<section class="catalog-hero novel-hero">
-  <div class="kicker">ENGLISH-TRANSLATED CHINESE LITERATURE</div>
-  <h1>Chinese classics. <em>Read them in English.</em></h1>
-  <p class="lead">This library is for real Chinese literature in English translation — not Mandarin-only editions and not fictional placeholder titles.</p>
-  <div class="translation-note"><b>Rights/source note:</b> Public-domain English editions are linked from Project Gutenberg. Availability outside the U.S. may depend on local copyright law.</div>
+<section class="catalog-hero nv-hero">
+<div class="kicker">XENDER NOVELS</div>
+<h1>Chinese stories. <em>English reading experience.</em></h1>
+<p class="lead">A web-novel style reading hub for English-translated Chinese literature: fast discovery, latest updates, genres, search and clean reading links.</p>
+<div class="rights-box"><b>Rights policy:</b> Xender only hosts or republishes text when the translation is public-domain, licensed, original, or otherwise authorized. Other works can be listed or linked without copying their chapter text.</div>
 </section>
 
 <section class="catalog-body">
-  <div class="filter-row">
-    <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="novel">Novels</button>
-    <button class="filter" data-filter="stories">Short Stories</button>
-    <button class="filter" data-filter="historical">Historical</button>
-  </div>
-  <input id="translationSearch" class="searchbox" type="search" placeholder="Search title, author or translator…" aria-label="Search English translations">
+<div class="nv-search">
+<input id="nvSearch" type="search" placeholder="Search title, author or translator…" aria-label="Search novels">
+<div class="nv-tabs">
+<button class="active" data-filter="all">All</button>
+<button data-filter="novel">Novels</button>
+<button data-filter="stories">Short Stories</button>
+<button data-filter="historical">Historical</button>
+</div>
+</div>
 
-  <div class="translation-grid" id="translationGrid">
-    <article class="translation-card" data-type="novel" data-search="dream red chamber book 1 cao xueqin h bencraft joly">
-      <span class="translated-badge">TRANSLATED FROM CHINESE</span>
-      <h3>Hung Lou Meng, or, The Dream of the Red Chamber — Book I</h3>
-      <p class="meta"><b>Author:</b> Cao Xueqin</p>
-      <p class="meta"><b>English translator:</b> H. Bencraft Joly</p>
-      <p>The first English volume of the great Qing-era family saga, centred on the Jia household, love, status and decline.</p>
-      <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/9603">Read English Translation →</a>
-      <div class="source">Project Gutenberg #9603</div>
-    </article>
+<div class="nv-shell">
+<div>
+<div class="nv-panel" style="margin-bottom:24px">
+<div class="section-head"><div><div class="kicker">LATEST UPDATES</div><h2>Fresh reading <span>first.</span></h2></div></div>
+<div class="latest-list">
+<div class="latest-item"><a href="#three-kingdoms">Romance of the Three Kingdoms — English Volume 1</a><small>Historical Epic</small></div>
+<div class="latest-item"><a href="#dream-2">Dream of the Red Chamber — English Book II</a><small>Family Saga</small></div>
+<div class="latest-item"><a href="#strange-2">Strange Stories from a Chinese Studio — Vol. 2</a><small>Supernatural</small></div>
+<div class="latest-item"><a href="#dream-1">Dream of the Red Chamber — English Book I</a><small>Classic Novel</small></div>
+</div>
+</div>
 
-    <article class="translation-card" data-type="novel" data-search="dream red chamber book 2 cao xueqin h bencraft joly">
-      <span class="translated-badge">TRANSLATED FROM CHINESE</span>
-      <h3>Hung Lou Meng, or, The Dream of the Red Chamber — Book II</h3>
-      <p class="meta"><b>Author:</b> Cao Xueqin</p>
-      <p class="meta"><b>English translator:</b> H. Bencraft Joly</p>
-      <p>The second English volume continues the relationships, household politics and decline at the heart of the novel.</p>
-      <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/9604">Read English Translation →</a>
-      <div class="source">Project Gutenberg #9604</div>
-    </article>
+<div class="section-head"><div><div class="kicker">NOVEL DIRECTORY</div><h2>Browse all <span>English translations.</span></h2></div></div>
 
-    <article class="translation-card" data-type="stories" data-search="strange stories chinese studio volume 1 pu songling herbert a giles">
-      <span class="translated-badge">TRANSLATED FROM CHINESE</span>
-      <h3>Strange Stories from a Chinese Studio — Vol. 1</h3>
-      <p class="meta"><b>Author:</b> Pu Songling</p>
-      <p class="meta"><b>English translator:</b> Herbert A. Giles</p>
-      <p>Supernatural, satirical and uncanny tales of spirits, foxes, scholars, officials and ordinary people.</p>
-      <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43627">Read English Translation →</a>
-      <div class="source">Project Gutenberg #43627</div>
-    </article>
+<div class="nv-grid" id="nvGrid">
+<article id="dream-1" class="nv-card" data-type="novel" data-search="dream red chamber book 1 cao xueqin h bencraft joly">
+<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">CLASSIC NOVEL</span></div>
+<h3>Hung Lou Meng, or, The Dream of the Red Chamber — Book I</h3>
+<p class="nv-meta"><b>Author:</b> Cao Xueqin</p>
+<p class="nv-meta"><b>English translator:</b> H. Bencraft Joly</p>
+<p>The opening English volume of the great Qing-era family saga, following the Jia household and its intricate world of love, rank and decline.</p>
+<a class="nv-read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/9603">Start Reading →</a>
+<div class="nv-source">Project Gutenberg #9603</div>
+</article>
 
-    <article class="translation-card" data-type="stories" data-search="strange stories chinese studio volume 2 pu songling herbert a giles">
-      <span class="translated-badge">TRANSLATED FROM CHINESE</span>
-      <h3>Strange Stories from a Chinese Studio — Vol. 2</h3>
-      <p class="meta"><b>Author:</b> Pu Songling</p>
-      <p class="meta"><b>English translator:</b> Herbert A. Giles</p>
-      <p>The second volume continues Pu Songling's famous collection of strange and sharply observed tales.</p>
-      <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43628">Read English Translation →</a>
-      <div class="source">Project Gutenberg #43628</div>
-    </article>
+<article id="dream-2" class="nv-card" data-type="novel" data-search="dream red chamber book 2 cao xueqin h bencraft joly">
+<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">CLASSIC NOVEL</span></div>
+<h3>Hung Lou Meng, or, The Dream of the Red Chamber — Book II</h3>
+<p class="nv-meta"><b>Author:</b> Cao Xueqin</p>
+<p class="nv-meta"><b>English translator:</b> H. Bencraft Joly</p>
+<p>The second English volume continues the family drama and relationships at the heart of the novel.</p>
+<a class="nv-read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/9604">Start Reading →</a>
+<div class="nv-source">Project Gutenberg #9604</div>
+</article>
 
-    <article class="translation-card" data-type="stories" data-search="strange stories chinese studio complete pu songling herbert a giles">
-      <span class="translated-badge">TRANSLATED FROM CHINESE</span>
-      <h3>Strange Stories from a Chinese Studio — Volumes 1 &amp; 2</h3>
-      <p class="meta"><b>Author:</b> Pu Songling</p>
-      <p class="meta"><b>English translator:</b> Herbert A. Giles</p>
-      <p>A combined English edition for readers who want both translated volumes together.</p>
-      <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43629">Read English Translation →</a>
-      <div class="source">Project Gutenberg #43629</div>
-    </article>
+<article id="strange-1" class="nv-card" data-type="stories" data-search="strange stories chinese studio volume 1 pu songling herbert a giles">
+<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">SUPERNATURAL</span></div>
+<h3>Strange Stories from a Chinese Studio — Vol. 1</h3>
+<p class="nv-meta"><b>Author:</b> Pu Songling</p>
+<p class="nv-meta"><b>English translator:</b> Herbert A. Giles</p>
+<p>Ghosts, fox spirits, scholars and strange encounters in one of China's most famous collections of supernatural tales.</p>
+<a class="nv-read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43627">Start Reading →</a>
+<div class="nv-source">Project Gutenberg #43627</div>
+</article>
 
-    <article class="translation-card" data-type="novel historical" data-search="romance three kingdoms san kuo luo guanzhong c h brewitt taylor">
-      <span class="translated-badge">TRANSLATED FROM CHINESE</span>
-      <h3>San Kuo; or, Romance of the Three Kingdoms — Vol. 1</h3>
-      <p class="meta"><b>Author:</b> Luo Guanzhong</p>
-      <p class="meta"><b>English translator:</b> C. H. Brewitt-Taylor</p>
-      <p>The classic historical epic of military strategy, loyalty, ambition and rival powers struggling for control of China.</p>
-      <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/77416">Read English Translation →</a>
-      <div class="source">Project Gutenberg #77416</div>
-    </article>
-  </div>
-</section>
+<article id="strange-2" class="nv-card" data-type="stories" data-search="strange stories chinese studio volume 2 pu songling herbert a giles">
+<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">SUPERNATURAL</span></div>
+<h3>Strange Stories from a Chinese Studio — Vol. 2</h3>
+<p class="nv-meta"><b>Author:</b> Pu Songling</p>
+<p class="nv-meta"><b>English translator:</b> Herbert A. Giles</p>
+<p>The second volume continues Pu Songling's uncanny, satirical and often deeply human stories.</p>
+<a class="nv-read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43628">Start Reading →</a>
+<div class="nv-source">Project Gutenberg #43628</div>
+</article>
 
-<section class="cta">
-  <div class="kicker">CURATION RULE</div>
-  <h2>English reading first. <span>Rights respected.</span></h2>
-  <p>Modern copyrighted web-novel translations are not mirrored without permission. We add public-domain, licensed or otherwise authorized English translations only.</p>
+<article class="nv-card" data-type="stories" data-search="strange stories chinese studio combined pu songling herbert a giles">
+<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">COLLECTED EDITION</span></div>
+<h3>Strange Stories from a Chinese Studio — Volumes 1 &amp; 2</h3>
+<p class="nv-meta"><b>Author:</b> Pu Songling</p>
+<p class="nv-meta"><b>English translator:</b> Herbert A. Giles</p>
+<p>A combined English edition for readers who want both translated volumes together.</p>
+<a class="nv-read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43629">Start Reading →</a>
+<div class="nv-source">Project Gutenberg #43629</div>
+</article>
+
+<article id="three-kingdoms" class="nv-card" data-type="novel historical" data-search="romance three kingdoms san kuo luo guanzhong c h brewitt taylor">
+<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">HISTORICAL EPIC</span></div>
+<h3>San Kuo; or, Romance of the Three Kingdoms — Vol. 1</h3>
+<p class="nv-meta"><b>Author:</b> Luo Guanzhong</p>
+<p class="nv-meta"><b>English translator:</b> C. H. Brewitt-Taylor</p>
+<p>A sweeping epic of war, alliances, loyalty, ambition and political rivalry during China's Three Kingdoms era.</p>
+<a class="nv-read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/77416">Start Reading →</a>
+<div class="nv-source">Project Gutenberg #77416</div>
+</article>
+</div>
+</div>
+
+<aside>
+<div class="nv-panel">
+<h3>Popular genres</h3>
+<div class="sidebar-list">
+<a href="#three-kingdoms">Historical / War</a>
+<a href="#strange-1">Supernatural / Folklore</a>
+<a href="#dream-1">Romance / Family Saga</a>
+<a href="#dream-2">Classic Chinese Fiction</a>
+</div>
+</div>
+<div class="nv-panel" style="margin-top:18px">
+<h3>Modern web novels</h3>
+<p style="color:#96a1aa">Cultivation, reincarnation, system, urban fantasy, CEO romance and martial-arts series can be added here once Xender has a license, author permission or another clear right to republish the English translation.</p>
+</div>
+<div class="nv-panel" style="margin-top:18px">
+<h3>Reader roadmap</h3>
+<div class="sidebar-list">
+<a href="#">Bookmarks & reading history</a>
+<a href="#">Next / previous chapter</a>
+<a href="#">Latest release feed</a>
+<a href="#">Comments & community</a>
+<a href="#">Telegram / email alerts</a>
+</div>
+</div>
+</aside>
+</div>
 </section>
 </main>
 
 <footer>
-  <div><b>XENDER SECRETS</b><p>Curated reading links + digital projects</p></div>
-  <div class="footer-links"><a href="index.html">Home</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
-  <small>© 2026 Xender Secrets.</small>
+<div><b>XENDER SECRETS</b><p>English-translated Chinese literature + digital projects</p></div>
+<div class="footer-links"><a href="index.html">Home</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+<small>© 2026 Xender Secrets.</small>
 </footer>
 
 <script src="script.js"></script>
 <script>
-const search=document.getElementById('translationSearch');
-const cards=[...document.querySelectorAll('.translation-card')];
-let active='all';
-function apply(){
-  const term=search.value.trim().toLowerCase();
-  cards.forEach(card=>{
-    const type=card.dataset.type||'';
-    const typeMatch=active==='all'||type.split(' ').includes(active);
-    const textMatch=!term||card.dataset.search.includes(term);
-    card.style.display=typeMatch&&textMatch?'flex':'none';
-  });
+const search=document.getElementById('nvSearch');
+const cards=[...document.querySelectorAll('.nv-card')];
+let filter='all';
+function applyFilter(){
+ const q=search.value.trim().toLowerCase();
+ cards.forEach(card=>{
+   const type=(card.dataset.type||'').split(' ');
+   const okType=filter==='all'||type.includes(filter);
+   const okSearch=!q||(card.dataset.search||'').includes(q);
+   card.style.display=okType&&okSearch?'flex':'none';
+ });
 }
 document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); active=btn.dataset.filter; apply();
+ document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active'); filter=btn.dataset.filter; applyFilter();
 }));
-search.addEventListener('input',apply);
+search.addEventListener('input',applyFilter);
 </script>
 </body>
 </html>
