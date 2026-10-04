@@ -40,14 +40,14 @@ const FALLBACK_RATES={INR:1,USD:.0113,EUR:.0097,GBP:.0084,CAD:.0157,AUD:.0172,NZ
 const currencyForCountry=country=>EURO_CURRENCY_COUNTRIES.has(country)?"EUR":(COUNTRY_CURRENCY[country]||"USD");
 const TRANSLATION_LANGUAGES=new Set(["en","hi","es","fr","de","pt","ar","id","tr","nl","it","ru","ja","ko","zh-CN","th","vi","bn","ur","mr","ta","te","gu","pa","ml","kn"]);
 const TRANSLATION_TARGET_MAP={"zh-CN":"zh"};
-function splitTranslationText(text,max=1200){
+function splitTranslationText(text,max=4200){
   const raw=String(text??"");
   if(raw.length<=max)return [raw];
   const out=[];let rest=raw;
   while(rest.length>max){
     const window=rest.slice(0,max+1);
     let cut=-1;
-    for(const sep of ["\n\n",". ","! ","? ","; ",", "," "]){
+    for(const sep of ["\n\n","。","！","？",". ","! ","? ","；","; ","，",", "," "]){
       const i=window.lastIndexOf(sep);
       if(i>=Math.floor(max*.55)){cut=i+sep.length;break}
     }
@@ -58,15 +58,12 @@ function splitTranslationText(text,max=1200){
   if(rest)out.push(rest);
   return out;
 }
-async function translateChunk(raw,target,ai,source){
-  if(source===target)return raw;
-  const targetLang=TRANSLATION_TARGET_MAP[target]||target;
-  const sourceLang=TRANSLATION_TARGET_MAP[source]||source;
+async function googleTranslate(raw,target,source){
   let lastError=null;
   for(const host of ["https://translate.googleapis.com/translate_a/single","https://translate.google.com/translate_a/single"]){
     const u=new URL(host);
     u.searchParams.set("client","gtx");u.searchParams.set("sl",source);u.searchParams.set("tl",target);u.searchParams.set("dt","t");u.searchParams.set("q",raw);
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
     try{
       const response=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"},signal:controller.signal});
       if(!response.ok){lastError=new Error("Translation upstream error "+response.status);continue}
@@ -77,33 +74,70 @@ async function translateChunk(raw,target,ai,source){
     }catch(e){lastError=e}
     finally{clearTimeout(timer)}
   }
-  if(ai){
-    try{
-      const result=await ai.run("@cf/meta/m2m100-1.2b",{text:raw,source_lang:sourceLang,target_lang:targetLang});
-      const translated=String(result?.translated_text||result?.translation||result?.text||"").trim();
-      if(translated)return translated;
-    }catch(e){lastError=e}
-  }
   throw lastError||new Error("Translation unavailable");
+}
+async function aiTranslate(raw,target,ai,source){
+  if(!ai)throw new Error("AI translation unavailable");
+  const targetLang=TRANSLATION_TARGET_MAP[target]||target,sourceLang=TRANSLATION_TARGET_MAP[source]||source;
+  const chunks=splitTranslationText(raw,900),out=[];
+  for(const chunk of chunks){
+    const result=await ai.run("@cf/meta/m2m100-1.2b",{text:chunk,source_lang:sourceLang,target_lang:targetLang});
+    const translated=String(result?.translated_text||result?.translation||result?.text||"").trim();
+    if(!translated)throw new Error("AI translation returned no text");
+    out.push(translated);
+  }
+  return out.join(" ");
+}
+async function translateChunk(raw,target,ai,source){
+  if(source===target)return raw;
+  try{return await googleTranslate(raw,target,source)}
+  catch(googleError){
+    try{return await aiTranslate(raw,target,ai,source)}
+    catch(aiError){throw googleError||aiError}
+  }
 }
 async function translateOne(text,target,ai,source="en"){
   const raw=String(text??"");
   if(!raw.trim()||source===target)return raw;
-  const chunks=splitTranslationText(raw),translated=[];
+  const chunks=splitTranslationText(raw,4200),translated=[];
   for(const chunk of chunks)translated.push(await translateChunk(chunk,target,ai,source));
   return translated.join(" ");
 }
-async function translateBatch(texts,target,ai,source="en"){
-  const out=new Array(texts.length),queue=[...texts.keys()];let failed=null;
+function markerFor(n){return "\n[[[XENDER_SPLIT_"+String(n).padStart(4,"0")+"]]]\n"}
+async function translateGroup(texts,target,ai,source){
+  if(texts.length===1)return [await translateOne(texts[0],target,ai,source)];
+  let joined=String(texts[0]??"");
+  for(let i=1;i<texts.length;i++)joined+=markerFor(i)+String(texts[i]??"");
+  try{
+    const translated=await translateOne(joined,target,ai,source);
+    const marker=/\n?\[\[\[XENDER_SPLIT_\d{4}\]\]\]\n?/g;
+    const parts=translated.split(marker);
+    if(parts.length===texts.length)return parts.map(x=>x.trim());
+  }catch(e){}
+  const out=new Array(texts.length),queue=[...texts.keys()],workers=Math.min(4,texts.length);
   async function worker(){
-    while(queue.length&&!failed){
+    while(queue.length){
       const n=queue.shift();
-      try{out[n]=await translateOne(texts[n],target,ai,source)}
-      catch(e){failed=e;return}
+      out[n]=await translateOne(texts[n],target,ai,source);
     }
   }
-  await Promise.all(Array.from({length:Math.min(2,texts.length)},worker));
-  if(failed)throw failed;
+  await Promise.all(Array.from({length:workers},worker));
+  return out;
+}
+async function translateBatch(texts,target,ai,source="en"){
+  if(source===target)return texts.slice();
+  const groups=[];let group=[],chars=0;
+  for(const text of texts){
+    const raw=String(text??"");
+    const markerCost=group.length?30:0;
+    if(group.length&&(group.length>=18||chars+markerCost+raw.length>3900)){
+      groups.push(group);group=[];chars=0;
+    }
+    group.push(raw);chars+=markerCost+raw.length;
+  }
+  if(group.length)groups.push(group);
+  const out=[];
+  for(const g of groups)out.push(...await translateGroup(g,target,ai,source));
   return out;
 }
 async function inrRate(currency){
