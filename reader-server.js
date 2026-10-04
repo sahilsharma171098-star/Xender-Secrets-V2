@@ -58,6 +58,82 @@ const BOOKS = {
 };
 
 
+
+const GUTENBERG_SERIALS = {
+  "dream-red-chamber": {
+    title: "The Dream of the Red Chamber",
+    author: "Cao Xueqin",
+    translator: "H. Bencraft Joly",
+    finalChapter: 56,
+    genres: ["Chinese Classic","Supernatural","Family","Romance"],
+    summary: "A monumental Chinese classic blending family rise and decline, love, status, dreams, spirituality and supernatural symbolism.",
+    sourceSite: "Project Gutenberg",
+    sources: [
+      {bookId:"9603",url:BOOKS["9603"].source,from:1,to:24},
+      {bookId:"9604",url:BOOKS["9604"].source,from:25,to:56}
+    ]
+  },
+  "romance-three-kingdoms-vol-1": {
+    title: "Romance of the Three Kingdoms — Volume I",
+    author: "Luo Guanzhong",
+    translator: "C. H. Brewitt-Taylor",
+    finalChapter: 60,
+    genres: ["Chinese Classic","War","Strategy","Power"],
+    summary: "Warlords, sworn brothers, betrayals, battlefield strategy and the struggle for supremacy during the fall of the Han.",
+    sourceSite: "Project Gutenberg",
+    sources: [
+      {bookId:"77416",url:BOOKS["77416"].source,from:1,to:60}
+    ]
+  }
+};
+
+const gutenbergTextCache = new Map();
+function romanToInt(s=""){
+  const vals={I:1,V:5,X:10,L:50,C:100,D:500,M:1000}; let total=0,prev=0;
+  for(const ch of String(s).toUpperCase().replace(/[^IVXLCDM]/g,"").split("").reverse()){
+    const v=vals[ch]||0; total+=v<prev?-v:v; if(v>prev)prev=v;
+  }
+  return total;
+}
+async function fetchGutenbergText(url){
+  const cached=gutenbergTextCache.get(url);
+  if(cached && Date.now()-cached.at<6*60*60*1000)return cached.text;
+  const r=await fetch(url,{headers:{"user-agent":"XenderSecretsReader/3.1 (+https://xendersecrets.com)","accept":"text/plain"}});
+  if(!r.ok)throw new Error("Project Gutenberg upstream "+r.status);
+  const text=await r.text();
+  gutenbergTextCache.set(url,{at:Date.now(),text});
+  if(gutenbergTextCache.size>12){const first=gutenbergTextCache.keys().next().value;gutenbergTextCache.delete(first);}
+  return text;
+}
+function splitGutenbergRomanChapters(text){
+  const start=text.indexOf("*** START OF THE PROJECT GUTENBERG EBOOK");
+  const end=text.indexOf("*** END OF THE PROJECT GUTENBERG EBOOK");
+  const body=text.slice(start>=0?start:0,end>0?end:text.length);
+  const re=/^CHAPTER\s+([IVXLCDM]+)\.\s*$/gmi;
+  const marks=[]; let m;
+  while((m=re.exec(body)))marks.push({num:romanToInt(m[1]),start:m.index,contentStart:re.lastIndex});
+  const out=new Map();
+  for(let i=0;i<marks.length;i++){
+    const cur=marks[i],next=marks[i+1];
+    const raw=body.slice(cur.contentStart,next?next.start:body.length).trim();
+    const paragraphs=raw.split(/\n\s*\n+/).map(x=>x.replace(/\n+/g," ").replace(/\s+/g," ").trim()).filter(Boolean);
+    out.set(cur.num,{title:"Chapter "+cur.num,paragraphs});
+  }
+  return out;
+}
+async function getGutenbergSerialChapter(slug,chapter){
+  const novel=GUTENBERG_SERIALS[slug];
+  if(!novel)throw new Error("Novel not found");
+  if(!Number.isInteger(chapter)||chapter<1||chapter>novel.finalChapter)throw new Error("Chapter out of range");
+  const src=novel.sources.find(x=>chapter>=x.from&&chapter<=x.to);
+  if(!src)throw new Error("Source mapping missing");
+  const text=await fetchGutenbergText(src.url);
+  const map=splitGutenbergRomanChapters(text);
+  const ch=map.get(chapter);
+  if(!ch||!ch.paragraphs.length)throw new Error("Chapter "+chapter+" could not be isolated");
+  return {ok:true,slug,title:novel.title,chapter,finalChapter:novel.finalChapter,chapterTitle:ch.title,paragraphs:ch.paragraphs,sourceSite:"Project Gutenberg",sourceUrl:"https://www.gutenberg.org/ebooks/"+src.bookId,attribution:"Public-domain English edition sourced from Project Gutenberg."};
+}
+
 const XH_SITES = ["https://xperimentalhamid.com", "https://tales.xperimentalhamid.com"];
 
 function decodeHtml(s="") {
@@ -491,6 +567,31 @@ const server = http.createServer(async (req,res) => {
   if (req.method === "OPTIONS") { cors(res,204); return res.end(); }
   const url = new URL(req.url, "http://localhost");
 
+
+
+  if (url.pathname === "/gutenberg/catalog") {
+    const items=Object.entries(GUTENBERG_SERIALS).map(([slug,n])=>({slug,title:n.title,author:n.author,translator:n.translator,finalChapter:n.finalChapter,genres:n.genres,summary:n.summary,sourceSite:n.sourceSite,indexStatus:{gaps:[]}}));
+    cors(res,200);
+    return res.end(JSON.stringify({ok:true,completedOnly:true,items}));
+  }
+
+  if (url.pathname === "/gutenberg/novel") {
+    try{
+      const slug=url.searchParams.get("slug")||"",n=GUTENBERG_SERIALS[slug];
+      if(!n)throw new Error("Novel not found");
+      cors(res,200);
+      return res.end(JSON.stringify({ok:true,slug,title:n.title,author:n.author,translator:n.translator,finalChapter:n.finalChapter,genres:n.genres,summary:n.summary,gaps:[],sourceSite:n.sourceSite}));
+    }catch(e){cors(res,404);return res.end(JSON.stringify({ok:false,error:String(e)}));}
+  }
+
+  if (url.pathname === "/gutenberg/chapter") {
+    try{
+      const slug=url.searchParams.get("slug")||"",chapter=Number(url.searchParams.get("n")||"1");
+      const data=await getGutenbergSerialChapter(slug,chapter);
+      cors(res,200);
+      return res.end(JSON.stringify(data));
+    }catch(e){cors(res,502);return res.end(JSON.stringify({ok:false,error:String(e)}));}
+  }
 
   if (url.pathname === "/xh/catalog") {
     try {
