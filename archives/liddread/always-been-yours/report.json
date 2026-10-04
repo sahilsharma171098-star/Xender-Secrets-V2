@@ -1,0 +1,13 @@
+{
+  "slug": "always-been-yours",
+  "title": "Always Been Yours",
+  "indexUrl": "https://liddread.com/always-been-yours-novel/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T13:59:10.408Z",
+  "finishedAt": "2026-10-04T13:59:10.409Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 1523,
+  "archivedChapters": 0,
+  "errors": []
+}
