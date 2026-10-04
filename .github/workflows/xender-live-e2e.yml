@@ -7,7 +7,18 @@ on:
     paths:
       - '.github/workflows/xender-live-e2e.yml'
       - 'tests/xender-live-e2e.mjs'
-      - 'public/**'
+      - 'public/website-catalog.html'
+      - 'public/business-templates.html'
+      - 'public/business-templates.js'
+      - 'public/catalog-data.js'
+      - 'public/template-preview.html'
+      - 'public/template-preview.js'
+      - 'public/template-marketplace.css'
+      - 'public/sample-preview.html'
+      - 'public/sample-preview.js'
+      - 'public/script.js'
+      - 'public/services.html'
+      - 'public/reader.html'
       - 'src/**'
 
 concurrency:
