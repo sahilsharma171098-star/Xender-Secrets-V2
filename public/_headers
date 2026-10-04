@@ -1,2 +1,5 @@
 https://:version.:subdomain.workers.dev/*
   X-Robots-Tag: noindex
+
+/*.js
+  Cache-Control: public, max-age=0, must-revalidate
