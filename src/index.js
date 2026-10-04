@@ -28,6 +28,28 @@ const sessionCookie=token=>AUTH_COOKIE+"="+encodeURIComponent(token)+"; Path=/; 
 const clearSessionCookie=()=>AUTH_COOKIE+"=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0";
 const clean=(v,n=500)=>String(v??"").trim().slice(0,n);
 
+const EURO_CURRENCY_COUNTRIES=new Set(["AT","BE","HR","CY","EE","FI","FR","DE","GR","IE","IT","LV","LT","LU","MT","NL","PT","SK","SI","ES"]);
+const COUNTRY_CURRENCY={
+  IN:"INR",US:"USD",GB:"GBP",CA:"CAD",AU:"AUD",NZ:"NZD",AE:"AED",SA:"SAR",QA:"QAR",KW:"KWD",BH:"BHD",OM:"OMR",
+  SG:"SGD",MY:"MYR",JP:"JPY",CN:"CNY",HK:"HKD",KR:"KRW",ID:"IDR",TH:"THB",PH:"PHP",VN:"VND",BD:"BDT",PK:"PKR",LK:"LKR",NP:"NPR",
+  ZA:"ZAR",NG:"NGN",KE:"KES",GH:"GHS",EG:"EGP",MA:"MAD",IL:"ILS",TR:"TRY",CH:"CHF",SE:"SEK",NO:"NOK",DK:"DKK",PL:"PLN",CZ:"CZK",
+  HU:"HUF",RO:"RON",RS:"RSD",BG:"BGN",IS:"ISK",BR:"BRL",MX:"MXN",AR:"ARS",CL:"CLP",CO:"COP",PE:"PEN",UY:"UYU",PY:"PYG",BO:"BOB",
+  CR:"CRC",DO:"DOP",JM:"JMD",TT:"TTD"
+};
+const FALLBACK_RATES={INR:1,USD:.0113,EUR:.0097,GBP:.0084,CAD:.0157,AUD:.0172,NZD:.0193,AED:.0415,SAR:.0424,QAR:.0411,KWD:.00347,BHD:.00425,OMR:.00435,SGD:.0146,MYR:.0475,JPY:1.67,CNY:.0804,HKD:.0878,KRW:15.9,IDR:188,THB:.368,PHP:.66,VND:298,BDT:1.38,PKR:3.18,LKR:3.42,NPR:1.60,ZAR:.195,NGN:16.5,KES:1.46,GHS:.123,EGP:.54,MAD:.103,ILS:.037,TRY:.47,CHF:.0091,SEK:.104,NOK:.113,DKK:.072,PLN:.041,CZK:.238,HUF:3.75,RON:.049,RSD:1.14,BGN:.019,ISK:1.39,BRL:.060,MXN:.208,ARS:16.9,CLP:10.5,COP:42.5,PEN:.039,UYU:.452,PYG:82.0,BOB:.078,CRC:5.65,DOP:.708,JMD:1.81,TTD:.077};
+const currencyForCountry=country=>EURO_CURRENCY_COUNTRIES.has(country)?"EUR":(COUNTRY_CURRENCY[country]||"USD");
+async function inrRate(currency){
+  if(currency==="INR")return {rate:1,source:"base",updatedAt:null};
+  try{
+    const r=await fetch("https://open.er-api.com/v6/latest/INR",{cf:{cacheEverything:true,cacheTtl:86400}});
+    if(r.ok){
+      const j=await r.json(),rate=Number(j.rates?.[currency]);
+      if(Number.isFinite(rate)&&rate>0)return {rate,source:"ExchangeRate-API",updatedAt:j.time_last_update_utc||null};
+    }
+  }catch{}
+  return {rate:FALLBACK_RATES[currency]||FALLBACK_RATES.USD,source:"fallback",updatedAt:null};
+}
+
 const CATALOG_PRODUCTS=[
   {id:"cable-organizer",name:"Cable Organizer Clips — 6 Pack",category:"desk",categoryLabel:"Desk & Cable",price:149,rating:4.6},
   {id:"dustbin-bags",name:"Multipurpose Dustbin Bags",category:"home",categoryLabel:"Home & Utility",price:129,rating:4.4},
@@ -717,6 +739,15 @@ export default {
         const {r,j}=await callJson(stub,"/thread/like","POST",{userId:user.id,userName:user.name});
         return json(j,r.status);
       }
+    }
+
+    if(path==="/api/locale" && method==="GET"){
+      const detected=String(request.cf?.country||"US").toUpperCase();
+      const requested=String(url.searchParams.get("country")||"").toUpperCase();
+      const country=/^[A-Z]{2}$/.test(requested)?requested:detected;
+      const currency=currencyForCountry(country);
+      const fx=await inrRate(currency);
+      return json({ok:true,country,detectedCountry:detected,currency,rate:fx.rate,baseCurrency:"INR",source:fx.source,updatedAt:fx.updatedAt,attribution:"Rates by ExchangeRate-API",attributionUrl:"https://www.exchangerate-api.com"});
     }
 
     if(path==="/api/site-config" && method==="GET")return json({ok:true,telegramUrl:clean(env.TELEGRAM_CHANNEL_URL||"",300)});
