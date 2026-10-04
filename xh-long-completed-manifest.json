@@ -1,0 +1,93 @@
+{
+  "policy": {
+    "scope": "XperimentalHamid/XH Tales long-form novels, 1000+ chapter target",
+    "importRule": "Only titles independently verified as completed and with continuous source chapter coverage are eligible for full-text ingest.",
+    "rightsRule": "Full-text ingest requires republishing/sublicensing rights for the underlying novel/translation, not only permission to crawl the hosting site."
+  },
+  "verifiedComplete": [
+    {
+      "slug": "billionaire-god-of-war",
+      "title": "Billionaire God of War",
+      "xhIndex": "https://xperimentalhamid.com/news/billionaire-god-of-war-novel-complete-links-new/",
+      "sourceChapterStart": 1,
+      "sourceChapterEnd": 2495,
+      "genre": [
+        "Urban",
+        "War God",
+        "Hidden Power",
+        "Romance"
+      ],
+      "status": "verified_complete",
+      "notes": "Independent novel index reports completed/fully translated through chapter 2495. XH master index contains the same long-form run."
+    },
+    {
+      "slug": "take-my-breath-away",
+      "title": "Take My Breath Away",
+      "xhIndex": "https://xperimentalhamid.com/novels/take-my-breath-away-complete-chapters-new/",
+      "sourceChapterStart": 1,
+      "sourceChapterEnd": 1476,
+      "genre": [
+        "Urban Romance",
+        "CEO",
+        "Marriage"
+      ],
+      "status": "verified_complete",
+      "notes": "Independent indexes mark the novel completed; XH source reaches the ending chapters through 1476. Some external catalogs include a 1477 thank-you note rather than another story chapter."
+    }
+  ],
+  "needsMappingBeforeImport": [
+    {
+      "slug": "nothing-to-give-but-my-heart",
+      "title": "Nothing to Give But My Heart",
+      "xhIndex": "https://tales.xperimentalhamid.com/novel-chapters/nothing-to-give-but-my-heart-novel-complete-free-new/",
+      "xhObservedEnd": 1681,
+      "externalObservedEnd": 1688,
+      "status": "chapter_count_discrepancy",
+      "reason": "Do not import until 1682-1688 are reconciled or confirmed as extras/alternate numbering."
+    },
+    {
+      "slug": "punished-by-his-love",
+      "title": "Punished by His Love",
+      "xhIndex": "https://xperimentalhamid.com/novels/punished-by-his-love-complete-novel-chapter-links-free-online-new/",
+      "xhObservedEnd": 1500,
+      "externalCompletedCount": "2822-2823",
+      "status": "source_incomplete_or_moved",
+      "reason": "XH page itself says updates were suspended/moved under another title. Need the complete XH/Tales replacement index before ingest."
+    },
+    {
+      "slug": "a-dish-best-served-cold",
+      "title": "A Dish Best Served Cold",
+      "xhIndex": "https://xperimentalhamid.com/novels/a-dish-best-served-cold-complete-links-new/",
+      "xhObservedStructure": "multi-thousand XH numbering",
+      "externalCompletedCount": 2433,
+      "status": "numbering_mismatch",
+      "reason": "XH segmentation differs materially from independent completed catalogs. Need a one-to-one source mapping before ingest to avoid duplicates or missing text."
+    },
+    {
+      "slug": "my-love-enlighten-me",
+      "title": "My Love Enlighten Me",
+      "xhIndex": "https://xperimentalhamid.com/novels/my-love-enlighten-me-novel-complete-chapters-new/",
+      "xhObservedEnd": 1718,
+      "status": "identity_or_numbering_ambiguous",
+      "reason": "Different public catalogs appear to use the same/similar English title for different works. Verify original title/author and final count first."
+    }
+  ],
+  "excludedOngoing": [
+    {
+      "title": "A Man Like None Other",
+      "reason": "Currently ongoing; source continues publishing new chapters."
+    },
+    {
+      "title": "Millionaire Son in Law / The Amazing Son in Law",
+      "reason": "Source explicitly states latest chapters are still being written/published."
+    },
+    {
+      "title": "Marrying into Her Family",
+      "reason": "Independent status remains ongoing."
+    },
+    {
+      "title": "Reverend Insanity",
+      "reason": "Not a completed novel; publication stopped before a canonical ending."
+    }
+  ]
+}
