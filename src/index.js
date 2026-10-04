@@ -38,15 +38,33 @@ const COUNTRY_CURRENCY={
 };
 const FALLBACK_RATES={INR:1,USD:.0113,EUR:.0097,GBP:.0084,CAD:.0157,AUD:.0172,NZD:.0193,AED:.0415,SAR:.0424,QAR:.0411,KWD:.00347,BHD:.00425,OMR:.00435,SGD:.0146,MYR:.0475,JPY:1.67,CNY:.0804,HKD:.0878,KRW:15.9,IDR:188,THB:.368,PHP:.66,VND:298,BDT:1.38,PKR:3.18,LKR:3.42,NPR:1.60,ZAR:.195,NGN:16.5,KES:1.46,GHS:.123,EGP:.54,MAD:.103,ILS:.037,TRY:.47,CHF:.0091,SEK:.104,NOK:.113,DKK:.072,PLN:.041,CZK:.238,HUF:3.75,RON:.049,RSD:1.14,BGN:.019,ISK:1.39,BRL:.060,MXN:.208,ARS:16.9,CLP:10.5,COP:42.5,PEN:.039,UYU:.452,PYG:82.0,BOB:.078,CRC:5.65,DOP:.708,JMD:1.81,TTD:.077};
 const currencyForCountry=country=>EURO_CURRENCY_COUNTRIES.has(country)?"EUR":(COUNTRY_CURRENCY[country]||"USD");
-const TRANSLATION_LANGUAGES=new Set(["hi","es","fr","de","pt","ar","id","tr","nl","it","ru","ja","ko","zh-CN","th","vi","bn","ur","mr","ta","te","gu","pa","ml","kn"]);
+const TRANSLATION_LANGUAGES=new Set(["en","hi","es","fr","de","pt","ar","id","tr","nl","it","ru","ja","ko","zh-CN","th","vi","bn","ur","mr","ta","te","gu","pa","ml","kn"]);
 const TRANSLATION_TARGET_MAP={"zh-CN":"zh"};
-async function translateOne(text,target,ai){
+function splitTranslationText(text,max=1200){
   const raw=String(text??"");
-  if(!raw.trim())return raw;
+  if(raw.length<=max)return [raw];
+  const out=[];let rest=raw;
+  while(rest.length>max){
+    const window=rest.slice(0,max+1);
+    let cut=-1;
+    for(const sep of ["\n\n",". ","! ","? ","; ",", "," "]){
+      const i=window.lastIndexOf(sep);
+      if(i>=Math.floor(max*.55)){cut=i+sep.length;break}
+    }
+    if(cut<1)cut=max;
+    out.push(rest.slice(0,cut));
+    rest=rest.slice(cut);
+  }
+  if(rest)out.push(rest);
+  return out;
+}
+async function translateChunk(raw,target,ai,source){
+  if(source===target)return raw;
   const targetLang=TRANSLATION_TARGET_MAP[target]||target;
+  const sourceLang=TRANSLATION_TARGET_MAP[source]||source;
   if(ai){
     try{
-      const result=await ai.run("@cf/meta/m2m100-1.2b",{text:raw,source_lang:"en",target_lang:targetLang});
+      const result=await ai.run("@cf/meta/m2m100-1.2b",{text:raw,source_lang:sourceLang,target_lang:targetLang});
       const translated=String(result?.translated_text||result?.translation||result?.text||"").trim();
       if(translated)return translated;
     }catch(e){}
@@ -54,8 +72,8 @@ async function translateOne(text,target,ai){
   let lastError=null;
   for(const host of ["https://translate.googleapis.com/translate_a/single","https://translate.google.com/translate_a/single"]){
     const u=new URL(host);
-    u.searchParams.set("client","gtx");u.searchParams.set("sl","en");u.searchParams.set("tl",target);u.searchParams.set("dt","t");u.searchParams.set("q",raw.slice(0,4800));
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
+    u.searchParams.set("client","gtx");u.searchParams.set("sl",source);u.searchParams.set("tl",target);u.searchParams.set("dt","t");u.searchParams.set("q",raw);
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);
     try{
       const response=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"},signal:controller.signal});
       if(!response.ok){lastError=new Error("Translation upstream error "+response.status);continue}
@@ -68,16 +86,23 @@ async function translateOne(text,target,ai){
   }
   throw lastError||new Error("Translation unavailable");
 }
-async function translateBatch(texts,target,ai){
+async function translateOne(text,target,ai,source="en"){
+  const raw=String(text??"");
+  if(!raw.trim()||source===target)return raw;
+  const chunks=splitTranslationText(raw),translated=[];
+  for(const chunk of chunks)translated.push(await translateChunk(chunk,target,ai,source));
+  return translated.join("");
+}
+async function translateBatch(texts,target,ai,source="en"){
   const out=new Array(texts.length),queue=[...texts.keys()];let failed=null;
   async function worker(){
-    while(queue.length){
+    while(queue.length&&!failed){
       const n=queue.shift();
-      try{out[n]=await translateOne(texts[n],target,ai)}
+      try{out[n]=await translateOne(texts[n],target,ai,source)}
       catch(e){failed=e;return}
     }
   }
-  await Promise.all(Array.from({length:Math.min(3,texts.length)},worker));
+  await Promise.all(Array.from({length:Math.min(2,texts.length)},worker));
   if(failed)throw failed;
   return out;
 }
@@ -856,14 +881,16 @@ export default {
 
     if(path==="/api/translate" && method==="POST"){
       const body=await request.json().catch(()=>({}));
-      const target=String(body.target||"").trim();
+      const target=String(body.target||"").trim(),source=String(body.source||"en").trim();
       const texts=Array.isArray(body.texts)?body.texts.map(x=>String(x??"")):[];
       if(!TRANSLATION_LANGUAGES.has(target))return json({ok:false,error:"Unsupported target language."},400);
+      if(!TRANSLATION_LANGUAGES.has(source))return json({ok:false,error:"Unsupported source language."},400);
       if(!texts.length||texts.length>80)return json({ok:false,error:"Send between 1 and 80 text blocks."},400);
-      if(texts.some(x=>x.length>5000)||texts.reduce((n,x)=>n+x.length,0)>30000)return json({ok:false,error:"Chapter is too large to translate in one request."},413);
+      if(texts.some(x=>x.length>8000)||texts.reduce((n,x)=>n+x.length,0)>30000)return json({ok:false,error:"Chapter is too large to translate in one request."},413);
+      if(source===target)return json({ok:true,target,source,translated:texts,provider:"original"});
       try{
-        const translated=await translateBatch(texts,target,env.AI);
-        return json({ok:true,target,source:"en",translated,provider:env.AI?"Cloudflare Workers AI":"Translation fallback"});
+        const translated=await translateBatch(texts,target,env.AI,source);
+        return json({ok:true,target,source,translated,provider:env.AI?"Cloudflare Workers AI with fallback":"Translation fallback"});
       }catch(e){
         return json({ok:false,error:"Translation is temporarily unavailable. Please try again."},502);
       }
