@@ -1,0 +1,250 @@
+{
+  "snapshotDate": "2026-10-04",
+  "source": "LiddRead",
+  "sourceHomepage": "https://liddread.com/",
+  "permission": {
+    "scope": "Completed novels only",
+    "basis": "User reports LiddRead host granted Xender limited-time permission to copy/republish completed novels to help the new project.",
+    "ongoingAllowed": false,
+    "priority": "Archive completed material during permission window."
+  },
+  "completed": [
+    {
+      "slug": "absolute-god",
+      "title": "Absolute God",
+      "indexUrl": "https://liddread.com/absolute-god/",
+      "finalChapter": 2772,
+      "statusEvidence": "LiddRead landing page: Status Completed; Latest Chapter 2772",
+      "archive": true
+    },
+    {
+      "slug": "abyss-sovereign",
+      "title": "Abyss Sovereign",
+      "indexUrl": "https://liddread.com/abyss-sovereign/",
+      "finalChapter": 2110,
+      "statusEvidence": "LiddRead landing page: status Completed; Latest Chapter 2110",
+      "archive": true
+    },
+    {
+      "slug": "always-been-yours",
+      "title": "Always Been Yours",
+      "indexUrl": "https://liddread.com/always-been-yours-novel/",
+      "finalChapter": 1523,
+      "statusEvidence": "LiddRead landing page verified Completed; Latest Chapter 1523",
+      "archive": true
+    },
+    {
+      "slug": "am-i-a-gigolo",
+      "title": "Am I a Gigolo",
+      "indexUrl": "https://liddread.com/am-i-a-gigolo-2/",
+      "finalChapter": 1827,
+      "statusEvidence": "LiddRead landing page: Status Completed; Latest Chapter 1827",
+      "archive": true
+    },
+    {
+      "slug": "code-mage",
+      "title": "Code Mage",
+      "indexUrl": "https://liddread.com/code-mage/",
+      "finalChapter": 601,
+      "statusEvidence": "LiddRead landing page verified Completed; Avracity/LiddRead admin also announced completion",
+      "archive": true
+    },
+    {
+      "slug": "deserted-world",
+      "title": "Deserted World",
+      "indexUrl": "https://liddread.com/deserted-world/",
+      "finalChapter": 1372,
+      "statusEvidence": "LiddRead landing page verified Completed; chapter 1372 Finale; admin completion announcement",
+      "archive": true
+    },
+    {
+      "slug": "earthly-deity",
+      "title": "Earthly Deity",
+      "indexUrl": "https://liddread.com/earthly-diety/",
+      "finalChapter": 1230,
+      "statusEvidence": "LiddRead landing page: completed; Latest Chapter 1230 (finale)",
+      "archive": true
+    },
+    {
+      "slug": "fortune-divination",
+      "title": "Fortune Divination",
+      "indexUrl": "https://liddread.com/fortune-divination/",
+      "finalChapter": 938,
+      "statusEvidence": "LiddRead landing page: Completed; 938 Finale; admin completion announcement",
+      "archive": true
+    },
+    {
+      "slug": "his-secret-lover",
+      "title": "His Secret Lover",
+      "indexUrl": "https://liddread.com/his-secret-lover/",
+      "finalChapter": 1769,
+      "statusEvidence": "LiddRead landing page: Status Completed; Chapter 1769",
+      "archive": true
+    },
+    {
+      "slug": "master-of-the-blade",
+      "title": "Master Of The Blade",
+      "indexUrl": "https://liddread.com/master-of-the-blade/",
+      "finalChapter": 3050,
+      "statusEvidence": "LiddRead landing page: Status Completed; Latest Chapter 3050; admin completion announcement",
+      "archive": true,
+      "knownIssues": [
+        "Reader reports indicate links 3036-3040 may point to the wrong novel; validate archived content before publishing those chapters."
+      ]
+    },
+    {
+      "slug": "medical-genius",
+      "title": "Medical Genius",
+      "indexUrl": "https://liddread.com/medical-genius/",
+      "finalChapter": 4398,
+      "statusEvidence": "LiddRead landing page: Status Completed; 4398 Finale",
+      "archive": true
+    },
+    {
+      "slug": "rise-to-defeat",
+      "title": "Rise to Defeat",
+      "indexUrl": "https://liddread.com/rise-to-defeat/",
+      "finalChapter": 2284,
+      "statusEvidence": "LiddRead landing page: Status Completed; Latest Chapter 2284; admin completion announcement",
+      "archive": true
+    },
+    {
+      "slug": "talented-medical-son-in-law",
+      "title": "Talented Medical Son-In-Law",
+      "indexUrl": "https://liddread.com/talented-medical-son-in-law/",
+      "finalChapter": null,
+      "observedAtLeast": 1890,
+      "statusEvidence": "LiddRead/Avracity admin announced novel completed July 2025; chapter 1889 links forward to 1890. Exact final chapter to be derived from index during archive.",
+      "archive": true
+    },
+    {
+      "slug": "the-rockstar",
+      "title": "The Rockstar",
+      "indexUrl": "https://liddread.com/the-rockstar/",
+      "finalChapter": null,
+      "observedAtLeast": 820,
+      "statusEvidence": "LiddRead/Avracity admin announced novel completed; chapter 820 is indexed. Exact final chapter to be derived from index during archive.",
+      "archive": true
+    },
+    {
+      "slug": "i-will-get-my-divorce",
+      "title": "I Will Get My Divorce",
+      "indexUrl": "https://liddread.com/this-time-i-will-get-my-divorce-mr/",
+      "finalChapter": 1485,
+      "statusEvidence": "Underlying work is completed at chapter 1485 (Finale); LiddRead pages are indexed through at least the 1450s. Archive job must confirm LiddRead source coverage before publication.",
+      "archive": true,
+      "coverageNeedsVerification": true
+    }
+  ],
+  "excludedOngoing": [
+    {
+      "title": "Ancestral Conquest",
+      "reason": "LiddRead/Avracity marks ongoing"
+    },
+    {
+      "title": "Ancient Immortal Emperor",
+      "reason": "Ongoing; active chapter updates"
+    },
+    {
+      "title": "Betrayed By My Wife, I Became A Living Calamity",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Crossgate Seal",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Dust to Divinity",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Heaven Devourer",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Hidden Dragon Heir",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Immortal Stall",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Invincible Sword",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Kidnapped by a Ruthless CEO and Forced to Be Her Fake Boyfriend",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Martial Champion",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Miracle Doctor",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Peerless Demon Emperor",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Return Of The Immortal Venerable",
+      "reason": "Ongoing/new release"
+    },
+    {
+      "title": "Second Chance",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Secret Great Phoenix Chen",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "Son Of The Dragon",
+      "reason": "LiddRead explicitly marks Ongoing; latest 6875 at snapshot"
+    },
+    {
+      "title": "The Broke Scholar",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "The Doting Billionaire CEO",
+      "reason": "Ongoing; active updates beyond 5600"
+    },
+    {
+      "title": "The Last Taoist Immortal",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "The Real Dragon",
+      "reason": "Ongoing"
+    },
+    {
+      "title": "The Weakest Student Became Humanity’s Strongest Weapon",
+      "reason": "Ongoing/new release"
+    }
+  ],
+  "pendingClassification": [
+    {
+      "title": "Deserted Mistress",
+      "indexUrl": "https://liddread.com/deserted-mistress/",
+      "reason": "Was announced as ongoing when launched; no later completion confirmation found yet."
+    },
+    {
+      "title": "Rewrite My Youth",
+      "indexUrl": "https://liddread.com/rewrite-my-youth/",
+      "reason": "Chapters above 1400 indexed; completion status not yet confirmed."
+    },
+    {
+      "title": "The Simulator",
+      "indexUrl": "https://liddread.com/the-simulator/",
+      "reason": "Present on older LiddRead catalog; current completion status/final count not yet confirmed."
+    },
+    {
+      "title": "The Demon Emperor Who Devours The World",
+      "reason": "Appears in recent site navigation; completion not verified."
+    }
+  ]
+}
