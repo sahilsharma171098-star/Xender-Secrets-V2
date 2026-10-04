@@ -11,6 +11,18 @@ const context = await browser.newContext({ viewport: { width: 1440, height: 1000
 const page = await context.newPage();
 page.setDefaultTimeout(20000);
 
+
+try {
+  await page.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  const title = await page.title();
+  const hero = await page.locator('h1').innerText();
+  const serviceCards = await page.locator('#services .card').count();
+  const exploreLinks = await page.locator('#explore .explore').count();
+  const startHref = await page.locator('a').filter({hasText:'Start a Project'}).first().getAttribute('href');
+  record('homepage_simple', title.includes('Xender Secrets') && hero.includes('Simple digital work') && serviceCards===3 && exploreLinks>=8 && (startHref||'').includes('wa.me/919821941814'),
+    `title=${title}; hero=${hero}; services=${serviceCards}; explore=${exploreLinks}; start=${startHref}`);
+} catch (e) { record('homepage_simple', false, e); }
+
 try {
   await page.goto(BASE + '/website-catalog.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForFunction(() => document.querySelectorAll('#frontendGrid article').length===20, null, {timeout:20000});
