@@ -121,7 +121,7 @@ try {
   await page.locator('#translateChapter').click();
   await page.waitForFunction(() => {
     const s=(document.querySelector('#translateStatus')?.textContent||'').trim();
-    return s==='Translated' || (s && !s.startsWith('Translating'));
+    return s==='Translated' || /unavailable|timed out|incomplete|failed/i.test(s);
   }, null, { timeout: 60000 }).catch(()=>{});
   const status=(await page.locator('#translateStatus').innerText()).trim();
   const translated = (await page.locator('#readerContent').innerText()).slice(0, 220);
