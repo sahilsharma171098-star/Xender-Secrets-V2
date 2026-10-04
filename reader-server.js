@@ -60,30 +60,45 @@ const BOOKS = {
 
 
 const GUTENBERG_SERIALS = {
-  "dream-red-chamber": {
-    title: "The Dream of the Red Chamber",
-    author: "Cao Xueqin",
-    translator: "H. Bencraft Joly",
-    finalChapter: 56,
-    genres: ["Chinese Classic","Supernatural","Family","Romance"],
-    summary: "A monumental Chinese classic blending family rise and decline, love, status, dreams, spirituality and supernatural symbolism.",
+  "journey-to-the-west-zh": {
+    title: "Journey to the West — Complete Chinese Edition",
+    author: "Wu Cheng'en",
+    finalChapter: 100,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Cultivation","Mythology","Adventure","Supernatural"],
+    summary: "The complete 100-chapter Chinese classic following Sun Wukong, Xuanzang and their supernatural pilgrimage to obtain Buddhist scriptures.",
     sourceSite: "Project Gutenberg",
-    sources: [
-      {bookId:"9603",url:BOOKS["9603"].source,from:1,to:24},
-      {bookId:"9604",url:BOOKS["9604"].source,from:25,to:56}
-    ]
+    sources: [{bookId:"23962",url:"https://www.gutenberg.org/cache/epub/23962/pg23962.txt",from:1,to:100,mode:"chinese"}]
   },
-  "romance-three-kingdoms-vol-1": {
-    title: "Romance of the Three Kingdoms — Volume I",
+  "romance-three-kingdoms-zh": {
+    title: "Romance of the Three Kingdoms — Complete Chinese Edition",
     author: "Luo Guanzhong",
-    translator: "C. H. Brewitt-Taylor",
-    finalChapter: 60,
-    genres: ["Chinese Classic","War","Strategy","Power"],
-    summary: "Warlords, sworn brothers, betrayals, battlefield strategy and the struggle for supremacy during the fall of the Han.",
+    finalChapter: 120,
+    language: "zh-CN",
+    genres: ["Chinese Classic","War","Strategy","Power","Revenge"],
+    summary: "The complete 120-chapter Chinese epic of warlords, sworn brothers, betrayal, strategy and the struggle to rule a fractured empire.",
     sourceSite: "Project Gutenberg",
-    sources: [
-      {bookId:"77416",url:BOOKS["77416"].source,from:1,to:60}
-    ]
+    sources: [{bookId:"23950",url:"https://www.gutenberg.org/cache/epub/23950/pg23950.txt",from:1,to:120,mode:"chinese"}]
+  },
+  "water-margin-zh": {
+    title: "Water Margin — Complete 70-Chapter Chinese Edition",
+    author: "Shi Nai'an",
+    finalChapter: 70,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Outlaws","Martial Arts","Rebellion","Brotherhood"],
+    summary: "A complete 70-chapter Chinese edition of the classic story of outlaws who gather at Mount Liang against corrupt authority.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"23863",url:"https://www.gutenberg.org/cache/epub/23863/pg23863.txt",from:1,to:70,mode:"chinese"}]
+  },
+  "dream-red-chamber-zh": {
+    title: "Dream of the Red Chamber — Complete Chinese Edition",
+    author: "Cao Xueqin",
+    finalChapter: 120,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Family","Romance","Supernatural","Drama"],
+    summary: "The complete 120-chapter Chinese edition chronicling the rise and decline of an aristocratic family through love, dreams and spiritual symbolism.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"24264",url:"https://www.gutenberg.org/cache/epub/24264/pg24264.txt",from:1,to:120,mode:"chinese"}]
   }
 };
 
@@ -95,30 +110,79 @@ function romanToInt(s=""){
   }
   return total;
 }
+function chineseChapterNumber(s=""){
+  const chars=String(s).replace(/\s+/g,"");
+  const digits={"〇":0,"○":0,"零":0,"一":1,"二":2,"兩":2,"两":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9};
+  if(!/[十百千]/.test(chars)){
+    const out=[...chars].map(c=>digits[c]).filter(v=>v!==undefined).join("");
+    return out?Number(out):0;
+  }
+  let total=0,num=0;
+  for(const c of chars){
+    if(digits[c]!==undefined){num=digits[c];continue;}
+    const unit=c==="十"?10:c==="百"?100:c==="千"?1000:0;
+    if(unit){total+=(num||1)*unit;num=0;}
+  }
+  return total+num;
+}
 async function fetchGutenbergText(url){
   const cached=gutenbergTextCache.get(url);
   if(cached && Date.now()-cached.at<6*60*60*1000)return cached.text;
-  const r=await fetch(url,{headers:{"user-agent":"XenderSecretsReader/3.1 (+https://xendersecrets.com)","accept":"text/plain"}});
+  const r=await fetch(url,{headers:{"user-agent":"XenderSecretsReader/3.2 (+https://xendersecrets.com)","accept":"text/plain"}});
   if(!r.ok)throw new Error("Project Gutenberg upstream "+r.status);
   const text=await r.text();
   gutenbergTextCache.set(url,{at:Date.now(),text});
   if(gutenbergTextCache.size>12){const first=gutenbergTextCache.keys().next().value;gutenbergTextCache.delete(first);}
   return text;
 }
-function splitGutenbergRomanChapters(text){
+function gutenbergBody(text){
   const start=text.indexOf("*** START OF THE PROJECT GUTENBERG EBOOK");
   const end=text.indexOf("*** END OF THE PROJECT GUTENBERG EBOOK");
-  const body=text.slice(start>=0?start:0,end>0?end:text.length);
+  return text.slice(start>=0?start:0,end>0?end:text.length);
+}
+function paragraphsFromRaw(raw){
+  let parts=String(raw||"").trim().split(/\n\s*\n+/).map(x=>x.replace(/\n+/g," ").replace(/[ \t　]+/g," ").trim()).filter(Boolean);
+  if(parts.length<2){
+    parts=String(raw||"").split(/\n+/).map(x=>x.replace(/[ \t　]+/g," ").trim()).filter(x=>x.length>0);
+  }
+  return parts;
+}
+function splitGutenbergRomanChapters(text){
+  const body=gutenbergBody(text);
   const re=/^CHAPTER\s+([IVXLCDM]+)\.\s*$/gmi;
   const marks=[]; let m;
-  while((m=re.exec(body)))marks.push({num:romanToInt(m[1]),start:m.index,contentStart:re.lastIndex});
+  while((m=re.exec(body)))marks.push({num:romanToInt(m[1]),start:m.index,contentStart:re.lastIndex,title:"Chapter "+romanToInt(m[1])});
   const out=new Map();
   for(let i=0;i<marks.length;i++){
     const cur=marks[i],next=marks[i+1];
     const raw=body.slice(cur.contentStart,next?next.start:body.length).trim();
-    const paragraphs=raw.split(/\n\s*\n+/).map(x=>x.replace(/\n+/g," ").replace(/\s+/g," ").trim()).filter(Boolean);
-    out.set(cur.num,{title:"Chapter "+cur.num,paragraphs});
+    const paragraphs=paragraphsFromRaw(raw);
+    const prev=out.get(cur.num);
+    if(!prev || paragraphs.join(" ").length>prev.paragraphs.join(" ").length) out.set(cur.num,{title:cur.title,paragraphs});
   }
+  return out;
+}
+function splitGutenbergChineseChapters(text,maxChapter=999){
+  const body=gutenbergBody(text);
+  const re=/^\s*第([〇○零一二兩两三四五六七八九十百千]+)回[：:\s　]*(.*)$/gmi;
+  const marks=[]; let m;
+  while((m=re.exec(body))){
+    const num=chineseChapterNumber(m[1]);
+    if(num<1||num>maxChapter)continue;
+    const heading=String(m[2]||"").replace(/[ \t　]+/g," ").trim();
+    marks.push({num,start:m.index,contentStart:re.lastIndex,title:"Chapter "+num+(heading?" — "+heading.slice(0,180):"")});
+  }
+  const out=new Map();
+  for(let i=0;i<marks.length;i++){
+    const cur=marks[i],next=marks[i+1];
+    const raw=body.slice(cur.contentStart,next?next.start:body.length).trim();
+    const paragraphs=paragraphsFromRaw(raw);
+    const size=paragraphs.join(" ").length;
+    if(size<40)continue;
+    const prev=out.get(cur.num);
+    if(!prev || size>prev._size) out.set(cur.num,{title:cur.title,paragraphs,_size:size});
+  }
+  for(const [n,ch] of out)delete ch._size;
   return out;
 }
 async function getGutenbergSerialChapter(slug,chapter){
@@ -128,10 +192,10 @@ async function getGutenbergSerialChapter(slug,chapter){
   const src=novel.sources.find(x=>chapter>=x.from&&chapter<=x.to);
   if(!src)throw new Error("Source mapping missing");
   const text=await fetchGutenbergText(src.url);
-  const map=splitGutenbergRomanChapters(text);
+  const map=src.mode==="chinese"?splitGutenbergChineseChapters(text,novel.finalChapter):splitGutenbergRomanChapters(text);
   const ch=map.get(chapter);
   if(!ch||!ch.paragraphs.length)throw new Error("Chapter "+chapter+" could not be isolated");
-  return {ok:true,slug,title:novel.title,chapter,finalChapter:novel.finalChapter,chapterTitle:ch.title,paragraphs:ch.paragraphs,sourceSite:"Project Gutenberg",sourceUrl:"https://www.gutenberg.org/ebooks/"+src.bookId,attribution:"Public-domain English edition sourced from Project Gutenberg."};
+  return {ok:true,slug,title:novel.title,chapter,finalChapter:novel.finalChapter,chapterTitle:ch.title,paragraphs:ch.paragraphs,language:novel.language||"en",sourceSite:"Project Gutenberg",sourceUrl:"https://www.gutenberg.org/ebooks/"+src.bookId,attribution:"Public-domain edition sourced from Project Gutenberg."};
 }
 
 const XH_SITES = ["https://xperimentalhamid.com", "https://tales.xperimentalhamid.com"];
