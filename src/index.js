@@ -618,7 +618,10 @@ function chatReply(raw){
   }else if(/shop|product|buy|cart|ecommerce|e-commerce|price|shopping|order/.test(q)){
     reply="Ecommerce Shop mein products, search, filters, persistent order requests aur account-linked order history available hai.";
     actions=[{label:"Open Shop",href:"/catalog.html"},{label:"My Account",href:"/account.html"}];
-  }else if(/idea|ideas|build board|idea catalog|what.*build|want.*built|deploy/.test(q)){\n    reply="Idea Catalog / Build Board mein members jo website, app, automation ya AI workflow chahte hain woh publish kar sakte hain. Xender un ideas ko scope karke build aur deploy kar sakta hai.";\n    actions=[{label:"Open Idea Catalog",href:"/ideas.html"},{label:"Share an Idea",href:"/ideas.html#share-idea"}];\n  }else if(/website|web site|frontend|front end|backend|back end|full.?stack|developer|development|landing page|api/.test(q)){
+  }else if(/idea|ideas|build board|idea catalog|what.*build|want.*built|deploy/.test(q)){
+    reply="Idea Catalog / Build Board mein members jo website, app, automation ya AI workflow chahte hain woh publish kar sakte hain. Xender un ideas ko scope karke build aur deploy kar sakta hai.";
+    actions=[{label:"Open Idea Catalog",href:"/ideas.html"},{label:"Share an Idea",href:"/ideas.html#share-idea"}];
+  }else if(/website|web site|frontend|front end|backend|back end|full.?stack|developer|development|landing page|api/.test(q)){
     reply="Website Development catalog mein Frontend, Backend/API aur Full-Stack builds hain. Backend flows Cloudflare Workers aur persistent SQLite storage ke saath connected hain.";
     actions=[{label:"Website Catalog",href:"/website-catalog.html"},{label:"Discuss Project",href:"https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website%20project."}];
   }else if(/novel|book|read|chinese|china|story|stories/.test(q)){
