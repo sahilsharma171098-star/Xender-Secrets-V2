@@ -105,15 +105,28 @@ try {
 } catch (e) { record('currency_us', false, e); }
 
 try {
+  const apiProbe = await page.evaluate(async () => {
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
+    try{
+      const r=await fetch('/api/translate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({target:'hi',texts:['Hello reader']}),signal:controller.signal});
+      return {status:r.status,body:await r.json()};
+    }catch(e){return {status:0,error:String(e)}}finally{clearTimeout(timer)}
+  });
+  record('translation_api_small', apiProbe.status===200 && apiProbe.body?.ok===true && /[\u0900-\u097F]/.test((apiProbe.body?.translated||[]).join(' ')), JSON.stringify(apiProbe));
+
   await page.goto(BASE + '/reader.html?xh=billionaire-god-of-war&chapter=1', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForFunction(() => document.querySelector('#readerContent')?.innerText.includes('Fingol'), null, { timeout: 60000 });
   const original = (await page.locator('#readerContent').innerText()).slice(0, 160);
   await page.locator('#languageSelect').selectOption('hi');
   await page.locator('#translateChapter').click();
-  await page.waitForFunction(() => document.querySelector('#translateStatus')?.textContent.includes('Translated'), null, { timeout: 90000 });
+  await page.waitForFunction(() => {
+    const s=(document.querySelector('#translateStatus')?.textContent||'').trim();
+    return s==='Translated' || (s && !s.startsWith('Translating'));
+  }, null, { timeout: 60000 }).catch(()=>{});
+  const status=(await page.locator('#translateStatus').innerText()).trim();
   const translated = (await page.locator('#readerContent').innerText()).slice(0, 220);
   const hasHindi = /[\u0900-\u097F]/.test(translated);
-  record('novel_hindi_translation', hasHindi && translated !== original, `original=${original}; translated=${translated}`);
+  record('novel_hindi_translation', status==='Translated' && hasHindi && translated !== original, `status=${status}; original=${original}; translated=${translated}`);
 } catch (e) { record('novel_hindi_translation', false, e); }
 
 try {
