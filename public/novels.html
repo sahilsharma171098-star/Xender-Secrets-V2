@@ -21,16 +21,16 @@
 <h1>Thousands of chapters. <em>Already finished.</em></h1>
 <p class="lead">Long translated web novels for binge readers — no 10-chapter samples, no waiting for weekly updates, and currently no paywall. Read every available chapter free inside Xender.</p>
 <div class="nv-note"><b>Free-reading policy:</b> all novels are currently free to read. Xender is using the XperimentalHamid-hosted editions with permission to republish them. The catalog only exposes novels verified as completed; ongoing titles are excluded. <a href="https://t.me/+S0mWe81MlUpjNzQ1" target="_blank" rel="noopener" style="color:#4de6ad;font-weight:800">Join the Xender Readers Telegram group →</a></div>
-<div class="statsline"><div class="stat"><b id="novelCount">3</b><span>completed long novels</span></div><div class="stat"><b id="chapterCount">5,956</b><span>chapters in current verified shelf</span></div><div class="stat"><b>1,000+</b><span>minimum target for long-form shelf</span></div></div>
+<div class="statsline"><div class="stat"><b id="novelCount">19</b><span>completed novels mapped</span></div><div class="stat"><b id="chapterCount">34,666</b><span>completed chapters mapped</span></div><div class="stat"><b>2 sources</b><span>XperimentalHamid + LiddRead</span></div></div>
 </section>
 <section class="catalog-body">
-<div class="toolbar"><input id="search" type="search" placeholder="Search title or genre…" aria-label="Search completed novels"><div class="tabs"><button class="active" data-filter="all">All</button><button data-filter="Urban">Urban</button><button data-filter="Romance">Romance</button><button data-filter="War God">War God</button><button data-filter="Marriage">Marriage</button></div></div>
+<div class="toolbar"><input id="search" type="search" placeholder="Search title, source or genre…" aria-label="Search completed novels"><div class="tabs"><button class="active" data-filter="all">All</button><button data-filter="XperimentalHamid">XH</button><button data-filter="LiddRead">LiddRead</button><button data-filter="Urban">Urban</button><button data-filter="Romance">Romance</button><button data-filter="War God">War God</button><button data-filter="Marriage">Marriage</button></div></div>
 <div class="section-head"><div><div class="kicker">VERIFIED COMPLETED LIBRARY</div><h2>Pick a story. <span>Finish the whole thing.</span></h2></div></div>
 <div id="grid" class="grid2"><div class="loading">Loading long completed novels…</div></div>
 </section>
 </main>
 <footer><div><b>XENDER SECRETS</b><p>Completed translated web fiction + digital projects</p></div><div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div><small>© 2026 Xender Secrets.</small></footer>
-<script src="script.js"></script>
+<script src="script.js"></script><script src="liddread-catalog.js"></script>
 <script>
 const API="https://xender-reader-api.onrender.com";
 const fallback=[
@@ -38,10 +38,10 @@ const fallback=[
  {slug:"my-husband-warm-the-bed",title:"My Husband Warm The Bed",finalChapter:1985,genres:["Urban Romance","Marriage","CEO","Family"],summary:"A very long translated marriage and family romance built around Kevin/Karen and later generations.",sourceSite:"XperimentalHamid",indexStatus:{gaps:[]}},
  {slug:"take-my-breath-away",title:"Take My Breath Away",finalChapter:1476,genres:["Urban Romance","Marriage","CEO","Drama"],summary:"A completed translated romance following a broken marriage, reunion, family growth and long-form relationship drama.",sourceSite:"XperimentalHamid",indexStatus:{gaps:[]}}
 ];
-let stories=fallback,active="all";
+const liddread=Object.values(window.XENDER_LIDDREAD_CATALOG||{}).map(x=>({...x,genres:["LiddRead"],summary:"Completed LiddRead novel mapped to Xender. Chapter import is in progress; no ongoing titles are included.",indexStatus:{gaps:[]}})); let stories=[...fallback,...liddread],active="all";
 const grid=document.getElementById("grid"),search=document.getElementById("search");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function allGenres(s){return (s.genres||[]).join(" ");}
+function allGenres(s){return ((s.genres||[]).join(" ")+" "+(s.sourceSite||""));}
 function render(){
  const q=search.value.trim().toLowerCase();grid.innerHTML="";
  const visible=stories.filter(s=>{
@@ -50,23 +50,29 @@ function render(){
  });
  if(!visible.length){grid.innerHTML='<div class="loading">No matching completed novel found.</div>';return;}
  for(const s of visible){
-  const saved=Math.max(1,Math.min(s.finalChapter,Number(localStorage.getItem("xs-xh-reading-"+s.slug)||1)));
+  const isLidd=s.sourceSite==="LiddRead";
+  const saved=Math.max(1,Math.min(s.finalChapter,Number(localStorage.getItem((isLidd?"xs-lidd-reading-":"xs-xh-reading-")+s.slug)||1)));
   const gaps=s.indexStatus?.gaps||[];
   const el=document.createElement("article");el.className="card";
-  el.innerHTML='<div class="badges"><span class="badge">COMPLETED</span><span class="badge">'+Number(s.finalChapter).toLocaleString()+' CHAPTERS</span>'+(s.genres||[]).slice(0,3).map(g=>'<span class="badge">'+esc(g)+'</span>').join("")+'</div>'+
+  el.innerHTML='<div class="badges"><span class="badge">COMPLETED</span><span class="badge">'+Number(s.finalChapter).toLocaleString()+' CHAPTERS</span><span class="badge">'+esc(s.sourceSite||"XperimentalHamid")+'</span>'+(isLidd?'<span class="badge">MAPPED • IMPORTING</span>':'')+(s.genres||[]).filter(g=>g!=="LiddRead").slice(0,2).map(g=>'<span class="badge">'+esc(g)+'</span>').join("")+'</div>'+
    '<h3>'+esc(s.title)+'</h3><div class="meta">'+Number(s.finalChapter).toLocaleString()+' chapters · '+esc(s.sourceSite||"XperimentalHamid")+'</div>'+
    '<p>'+esc(s.summary||"Completed long-form translated web novel.")+'</p>'+
-   (gaps.length?'<p class="source">Source-index validator currently flags '+gaps.length+' range gap(s); missing chapters will not be silently skipped.</p>':'<p class="source">Source index coverage validated with no numbered range gaps detected.</p>')+
-   '<div class="actions2"><a class="read" href="reader.html?xh='+encodeURIComponent(s.slug)+'&chapter=1">Start from Chapter 1 →</a>'+(saved>1?'<a class="continue" href="reader.html?xh='+encodeURIComponent(s.slug)+'&chapter='+saved+'">Continue Ch. '+saved+' →</a>':'')+'</div>';
+   (isLidd?'<p class="source">Book is mapped in Xender. Full chapter bodies are being imported from the authorized completed-novel source.</p>':(gaps.length?'<p class="source">Source-index validator currently flags '+gaps.length+' range gap(s); missing chapters will not be silently skipped.</p>':'<p class="source">Source index coverage validated with no numbered range gaps detected.</p>'))+
+   '<div class="actions2">'+(isLidd
+     ?'<a class="read" href="reader.html?lidd='+encodeURIComponent(s.slug)+'">Open mapped book →</a>'
+     :'<a class="read" href="reader.html?xh='+encodeURIComponent(s.slug)+'&chapter=1">Start from Chapter 1 →</a>'+(saved>1?'<a class="continue" href="reader.html?xh='+encodeURIComponent(s.slug)+'&chapter='+saved+'">Continue Ch. '+saved+' →</a>':''))+
+   '</div>';
   grid.appendChild(el);
  }
 }
 async function load(){
+ let xh=fallback;
  try{
   const r=await fetch(API+"/xh/catalog");
   const data=await r.json();
-  if(data.ok&&Array.isArray(data.items)&&data.items.length) stories=data.items;
+  if(data.ok&&Array.isArray(data.items)&&data.items.length) xh=data.items;
  }catch(e){}
+ stories=[...xh,...liddread];
  document.getElementById("novelCount").textContent=stories.length.toLocaleString();
  document.getElementById("chapterCount").textContent=stories.reduce((a,s)=>a+Number(s.finalChapter||0),0).toLocaleString();
  render();
