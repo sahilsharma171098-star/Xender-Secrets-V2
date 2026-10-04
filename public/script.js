@@ -1,4 +1,4 @@
-document.getElementById('menu').addEventListener('click',()=>document.querySelector('nav').classList.toggle('open'));document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>document.querySelector('nav').classList.remove('open')));;document.querySelectorAll('.filter[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const filter=btn.dataset.filter;document.querySelectorAll('.catalog-products .product-card[data-category]').forEach(card=>card.classList.toggle('hidden',filter!=='all'&&card.dataset.category!==filter));}));
+document.getElementById('menu')?.addEventListener('click',()=>document.querySelector('nav')?.classList.toggle('open'));document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>document.querySelector('nav')?.classList.remove('open')));;document.querySelectorAll('.filter[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const filter=btn.dataset.filter;document.querySelectorAll('.catalog-products .product-card[data-category]').forEach(card=>card.classList.toggle('hidden',filter!=='all'&&card.dataset.category!==filter));}));
 ;(()=> {
   if(document.getElementById('xsChat')) return;
   const shell=document.createElement('div');
@@ -86,3 +86,74 @@ document.getElementById('menu').addEventListener('click',()=>document.querySelec
 ;(()=>{const box=document.querySelector('#communityFeedPreview');if(!box)return;const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));fetch('/api/community/feed?sort=latest&limit=3').then(r=>r.json()).then(j=>{box.innerHTML=j.posts?.length?j.posts.map(p=>'<a href="/community.html?post='+encodeURIComponent(p.id)+'"><span>'+esc(p.category)+'</span><strong>'+esc(p.title)+'</strong><small>♥ '+p.likes+' · 💬 '+p.comments+' · ◉ '+p.views+'</small></a>').join(''):'<a href="/community.html" class="community-empty-card"><span>NEW COMMUNITY</span><strong>Start the first discussion</strong><small>Ask a useful question or share an idea →</small></a>'}).catch(()=>{box.innerHTML='<a href="/community.html" class="community-empty-card"><strong>Open Xender Community →</strong></a>'})})();
 
 ;(()=>{const fallback='https://t.me/Sharmaji_ka_betaaa';fetch('/api/site-config').then(r=>r.json()).then(j=>{const candidate=String(j.telegramUrl||'');const u=/^https:\/\/t\.me\//i.test(candidate)?candidate:fallback;document.querySelectorAll('[data-telegram-link]').forEach(a=>{a.href=u;a.textContent='Xender Secrets';a.classList.remove('hidden')});document.querySelectorAll('[data-telegram-panel]').forEach(x=>x.classList.remove('hidden'))}).catch(()=>{document.querySelectorAll('[data-telegram-link]').forEach(a=>{a.href=fallback;a.textContent='Xender Secrets';a.classList.remove('hidden')});document.querySelectorAll('[data-telegram-panel]').forEach(x=>x.classList.remove('hidden'))})})();
+
+
+;(()=> {
+  const COUNTRY_OPTIONS=[
+    ["","Auto-detect country"],["IN","India"],["US","United States"],["GB","United Kingdom"],["CA","Canada"],["AU","Australia"],["NZ","New Zealand"],
+    ["AE","United Arab Emirates"],["SA","Saudi Arabia"],["QA","Qatar"],["KW","Kuwait"],["BH","Bahrain"],["OM","Oman"],["SG","Singapore"],["MY","Malaysia"],
+    ["JP","Japan"],["CN","China"],["HK","Hong Kong"],["KR","South Korea"],["ID","Indonesia"],["TH","Thailand"],["PH","Philippines"],["VN","Vietnam"],
+    ["BD","Bangladesh"],["PK","Pakistan"],["LK","Sri Lanka"],["NP","Nepal"],["DE","Germany"],["FR","France"],["NL","Netherlands"],["ES","Spain"],["IT","Italy"],
+    ["IE","Ireland"],["PT","Portugal"],["CH","Switzerland"],["SE","Sweden"],["NO","Norway"],["DK","Denmark"],["PL","Poland"],["TR","Türkiye"],["ZA","South Africa"],
+    ["NG","Nigeria"],["KE","Kenya"],["EG","Egypt"],["BR","Brazil"],["MX","Mexico"],["AR","Argentina"]
+  ];
+  const ZERO_DECIMAL=new Set(["JPY","KRW","IDR","VND","HUF","CLP","PYG"]);
+  const state={country:"IN",detectedCountry:"IN",currency:"INR",rate:1,source:"base"};
+  window.XSLocale=state;
+  window.XSConvertINR=amount=>Number(amount||0)*Number(state.rate||1);
+  window.XSFormatINR=amount=>{
+    const value=window.XSConvertINR(amount);
+    try{
+      return new Intl.NumberFormat(undefined,{style:"currency",currency:state.currency,minimumFractionDigits:ZERO_DECIMAL.has(state.currency)?0:2,maximumFractionDigits:ZERO_DECIMAL.has(state.currency)?0:2}).format(value);
+    }catch{return state.currency+" "+value.toFixed(2)}
+  };
+  const paint=()=>{
+    document.querySelectorAll("[data-inr]").forEach(el=>{
+      const n=Number(el.dataset.inr);
+      if(!Number.isFinite(n))return;
+      const prefix=el.dataset.pricePrefix||"";
+      const suffix=el.dataset.priceSuffix||"";
+      el.textContent=prefix+window.XSFormatINR(n)+suffix;
+    });
+    document.querySelectorAll("[data-currency-code]").forEach(el=>el.textContent=state.currency);
+    window.dispatchEvent(new CustomEvent("xs-locale-changed",{detail:{...state}}));
+  };
+  const countryName=code=>{
+    try{return new Intl.DisplayNames([navigator.language||"en"],{type:"region"}).of(code)||code}catch{return code}
+  };
+  const mount=()=>{
+    const header=document.querySelector("header"); if(!header||document.getElementById("xsCountryPicker"))return;
+    const wrap=document.createElement("div"); wrap.id="xsCountryPicker"; wrap.className="xs-country-picker";
+    const select=document.createElement("select"); select.setAttribute("aria-label","Country and currency");
+    COUNTRY_OPTIONS.forEach(([code,name])=>{const o=document.createElement("option");o.value=code;o.textContent=name;select.appendChild(o)});
+    const saved=localStorage.getItem("xs-country")||""; select.value=COUNTRY_OPTIONS.some(x=>x[0]===saved)?saved:"";
+    const meta=document.createElement("span"); meta.className="xs-country-meta"; meta.textContent="Detecting currency…";
+    const credit=document.createElement("a");credit.href="https://www.exchangerate-api.com";credit.target="_blank";credit.rel="noopener";credit.textContent="FX";
+    wrap.append(select,meta,credit);
+    const anchor=header.querySelector(".desktop"); anchor?header.insertBefore(wrap,anchor):header.appendChild(wrap);
+    select.onchange=()=>{localStorage.setItem("xs-country",select.value);load(select.value)};
+    return {select,meta};
+  };
+  async function load(country){
+    const ui=mount();
+    try{
+      const r=await fetch("/api/locale"+(country?"?country="+encodeURIComponent(country):""));
+      const j=await r.json(); if(!r.ok||!j.ok)throw new Error("locale");
+      Object.assign(state,j);
+      if(ui){
+        const shownCountry=countryName(j.country);
+        ui.meta.textContent=shownCountry+" · "+j.currency;
+        if(!country&&ui.select)ui.select.options[0].textContent="Auto: "+shownCountry+" ("+j.currency+")";
+      }
+    }catch{
+      Object.assign(state,{country:"IN",detectedCountry:"IN",currency:"INR",rate:1,source:"fallback"});
+      if(ui)ui.meta.textContent="India · INR";
+    }
+    paint();
+  }
+  const style=document.createElement("style");
+  style.textContent=".xs-country-picker{display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:10px;font-size:11px;white-space:nowrap}.xs-country-picker select{max-width:145px;background:#111827;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 9px;font:inherit}.xs-country-meta{opacity:.75}.xs-country-picker>a{font-size:9px;opacity:.45;color:inherit;text-decoration:none}@media(max-width:900px){.xs-country-picker{order:3;width:100%;margin:7px 0 0;justify-content:flex-end}.xs-country-picker select{max-width:160px}.xs-country-meta{font-size:10px}}";
+  document.head.appendChild(style);
+  mount();
+  load(localStorage.getItem("xs-country")||"");
+})();
