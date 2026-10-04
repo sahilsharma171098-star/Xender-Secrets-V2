@@ -176,7 +176,17 @@ const XH_COMPLETED = {
     finalChapter: 2495,
     genres: ["Urban", "War God", "Hidden Power", "Romance"],
     summary: "A long translated urban power fantasy with revenge, hidden strength, family conflict and war-god escalation.",
-    verifiedEnding: "Chapter 2495 contains THE END."
+    verifiedEnding: "Chapter 2495 contains THE END.",
+    supplementalRanges: [
+      {start:427,end:428,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-427-428-new/"},
+      {start:593,end:594,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-593-594-new/"},
+      {start:621,end:622,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-621-622-new/"},
+      {start:675,end:676,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-675-677-new/"},
+      {start:1001,end:1002,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1002-1003-new/"},
+      {start:1033,end:1034,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1033-1034-new/"},
+      {start:1795,end:1796,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1795-1796-new/"},
+      {start:1997,end:1998,url:"https://xperimentalhamid.com/novels/billionaire-god-of-war-novel-chapter-1998-1999-new/"}
+    ]
   },
   "my-husband-warm-the-bed": {
     title: "My Husband Warm The Bed",
@@ -185,7 +195,10 @@ const XH_COMPLETED = {
     finalChapter: 1985,
     genres: ["Urban Romance", "Marriage", "CEO", "Family"],
     summary: "A very long translated marriage and family romance built around Kevin/Karen and later generations.",
-    verifiedEnding: "XH source states the novel ends at chapter 1985."
+    verifiedEnding: "XH source states the novel ends at chapter 1985.",
+    supplementalRanges: [
+      {start:455,end:469,url:"https://xperimentalhamid.com/novels/my-husband-warm-the-bed-chapter-455-469-free-reading-online-new/"}
+    ]
   },
   "take-my-breath-away": {
     title: "Take My Breath Away",
@@ -194,7 +207,12 @@ const XH_COMPLETED = {
     finalChapter: 1476,
     genres: ["Urban Romance", "Marriage", "CEO", "Drama"],
     summary: "A completed translated romance following a broken marriage, reunion, family growth and long-form relationship drama.",
-    verifiedEnding: "Chapter 1476 contains THE END."
+    verifiedEnding: "Chapter 1476 contains THE END.",
+    supplementalRanges: [
+      {start:46,end:50,url:"https://xperimentalhamid.com/novels/chapter-50-51-of-take-my-breath-away-novel-free-online-new/"},
+      {start:1296,end:1300,url:"https://xperimentalhamid.com/novels/chapter-1296-1-300-of-take-my-breath-away-novel-free-online-new/"},
+      {start:1396,end:1400,url:"https://xperimentalhamid.com/novels/chapter-1396-1400-of-take-my-breath-away-novel-free-online-new/"}
+    ]
   }
 };
 
@@ -271,6 +289,11 @@ async function getXhIndex(slug) {
     end=Math.min(end,novel.finalChapter);
     const key=start+"-"+end;
     if(!byRange.has(key)) byRange.set(key,{start,end,url:u,label:a.text||("Chapter "+start+(end>start?"-"+end:""))});
+  }
+  for(const x of (novel.supplementalRanges||[])){
+    const u=safeUrl(x.url); if(!u) continue;
+    const start=Math.max(1,Number(x.start)||0), end=Math.min(novel.finalChapter,Number(x.end)||0);
+    if(start>0 && end>=start) byRange.set(start+"-"+end,{start,end,url:u,label:"Recovered source range "+start+"-"+end});
   }
   const ranges=[...byRange.values()].sort((a,b)=>a.start-b.start||a.end-b.end);
   const gaps=buildCoverage(ranges,novel.finalChapter);
