@@ -73,7 +73,7 @@ document.getElementById('menu').addEventListener('click',()=>document.querySelec
       add(j.reply||'Sorry, mujhe iska answer nahi mila. WhatsApp par team se baat kar sakte ho.','bot',j.actions||[]);
     }catch(e){
       typing.remove();
-      add('Connection issue aa gaya. Aap WhatsApp se directly contact kar sakte ho.','bot',[{label:'Open WhatsApp',href:'https://wa.me/918368495854'}]);
+      add('Connection issue aa gaya. Aap WhatsApp se directly contact kar sakte ho.','bot',[{label:'Open WhatsApp',href:'https://wa.me/919821941814'}]);
     }
   }
   form.onsubmit=e=>{e.preventDefault();ask(input.value)};
