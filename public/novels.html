@@ -24,7 +24,7 @@
 <div class="statsline"><div class="stat"><b id="novelCount">0</b><span>completed novels available</span></div><div class="stat"><b id="chapterCount">0</b><span>completed chapters available</span></div><div class="stat"><b id="sourceCount">0</b><span>active content sources</span></div></div>
 </section>
 <section class="catalog-body">
-<div class="toolbar"><input id="search" type="search" placeholder="Search title, source or genre…" aria-label="Search completed novels"><div class="tabs"><button class="active" data-filter="all">All</button><button data-filter="XperimentalHamid">XH</button><button data-filter="Licensed Fiction">Licensed</button><button data-filter="Authorized Import">Imported</button><button data-filter="Urban">Urban</button><button data-filter="Romance">Romance</button><button data-filter="War God">War God</button><button data-filter="Marriage">Marriage</button></div></div>
+<div class="toolbar"><input id="search" type="search" placeholder="Search title, source or genre…" aria-label="Search completed novels"><div class="tabs"><button class="active" data-filter="all">All</button><button data-filter="XperimentalHamid">XH</button><button data-filter="Licensed Fiction">Licensed</button><button data-filter="Project Gutenberg">Classics</button><button data-filter="Authorized Import">Imported</button><button data-filter="Urban">Urban</button><button data-filter="Romance">Romance</button><button data-filter="War God">War God</button><button data-filter="Marriage">Marriage</button></div></div>
 <div class="section-head"><div><div class="kicker">VERIFIED COMPLETED LIBRARY</div><h2>Pick a story. <span>Finish the whole thing.</span></h2></div></div>
 <div id="grid" class="grid2"><div class="loading">Loading long completed novels…</div></div>
 </section>
@@ -33,6 +33,10 @@
 <script src="script.js"></script><script src="licensed-novels.js"></script><script src="novel-data/catalog.js"></script>
 <script>
 const API="https://xender-reader-api.onrender.com";
+const fallbackGutenberg=[
+ {slug:"dream-red-chamber",title:"The Dream of the Red Chamber",finalChapter:56,genres:["Chinese Classic","Supernatural","Family","Romance"],summary:"A monumental Chinese classic blending family rise and decline, love, status, dreams, spirituality and supernatural symbolism.",sourceSite:"Project Gutenberg",indexStatus:{gaps:[]}},
+ {slug:"romance-three-kingdoms-vol-1",title:"Romance of the Three Kingdoms — Volume I",finalChapter:60,genres:["Chinese Classic","War","Strategy","Power"],summary:"Warlords, sworn brothers, betrayals, battlefield strategy and the struggle for supremacy during the fall of the Han.",sourceSite:"Project Gutenberg",indexStatus:{gaps:[]}}
+];
 const fallback=[
  {slug:"billionaire-god-of-war",title:"Billionaire God of War",finalChapter:2495,genres:["Urban","War God","Hidden Power","Romance"],summary:"A long translated urban power fantasy with revenge, hidden strength, family conflict and war-god escalation.",sourceSite:"XperimentalHamid",indexStatus:{gaps:[]}},
  {slug:"my-husband-warm-the-bed",title:"My Husband Warm The Bed",finalChapter:1985,genres:["Urban Romance","Marriage","CEO","Family"],summary:"A very long translated marriage and family romance built around Kevin/Karen and later generations.",sourceSite:"XperimentalHamid",indexStatus:{gaps:[]}},
@@ -40,12 +44,12 @@ const fallback=[
 ];
 const licensed=Object.entries(window.XENDER_LICENSED_FICTION||{}).map(([slug,x])=>({slug,title:x.title,finalChapter:(x.chapters||[]).length,genres:x.genre||[],summary:x.synopsis||"Completed licensed fiction.",sourceSite:"Licensed Fiction",license:x.license,indexStatus:{gaps:[]}}));
 const imported=Object.entries(window.XENDER_IMPORTED_NOVELS||{}).map(([slug,x])=>({slug,...x,sourceSite:x.sourceSite||"Authorized Import",indexStatus:{gaps:[]}}));
-let stories=[...fallback,...licensed,...imported],active="all";
+let stories=[...fallbackGutenberg,...fallback,...licensed,...imported],active="all";
 const grid=document.getElementById("grid"),search=document.getElementById("search");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function allGenres(s){return ((s.genres||[]).join(" ")+" "+(s.sourceSite||""));}
-function storageKey(s){const t=s.sourceSite==="Licensed Fiction"?"licensed":s.sourceSite==="Authorized Import"||imported.some(x=>x.slug===s.slug)?"imported":"xh";return "xs-"+t+"-reading-"+s.slug}
-function hrefFor(s,n){if(s.sourceSite==="Licensed Fiction")return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;if(imported.some(x=>x.slug===s.slug))return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n}
+function storageKey(s){const t=s.sourceSite==="Licensed Fiction"?"licensed":s.sourceSite==="Project Gutenberg"?"gutenberg":s.sourceSite==="Authorized Import"||imported.some(x=>x.slug===s.slug)?"imported":"xh";return "xs-"+t+"-reading-"+s.slug}
+function hrefFor(s,n){if(s.sourceSite==="Licensed Fiction")return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Project Gutenberg")return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;if(imported.some(x=>x.slug===s.slug))return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n}
 function render(){
  const q=search.value.trim().toLowerCase();grid.innerHTML="";
  const visible=stories.filter(s=>{const hay=(s.title+" "+allGenres(s)).toLowerCase();return (active==="all"||allGenres(s).toLowerCase().includes(active.toLowerCase()))&&(!q||hay.includes(q));});
@@ -63,9 +67,10 @@ function render(){
  }
 }
 async function load(){
- let xh=fallback;
+ let xh=fallback,gutenberg=fallbackGutenberg;
  try{const r=await fetch(API+"/xh/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)xh=data.items}catch(e){}
- stories=[...xh,...licensed,...imported];
+ try{const r=await fetch(API+"/gutenberg/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)gutenberg=data.items}catch(e){}
+ stories=[...gutenberg,...xh,...licensed,...imported];
  document.getElementById("novelCount").textContent=stories.length.toLocaleString();
  document.getElementById("chapterCount").textContent=stories.reduce((a,s)=>a+Number(s.finalChapter||0),0).toLocaleString();
  document.getElementById("sourceCount").textContent=new Set(stories.map(s=>s.sourceSite||"Unknown")).size.toLocaleString();
