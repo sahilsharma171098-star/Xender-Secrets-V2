@@ -70,7 +70,8 @@ function featuresFor(b,v){
  return [...new Set([...commonFeatures,...(industry[b.group]||["Service showcase","Lead capture"]),...v.extras])].slice(0,8);
 }
 const templates=businessTypes.flatMap(b=>variants.map(v=>{
- const focus=b.focuses[(v.number-1)%b.focuses.length];
+ const rawFocus=b.focuses[(v.number-1)%b.focuses.length];
+ const focus=v.number===20?(rawFocus.replace(/flagship/ig,"").trim()||b.name):rawFocus;
  return {
   id:b.code+"-"+String(v.number).padStart(2,"0"),
   slug:b.id+"-"+v.style,
