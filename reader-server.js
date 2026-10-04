@@ -36,6 +36,24 @@ const BOOKS = {
     author: "Luo Guanzhong",
     translator: "C. H. Brewitt-Taylor",
     source: "https://www.gutenberg.org/cache/epub/77416/pg77416.txt"
+  },
+  "12086": {
+    title: "Eastern Shame Girl",
+    author: "Traditional Chinese stories",
+    translator: "G. Soulié de Morant",
+    source: "https://www.gutenberg.org/cache/epub/12086/pg12086.txt"
+  },
+  "37766": {
+    title: "Strange Stories from the Lodge of Leisures",
+    author: "Pu Songling",
+    translator: "G. Soulié de Morant",
+    source: "https://www.gutenberg.org/cache/epub/37766/pg37766.txt"
+  },
+  "29939": {
+    title: "The Chinese Fairy Book",
+    author: "Traditional Chinese stories",
+    translator: "Frederick H. Martens",
+    source: "https://www.gutenberg.org/cache/epub/29939/pg29939.txt"
   }
 };
 
