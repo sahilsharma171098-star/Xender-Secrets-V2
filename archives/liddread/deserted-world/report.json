@@ -1,0 +1,13 @@
+{
+  "slug": "deserted-world",
+  "title": "Deserted World",
+  "indexUrl": "https://liddread.com/deserted-world/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T13:59:44.190Z",
+  "finishedAt": "2026-10-04T13:59:44.190Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 1372,
+  "archivedChapters": 0,
+  "errors": []
+}
