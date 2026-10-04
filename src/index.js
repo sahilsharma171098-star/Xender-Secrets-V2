@@ -39,19 +39,28 @@ const COUNTRY_CURRENCY={
 const FALLBACK_RATES={INR:1,USD:.0113,EUR:.0097,GBP:.0084,CAD:.0157,AUD:.0172,NZD:.0193,AED:.0415,SAR:.0424,QAR:.0411,KWD:.00347,BHD:.00425,OMR:.00435,SGD:.0146,MYR:.0475,JPY:1.67,CNY:.0804,HKD:.0878,KRW:15.9,IDR:188,THB:.368,PHP:.66,VND:298,BDT:1.38,PKR:3.18,LKR:3.42,NPR:1.60,ZAR:.195,NGN:16.5,KES:1.46,GHS:.123,EGP:.54,MAD:.103,ILS:.037,TRY:.47,CHF:.0091,SEK:.104,NOK:.113,DKK:.072,PLN:.041,CZK:.238,HUF:3.75,RON:.049,RSD:1.14,BGN:.019,ISK:1.39,BRL:.060,MXN:.208,ARS:16.9,CLP:10.5,COP:42.5,PEN:.039,UYU:.452,PYG:82.0,BOB:.078,CRC:5.65,DOP:.708,JMD:1.81,TTD:.077};
 const currencyForCountry=country=>EURO_CURRENCY_COUNTRIES.has(country)?"EUR":(COUNTRY_CURRENCY[country]||"USD");
 const TRANSLATION_LANGUAGES=new Set(["hi","es","fr","de","pt","ar","id","tr","nl","it","ru","ja","ko","zh-CN","th","vi","bn","ur","mr","ta","te","gu","pa","ml","kn"]);
-async function translateOne(text,target){
+const TRANSLATION_TARGET_MAP={"zh-CN":"zh"};
+async function translateOne(text,target,ai){
   const raw=String(text??"");
   if(!raw.trim())return raw;
+  const targetLang=TRANSLATION_TARGET_MAP[target]||target;
+  if(ai){
+    try{
+      const result=await ai.run("@cf/meta/m2m100-1.2b",{text:raw,source_lang:"en",target_lang:targetLang});
+      const translated=String(result?.translated_text||result?.translation||result?.text||"").trim();
+      if(translated)return translated;
+    }catch(e){}
+  }
   let lastError=null;
   for(const host of ["https://translate.googleapis.com/translate_a/single","https://translate.google.com/translate_a/single"]){
     const u=new URL(host);
     u.searchParams.set("client","gtx");u.searchParams.set("sl","en");u.searchParams.set("tl",target);u.searchParams.set("dt","t");u.searchParams.set("q",raw.slice(0,4800));
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
     try{
-      const r=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"},signal:controller.signal});
-      if(!r.ok){lastError=new Error("Translation upstream error "+r.status);continue}
-      const j=await r.json();
-      const translated=Array.isArray(j?.[0])?j[0].map(x=>x?.[0]||"").join(""):"";
+      const response=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"},signal:controller.signal});
+      if(!response.ok){lastError=new Error("Translation upstream error "+response.status);continue}
+      const data=await response.json();
+      const translated=Array.isArray(data?.[0])?data[0].map(x=>x?.[0]||"").join(""):"";
       if(translated)return translated;
       lastError=new Error("Translation returned no text");
     }catch(e){lastError=e}
@@ -59,28 +68,17 @@ async function translateOne(text,target){
   }
   throw lastError||new Error("Translation unavailable");
 }
-async function translateBatch(texts,target){
-  const delimiter="\n\n[[[XENDER_PARAGRAPH_BREAK_7A1F]]]\n\n";
-  const groups=[];let current=[],chars=0;
-  for(const raw of texts){
-    const text=String(raw??"");
-    const extra=text.length+(current.length?delimiter.length:0);
-    if(current.length&&(current.length>=20||chars+extra>4200)){groups.push(current);current=[];chars=0}
-    current.push(text);chars+=extra;
+async function translateBatch(texts,target,ai){
+  const out=new Array(texts.length),queue=[...texts.keys()];let failed=null;
+  async function worker(){
+    while(queue.length){
+      const n=queue.shift();
+      try{out[n]=await translateOne(texts[n],target,ai)}
+      catch(e){failed=e;return}
+    }
   }
-  if(current.length)groups.push(current);
-  const out=[];
-  for(const group of groups){
-    if(group.length===1){out.push(await translateOne(group[0],target));continue}
-    const joined=group.join(delimiter);
-    const translated=await translateOne(joined,target);
-    const pieces=translated.split(delimiter);
-    if(pieces.length===group.length){out.push(...pieces);continue}
-    const fallback=new Array(group.length);let i=0;
-    async function worker(){while(true){const n=i++;if(n>=group.length)return;fallback[n]=await translateOne(group[n],target)}}
-    await Promise.all(Array.from({length:Math.min(4,group.length)},worker));
-    out.push(...fallback);
-  }
+  await Promise.all(Array.from({length:Math.min(3,texts.length)},worker));
+  if(failed)throw failed;
   return out;
 }
 async function inrRate(currency){
@@ -864,8 +862,8 @@ export default {
       if(!texts.length||texts.length>80)return json({ok:false,error:"Send between 1 and 80 text blocks."},400);
       if(texts.some(x=>x.length>5000)||texts.reduce((n,x)=>n+x.length,0)>30000)return json({ok:false,error:"Chapter is too large to translate in one request."},413);
       try{
-        const translated=await translateBatch(texts,target);
-        return json({ok:true,target,source:"en",translated,provider:"Google Translate"});
+        const translated=await translateBatch(texts,target,env.AI);
+        return json({ok:true,target,source:"en",translated,provider:env.AI?"Cloudflare Workers AI":"Translation fallback"});
       }catch(e){
         return json({ok:false,error:"Translation is temporarily unavailable. Please try again."},502);
       }
