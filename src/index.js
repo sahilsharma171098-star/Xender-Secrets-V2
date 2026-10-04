@@ -924,13 +924,6 @@ export default {
 
     if(path==="/api/translation-smoke" && method==="GET"){
       const sample="女有四行：一曰婦德，二曰婦言，三曰婦容，四曰婦功。";
-      const result={ok:true,source:"zh-CN",target:"hi"};
-      try{result.googleDirect=await googleTranslate(sample,"hi","zh-CN")}catch(e){result.googleDirectError=String(e?.message||e)}
-      try{
-        result.googleEnglish=await googleTranslate(sample,"en","zh-CN");
-        result.googlePivot=await googleTranslate(result.googleEnglish,"hi","en");
-      }catch(e){result.googlePivotError=String(e?.message||e)}
-      try{result.aiDirect=await aiTranslate(sample,"hi",env.AI,"zh-CN")}catch(e){result.aiDirectError=String(e?.message||e)}
       try{
         const glm=await env.AI.run("@cf/zai-org/glm-4.7-flash",{
           messages:[
@@ -940,9 +933,12 @@ export default {
           temperature:0.1,
           max_completion_tokens:300
         });
-        result.glmDirect=String(glm?.response||glm?.choices?.[0]?.message?.content||"").trim();
-      }catch(e){result.glmDirectError=String(e?.message||e)}
-      return json(result);
+        const translated=String(glm?.response||glm?.choices?.[0]?.message?.content||"").trim();
+        if(!translated)return json({ok:false,error:"GLM returned no translation."},502);
+        return json({ok:true,source:"zh-CN",target:"hi",translated});
+      }catch(e){
+        return json({ok:false,error:String(e?.message||e)},502);
+      }
     }
 
     if(path==="/api/translate" && method==="POST"){
