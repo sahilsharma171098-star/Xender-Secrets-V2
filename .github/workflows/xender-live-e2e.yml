@@ -7,6 +7,9 @@ on:
     paths:
       - '.github/workflows/xender-live-e2e.yml'
       - 'tests/xender-live-e2e.mjs'
+      - 'public/index.html'
+      - 'public/home.css'
+      - 'public/home.js'
       - 'public/website-catalog.html'
       - 'public/business-templates.html'
       - 'public/business-templates.js'
