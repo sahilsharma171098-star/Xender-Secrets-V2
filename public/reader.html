@@ -5,14 +5,26 @@
 <title>Read | Xender Novels</title><meta name="robots" content="index,follow"><link rel="stylesheet" href="style.css">
 <style>
 :root{--reader-size:19px;--reader-bg:#0b0f14;--reader-fg:#e9edf0;--reader-muted:#8f9aa2}body.reader-light{--reader-bg:#f4efe5;--reader-fg:#201d19;--reader-muted:#6d645c;background:#e8e0d3;color:#201d19}
-.reader-wrap{max-width:920px;margin:auto;padding:30px 22px 90px}.reader-top{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;margin:16px 0 24px}.reader-top a{color:#4de6ad}.reader-tools{display:flex;gap:8px;flex-wrap:wrap}.reader-tools button,.reader-nav button,.jump button{background:#111820;border:1px solid #ffffff20;color:#eef2f5;border-radius:8px;padding:9px 12px;cursor:pointer}.reader-light .reader-tools button,.reader-light .reader-nav button,.reader-light .jump button{background:#fff8ed;border-color:#00000018;color:#201d19}
+.reader-wrap{max-width:920px;margin:auto;padding:30px 22px 90px}.reader-top{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;margin:16px 0 24px}.reader-top a{color:#4de6ad}.reader-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.reader-tools button,.reader-tools select,.reader-nav button,.jump button{background:#111820;border:1px solid #ffffff20;color:#eef2f5;border-radius:8px;padding:9px 12px;cursor:pointer}.reader-tools select{max-width:190px}.translate-status{font-size:12px;color:var(--reader-muted);min-width:120px}.reader-content[dir="rtl"]{text-align:right}.reader-light .reader-tools button,.reader-light .reader-tools select,.reader-light .reader-nav button,.reader-light .jump button{background:#fff8ed;border-color:#00000018;color:#201d19}
 .reader-card{background:var(--reader-bg);border:1px solid #ffffff12;border-radius:16px;padding:clamp(24px,5vw,56px);box-shadow:0 24px 80px #0004}.reader-light .reader-card{border-color:#00000012}.reader-kicker{font-size:11px;letter-spacing:.15em;font-weight:800;color:#4de6ad}.reader-title{font-size:clamp(30px,5vw,48px);line-height:1.08;margin:10px 0 7px;color:var(--reader-fg)}.reader-meta{color:var(--reader-muted);margin-bottom:15px}.jump{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0}.jump input{width:120px;background:#111820;border:1px solid #ffffff20;color:#eef2f5;border-radius:8px;padding:9px 10px}.reader-light .jump input{background:#fff8ed;border-color:#00000018;color:#201d19}.reader-progress{height:4px;background:#ffffff12;border-radius:99px;overflow:hidden;margin:18px 0 28px}.reader-progress span{display:block;height:100%;background:#4de6ad;width:0}.chapter-title{font-size:clamp(24px,4vw,34px);color:var(--reader-fg);margin:24px 0 28px}.reader-content{font-family:Georgia,'Times New Roman',serif;font-size:var(--reader-size);line-height:1.9;color:var(--reader-fg)}.reader-content p{margin:0 0 1.35em}.reader-nav{display:flex;justify-content:space-between;gap:12px;margin-top:38px}.reader-nav button{flex:1;max-width:220px}.reader-nav button:disabled{opacity:.35}.reader-note{font-size:12px;color:var(--reader-muted);margin-top:28px;padding-top:18px;border-top:1px solid #ffffff10}.status{padding:34px 0;color:var(--reader-muted);text-align:center}.error{color:#ff9c9c}.reader-light .reader-note{border-color:#00000012}@media(max-width:640px){.reader-card{padding:24px 18px}.reader-content{line-height:1.8}.reader-nav button{max-width:none}}
 </style>
 </head>
 <body>
 <header><a class="logo" href="index.html">XENDER <span>SECRETS</span></a><button id="menu" aria-label="Menu">☰</button><nav><a href="novels.html">Novel Library</a><a href="community.html">Community</a><a href="about.html">About</a></nav><a class="pill desktop" href="novels.html">All Novels</a></header>
 <main class="reader-wrap">
-<div class="reader-top"><a href="novels.html">← Novel Library</a><div class="reader-tools"><button id="fontDown">A−</button><button id="fontUp">A+</button><button id="themeToggle">Light mode</button></div></div>
+<div class="reader-top"><a href="novels.html">← Novel Library</a><div class="reader-tools">
+<select id="languageSelect" aria-label="Translate chapter language">
+<option value="en">Original English</option>
+<option value="hi">हिन्दी</option><option value="bn">বাংলা</option><option value="ur">اردو</option><option value="mr">मराठी</option>
+<option value="ta">தமிழ்</option><option value="te">తెలుగు</option><option value="gu">ગુજરાતી</option><option value="pa">ਪੰਜਾਬੀ</option>
+<option value="ml">മലയാളം</option><option value="kn">ಕನ್ನಡ</option>
+<option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option>
+<option value="ar">العربية</option><option value="id">Bahasa Indonesia</option><option value="tr">Türkçe</option><option value="nl">Nederlands</option>
+<option value="it">Italiano</option><option value="ru">Русский</option><option value="ja">日本語</option><option value="ko">한국어</option>
+<option value="zh-CN">中文</option><option value="th">ไทย</option><option value="vi">Tiếng Việt</option>
+</select>
+<button id="translateChapter">Translate chapter</button><span id="translateStatus" class="translate-status"></span>
+<button id="fontDown">A−</button><button id="fontUp">A+</button><button id="themeToggle">Light mode</button></div></div>
 <article class="reader-card">
 <div class="reader-kicker">XENDER LONG-FORM READER · 100% FREE</div>
 <h1 class="reader-title" id="storyTitle">Loading…</h1>
@@ -29,8 +41,8 @@
 <script src="script.js"></script><script src="liddread-catalog.js"></script>
 <script>
 const API="https://xender-reader-api.onrender.com";
-const p=new URLSearchParams(location.search),slug=p.get("xh"),liddSlug=p.get("lidd");let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1;
-const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),status=document.getElementById("status"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar"),jumpInput=document.getElementById("jumpInput"),counter=document.getElementById("counter");
+const p=new URLSearchParams(location.search),slug=p.get("xh"),liddSlug=p.get("lidd");let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map();
+const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),status=document.getElementById("status"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar"),jumpInput=document.getElementById("jumpInput"),counter=document.getElementById("counter"),languageSelect=document.getElementById("languageSelect"),translateBtn=document.getElementById("translateChapter"),translateStatus=document.getElementById("translateStatus");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function updateUrl(){const u=new URL(location.href);u.searchParams.set("xh",slug);u.searchParams.set("chapter",chapter);history.replaceState(null,"",u);}
 async function loadMeta(){
@@ -59,9 +71,44 @@ async function loadChapter(n){
  prev.disabled=chapter<=1;next.disabled=chapter>=finalChapter;jumpInput.value=chapter;counter.textContent="of "+Number(finalChapter).toLocaleString();bar.style.width=((chapter/finalChapter)*100)+"%";updateUrl();
  try{
   const r=await fetch(API+"/xh/chapter?slug="+encodeURIComponent(slug)+"&n="+chapter);const d=await r.json();if(!d.ok)throw new Error(d.error||"Chapter unavailable");
-  ct.textContent=d.chapterTitle||("Chapter "+chapter);content.innerHTML=(d.paragraphs||[]).map(x=>"<p>"+esc(x)+"</p>").join("");status.hidden=true;localStorage.setItem("xs-xh-reading-"+slug,String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
+  originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[]};
+  renderChapter(originalChapter.title,originalChapter.paragraphs,"en");
+  translateStatus.textContent="";
+  status.hidden=true;localStorage.setItem("xs-xh-reading-"+slug,String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
+  const preferred=languageSelect.value;
+  if(preferred!=="en"&&localStorage.getItem("xsReaderAutoTranslate")==="1") translateCurrent(preferred);
  }catch(e){status.hidden=false;status.className="status error";status.textContent="Chapter "+chapter+" could not be loaded. Xender did not skip it. Try again or choose another chapter.";}
 }
+function renderChapter(chapterHeading,paragraphs,lang){
+ ct.textContent=chapterHeading;
+ content.innerHTML=(paragraphs||[]).map(x=>"<p>"+esc(x)+"</p>").join("");
+ const rtl=["ar","ur"].includes(lang);content.dir=rtl?"rtl":"ltr";content.lang=lang||"en";
+}
+async function translateCurrent(target){
+ if(!originalChapter||!Array.isArray(originalChapter.paragraphs))return;
+ if(target==="en"){renderChapter(originalChapter.title,originalChapter.paragraphs,"en");translateStatus.textContent="Original";localStorage.setItem("xsReaderLanguage","en");return;}
+ const key=slug+":"+chapter+":"+target;
+ translateBtn.disabled=true;translateStatus.textContent="Translating…";
+ try{
+  let translated=translationCache.get(key);
+  if(!translated){
+   const texts=[originalChapter.title,...originalChapter.paragraphs];
+   const r=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,texts})});
+   const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||"Translation unavailable");
+   translated=j.translated;translationCache.set(key,translated);
+  }
+  renderChapter(translated[0]||originalChapter.title,translated.slice(1),target);
+  translateStatus.textContent="Translated";
+  localStorage.setItem("xsReaderLanguage",target);
+ }catch(e){translateStatus.textContent=e.message||"Translation unavailable";renderChapter(originalChapter.title,originalChapter.paragraphs,"en")}
+ finally{translateBtn.disabled=false}
+}
+const supported=[...languageSelect.options].map(o=>o.value);
+const savedLang=localStorage.getItem("xsReaderLanguage");
+const browserLang=(navigator.language||"en").split("-")[0];
+languageSelect.value=supported.includes(savedLang)?savedLang:(supported.includes(browserLang)?browserLang:"en");
+translateBtn.onclick=()=>translateCurrent(languageSelect.value);
+languageSelect.onchange=()=>{localStorage.setItem("xsReaderLanguage",languageSelect.value);if(languageSelect.value==="en")translateCurrent("en")};
 prev.onclick=()=>{if(chapter>1)loadChapter(chapter-1)};next.onclick=()=>{if(chapter<finalChapter)loadChapter(chapter+1)};document.getElementById("jumpBtn").onclick=()=>loadChapter(jumpInput.value);jumpInput.addEventListener("keydown",e=>{if(e.key==="Enter")loadChapter(jumpInput.value)});
 let size=Number(localStorage.getItem("xsReaderSize")||19);function setSize(){size=Math.min(28,Math.max(15,size));document.documentElement.style.setProperty("--reader-size",size+"px");localStorage.setItem("xsReaderSize",size)}document.getElementById("fontDown").onclick=()=>{size--;setSize()};document.getElementById("fontUp").onclick=()=>{size++;setSize()};setSize();
 const themeToggle=document.getElementById("themeToggle");if(localStorage.getItem("xsReaderTheme")==="light"){document.body.classList.add("reader-light");themeToggle.textContent="Dark mode"}themeToggle.onclick=()=>{document.body.classList.toggle("reader-light");const light=document.body.classList.contains("reader-light");themeToggle.textContent=light?"Dark mode":"Light mode";localStorage.setItem("xsReaderTheme",light?"light":"dark")};
