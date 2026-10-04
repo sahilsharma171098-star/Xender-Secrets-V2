@@ -1,96 +1,59 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Xender Novels | Addictive Original Web Fiction</title>
-<meta name="description" content="Read original binge-style English web fiction: cultivation, systems, hidden heirs, regression, revenge, urban fantasy and more.">
-<link rel="canonical" href="https://www.xendersecrets.com/novels.html">
-<meta name="robots" content="index,follow">
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Xender Novels | Completed Licensed Web Fiction</title>
+<meta name="description" content="Read completed, rights-cleared web fiction on Xender: cultivation, wuxia, reincarnation, villainess and related binge-reading genres.">
+<link rel="canonical" href="https://www.xendersecrets.com/novels.html"><meta name="robots" content="index,follow"><link rel="stylesheet" href="style.css">
 <style>
-.nv-hero{padding-bottom:34px}.nv-hero h1{font-size:clamp(46px,7vw,82px);line-height:1;margin:16px 0;max-width:980px}
-.nv-shell{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px;align-items:start}.nv-panel{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px}
-.nv-search{display:flex;gap:10px;margin:18px 0 30px;flex-wrap:wrap}.nv-search input{flex:1;min-width:240px;background:#0e1319;border:1px solid #ffffff18;color:#eef2f5;border-radius:10px;padding:13px 15px;font:inherit}
+.nv-hero{padding-bottom:34px}.nv-hero h1{font-size:clamp(44px,7vw,78px);line-height:1;margin:14px 0;max-width:1040px}
+.nv-note{margin-top:22px;padding:15px 17px;border:1px solid #4de6ad35;background:#4de6ad0b;border-radius:12px;color:#aeb8bf;max-width:980px}
+.nv-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0 30px}.nv-toolbar input{flex:1;min-width:240px;background:#0e1319;border:1px solid #ffffff18;color:#eef2f5;border-radius:10px;padding:13px 15px;font:inherit}
 .nv-tabs{display:flex;gap:8px;flex-wrap:wrap}.nv-tabs button{background:#0e1319;border:1px solid #ffffff18;color:#c8d1d7;padding:9px 12px;border-radius:999px;cursor:pointer}.nv-tabs button.active{background:#4de6ad;color:#04100c;border-color:#4de6ad}
-.nv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.nv-card{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:20px;display:flex;flex-direction:column;min-height:345px;position:relative;overflow:hidden}
-.nv-card:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:4px;background:linear-gradient(90deg,#4de6ad,#47a8ff)}
-.nv-card h3{font-size:25px;line-height:1.12;margin:14px 0 9px}.nv-card p{color:#96a1aa}.nv-meta{font-size:13px;color:#c6cdd2;margin:2px 0}
-.nv-badges{display:flex;gap:7px;flex-wrap:wrap}.nv-badge{font-size:10px;letter-spacing:.08em;font-weight:800;border:1px solid #4de6ad35;color:#4de6ad;padding:5px 8px;border-radius:999px}
-.nv-read{margin-top:auto;background:#4de6ad;color:#04100c!important;padding:11px 14px;border-radius:8px;text-align:center;font-weight:800}.latest-list{display:grid;gap:10px}.latest-item{padding:13px 0;border-bottom:1px solid #ffffff0e}.latest-item a{font-weight:750}.latest-item small{display:block;color:#77838c;margin-top:3px}.genre-list{display:flex;gap:8px;flex-wrap:wrap}.genre-list span{background:#ffffff08;border:1px solid #ffffff12;padding:7px 10px;border-radius:999px;font-size:12px}
-.note{margin-top:18px;color:#8e9aa3;font-size:13px}@media(max-width:950px){.nv-shell{grid-template-columns:1fr}.nv-grid{grid-template-columns:1fr}}
+.nv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.nv-card{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px;display:flex;flex-direction:column;min-height:380px;position:relative;overflow:hidden}.nv-card:before{content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:linear-gradient(90deg,#4de6ad,#47a8ff)}
+.nv-card h3{font-size:27px;line-height:1.12;margin:14px 0 9px}.nv-card p{color:#96a1aa}.nv-meta{font-size:13px;color:#c6cdd2;margin:2px 0}.badges{display:flex;gap:7px;flex-wrap:wrap}.badge{font-size:10px;letter-spacing:.08em;font-weight:800;border:1px solid #4de6ad35;color:#4de6ad;padding:5px 8px;border-radius:999px}.read{margin-top:auto;background:#4de6ad;color:#04100c!important;padding:11px 14px;border-radius:8px;text-align:center;font-weight:800}.lic{font-size:12px;color:#7f8a92;margin-top:11px}.lic a{color:#90dcbc}
+.latest{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px;margin-bottom:28px}.latest-list{display:grid;gap:8px}.latest-row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid #ffffff0e}.latest-row:last-child{border:0}.latest-row small{color:#77838c}
+@media(max-width:760px){.nv-grid{grid-template-columns:1fr}.latest-row{display:block}.latest-row small{display:block;margin-top:4px}}
 </style>
 </head>
 <body>
-<header><a class="logo" href="index.html">XENDER <span>SECRETS</span></a><button id="menu" aria-label="Menu">☰</button><nav><a href="community.html">Community</a><a href="ideas.html">Ideas</a><a href="articles.html">Articles</a><a href="website-catalog.html">Websites</a><a href="resources.html">Resources</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a></nav><a class="pill desktop" href="novels.html">Read Now</a></header>
+<header><a class="logo" href="index.html">XENDER <span>SECRETS</span></a><button id="menu" aria-label="Menu">☰</button><nav><a href="community.html">Community</a><a href="ideas.html">Ideas</a><a href="articles.html">Articles</a><a href="website-catalog.html">Websites</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a></nav><a class="pill desktop" href="novels.html">Read Now</a></header>
 <main>
 <section class="catalog-hero nv-hero">
-<div class="kicker">XENDER ORIGINALS</div>
-<h1>Fast chapters. Big hooks. <em>One more chapter.</em></h1>
-<p class="lead">Original English web fiction built for binge reading — cultivation, systems, hidden heirs, regression, revenge, CEO drama, transmigration and urban fantasy.</p>
+<div class="kicker">COMPLETED • RIGHTS-CLEARED • ONSITE READER</div>
+<h1>Published web fiction. <em>Read it on Xender.</em></h1>
+<p class="lead">No filler originals. Xender curates already-published completed fiction in cultivation, wuxia, reincarnation, villainess and related web-novel genres — but only when reuse rights are explicitly clear.</p>
+<div class="nv-note"><b>Import policy:</b> free-to-read does not automatically mean free-to-republish. Full text appears here only when the author/rightsholder provides a reusable license or the edition is public domain. Author attribution and license information stay attached to every imported work.</div>
 </section>
-
 <section class="catalog-body">
-<div class="nv-search">
-<input id="nvSearch" type="search" placeholder="Search novels or genres…" aria-label="Search novels">
-<div class="nv-tabs">
-<button class="active" data-filter="all">All</button>
-<button data-filter="System">System</button>
-<button data-filter="Cultivation">Cultivation</button>
-<button data-filter="Urban">Urban</button>
-<button data-filter="Regression">Regression</button>
-<button data-filter="Female Lead">Female Lead</button>
-<button data-filter="Fantasy">Fantasy</button><button data-filter="Hidden Heir">Hidden Heir</button><button data-filter="Romance">Romance</button><button data-filter="Dungeon">Dungeon</button>
+<div class="nv-toolbar">
+<input id="search" type="search" placeholder="Search title, author or genre…" aria-label="Search licensed novels">
+<div class="nv-tabs"><button class="active" data-filter="all">All</button><button data-filter="Cultivation">Cultivation</button><button data-filter="Wuxia">Wuxia</button><button data-filter="Reincarnation">Reincarnation</button><button data-filter="Romance">Romance</button></div>
 </div>
-</div>
-
-<div class="nv-shell">
-<div>
-<div class="nv-panel" style="margin-bottom:24px">
-<div class="kicker">LATEST CHAPTERS</div>
-<h2 style="font-size:32px;margin:8px 0 12px">Fresh updates. <span>Start here.</span></h2>
-<div class="latest-list" id="latestList"></div>
-</div>
-
-<div class="section-head"><div><div class="kicker">NOVEL DIRECTORY</div><h2>Pick your <span>next addiction.</span></h2></div></div>
-<div class="nv-grid" id="nvGrid"></div>
-</div>
-
-<aside>
-<div class="nv-panel"><h3>Popular genres</h3><div class="genre-list"><span>Cultivation</span><span>System</span><span>Hidden Heir</span><span>Revenge</span><span>Regression</span><span>Apocalypse</span><span>CEO</span><span>Transmigration</span><span>Medical</span><span>Martial Arts</span></div></div>
-<div class="nv-panel" style="margin-top:18px"><h3>Why Xender Originals?</h3><p style="color:#96a1aa">Shorter chapters, immediate hooks, frequent twists and cliffhangers — written specifically for mobile web-fiction readers.</p><div class="note">All titles and stories on this page are original Xender fiction, not copied from another novel site.</div></div>
-</aside>
-</div>
+<div class="latest"><div class="kicker">READY TO BINGE</div><h2 style="font-size:32px;margin:8px 0 12px">Completed stories. <span>No waiting for updates.</span></h2><div id="latest" class="latest-list"></div></div>
+<div class="section-head"><div><div class="kicker">VERIFIED LIBRARY</div><h2>Full text available <span>inside Xender.</span></h2></div></div>
+<div id="grid" class="nv-grid"></div>
 </section>
 </main>
-<footer><div><b>XENDER SECRETS</b><p>Original web fiction + digital projects</p></div><div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div><small>© 2026 Xender Secrets.</small></footer>
-<script src="script.js"></script>
-<script src="original-novels.js"></script><script src="original-novels-batch2.js"></script><script src="original-novels-expansion.js"></script>
+<footer><div><b>XENDER SECRETS</b><p>Completed licensed web fiction + digital projects</p></div><div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div><small>© 2026 Xender Secrets.</small></footer>
+<script src="script.js"></script><script src="licensed-novels.js"></script>
 <script>
-const stories=window.XENDER_FICTION||{};
-const grid=document.getElementById("nvGrid"),latest=document.getElementById("latestList"),search=document.getElementById("nvSearch");
-let active="all";
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+const stories=window.XENDER_LICENSED_FICTION||{},grid=document.getElementById("grid"),latest=document.getElementById("latest"),search=document.getElementById("search");let active="all";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function render(){
- const q=search.value.trim().toLowerCase();
- grid.innerHTML="";
+ const q=search.value.trim().toLowerCase();grid.innerHTML="";
  Object.entries(stories).forEach(([slug,s])=>{
-   const hay=(s.title+" "+s.tagline+" "+s.genre.join(" ")).toLowerCase();
-   const okFilter=active==="all"||s.genre.includes(active);
-   if(!okFilter||(q&&!hay.includes(q)))return;
-   const a=document.createElement("article");a.className="nv-card";
-   a.innerHTML='<div class="nv-badges">'+s.genre.slice(0,3).map(g=>'<span class="nv-badge">'+esc(g)+'</span>').join("")+'</div>'+
-   '<h3>'+esc(s.title)+'</h3><p class="nv-meta"><b>'+esc(s.author)+'</b> · '+esc(s.status)+' · '+s.chapters.length+' chapters</p>'+
-   '<p>'+esc(s.tagline)+'</p><a class="nv-read" href="reader.html?story='+encodeURIComponent(slug)+'&chapter=1">Start Reading →</a>';
-   grid.appendChild(a);
+  const hay=(s.title+" "+s.author+" "+s.genre.join(" ")).toLowerCase();
+  if((active!=="all"&&!s.genre.includes(active))||(q&&!hay.includes(q)))return;
+  const el=document.createElement("article");el.className="nv-card";
+  el.innerHTML='<div class="badges">'+s.genre.slice(0,4).map(g=>'<span class="badge">'+esc(g)+'</span>').join("")+'<span class="badge">'+esc(s.status)+'</span></div>'+
+  '<h3>'+esc(s.title)+'</h3><p class="nv-meta"><b>Author:</b> '+esc(s.author)+' · '+s.chapters.length+' chapters on Xender</p>'+
+  '<p>'+esc(s.synopsis)+'</p><a class="read" href="reader.html?licensed='+encodeURIComponent(slug)+'&chapter=1">Read on Xender →</a>'+
+  '<div class="lic">'+esc(s.license)+' · <a href="'+s.licenseUrl+'" target="_blank" rel="license noopener">License</a> · <a href="'+s.sourceUrl+'" target="_blank" rel="noopener">Original source</a></div>';
+  grid.appendChild(el);
  });
 }
-latest.innerHTML=Object.entries(stories).reverse().slice(0,8).map(([slug,s])=>{
- const n=s.chapters.length,c=s.chapters[n-1];
- return '<div class="latest-item"><a href="reader.html?story='+encodeURIComponent(slug)+'&chapter='+n+'">'+esc(s.title)+' — '+esc(c.title)+'</a><small>'+esc(s.genre.slice(0,2).join(" · "))+'</small></div>';
-}).join("");
-document.querySelectorAll("[data-filter]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));btn.classList.add("active");active=btn.dataset.filter;render();});
-search.addEventListener("input",render);render();
+latest.innerHTML=Object.entries(stories).map(([slug,s])=>'<div class="latest-row"><a href="reader.html?licensed='+encodeURIComponent(slug)+'&chapter=1">'+esc(s.title)+'</a><small>'+s.chapters.length+' chapters · '+esc(s.genre.slice(0,3).join(" / "))+'</small></div>').join("");
+document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");active=b.dataset.filter;render();});search.addEventListener("input",render);render();
 </script>
-</body>
-</html>
+</body></html>
