@@ -1,0 +1,13 @@
+{
+  "slug": "master-of-the-blade",
+  "title": "Master Of The Blade",
+  "indexUrl": "https://liddread.com/master-of-the-blade/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T14:00:10.793Z",
+  "finishedAt": "2026-10-04T14:00:10.793Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 3050,
+  "archivedChapters": 0,
+  "errors": []
+}
