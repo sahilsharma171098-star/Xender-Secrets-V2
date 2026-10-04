@@ -1,0 +1,13 @@
+{
+  "slug": "his-secret-lover",
+  "title": "His Secret Lover",
+  "indexUrl": "https://liddread.com/his-secret-lover/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T14:00:04.001Z",
+  "finishedAt": "2026-10-04T14:00:04.001Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 1769,
+  "archivedChapters": 0,
+  "errors": []
+}
