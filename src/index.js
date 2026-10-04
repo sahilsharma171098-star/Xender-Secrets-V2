@@ -922,17 +922,6 @@ export default {
       }
     }
 
-    if(path==="/api/translation-quality-check" && method==="GET"){
-      const sample="女有四行：一曰婦德，二曰婦言，三曰婦容，四曰婦功。";
-      try{
-        const english=await aiTranslate(sample,"en",env.AI,"zh-CN");
-        const hindi=await aiTranslate(english,"hi",env.AI,"en");
-        return json({ok:true,english,hindi});
-      }catch(e){
-        return json({ok:false,error:String(e?.message||e)},200);
-      }
-    }
-
     if(path==="/api/translate" && method==="POST"){
       const body=await request.json().catch(()=>({}));
       const target=String(body.target||"").trim(),source=String(body.source||"en").trim();
