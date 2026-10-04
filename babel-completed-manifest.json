@@ -1,0 +1,89 @@
+{
+  "source": "BabelNovel",
+  "policy": {
+    "completedOnly": true,
+    "rightsBasis": "User states Xender has permission to republish the selected completed titles.",
+    "ingestMode": "Use authorized source files or an approved source feed/API; do not bypass platform controls.",
+    "status": "metadata_mapped_full_text_pending_authorized_source_package"
+  },
+  "titles": [
+    {
+      "slug": "the-hidden-billionaire",
+      "title": "The Hidden Billionaire",
+      "finalChapter": 1212,
+      "status": "Completed",
+      "genres": [
+        "Modern & Urban",
+        "Hidden Billionaire",
+        "Revenge",
+        "Weak to Strong"
+      ],
+      "sourceUrl": "https://babelnovel.com/books/the-hidden-billionaire"
+    },
+    {
+      "slug": "urban-strongest-system",
+      "title": "Urban Strongest System",
+      "finalChapter": 493,
+      "status": "Completed",
+      "genres": [
+        "Modern & Urban",
+        "System",
+        "Revenge",
+        "Special Abilities"
+      ],
+      "sourceUrl": "https://babelnovel.com/books/urban-strongest-system"
+    },
+    {
+      "slug": "almighty-system",
+      "title": "Almighty System",
+      "finalChapter": 644,
+      "status": "Completed",
+      "genres": [
+        "System",
+        "Cultivation",
+        "Fantasy",
+        "Weak to Strong"
+      ],
+      "sourceUrl": "https://babelnovel.com/books/almighty-system"
+    },
+    {
+      "slug": "zhong-tai-qian-yi-test",
+      "title": "Global Check-in System",
+      "finalChapter": 479,
+      "status": "Completed",
+      "genres": [
+        "Modern & Urban",
+        "System",
+        "Billionaire",
+        "Progression"
+      ],
+      "sourceUrl": "https://babelnovel.com/books/zhong-tai-qian-yi-test"
+    },
+    {
+      "slug": "super-billionaire",
+      "title": "Super Billionaire",
+      "finalChapter": 534,
+      "status": "Completed",
+      "genres": [
+        "Modern & Urban",
+        "Hidden Heir",
+        "Revenge",
+        "Billionaire"
+      ],
+      "sourceUrl": "https://babelnovel.com/books/super-billionaire"
+    },
+    {
+      "slug": "urban-sect-master-system",
+      "title": "Urban Sect Master System",
+      "finalChapter": 105,
+      "status": "Completed",
+      "genres": [
+        "System",
+        "Cultivation",
+        "Urban Fantasy",
+        "Weak to Strong"
+      ],
+      "sourceUrl": "https://babelnovel.com/books/urban-sect-master-system"
+    }
+  ]
+}
