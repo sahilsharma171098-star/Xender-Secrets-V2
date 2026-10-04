@@ -62,13 +62,6 @@ async function translateChunk(raw,target,ai,source){
   if(source===target)return raw;
   const targetLang=TRANSLATION_TARGET_MAP[target]||target;
   const sourceLang=TRANSLATION_TARGET_MAP[source]||source;
-  if(ai){
-    try{
-      const result=await ai.run("@cf/meta/m2m100-1.2b",{text:raw,source_lang:sourceLang,target_lang:targetLang});
-      const translated=String(result?.translated_text||result?.translation||result?.text||"").trim();
-      if(translated)return translated;
-    }catch(e){}
-  }
   let lastError=null;
   for(const host of ["https://translate.googleapis.com/translate_a/single","https://translate.google.com/translate_a/single"]){
     const u=new URL(host);
@@ -84,6 +77,13 @@ async function translateChunk(raw,target,ai,source){
     }catch(e){lastError=e}
     finally{clearTimeout(timer)}
   }
+  if(ai){
+    try{
+      const result=await ai.run("@cf/meta/m2m100-1.2b",{text:raw,source_lang:sourceLang,target_lang:targetLang});
+      const translated=String(result?.translated_text||result?.translation||result?.text||"").trim();
+      if(translated)return translated;
+    }catch(e){lastError=e}
+  }
   throw lastError||new Error("Translation unavailable");
 }
 async function translateOne(text,target,ai,source="en"){
@@ -91,7 +91,7 @@ async function translateOne(text,target,ai,source="en"){
   if(!raw.trim()||source===target)return raw;
   const chunks=splitTranslationText(raw),translated=[];
   for(const chunk of chunks)translated.push(await translateChunk(chunk,target,ai,source));
-  return translated.join("");
+  return translated.join(" ");
 }
 async function translateBatch(texts,target,ai,source="en"){
   const out=new Array(texts.length),queue=[...texts.keys()];let failed=null;
