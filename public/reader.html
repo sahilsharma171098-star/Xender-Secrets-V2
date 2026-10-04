@@ -43,7 +43,7 @@
 const API="https://xender-reader-api.onrender.com";
 const p=new URLSearchParams(location.search),xhSlug=p.get("xh"),licensedSlug=p.get("licensed"),importedSlug=p.get("imported"),gutenbergSlug=p.get("gutenberg");
 const sourceType=gutenbergSlug?"gutenberg":importedSlug?"imported":licensedSlug?"licensed":xhSlug?"xh":null,slug=gutenbergSlug||importedSlug||licensedSlug||xhSlug||"";
-let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map(),localNovel=null,sourceLanguage="en";
+let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map(),browserTranslators=new Map(),sessionAutoTranslate=false,localNovel=null,sourceLanguage="en";
 const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),status=document.getElementById("status"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar"),jumpInput=document.getElementById("jumpInput"),counter=document.getElementById("counter"),languageSelect=document.getElementById("languageSelect"),translateBtn=document.getElementById("translateChapter"),translateStatus=document.getElementById("translateStatus"),readerNote=document.getElementById("readerNote");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function storageKey(){return "xs-"+sourceType+"-reading-"+slug}
@@ -97,52 +97,116 @@ async function loadChapter(n){
    originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[]};
   }
   renderChapter(originalChapter.title,originalChapter.paragraphs,originalChapter.language||sourceLanguage||"en");translateStatus.textContent="";status.hidden=true;localStorage.setItem(storageKey(),String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
-  const preferred=languageSelect.value;if(preferred!=="original"&&localStorage.getItem("xsReaderAutoTranslate")==="1")translateCurrent(preferred);
+  const preferred=languageSelect.value;if(preferred!=="original"&&sessionAutoTranslate)translateCurrent(preferred);
  }catch(e){status.hidden=false;status.className="status error";status.textContent="Chapter "+chapter+" could not be loaded. Xender did not skip it. Try again or choose another chapter.";}
 }
 function renderChapter(chapterHeading,paragraphs,lang){ct.textContent=chapterHeading;content.innerHTML=(paragraphs||[]).map(x=>"<p>"+esc(x)+"</p>").join("");const rtl=["ar","ur"].includes(lang);content.dir=rtl?"rtl":"ltr";content.lang=lang||"en";}
+function browserTranslationLang(lang){
+ if(lang==="zh-CN")return "zh-Hant";
+ return lang;
+}
+async function translateInBrowser(texts,source,target){
+ if(!("Translator" in self))return null;
+ const sourceLanguageCode=browserTranslationLang(source),targetLanguageCode=browserTranslationLang(target);
+ let availability;
+ try{availability=await Translator.availability({sourceLanguage:sourceLanguageCode,targetLanguage:targetLanguageCode})}
+ catch(e){return null}
+ if(availability==="unavailable")return null;
+ const cacheKey=sourceLanguageCode+">"+targetLanguageCode;
+ let translator=browserTranslators.get(cacheKey);
+ if(!translator){
+  translateStatus.textContent=availability==="downloadable"?"Downloading translator…":"Preparing translator…";
+  try{
+   translator=await Translator.create({
+    sourceLanguage:sourceLanguageCode,
+    targetLanguage:targetLanguageCode,
+    monitor(m){
+     m.addEventListener("downloadprogress",e=>{
+      const pct=Math.max(0,Math.min(100,Math.round(Number(e.loaded||0)*100)));
+      translateStatus.textContent="Downloading translator "+pct+"%…";
+     });
+    }
+   });
+   browserTranslators.set(cacheKey,translator);
+  }catch(e){return null}
+ }
+ const out=[];
+ for(let i=0;i<texts.length;i++){
+  translateStatus.textContent="Translating "+(i+1)+"/"+texts.length+"…";
+  out.push(await translator.translate(texts[i]));
+ }
+ return out;
+}
+async function translateOnServer(texts,source,target){
+ const translatedBlocks=[],batches=[];let batch=[],chars=0;
+ for(const text of texts){
+  if(batch.length&&(batch.length>=20||chars+text.length>16000)){batches.push(batch);batch=[];chars=0}
+  batch.push(text);chars+=text.length;
+ }
+ if(batch.length)batches.push(batch);
+ for(let i=0;i<batches.length;i++){
+  translateStatus.textContent=batches.length>1?("Server translation "+(i+1)+"/"+batches.length+"…"):"Server translation…";
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
+  let resp;
+  try{
+   resp=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,source,texts:batches[i]}),signal:controller.signal});
+  }catch(e){
+   if(e?.name==="AbortError")throw new Error("Translation timed out. Tap Translate chapter to retry.");
+   throw e;
+  }finally{clearTimeout(timer)}
+  const data=await resp.json().catch(()=>({}));
+  if(!resp.ok||!data.ok)throw new Error(data.error||"Translation unavailable");
+  translatedBlocks.push(...(Array.isArray(data.translated)?data.translated:[]));
+ }
+ return translatedBlocks;
+}
 async function translateCurrent(target){
- if(!originalChapter||!Array.isArray(originalChapter.paragraphs))return;
+ if(!originalChapter||!Array.isArray(originalChapter.paragraphs))return false;
  const source=originalChapter.language||sourceLanguage||"en";
  if(target==="original"||target===source){
-  renderChapter(originalChapter.title,originalChapter.paragraphs,source);translateStatus.textContent="Original";localStorage.setItem("xsReaderLanguage",target);return;
+  sessionAutoTranslate=false;renderChapter(originalChapter.title,originalChapter.paragraphs,source);translateStatus.textContent="Original";localStorage.setItem("xsReaderLanguage",target);return true;
  }
- const key=sourceType+":"+slug+":"+chapter+":"+source+":"+target;translateBtn.disabled=true;languageSelect.disabled=true;translateStatus.textContent="Translating…";
+ const key=sourceType+":"+slug+":"+chapter+":"+source+":"+target;translateBtn.disabled=true;languageSelect.disabled=true;translateStatus.textContent="Preparing translation…";
  try{
   let translated=translationCache.get(key);
   if(!translated){
-   const texts=[originalChapter.title,...originalChapter.paragraphs.map(x=>String(x??"").trim()).filter(Boolean)],translatedBlocks=[];
-   const batches=[];let batch=[],chars=0;
-   for(const text of texts){
-    if(batch.length&&(batch.length>=20||chars+text.length>16000)){batches.push(batch);batch=[];chars=0}
-    batch.push(text);chars+=text.length;
-   }
-   if(batch.length)batches.push(batch);
-   for(let i=0;i<batches.length;i++){
-    translateStatus.textContent=batches.length>1?("Translating "+(i+1)+"/"+batches.length+"…"):"Translating…";
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
-    let resp;
-    try{
-     resp=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,source,texts:batches[i]}),signal:controller.signal});
-    }catch(e){
-     if(e?.name==="AbortError")throw new Error("Translation timed out. Tap Translate chapter to retry.");
-     throw e;
-    }finally{clearTimeout(timer)}
-    const data=await resp.json().catch(()=>({}));if(!resp.ok||!data.ok)throw new Error(data.error||"Translation unavailable");
-    translatedBlocks.push(...(Array.isArray(data.translated)?data.translated:[]));
+   const texts=[originalChapter.title,...originalChapter.paragraphs.map(x=>String(x??"").trim()).filter(Boolean)];
+   let translatedBlocks=await translateInBrowser(texts,source,target);
+   if(!Array.isArray(translatedBlocks)||translatedBlocks.length!==texts.length){
+    translatedBlocks=await translateOnServer(texts,source,target);
    }
    if(translatedBlocks.length!==texts.length)throw new Error("Translation returned incomplete text. Please try again.");
    translated={title:translatedBlocks[0]||originalChapter.title,paragraphs:translatedBlocks.slice(1)};
    translationCache.set(key,translated);
   }
-  renderChapter(translated.title||originalChapter.title,translated.paragraphs||[],target);translateStatus.textContent="Translated";localStorage.setItem("xsReaderLanguage",target);
- }catch(e){translateStatus.textContent=e.message||"Translation unavailable";renderChapter(originalChapter.title,originalChapter.paragraphs,source)}
- finally{translateBtn.disabled=false;languageSelect.disabled=false}
+  renderChapter(translated.title||originalChapter.title,translated.paragraphs||[],target);
+  translateStatus.textContent="Translated";
+  localStorage.setItem("xsReaderLanguage",target);
+  sessionAutoTranslate=true;
+  return true;
+ }catch(e){
+  sessionAutoTranslate=false;
+  translateStatus.textContent=e.message||"Translation unavailable";
+  renderChapter(originalChapter.title,originalChapter.paragraphs,source);
+  return false;
+ }finally{translateBtn.disabled=false;languageSelect.disabled=false}
 }
-const supported=[...languageSelect.options].map(o=>o.value),savedLang=localStorage.getItem("xsReaderLanguage"),browserLang=(navigator.language||"en").split("-")[0];
+const supported=[...languageSelect.options].map(o=>o.value),savedLang=localStorage.getItem("xsReaderLanguage");
 languageSelect.value=supported.includes(savedLang)?savedLang:"original";
-translateBtn.onclick=()=>{const target=languageSelect.value;localStorage.setItem("xsReaderAutoTranslate",target==="original"?"0":"1");translateCurrent(target)};
-languageSelect.onchange=()=>{const target=languageSelect.value;localStorage.setItem("xsReaderLanguage",target);localStorage.setItem("xsReaderAutoTranslate",target==="original"?"0":"1");translateCurrent(target)};
+translateBtn.onclick=async()=>{
+ const target=languageSelect.value;
+ if(target==="original"){sessionAutoTranslate=false;localStorage.setItem("xsReaderAutoTranslate","0")}
+ const ok=await translateCurrent(target);
+ localStorage.setItem("xsReaderAutoTranslate",ok&&target!=="original"?"1":"0");
+};
+languageSelect.onchange=()=>{
+ const target=languageSelect.value;
+ localStorage.setItem("xsReaderLanguage",target);
+ sessionAutoTranslate=false;
+ localStorage.setItem("xsReaderAutoTranslate","0");
+ if(target==="original"||target===(originalChapter?.language||sourceLanguage||"en"))translateCurrent("original");
+ else translateStatus.textContent="Tap Translate chapter";
+};
 prev.onclick=()=>{if(chapter>1)loadChapter(chapter-1)};next.onclick=()=>{if(chapter<finalChapter)loadChapter(chapter+1)};document.getElementById("jumpBtn").onclick=()=>loadChapter(jumpInput.value);jumpInput.addEventListener("keydown",e=>{if(e.key==="Enter")loadChapter(jumpInput.value)});
 let size=Number(localStorage.getItem("xsReaderSize")||19);function setSize(){size=Math.min(28,Math.max(15,size));document.documentElement.style.setProperty("--reader-size",size+"px");localStorage.setItem("xsReaderSize",size)}document.getElementById("fontDown").onclick=()=>{size--;setSize()};document.getElementById("fontUp").onclick=()=>{size++;setSize()};setSize();
 const themeToggle=document.getElementById("themeToggle");if(localStorage.getItem("xsReaderTheme")==="light"){document.body.classList.add("reader-light");themeToggle.textContent="Dark mode"}themeToggle.onclick=()=>{document.body.classList.toggle("reader-light");const light=document.body.classList.contains("reader-light");themeToggle.textContent=light?"Dark mode":"Light mode";localStorage.setItem("xsReaderTheme",light?"light":"dark")};
