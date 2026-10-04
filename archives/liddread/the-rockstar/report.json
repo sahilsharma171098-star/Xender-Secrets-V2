@@ -4,10 +4,10 @@
   "indexUrl": "https://liddread.com/the-rockstar/",
   "permissionScope": "completed-only",
   "complete": false,
-  "startedAt": "2026-10-04T14:00:37.662Z",
-  "finishedAt": "2026-10-04T14:00:37.662Z",
+  "startedAt": "2026-10-04T14:03:52.160Z",
+  "finishedAt": "2026-10-04T14:03:52.160Z",
   "fatalError": "Could not fetch index: Error: jina HTTP 403",
-  "finalChapter": null,
+  "finalChapter": 900,
   "archivedChapters": 0,
   "errors": []
 }
