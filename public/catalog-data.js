@@ -36,6 +36,7 @@ const businessTypes=[
 ["events","EVNT","Wedding & Event Planners","Creative","🎉",["Wedding Planner","Luxury Events","Corporate Events","Destination Wedding","Party Planner","Venue Styling","Event Portfolio","Vendor Network","Consultation Funnel","Signature Events"]],
 ["logistics","LOGI","Logistics","B2B","🚚",["Freight Company","Last Mile","Warehousing","Transport Fleet","Cold Chain","International Logistics","Shipment Quote","B2B Logistics","Supply Chain","Logistics Platform"]],
 ["saas","SAAS","SaaS & Startups","Technology","🚀",["SaaS Launch","AI Startup","B2B Software","Developer Tool","Fintech SaaS","Product-led Growth","Waitlist Launch","Enterprise SaaS","App Landing","Startup Flagship"]],
+["small-business","SMB","Small Businesses","Local Business","🏪",["Local Business Starter","Professional Presence","Service Showcase","Lead Generation","Neighborhood Brand","Owner-led Business","Multi Service","Trust Builder","WhatsApp Enquiries","Small Business Flagship"]],
 ["personal","PERS","Freelancers & Personal Brands","Creator","✨",["Consultant Brand","Creator Portfolio","Freelancer Services","Speaker Profile","Coach Brand","Writer Portfolio","Designer Portfolio","Developer Portfolio","Newsletter Brand","Personal Flagship"]]
 ].map(x=>({id:x[0],code:x[1],name:x[2],group:x[3],emoji:x[4],focuses:x[5]}));
 
