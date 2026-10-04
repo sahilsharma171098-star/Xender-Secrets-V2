@@ -7,6 +7,12 @@ on:
     paths:
       - '.github/workflows/xender-live-e2e.yml'
       - 'tests/xender-live-e2e.mjs'
+      - 'public/**'
+      - 'src/**'
+
+concurrency:
+  group: xender-live-e2e
+  cancel-in-progress: true
 
 permissions:
   contents: read
