@@ -119,6 +119,46 @@ const GUTENBERG_SERIALS = {
     summary: "A complete 120-chapter Chinese侠义 classic of martial heroes, intrigue, loyalty and Judge Bao's pursuit of justice.",
     sourceSite: "Project Gutenberg",
     sources: [{bookId:"25376",url:"https://www.gutenberg.org/cache/epub/25376/pg25376.txt",from:1,to:120,mode:"chinese"}]
+  },
+  "sui-tang-romance-zh": {
+    title: "Romance of Sui and Tang Dynasties — Complete Chinese Edition",
+    author: "Chu Renhu",
+    finalChapter: 100,
+    language: "zh-CN",
+    genres: ["Chinese Classic","War","Strategy","Dynasty","Adventure"],
+    summary: "A complete 100-chapter historical epic of the fall of Sui, the rise of Tang, rebellion, court intrigue and battlefield ambition.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"23835",url:"https://www.gutenberg.org/cache/epub/23835/pg23835.txt",from:1,to:100,mode:"chinese"}]
+  },
+  "han-xiangzi-zh": {
+    title: "The Story of Han Xiangzi — Complete Chinese Edition",
+    author: "Yang Erzeng",
+    finalChapter: 30,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Cultivation","Daoism","Immortals","Supernatural"],
+    summary: "A complete 30-chapter Daoist fantasy about Han Xiangzi's spiritual cultivation, immortals and the tension between worldly duty and transcendence.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"24231",url:"https://www.gutenberg.org/cache/epub/24231/pg24231.txt",from:1,to:30,mode:"chinese"}]
+  },
+  "heroic-sons-daughters-zh": {
+    title: "The Tale of Heroic Sons and Daughters — Complete Chinese Edition",
+    author: "Wenkang",
+    finalChapter: 40,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Wuxia","Romance","Adventure","Justice"],
+    summary: "A complete 40-chapter Qing novel combining martial heroism, romance, family duty and adventure.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"25327",url:"https://www.gutenberg.org/cache/epub/25327/pg25327.txt",from:1,to:40,mode:"chinese"}]
+  },
+  "travels-lao-can-zh": {
+    title: "The Travels of Lao Can — Complete Chinese Edition",
+    author: "Liu E",
+    finalChapter: 20,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Mystery","Satire","Travel","Justice"],
+    summary: "A complete 20-chapter late-Qing novel following a wandering physician through injustice, investigation, social decay and reform.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"23850",url:"https://www.gutenberg.org/cache/epub/23850/pg23850.txt",from:1,to:20,mode:"chinese"}]
   }
 };
 
