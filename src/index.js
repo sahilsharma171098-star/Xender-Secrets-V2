@@ -446,7 +446,7 @@ export class AppState extends DurableObject {
 }
 
 
-const COMMUNITY_CATEGORIES=["general","webdev","ecommerce","ai","business","books"];
+const COMMUNITY_CATEGORIES=["general","ideas","webdev","ecommerce","ai","business","books"];
 
 async function appUser(request,env){
   const id=env.APP_STATE.idFromName("xender-secrets");
@@ -618,24 +618,24 @@ function chatReply(raw){
   }else if(/shop|product|buy|cart|ecommerce|e-commerce|price|shopping|order/.test(q)){
     reply="Ecommerce Shop mein products, search, filters, persistent order requests aur account-linked order history available hai.";
     actions=[{label:"Open Shop",href:"/catalog.html"},{label:"My Account",href:"/account.html"}];
-  }else if(/website|web site|frontend|front end|backend|back end|full.?stack|developer|development|landing page|api/.test(q)){
+  }else if(/idea|ideas|build board|idea catalog|what.*build|want.*built|deploy/.test(q)){\n    reply="Idea Catalog / Build Board mein members jo website, app, automation ya AI workflow chahte hain woh publish kar sakte hain. Xender un ideas ko scope karke build aur deploy kar sakta hai.";\n    actions=[{label:"Open Idea Catalog",href:"/ideas.html"},{label:"Share an Idea",href:"/ideas.html#share-idea"}];\n  }else if(/website|web site|frontend|front end|backend|back end|full.?stack|developer|development|landing page|api/.test(q)){
     reply="Website Development catalog mein Frontend, Backend/API aur Full-Stack builds hain. Backend flows Cloudflare Workers aur persistent SQLite storage ke saath connected hain.";
-    actions=[{label:"Website Catalog",href:"/website-catalog.html"},{label:"Discuss Project",href:"https://wa.me/918368495854?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website%20project."}];
+    actions=[{label:"Website Catalog",href:"/website-catalog.html"},{label:"Discuss Project",href:"https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website%20project."}];
   }else if(/novel|book|read|chinese|china|story|stories/.test(q)){
     reply="Completed Novels library mein world classics aur Chinese classics dono hain. Reading links original Project Gutenberg sources par open hote hain.";
     actions=[{label:"Browse Novels",href:"/novels.html"}];
   }else if(/prompt|tracker|digital product|workflow|template|ai tool/.test(q)){
     reply="Digital Products section mein Sales Trackers, Prompt Packs aur Workflow Templates hain. Custom versions business use-case ke hisaab se ban sakte hain.";
-    actions=[{label:"Digital Products",href:"/#products"},{label:"Ask on WhatsApp",href:"https://wa.me/918368495854"}];
+    actions=[{label:"Digital Products",href:"/#products"},{label:"Ask on WhatsApp",href:"https://wa.me/919821941814"}];
   }else if(/lead|sales|customer|cx|research|service/.test(q)){
     reply="Services mein Website & Landing Pages, Lead Generation & Research, Sales/CX Support aur AI-assisted workflows included hain.";
-    actions=[{label:"View Services",href:"/#services"},{label:"Start Enquiry",href:"https://wa.me/918368495854"}];
+    actions=[{label:"View Services",href:"/#services"},{label:"Start Enquiry",href:"https://wa.me/919821941814"}];
   }else if(/account|register|registration|login|log in|sign in|sign up|profile/.test(q)){
     reply="Xender Account supports server-side registration, login, secure sessions and account-linked order history.";
     actions=[{label:"Login / Register",href:"/account.html"}];
   }else if(/contact|whatsapp|email|call|talk|human|person|support/.test(q)){
     reply="Aap Xender Secrets ko WhatsApp, email ya Contact page se reach kar sakte ho.";
-    actions=[{label:"WhatsApp",href:"https://wa.me/918368495854"},{label:"Contact Page",href:"/contact.html"},{label:"Email",href:"mailto:Sahilsharma171098@gmail.com"}];
+    actions=[{label:"WhatsApp",href:"https://wa.me/919821941814"},{label:"Contact Page",href:"/contact.html"},{label:"Email",href:"mailto:Sahilsharma171098@gmail.com"}];
   }else if(/refund|return|policy|privacy|terms/.test(q)){
     reply="Privacy, Terms aur Refund pages website footer mein available hain.";
     actions=[{label:"Refunds",href:"/refund.html"},{label:"Privacy",href:"/privacy.html"},{label:"Terms",href:"/terms.html"}];
