@@ -1,0 +1,13 @@
+{
+  "slug": "absolute-god",
+  "title": "Absolute God",
+  "indexUrl": "https://liddread.com/absolute-god/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T13:58:57.042Z",
+  "finishedAt": "2026-10-04T13:58:57.042Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 2772,
+  "archivedChapters": 0,
+  "errors": []
+}
