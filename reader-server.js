@@ -99,6 +99,26 @@ const GUTENBERG_SERIALS = {
     summary: "The complete 120-chapter Chinese edition chronicling the rise and decline of an aristocratic family through love, dreams and spiritual symbolism.",
     sourceSite: "Project Gutenberg",
     sources: [{bookId:"24264",url:"https://www.gutenberg.org/cache/epub/24264/pg24264.txt",from:1,to:120,mode:"chinese"}]
+  },
+  "flowers-in-the-mirror-zh": {
+    title: "Flowers in the Mirror — Complete Chinese Edition",
+    author: "Li Ruzhen",
+    finalChapter: 100,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Fantasy","Adventure","Mythology","Satire"],
+    summary: "A complete 100-chapter Chinese fantasy about banished flower spirits, strange kingdoms, adventure and social satire.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"25377",url:"https://www.gutenberg.org/cache/epub/25377/pg25377.txt",from:1,to:100,mode:"chinese"}]
+  },
+  "three-heroes-five-gallants-zh": {
+    title: "Three Heroes and Five Gallants — Complete Chinese Edition",
+    author: "Shi Yukun",
+    finalChapter: 120,
+    language: "zh-CN",
+    genres: ["Chinese Classic","Wuxia","Justice","Martial Arts","Mystery"],
+    summary: "A complete 120-chapter Chinese侠义 classic of martial heroes, intrigue, loyalty and Judge Bao's pursuit of justice.",
+    sourceSite: "Project Gutenberg",
+    sources: [{bookId:"25376",url:"https://www.gutenberg.org/cache/epub/25376/pg25376.txt",from:1,to:120,mode:"chinese"}]
   }
 };
 
