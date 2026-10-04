@@ -1,6 +1,6 @@
 {
   "source": "LiddRead",
-  "updatedAt": "2026-10-04T14:02:32.688Z",
+  "updatedAt": "2026-10-04T14:02:39.202Z",
   "novels": {
     "absolute-god": {
       "slug": "absolute-god",
@@ -60,8 +60,8 @@
       "indexUrl": "https://liddread.com/ancestral-conquest/",
       "permissionScope": "completed-only",
       "complete": false,
-      "startedAt": "2026-10-04T13:59:23.910Z",
-      "finishedAt": "2026-10-04T13:59:23.910Z",
+      "startedAt": "2026-10-04T14:02:39.201Z",
+      "finishedAt": "2026-10-04T14:02:39.201Z",
       "fatalError": "Could not fetch index: Error: jina HTTP 403",
       "finalChapter": 785,
       "archivedChapters": 0,
