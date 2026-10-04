@@ -1,6 +1,6 @@
 {
   "source": "LiddRead",
-  "updatedAt": "2026-10-04T14:00:17.328Z",
+  "updatedAt": "2026-10-04T14:00:24.014Z",
   "novels": {
     "absolute-god": {
       "slug": "absolute-god",
@@ -168,6 +168,19 @@
       "finishedAt": "2026-10-04T14:00:17.328Z",
       "fatalError": "Could not fetch index: Error: jina HTTP 403",
       "finalChapter": 4398,
+      "archivedChapters": 0,
+      "errors": []
+    },
+    "rise-to-defeat": {
+      "slug": "rise-to-defeat",
+      "title": "Rise to Defeat",
+      "indexUrl": "https://liddread.com/rise-to-defeat/",
+      "permissionScope": "completed-only",
+      "complete": false,
+      "startedAt": "2026-10-04T14:00:24.014Z",
+      "finishedAt": "2026-10-04T14:00:24.014Z",
+      "fatalError": "Could not fetch index: Error: jina HTTP 403",
+      "finalChapter": 2284,
       "archivedChapters": 0,
       "errors": []
     }
