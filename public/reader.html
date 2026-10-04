@@ -26,14 +26,26 @@
 <div class="reader-note" id="readerNote">Republished on Xender with permission from XperimentalHamid. Reading is currently 100% free with no paywall. Your last chapter is saved on this device.</div><div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><a class="pill" href="community.html?category=books">Discuss on Xender →</a><a class="secondary" href="https://t.me/+S0mWe81MlUpjNzQ1" target="_blank" rel="noopener">Join Telegram Readers Group →</a></div>
 </article>
 </main>
-<script src="script.js"></script>
+<script src="script.js"></script><script src="liddread-catalog.js"></script>
 <script>
 const API="https://xender-reader-api.onrender.com";
-const p=new URLSearchParams(location.search),slug=p.get("xh");let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1;
+const p=new URLSearchParams(location.search),slug=p.get("xh"),liddSlug=p.get("lidd");let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1;
 const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),status=document.getElementById("status"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar"),jumpInput=document.getElementById("jumpInput"),counter=document.getElementById("counter");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function updateUrl(){const u=new URL(location.href);u.searchParams.set("xh",slug);u.searchParams.set("chapter",chapter);history.replaceState(null,"",u);}
 async function loadMeta(){
+ if(liddSlug){
+  const d=(window.XENDER_LIDDREAD_CATALOG||{})[liddSlug];
+  if(!d){title.textContent="Novel not found";status.textContent="Return to the library and choose an available completed novel.";prev.disabled=next.disabled=true;return false;}
+  title.textContent=d.title;finalChapter=Number(d.finalChapter||1);meta.textContent=Number(finalChapter).toLocaleString()+" chapters • LiddRead • Completed";
+  ct.textContent="Mapped to Xender";
+  status.className="status";status.hidden=false;status.innerHTML='This completed novel is mapped on Xender. Full chapter text is currently being imported from the authorized LiddRead source. No ongoing titles are included.';
+  content.innerHTML='<p><strong>'+esc(d.title)+'</strong> has '+Number(finalChapter).toLocaleString()+' completed chapters mapped.</p><p>Source: LiddRead. Chapter bodies will appear here after the archive/import completes.</p>';
+  jumpInput.value=1;jumpInput.max=finalChapter;counter.textContent="of "+Number(finalChapter).toLocaleString();bar.style.width="0%";prev.disabled=next.disabled=true;
+  document.getElementById("readerNote").textContent="Mapped from LiddRead under the completed-novels permission. Import pending; Xender will not substitute or invent missing chapter text.";
+  document.title=d.title+" | Xender";
+  return false;
+ }
  if(!slug){title.textContent="Novel not found";status.textContent="Return to the library and choose a completed novel.";prev.disabled=next.disabled=true;return false;}
  try{
   const r=await fetch(API+"/xh/novel?slug="+encodeURIComponent(slug));const d=await r.json();if(!d.ok)throw new Error(d.error||"Novel unavailable");
