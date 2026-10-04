@@ -38,6 +38,29 @@ const COUNTRY_CURRENCY={
 };
 const FALLBACK_RATES={INR:1,USD:.0113,EUR:.0097,GBP:.0084,CAD:.0157,AUD:.0172,NZD:.0193,AED:.0415,SAR:.0424,QAR:.0411,KWD:.00347,BHD:.00425,OMR:.00435,SGD:.0146,MYR:.0475,JPY:1.67,CNY:.0804,HKD:.0878,KRW:15.9,IDR:188,THB:.368,PHP:.66,VND:298,BDT:1.38,PKR:3.18,LKR:3.42,NPR:1.60,ZAR:.195,NGN:16.5,KES:1.46,GHS:.123,EGP:.54,MAD:.103,ILS:.037,TRY:.47,CHF:.0091,SEK:.104,NOK:.113,DKK:.072,PLN:.041,CZK:.238,HUF:3.75,RON:.049,RSD:1.14,BGN:.019,ISK:1.39,BRL:.060,MXN:.208,ARS:16.9,CLP:10.5,COP:42.5,PEN:.039,UYU:.452,PYG:82.0,BOB:.078,CRC:5.65,DOP:.708,JMD:1.81,TTD:.077};
 const currencyForCountry=country=>EURO_CURRENCY_COUNTRIES.has(country)?"EUR":(COUNTRY_CURRENCY[country]||"USD");
+const TRANSLATION_LANGUAGES=new Set(["hi","es","fr","de","pt","ar","id","tr","nl","it","ru","ja","ko","zh-CN","th","vi","bn","ur","mr","ta","te","gu","pa","ml","kn"]);
+async function translateOne(text,target){
+  const raw=String(text??"");
+  if(!raw.trim())return raw;
+  const u=new URL("https://translate.googleapis.com/translate_a/single");
+  u.searchParams.set("client","gtx");
+  u.searchParams.set("sl","en");
+  u.searchParams.set("tl",target);
+  u.searchParams.set("dt","t");
+  u.searchParams.set("q",raw.slice(0,5000));
+  const r=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"}});
+  if(!r.ok)throw new Error("Translation upstream error "+r.status);
+  const j=await r.json();
+  const translated=Array.isArray(j?.[0])?j[0].map(x=>x?.[0]||"").join(""):"";
+  if(!translated)throw new Error("Translation returned no text");
+  return translated;
+}
+async function translateBatch(texts,target){
+  const out=new Array(texts.length);let i=0;
+  async function worker(){while(true){const n=i++;if(n>=texts.length)return;out[n]=await translateOne(texts[n],target)}}
+  await Promise.all(Array.from({length:Math.min(5,texts.length)},worker));
+  return out;
+}
 async function inrRate(currency){
   if(currency==="INR")return {rate:1,source:"base",updatedAt:null};
   try{
@@ -738,6 +761,21 @@ export default {
         if(!user)return json({ok:false,error:"Login is required to react."},401);
         const {r,j}=await callJson(stub,"/thread/like","POST",{userId:user.id,userName:user.name});
         return json(j,r.status);
+      }
+    }
+
+    if(path==="/api/translate" && method==="POST"){
+      const body=await request.json().catch(()=>({}));
+      const target=String(body.target||"").trim();
+      const texts=Array.isArray(body.texts)?body.texts.map(x=>String(x??"")):[];
+      if(!TRANSLATION_LANGUAGES.has(target))return json({ok:false,error:"Unsupported target language."},400);
+      if(!texts.length||texts.length>80)return json({ok:false,error:"Send between 1 and 80 text blocks."},400);
+      if(texts.some(x=>x.length>5000)||texts.reduce((n,x)=>n+x.length,0)>30000)return json({ok:false,error:"Chapter is too large to translate in one request."},413);
+      try{
+        const translated=await translateBatch(texts,target);
+        return json({ok:true,target,source:"en",translated,provider:"Google Translate"});
+      }catch(e){
+        return json({ok:false,error:"Translation is temporarily unavailable. Please try again."},502);
       }
     }
 
