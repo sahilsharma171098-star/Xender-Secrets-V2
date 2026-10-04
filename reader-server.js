@@ -167,6 +167,217 @@ async function scanXH(minChapter=1000) {
   return rows.filter(x=>!x.error&&x.maxChapter>=minChapter).sort((a,b)=>b.maxChapter-a.maxChapter);
 }
 
+
+const XH_COMPLETED = {
+  "billionaire-god-of-war": {
+    title: "Billionaire God of War",
+    sourceSite: "XperimentalHamid",
+    indexUrl: "https://xperimentalhamid.com/news/billionaire-god-of-war-novel-complete-links-new/",
+    finalChapter: 2495,
+    genres: ["Urban", "War God", "Hidden Power", "Romance"],
+    summary: "A long translated urban power fantasy with revenge, hidden strength, family conflict and war-god escalation.",
+    verifiedEnding: "Chapter 2495 contains THE END."
+  },
+  "my-husband-warm-the-bed": {
+    title: "My Husband Warm The Bed",
+    sourceSite: "XperimentalHamid",
+    indexUrl: "https://xperimentalhamid.com/news/top/my-husband-warm-the-bed-novel-links-new/",
+    finalChapter: 1985,
+    genres: ["Urban Romance", "Marriage", "CEO", "Family"],
+    summary: "A very long translated marriage and family romance built around Kevin/Karen and later generations.",
+    verifiedEnding: "XH source states the novel ends at chapter 1985."
+  },
+  "take-my-breath-away": {
+    title: "Take My Breath Away",
+    sourceSite: "XperimentalHamid",
+    indexUrl: "https://xperimentalhamid.com/novels/take-my-breath-away-complete-chapters-new/",
+    finalChapter: 1476,
+    genres: ["Urban Romance", "Marriage", "CEO", "Drama"],
+    summary: "A completed translated romance following a broken marriage, reunion, family growth and long-form relationship drama.",
+    verifiedEnding: "Chapter 1476 contains THE END."
+  }
+};
+
+const xhIndexCache = new Map();
+const xhPageCache = new Map();
+let xhCatalogCache = {at:0, rows:null};
+
+function safeUrl(u="") {
+  try {
+    const x = new URL(u);
+    if (!/^(?:www\.)?(?:xperimentalhamid\.com|tales\.xperimentalhamid\.com)$/i.test(x.hostname)) return null;
+    return x.toString();
+  } catch { return null; }
+}
+async function fetchHtml(url) {
+  const r = await fetch(url, {redirect:"follow", headers:{
+    "user-agent":"XenderSecretsReader/2.0 (+https://xendersecrets.com)",
+    "accept":"text/html,application/xhtml+xml"
+  }});
+  if (!r.ok) throw new Error("Upstream "+r.status+" for "+url);
+  return {html:await r.text(), finalUrl:r.url};
+}
+function cleanText(s="") {
+  return stripTags(String(s)
+    .replace(/<br\s*\/?\s*>/gi,"\n")
+    .replace(/<\/p>/gi,"\n")
+    .replace(/<\/h[1-6]>/gi,"\n"));
+}
+function normalizeXhTitle(t="") {
+  return stripTags(t).toLowerCase()
+    .replace(/\bcomplete\b/g," ")
+    .replace(/\bchapters?\b/g," ")
+    .replace(/\blinks?\b/g," ")
+    .replace(/\bnovel\b/g," ")
+    .replace(/\bread\b/g," ")
+    .replace(/\bonline\b/g," ")
+    .replace(/\bfree\b/g," ")
+    .replace(/\bfull\b/g," ")
+    .replace(/\bchines(?:e)?\b/g," ")
+    .replace(/\bnew\b/g," ")
+    .replace(/\bfrom\s+\d+\s+to\s+\d+\b/g," ")
+    .replace(/[:\-–—]+/g," ")
+    .replace(/\s+/g," ").trim();
+}
+function buildCoverage(ranges, finalChapter) {
+  const covered = new Uint8Array(finalChapter + 1);
+  for (const r of ranges) {
+    const a=Math.max(1,r.start), b=Math.min(finalChapter,r.end);
+    for(let n=a;n<=b;n++) covered[n]=1;
+  }
+  const gaps=[]; let start=null;
+  for(let n=1;n<=finalChapter;n++){
+    if(!covered[n] && start===null) start=n;
+    if(covered[n] && start!==null){gaps.push([start,n-1]);start=null;}
+  }
+  if(start!==null) gaps.push([start,finalChapter]);
+  return gaps;
+}
+async function getXhIndex(slug) {
+  const novel=XH_COMPLETED[slug];
+  if(!novel) throw new Error("Unknown completed novel");
+  const cached=xhIndexCache.get(slug);
+  if(cached && Date.now()-cached.at < 60*60*1000) return cached.data;
+  const {html,finalUrl}=await fetchHtml(novel.indexUrl);
+  const raw=extractLinks(html)
+    .filter(a=>/chapter/i.test((a.text||"")+" "+(a.url||"")))
+    .filter(a=>!/#comment-|\/comments?\//i.test(a.url||""));
+  const byRange=new Map();
+  for(const a of raw){
+    const u=safeUrl(a.url); if(!u) continue;
+    const cr=chapterRange((a.text||"")+" "+u); if(!cr) continue;
+    let [start,end]=cr;
+    if(start<1 || start>novel.finalChapter || end<start) continue;
+    end=Math.min(end,novel.finalChapter);
+    const key=start+"-"+end;
+    if(!byRange.has(key)) byRange.set(key,{start,end,url:u,label:a.text||("Chapter "+start+(end>start?"-"+end:""))});
+  }
+  const ranges=[...byRange.values()].sort((a,b)=>a.start-b.start||a.end-b.end);
+  const gaps=buildCoverage(ranges,novel.finalChapter);
+  const data={slug,...novel,indexUrl:finalUrl||novel.indexUrl,ranges,gaps,rangeCount:ranges.length};
+  xhIndexCache.set(slug,{at:Date.now(),data});
+  return data;
+}
+function extractArticleBlocks(html) {
+  const article=(String(html).match(/<article\b[\s\S]*?<\/article>/i)||String(html).match(/<main\b[\s\S]*?<\/main>/i)||[String(html)])[0];
+  const stripped=article
+    .replace(/<script\b[\s\S]*?<\/script>/gi," ")
+    .replace(/<style\b[\s\S]*?<\/style>/gi," ")
+    .replace(/<form\b[\s\S]*?<\/form>/gi," ")
+    .replace(/<nav\b[\s\S]*?<\/nav>/gi," ");
+  const blocks=[]; const re=/<(h[1-6]|p)\b[^>]*>([\s\S]*?)<\/\1>/gi; let m;
+  while((m=re.exec(stripped))){
+    const type=m[1].toLowerCase();
+    const text=cleanText(m[2]).replace(/\s+/g," ").trim();
+    if(text) blocks.push({type,text});
+  }
+  return blocks;
+}
+function splitChapterPage(html, wanted, group) {
+  const blocks=extractArticleBlocks(html);
+  const sections=new Map(); let current=null;
+  for(const b of blocks){
+    const hm=b.text.match(/^Chapter\s+0*(\d{1,5})\b/i);
+    if(/^h[1-6]$/.test(b.type) && hm){
+      current=Number(hm[1]);
+      if(!sections.has(current)) sections.set(current,[]);
+      continue;
+    }
+    if(current!==null){
+      if(/^Subscribe for more update|^Next Chapters?$|^Read Free Novels$|^Table of Content$/i.test(b.text)) continue;
+      if(/^\d+ thoughts? on /i.test(b.text)) continue;
+      sections.get(current).push(b.text);
+    }
+  }
+  if(sections.has(wanted)){
+    return {paragraphs:sections.get(wanted), detected:[...sections.keys()].sort((a,b)=>a-b)};
+  }
+  if(group.start===group.end){
+    const fallback=blocks.map(b=>b.text).filter(t=>
+      !/^Read\s+Chapter/i.test(t) &&
+      !/^Subscribe for more update/i.test(t) &&
+      !/^Next Chapters?$/i.test(t) &&
+      !/^Read Free Novels$/i.test(t) &&
+      !/^Intro$/i.test(t) &&
+      !/^Table of Content$/i.test(t) &&
+      !/thoughts? on/i.test(t)
+    );
+    return {paragraphs:fallback, detected:[...sections.keys()].sort((a,b)=>a-b)};
+  }
+  return {paragraphs:[],detected:[...sections.keys()].sort((a,b)=>a-b)};
+}
+async function getXhChapter(slug, chapter) {
+  const idx=await getXhIndex(slug);
+  if(!Number.isInteger(chapter)||chapter<1||chapter>idx.finalChapter) throw new Error("Chapter out of range");
+  const group=idx.ranges.find(r=>chapter>=r.start&&chapter<=r.end);
+  if(!group) throw new Error("Chapter "+chapter+" is missing from source index");
+  const cacheKey=group.url;
+  let page=xhPageCache.get(cacheKey);
+  if(!page || Date.now()-page.at>60*60*1000){
+    const fetched=await fetchHtml(group.url);
+    page={at:Date.now(),html:fetched.html,finalUrl:fetched.finalUrl};
+    xhPageCache.set(cacheKey,page);
+    if(xhPageCache.size>120){
+      const first=xhPageCache.keys().next().value;
+      xhPageCache.delete(first);
+    }
+  }
+  const parsed=splitChapterPage(page.html,chapter,group);
+  if(!parsed.paragraphs.length) throw new Error("Could not isolate chapter "+chapter+" from source page");
+  return {
+    ok:true, slug, title:idx.title, chapter, finalChapter:idx.finalChapter,
+    chapterTitle:"Chapter "+chapter,
+    paragraphs:parsed.paragraphs,
+    sourceSite:idx.sourceSite,
+    sourceUrl:page.finalUrl||group.url,
+    attribution:"Republished on Xender with permission from XperimentalHamid.",
+    gaps:idx.gaps
+  };
+}
+async function verifyCandidateEnding(row) {
+  try {
+    const {html}=await fetchHtml(row.url);
+    const links=extractLinks(html)
+      .filter(a=>/chapter/i.test((a.text||"")+" "+(a.url||"")))
+      .filter(a=>!/#comment-|\/comments?\//i.test(a.url||""));
+    const groups=[];
+    for(const a of links){
+      const u=safeUrl(a.url); if(!u) continue;
+      const cr=chapterRange((a.text||"")+" "+u); if(!cr) continue;
+      groups.push({start:cr[0],end:cr[1],url:u});
+    }
+    groups.sort((a,b)=>a.end-b.end);
+    if(!groups.length) return null;
+    const finalGroup=groups[groups.length-1];
+    const finalPage=await fetchHtml(finalGroup.url);
+    const finalText=stripTags(finalPage.html);
+    const ended=/\bTHE END\b|novel ends here|this is end of the novel|end of the novel/i.test(finalText);
+    const max=finalGroup.end;
+    const gaps=buildCoverage(groups,max);
+    return ended && max>=1000 && gaps.length===0 ? {max,gaps,ended} : null;
+  } catch { return null; }
+}
+
 function cors(res, status=200, type="application/json; charset=utf-8") {
   res.writeHead(status, {
     "content-type": type,
@@ -180,6 +391,46 @@ function cors(res, status=200, type="application/json; charset=utf-8") {
 const server = http.createServer(async (req,res) => {
   if (req.method === "OPTIONS") { cors(res,204); return res.end(); }
   const url = new URL(req.url, "http://localhost");
+
+
+  if (url.pathname === "/xh/catalog") {
+    try {
+      const items=[];
+      for(const [slug,n] of Object.entries(XH_COMPLETED)){
+        let indexStatus=null;
+        try{
+          const ix=await getXhIndex(slug);
+          indexStatus={rangeCount:ix.rangeCount,gaps:ix.gaps};
+        }catch(e){
+          indexStatus={rangeCount:0,gaps:[[1,n.finalChapter]],error:String(e)};
+        }
+        items.push({slug,...n,indexStatus});
+      }
+      cors(res,200);
+      return res.end(JSON.stringify({ok:true,permissionBasis:"Republished with permission from XperimentalHamid.",completedOnly:true,items}));
+    } catch(e){
+      cors(res,500); return res.end(JSON.stringify({ok:false,error:String(e)}));
+    }
+  }
+
+  if (url.pathname === "/xh/novel") {
+    try{
+      const slug=url.searchParams.get("slug")||"";
+      const ix=await getXhIndex(slug);
+      cors(res,200);
+      return res.end(JSON.stringify({ok:true,slug:ix.slug,title:ix.title,finalChapter:ix.finalChapter,genres:ix.genres,summary:ix.summary,rangeCount:ix.rangeCount,gaps:ix.gaps,sourceSite:ix.sourceSite}));
+    }catch(e){ cors(res,404); return res.end(JSON.stringify({ok:false,error:String(e)})); }
+  }
+
+  if (url.pathname === "/xh/chapter") {
+    try{
+      const slug=url.searchParams.get("slug")||"";
+      const chapter=Number(url.searchParams.get("n")||"1");
+      const data=await getXhChapter(slug,chapter);
+      cors(res,200);
+      return res.end(JSON.stringify(data));
+    }catch(e){ cors(res,502); return res.end(JSON.stringify({ok:false,error:String(e)})); }
+  }
 
   if (url.pathname === "/xh/catalog-scan") {
     try {
