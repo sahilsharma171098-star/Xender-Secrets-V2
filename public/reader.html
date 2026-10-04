@@ -35,34 +35,31 @@
 <div class="status" id="status">Loading chapter…</div>
 <div class="reader-content" id="readerContent"></div>
 <div class="reader-nav"><button id="prevChapter">← Previous</button><button id="nextChapter">Next Chapter →</button></div>
-<div class="reader-note" id="readerNote">Republished on Xender with permission from XperimentalHamid. Reading is currently 100% free with no paywall. Your last chapter is saved on this device.</div><div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><a class="pill" href="community.html?category=books">Discuss on Xender →</a><a class="secondary" href="https://t.me/+S0mWe81MlUpjNzQ1" target="_blank" rel="noopener">Join Telegram Readers Group →</a></div>
+<div class="reader-note" id="readerNote">Authorized completed fiction on Xender. Reading is currently 100% free with no paywall. Your last chapter is saved on this device.</div><div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><a class="pill" href="community.html?category=books">Discuss on Xender →</a><a class="secondary" href="https://t.me/+S0mWe81MlUpjNzQ1" target="_blank" rel="noopener">Join Telegram Readers Group →</a></div>
 </article>
 </main>
-<script src="script.js"></script><script src="liddread-catalog.js"></script>
+<script src="script.js"></script><script src="licensed-novels.js"></script>
 <script>
 const API="https://xender-reader-api.onrender.com";
-const p=new URLSearchParams(location.search),slug=p.get("xh"),liddSlug=p.get("lidd");let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map();
-const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),status=document.getElementById("status"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar"),jumpInput=document.getElementById("jumpInput"),counter=document.getElementById("counter"),languageSelect=document.getElementById("languageSelect"),translateBtn=document.getElementById("translateChapter"),translateStatus=document.getElementById("translateStatus");
+const p=new URLSearchParams(location.search),xhSlug=p.get("xh"),licensedSlug=p.get("licensed");
+const sourceType=licensedSlug?"licensed":xhSlug?"xh":null,slug=licensedSlug||xhSlug||"";
+let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map(),localNovel=null;
+const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),status=document.getElementById("status"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar"),jumpInput=document.getElementById("jumpInput"),counter=document.getElementById("counter"),languageSelect=document.getElementById("languageSelect"),translateBtn=document.getElementById("translateChapter"),translateStatus=document.getElementById("translateStatus"),readerNote=document.getElementById("readerNote");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function updateUrl(){const u=new URL(location.href);u.searchParams.set("xh",slug);u.searchParams.set("chapter",chapter);history.replaceState(null,"",u);}
+function storageKey(){return "xs-"+sourceType+"-reading-"+slug}
+function updateUrl(){const u=new URL(location.href);u.searchParams.delete("xh");u.searchParams.delete("licensed");if(sourceType)u.searchParams.set(sourceType,slug);u.searchParams.set("chapter",chapter);history.replaceState(null,"",u);}
 async function loadMeta(){
- if(liddSlug){
-  const d=(window.XENDER_LIDDREAD_CATALOG||{})[liddSlug];
-  if(!d){title.textContent="Novel not found";status.textContent="Return to the library and choose an available completed novel.";prev.disabled=next.disabled=true;return false;}
-  title.textContent=d.title;finalChapter=Number(d.finalChapter||1);meta.textContent=Number(finalChapter).toLocaleString()+" chapters • LiddRead • Completed";
-  ct.textContent="Mapped to Xender";
-  status.className="status";status.hidden=false;status.innerHTML='This completed novel is mapped on Xender. Full chapter text is currently being imported from the authorized LiddRead source. No ongoing titles are included.';
-  content.innerHTML='<p><strong>'+esc(d.title)+'</strong> has '+Number(finalChapter).toLocaleString()+' completed chapters mapped.</p><p>Source: LiddRead. Chapter bodies will appear here after the archive/import completes.</p>';
-  jumpInput.value=1;jumpInput.max=finalChapter;counter.textContent="of "+Number(finalChapter).toLocaleString();bar.style.width="0%";prev.disabled=next.disabled=true;
-  document.getElementById("readerNote").textContent="Mapped from LiddRead under the completed-novels permission. Import pending; Xender will not substitute or invent missing chapter text.";
-  document.title=d.title+" | Xender";
-  return false;
+ if(!sourceType||!slug){title.textContent="Novel not found";status.textContent="Return to the library and choose a completed novel.";prev.disabled=next.disabled=true;return false;}
+ if(sourceType==="licensed"){
+  localNovel=(window.XENDER_LICENSED_FICTION||{})[slug];
+  if(!localNovel){title.textContent="Novel not found";status.textContent="This licensed title is unavailable.";prev.disabled=next.disabled=true;return false;}
+  title.textContent=localNovel.title;finalChapter=(localNovel.chapters||[]).length||1;meta.textContent=Number(finalChapter).toLocaleString()+" chapters • "+(localNovel.genre||[]).join(" • ")+" • Completed";jumpInput.max=finalChapter;readerNote.textContent=localNovel.attribution||("Licensed under "+(localNovel.license||"the stated license")+".");return true;
  }
- if(!slug){title.textContent="Novel not found";status.textContent="Return to the library and choose a completed novel.";prev.disabled=next.disabled=true;return false;}
  try{
   const r=await fetch(API+"/xh/novel?slug="+encodeURIComponent(slug));const d=await r.json();if(!d.ok)throw new Error(d.error||"Novel unavailable");
   title.textContent=d.title;finalChapter=Number(d.finalChapter||1);meta.textContent=Number(finalChapter).toLocaleString()+" chapters • "+(d.genres||[]).join(" • ")+" • Completed";jumpInput.max=finalChapter;
-  if(Array.isArray(d.gaps)&&d.gaps.length) document.getElementById("readerNote").textContent="Source index validator has flagged missing ranges: "+d.gaps.map(g=>g[0]+"-"+g[1]).join(", ")+". Xender will not silently skip them.";
+  readerNote.textContent="Republished on Xender with permission from XperimentalHamid. Reading is free; your last chapter is saved on this device.";
+  if(Array.isArray(d.gaps)&&d.gaps.length)readerNote.textContent="Source index validator has flagged missing ranges: "+d.gaps.map(g=>g[0]+"-"+g[1]).join(", ")+". Xender will not silently skip them.";
   return true;
  }catch(e){status.className="status error";status.textContent="Could not load this novel right now.";return false;}
 }
@@ -70,45 +67,28 @@ async function loadChapter(n){
  chapter=Math.max(1,Math.min(finalChapter,Number(n)||1));status.className="status";status.hidden=false;status.textContent="Loading Chapter "+chapter+"…";content.innerHTML="";ct.textContent="";
  prev.disabled=chapter<=1;next.disabled=chapter>=finalChapter;jumpInput.value=chapter;counter.textContent="of "+Number(finalChapter).toLocaleString();bar.style.width=((chapter/finalChapter)*100)+"%";updateUrl();
  try{
-  const r=await fetch(API+"/xh/chapter?slug="+encodeURIComponent(slug)+"&n="+chapter);const d=await r.json();if(!d.ok)throw new Error(d.error||"Chapter unavailable");
-  originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[]};
-  renderChapter(originalChapter.title,originalChapter.paragraphs,"en");
-  translateStatus.textContent="";
-  status.hidden=true;localStorage.setItem("xs-xh-reading-"+slug,String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
-  const preferred=languageSelect.value;
-  if(preferred!=="en"&&localStorage.getItem("xsReaderAutoTranslate")==="1") translateCurrent(preferred);
+  if(sourceType==="licensed"){
+   const ch=localNovel?.chapters?.[chapter-1];if(!ch)throw new Error("Chapter unavailable");
+   const paragraphs=String(ch.body||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);originalChapter={title:ch.title||("Chapter "+chapter),paragraphs};
+  }else{
+   const r=await fetch(API+"/xh/chapter?slug="+encodeURIComponent(slug)+"&n="+chapter);const d=await r.json();if(!d.ok)throw new Error(d.error||"Chapter unavailable");
+   originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[]};
+  }
+  renderChapter(originalChapter.title,originalChapter.paragraphs,"en");translateStatus.textContent="";status.hidden=true;localStorage.setItem(storageKey(),String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
+  const preferred=languageSelect.value;if(preferred!=="en"&&localStorage.getItem("xsReaderAutoTranslate")==="1")translateCurrent(preferred);
  }catch(e){status.hidden=false;status.className="status error";status.textContent="Chapter "+chapter+" could not be loaded. Xender did not skip it. Try again or choose another chapter.";}
 }
-function renderChapter(chapterHeading,paragraphs,lang){
- ct.textContent=chapterHeading;
- content.innerHTML=(paragraphs||[]).map(x=>"<p>"+esc(x)+"</p>").join("");
- const rtl=["ar","ur"].includes(lang);content.dir=rtl?"rtl":"ltr";content.lang=lang||"en";
-}
+function renderChapter(chapterHeading,paragraphs,lang){ct.textContent=chapterHeading;content.innerHTML=(paragraphs||[]).map(x=>"<p>"+esc(x)+"</p>").join("");const rtl=["ar","ur"].includes(lang);content.dir=rtl?"rtl":"ltr";content.lang=lang||"en";}
 async function translateCurrent(target){
  if(!originalChapter||!Array.isArray(originalChapter.paragraphs))return;
  if(target==="en"){renderChapter(originalChapter.title,originalChapter.paragraphs,"en");translateStatus.textContent="Original";localStorage.setItem("xsReaderLanguage","en");return;}
- const key=slug+":"+chapter+":"+target;
- translateBtn.disabled=true;translateStatus.textContent="Translating…";
- try{
-  let translated=translationCache.get(key);
-  if(!translated){
-   const texts=[originalChapter.title,...originalChapter.paragraphs];
-   const r=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,texts})});
-   const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||"Translation unavailable");
-   translated=j.translated;translationCache.set(key,translated);
-  }
-  renderChapter(translated[0]||originalChapter.title,translated.slice(1),target);
-  translateStatus.textContent="Translated";
-  localStorage.setItem("xsReaderLanguage",target);
- }catch(e){translateStatus.textContent=e.message||"Translation unavailable";renderChapter(originalChapter.title,originalChapter.paragraphs,"en")}
- finally{translateBtn.disabled=false}
+ const key=sourceType+":"+slug+":"+chapter+":"+target;translateBtn.disabled=true;translateStatus.textContent="Translating…";
+ try{let translated=translationCache.get(key);if(!translated){const texts=[originalChapter.title,...originalChapter.paragraphs];const r=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,texts})});const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||"Translation unavailable");translated=j.translated;translationCache.set(key,translated);}renderChapter(translated[0]||originalChapter.title,translated.slice(1),target);translateStatus.textContent="Translated";localStorage.setItem("xsReaderLanguage",target);}
+ catch(e){translateStatus.textContent=e.message||"Translation unavailable";renderChapter(originalChapter.title,originalChapter.paragraphs,"en")}finally{translateBtn.disabled=false}
 }
-const supported=[...languageSelect.options].map(o=>o.value);
-const savedLang=localStorage.getItem("xsReaderLanguage");
-const browserLang=(navigator.language||"en").split("-")[0];
+const supported=[...languageSelect.options].map(o=>o.value),savedLang=localStorage.getItem("xsReaderLanguage"),browserLang=(navigator.language||"en").split("-")[0];
 languageSelect.value=supported.includes(savedLang)?savedLang:(supported.includes(browserLang)?browserLang:"en");
-translateBtn.onclick=()=>translateCurrent(languageSelect.value);
-languageSelect.onchange=()=>{localStorage.setItem("xsReaderLanguage",languageSelect.value);if(languageSelect.value==="en")translateCurrent("en")};
+translateBtn.onclick=()=>translateCurrent(languageSelect.value);languageSelect.onchange=()=>{localStorage.setItem("xsReaderLanguage",languageSelect.value);if(languageSelect.value==="en")translateCurrent("en")};
 prev.onclick=()=>{if(chapter>1)loadChapter(chapter-1)};next.onclick=()=>{if(chapter<finalChapter)loadChapter(chapter+1)};document.getElementById("jumpBtn").onclick=()=>loadChapter(jumpInput.value);jumpInput.addEventListener("keydown",e=>{if(e.key==="Enter")loadChapter(jumpInput.value)});
 let size=Number(localStorage.getItem("xsReaderSize")||19);function setSize(){size=Math.min(28,Math.max(15,size));document.documentElement.style.setProperty("--reader-size",size+"px");localStorage.setItem("xsReaderSize",size)}document.getElementById("fontDown").onclick=()=>{size--;setSize()};document.getElementById("fontUp").onclick=()=>{size++;setSize()};setSize();
 const themeToggle=document.getElementById("themeToggle");if(localStorage.getItem("xsReaderTheme")==="light"){document.body.classList.add("reader-light");themeToggle.textContent="Dark mode"}themeToggle.onclick=()=>{document.body.classList.toggle("reader-light");const light=document.body.classList.contains("reader-light");themeToggle.textContent=light?"Dark mode":"Light mode";localStorage.setItem("xsReaderTheme",light?"light":"dark")};
