@@ -1,171 +1,50 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Read | Xender Novels</title>
-<meta name="robots" content="index,follow">
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Read | Xender Novels</title><meta name="robots" content="index,follow"><link rel="stylesheet" href="style.css">
 <style>
-:root{--reader-size:19px;--reader-bg:#0b0f14;--reader-fg:#e9edf0;--reader-muted:#8f9aa2}
-body.reader-light{--reader-bg:#f4efe5;--reader-fg:#201d19;--reader-muted:#6d645c;background:#e8e0d3;color:#201d19}
-.reader-wrap{max-width:980px;margin:auto;padding:34px 22px 90px}
-.reader-top{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;margin:18px 0 26px}
-.reader-top a{color:#4de6ad}
-.reader-tools{display:flex;gap:8px;flex-wrap:wrap}
-.reader-tools button,.reader-nav button{background:#111820;border:1px solid #ffffff20;color:#eef2f5;border-radius:8px;padding:9px 12px;cursor:pointer}
-.reader-light .reader-tools button,.reader-light .reader-nav button{background:#fff8ed;border-color:#00000018;color:#201d19}
-.reader-card{background:var(--reader-bg);border:1px solid #ffffff12;border-radius:16px;padding:clamp(24px,5vw,58px);box-shadow:0 24px 80px #0004}
-.reader-light .reader-card{border-color:#00000012;box-shadow:0 18px 60px #0002}
-.reader-kicker{font-size:11px;letter-spacing:.15em;font-weight:800;color:#4de6ad}
-.reader-title{font-size:clamp(30px,5vw,52px);line-height:1.08;margin:10px 0 8px;color:var(--reader-fg)}
-.reader-meta{color:var(--reader-muted);margin-bottom:28px}
-.reader-progress{height:4px;background:#ffffff12;border-radius:99px;overflow:hidden;margin:18px 0 32px}
-.reader-progress span{display:block;height:100%;background:#4de6ad;width:0}
-.reader-content{font-family:Georgia,'Times New Roman',serif;font-size:var(--reader-size);line-height:1.9;color:var(--reader-fg)}
-.reader-content p{margin:0 0 1.35em}
-.reader-content h2{font-family:Inter,system-ui,sans-serif;font-size:1.5em;line-height:1.2;color:var(--reader-fg);margin:0 0 1.4em}
-.reader-nav{display:flex;justify-content:space-between;gap:12px;margin-top:34px}
-.reader-nav button{min-width:120px}
-.reader-nav button:disabled{opacity:.35;cursor:not-allowed}
-.reader-status{padding:40px 0;color:var(--reader-muted);text-align:center}
-.reader-source{font-size:12px;color:var(--reader-muted);margin-top:26px;padding-top:18px;border-top:1px solid #ffffff10}
-.reader-light .reader-source{border-color:#00000012}
-@media(max-width:640px){.reader-card{padding:24px 18px}.reader-content{line-height:1.8}.reader-nav button{min-width:0;flex:1}}
+:root{--reader-size:19px;--reader-bg:#0b0f14;--reader-fg:#e9edf0;--reader-muted:#8f9aa2}body.reader-light{--reader-bg:#f4efe5;--reader-fg:#201d19;--reader-muted:#6d645c;background:#e8e0d3;color:#201d19}
+.reader-wrap{max-width:920px;margin:auto;padding:30px 22px 90px}.reader-top{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;margin:16px 0 24px}.reader-top a{color:#4de6ad}.reader-tools{display:flex;gap:8px}.reader-tools button,.reader-nav button{background:#111820;border:1px solid #ffffff20;color:#eef2f5;border-radius:8px;padding:9px 12px;cursor:pointer}.reader-light .reader-tools button,.reader-light .reader-nav button{background:#fff8ed;border-color:#00000018;color:#201d19}
+.reader-card{background:var(--reader-bg);border:1px solid #ffffff12;border-radius:16px;padding:clamp(24px,5vw,56px);box-shadow:0 24px 80px #0004}.reader-light .reader-card{border-color:#00000012}.reader-kicker{font-size:11px;letter-spacing:.15em;font-weight:800;color:#4de6ad}.reader-title{font-size:clamp(30px,5vw,48px);line-height:1.08;margin:10px 0 7px;color:var(--reader-fg)}.reader-meta{color:var(--reader-muted);margin-bottom:18px}
+.chapter-title{font-size:clamp(24px,4vw,34px);color:var(--reader-fg);margin:24px 0 28px}.reader-progress{height:4px;background:#ffffff12;border-radius:99px;overflow:hidden;margin:18px 0 28px}.reader-progress span{display:block;height:100%;background:#4de6ad;width:0}.reader-content{font-family:Georgia,'Times New Roman',serif;font-size:var(--reader-size);line-height:1.9;color:var(--reader-fg)}.reader-content p{margin:0 0 1.35em}
+.reader-nav{display:flex;justify-content:space-between;gap:12px;margin-top:38px}.reader-nav button{flex:1;max-width:220px}.reader-nav button:disabled{opacity:.35}.reader-note{font-size:12px;color:var(--reader-muted);margin-top:28px;padding-top:18px;border-top:1px solid #ffffff10}
+@media(max-width:640px){.reader-card{padding:24px 18px}.reader-content{line-height:1.8}.reader-nav button{max-width:none}}
 </style>
 </head>
 <body>
-<header>
-<a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
-<button id="menu" aria-label="Menu">☰</button>
-<nav><a href="novels.html">Novel Library</a><a href="community.html">Community</a><a href="articles.html">Articles</a><a href="about.html">About</a></nav>
-<a class="pill desktop" href="novels.html">All Novels</a>
-</header>
-
+<header><a class="logo" href="index.html">XENDER <span>SECRETS</span></a><button id="menu" aria-label="Menu">☰</button><nav><a href="novels.html">Novel Library</a><a href="community.html">Community</a><a href="about.html">About</a></nav><a class="pill desktop" href="novels.html">All Novels</a></header>
 <main class="reader-wrap">
-<div class="reader-top">
-<a href="novels.html">← Back to Novel Library</a>
-<div class="reader-tools">
-<button id="fontDown" aria-label="Decrease font size">A−</button>
-<button id="fontUp" aria-label="Increase font size">A+</button>
-<button id="themeToggle">Light mode</button>
-</div>
-</div>
-
+<div class="reader-top"><a href="novels.html">← Novel Library</a><div class="reader-tools"><button id="fontDown">A−</button><button id="fontUp">A+</button><button id="themeToggle">Light mode</button></div></div>
 <article class="reader-card">
-<div class="reader-kicker">XENDER READER</div>
-<h1 class="reader-title" id="bookTitle">Loading book…</h1>
-<div class="reader-meta" id="bookMeta"></div>
+<div class="reader-kicker">XENDER ORIGINAL</div>
+<h1 class="reader-title" id="storyTitle">Loading…</h1><div class="reader-meta" id="storyMeta"></div>
 <div class="reader-progress"><span id="progressBar"></span></div>
-<div class="reader-status" id="readerStatus">Preparing the English translation…</div>
-<div class="reader-content" id="readerContent" hidden></div>
-<div class="reader-nav" id="readerNav" hidden>
-<button id="prevPart">← Previous</button>
-<button id="nextPart">Next →</button>
-</div>
-<div class="reader-source" id="sourceNote">This reader only serves public-domain or otherwise authorized English text.</div>
+<h2 class="chapter-title" id="chapterTitle"></h2><div class="reader-content" id="readerContent"></div>
+<div class="reader-nav"><button id="prevChapter">← Previous</button><button id="nextChapter">Next Chapter →</button></div>
+<div class="reader-note">Original fiction published by Xender Secrets. Your reading position is saved on this device.</div>
 </article>
 </main>
-
-<script src="script.js"></script>
+<script src="script.js"></script><script src="original-novels.js"></script>
 <script>
-const API="https://xender-reader-api.onrender.com";
-const BOOKS={
-"9603":{title:"Hung Lou Meng, or, The Dream of the Red Chamber — Book I",author:"Cao Xueqin",translator:"H. Bencraft Joly"},
-"9604":{title:"Hung Lou Meng, or, The Dream of the Red Chamber — Book II",author:"Cao Xueqin",translator:"H. Bencraft Joly"},
-"43627":{title:"Strange Stories from a Chinese Studio — Vol. 1",author:"Pu Songling",translator:"Herbert A. Giles"},
-"43628":{title:"Strange Stories from a Chinese Studio — Vol. 2",author:"Pu Songling",translator:"Herbert A. Giles"},
-"43629":{title:"Strange Stories from a Chinese Studio — Volumes 1 & 2",author:"Pu Songling",translator:"Herbert A. Giles"},
-"77416":{title:"San Kuo; or, Romance of the Three Kingdoms — Vol. 1",author:"Luo Guanzhong",translator:"C. H. Brewitt-Taylor"}
-};
-const params=new URLSearchParams(location.search);
-const bookId=params.get("book")||"9603";
-let partIndex=Math.max(0,(Number(params.get("part")||1)-1));
-let parts=[];
-const book=BOOKS[bookId];
-
-const titleEl=document.getElementById("bookTitle");
-const metaEl=document.getElementById("bookMeta");
-const statusEl=document.getElementById("readerStatus");
-const contentEl=document.getElementById("readerContent");
-const navEl=document.getElementById("readerNav");
-const prevBtn=document.getElementById("prevPart");
-const nextBtn=document.getElementById("nextPart");
-const progress=document.getElementById("progressBar");
-
-function stripGutenberg(text){
-  text=text.replace(/\r\n/g,"\n");
-  const start=text.search(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i);
-  if(start>=0) text=text.slice(text.indexOf("\n",start)+1);
-  const end=text.search(/\*\*\* END OF THE PROJECT GUTENBERG EBOOK/i);
-  if(end>=0) text=text.slice(0,end);
-  return text.trim();
+const params=new URLSearchParams(location.search),slug=params.get("story"),stories=window.XENDER_FICTION||{},story=stories[slug];
+let idx=Math.max(0,(Number(params.get("chapter")||1)-1));
+const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar");
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function render(){
+ if(!story){title.textContent="Story not found";content.innerHTML="<p>Return to the novel library and choose a title.</p>";prev.disabled=next.disabled=true;return;}
+ idx=Math.min(Math.max(0,idx),story.chapters.length-1);const ch=story.chapters[idx];
+ title.textContent=story.title;meta.textContent=story.author+" • "+story.genre.join(" • ")+" • "+story.status;ct.textContent=ch.title;
+ content.innerHTML=ch.body.split(/\n\s*\n/).map(p=>"<p>"+esc(p)+"</p>").join("");
+ prev.disabled=idx===0;next.disabled=idx===story.chapters.length-1;bar.style.width=(((idx+1)/story.chapters.length)*100)+"%";
+ const u=new URL(location.href);u.searchParams.set("story",slug);u.searchParams.set("chapter",idx+1);history.replaceState(null,"",u);
+ localStorage.setItem("xs-reading-"+slug,String(idx+1));document.title=story.title+" — "+ch.title+" | Xender";
+ window.scrollTo({top:0,behavior:"smooth"});
 }
-function chunkFallback(text,size=15000){
-  const paras=text.split(/\n\s*\n/);
-  const out=[]; let cur="";
-  for(const p of paras){
-    if(cur.length+p.length>size && cur.trim()){out.push(cur.trim());cur="";}
-    cur+=(cur?"\n\n":"")+p;
-  }
-  if(cur.trim())out.push(cur.trim());
-  return out;
-}
-function splitBook(text){
-  const cleaned=stripGutenberg(text);
-  let sections=cleaned.split(/\n(?=(?:CHAPTER|Chapter)\s+(?:[IVXLCDM]+|\d+)\.?\s*\n)/g).filter(x=>x.trim().length>500);
-  if(sections.length<3) sections=cleaned.split(/\n(?=[IVXLCDM]+\.\s+[A-Z][A-Z0-9 ,;:'’“”\-]{3,}\n)/g).filter(x=>x.trim().length>500);
-  if(sections.length<3) sections=chunkFallback(cleaned);
-  return sections;
-}
-function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function renderPart(){
-  if(!parts.length)return;
-  partIndex=Math.min(Math.max(0,partIndex),parts.length-1);
-  const raw=parts[partIndex].trim();
-  const paras=raw.split(/\n\s*\n/).map(x=>x.replace(/\n+/g," ").trim()).filter(Boolean);
-  let html="";
-  if(paras.length){
-    const first=paras.shift();
-    if(/^(?:CHAPTER|Chapter)\b|^[IVXLCDM]+\./.test(first)) html+="<h2>"+escapeHtml(first)+"</h2>";
-    else html+="<p>"+escapeHtml(first)+"</p>";
-  }
-  html+=paras.map(p=>"<p>"+escapeHtml(p)+"</p>").join("");
-  contentEl.innerHTML=html;
-  contentEl.hidden=false; navEl.hidden=false; statusEl.hidden=true;
-  prevBtn.disabled=partIndex===0;
-  nextBtn.disabled=partIndex===parts.length-1;
-  progress.style.width=(((partIndex+1)/parts.length)*100).toFixed(1)+"%";
-  const u=new URL(location.href);u.searchParams.set("book",bookId);u.searchParams.set("part",partIndex+1);history.replaceState(null,"",u);
-  document.title=(book?.title||"Xender Reader")+" | Part "+(partIndex+1);
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-async function load(){
-  if(!book){titleEl.textContent="Book not found";statusEl.textContent="Return to the novel library and choose an available title.";return;}
-  titleEl.textContent=book.title;
-  metaEl.textContent="Author: "+book.author+" • English translator: "+book.translator;
-  try{
-    const res=await fetch(API+"/book?id="+encodeURIComponent(bookId));
-    if(!res.ok)throw new Error("Reader API unavailable");
-    const text=await res.text();
-    parts=splitBook(text);
-    if(!parts.length)throw new Error("No readable sections found");
-    renderPart();
-  }catch(e){
-    statusEl.innerHTML="The reader could not load this text right now. Please try again in a moment.";
-  }
-}
-prevBtn.addEventListener("click",()=>{if(partIndex>0){partIndex--;renderPart();}});
-nextBtn.addEventListener("click",()=>{if(partIndex<parts.length-1){partIndex++;renderPart();}});
-let size=Number(localStorage.getItem("xsReaderSize")||19);
-function setSize(){size=Math.min(28,Math.max(15,size));document.documentElement.style.setProperty("--reader-size",size+"px");localStorage.setItem("xsReaderSize",size);}
-document.getElementById("fontDown").onclick=()=>{size--;setSize();};
-document.getElementById("fontUp").onclick=()=>{size++;setSize();};
-setSize();
-const themeBtn=document.getElementById("themeToggle");
-if(localStorage.getItem("xsReaderTheme")==="light"){document.body.classList.add("reader-light");themeBtn.textContent="Dark mode";}
-themeBtn.onclick=()=>{document.body.classList.toggle("reader-light");const light=document.body.classList.contains("reader-light");themeBtn.textContent=light?"Dark mode":"Light mode";localStorage.setItem("xsReaderTheme",light?"light":"dark");};
-load();
+prev.onclick=()=>{if(idx>0){idx--;render();}};next.onclick=()=>{if(idx<story.chapters.length-1){idx++;render();}};
+let size=Number(localStorage.getItem("xsReaderSize")||19);function setSize(){size=Math.min(28,Math.max(15,size));document.documentElement.style.setProperty("--reader-size",size+"px");localStorage.setItem("xsReaderSize",size);}fontDown.onclick=()=>{size--;setSize();};fontUp.onclick=()=>{size++;setSize();};setSize();
+const themeToggle=document.getElementById("themeToggle");if(localStorage.getItem("xsReaderTheme")==="light"){document.body.classList.add("reader-light");themeToggle.textContent="Dark mode";}themeToggle.onclick=()=>{document.body.classList.toggle("reader-light");const light=document.body.classList.contains("reader-light");themeToggle.textContent=light?"Dark mode":"Light mode";localStorage.setItem("xsReaderTheme",light?"light":"dark");};
+render();
 </script>
 </body>
 </html>
