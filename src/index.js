@@ -922,25 +922,6 @@ export default {
       }
     }
 
-    if(path==="/api/translation-smoke" && method==="GET"){
-      const sample="女有四行：一曰婦德，二曰婦言，三曰婦容，四曰婦功。";
-      try{
-        const glm=await env.AI.run("@cf/zai-org/glm-4.7-flash",{
-          messages:[
-            {role:"system",content:"Translate Classical Chinese fiction into natural, faithful Hindi. Preserve names, meaning, tone, and sentence order. Output only the Hindi translation, with no commentary."},
-            {role:"user",content:sample}
-          ],
-          temperature:0.1,
-          max_completion_tokens:300
-        });
-        const translated=String(glm?.response||glm?.choices?.[0]?.message?.content||"").trim();
-        if(!translated)return json({ok:false,error:"GLM returned no translation."},502);
-        return json({ok:true,source:"zh-CN",target:"hi",translated});
-      }catch(e){
-        return json({ok:false,error:String(e?.message||e),code:e?.code||null},200);
-      }
-    }
-
     if(path==="/api/translate" && method==="POST"){
       const body=await request.json().catch(()=>({}));
       const target=String(body.target||"").trim(),source=String(body.source||"en").trim();
