@@ -1,0 +1,13 @@
+{
+  "slug": "abyss-sovereign",
+  "title": "Abyss Sovereign",
+  "indexUrl": "https://liddread.com/abyss-sovereign/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T13:59:03.563Z",
+  "finishedAt": "2026-10-04T13:59:03.563Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 2110,
+  "archivedChapters": 0,
+  "errors": []
+}
