@@ -56,9 +56,27 @@ async function translateOne(text,target){
   return translated;
 }
 async function translateBatch(texts,target){
-  const out=new Array(texts.length);let i=0;
-  async function worker(){while(true){const n=i++;if(n>=texts.length)return;out[n]=await translateOne(texts[n],target)}}
-  await Promise.all(Array.from({length:Math.min(5,texts.length)},worker));
+  const delimiter="\n\n[[[XENDER_PARAGRAPH_BREAK_7A1F]]]\n\n";
+  const groups=[];let current=[],chars=0;
+  for(const raw of texts){
+    const text=String(raw??"");
+    const extra=text.length+(current.length?delimiter.length:0);
+    if(current.length&&(current.length>=20||chars+extra>4200)){groups.push(current);current=[];chars=0}
+    current.push(text);chars+=extra;
+  }
+  if(current.length)groups.push(current);
+  const out=[];
+  for(const group of groups){
+    if(group.length===1){out.push(await translateOne(group[0],target));continue}
+    const joined=group.join(delimiter);
+    const translated=await translateOne(joined,target);
+    const pieces=translated.split(delimiter);
+    if(pieces.length===group.length){out.push(...pieces);continue}
+    const fallback=new Array(group.length);let i=0;
+    async function worker(){while(true){const n=i++;if(n>=group.length)return;fallback[n]=await translateOne(group[n],target)}}
+    await Promise.all(Array.from({length:Math.min(4,group.length)},worker));
+    out.push(...fallback);
+  }
   return out;
 }
 async function inrRate(currency){
