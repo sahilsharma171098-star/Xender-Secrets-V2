@@ -12,8 +12,8 @@ const page = await context.newPage();
 page.setDefaultTimeout(25000);
 
 try {
-  await page.goto(BASE + '/website-catalog.html', { waitUntil: 'networkidle', timeout: 45000 });
-  const stats = await page.locator('#catalogStats').innerText();
+  await page.goto(BASE + '/website-catalog.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => document.querySelectorAll('#frontendGrid article').length===20, null, {timeout:20000});\n  const stats = await page.locator('#catalogStats').innerText();
   const fe = await page.locator('#frontendGrid article').count();
   const be = await page.locator('#backendGrid article').count();
   const fsCount = await page.locator('#fullstackGrid article').count();
@@ -21,8 +21,8 @@ try {
 } catch (e) { record('catalog_render', false, e); }
 
 try {
-  await page.goto(BASE + '/business-templates.html', { waitUntil: 'networkidle', timeout: 45000 });
-  const initial = await page.locator('#templateGrid article').count();
+  await page.goto(BASE + '/business-templates.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => document.querySelectorAll('#templateGrid article').length===24, null, {timeout:20000});\n  const initial = await page.locator('#templateGrid article').count();
   await page.locator('#searchTemplates').fill('dentist');
   await sleep(250);
   const found = await page.locator('#resultCount').innerText();
@@ -34,8 +34,8 @@ try {
 } catch (e) { record('business_filters', false, e); }
 
 try {
-  await page.goto(BASE + '/template-preview.html?id=REAL-18', { waitUntil: 'networkidle', timeout: 45000 });
-  const label = await page.locator('#templateLabel').innerText();
+  await page.goto(BASE + '/template-preview.html?id=REAL-18', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => document.querySelector('#templateLabel')?.textContent.includes('REAL-18'), null, {timeout:20000});\n  const label = await page.locator('#templateLabel').innerText();
   const href = await page.locator('#customizeBtn').getAttribute('href');
   await page.locator('#mobileView').click();
   const cls = await page.locator('#previewStage').getAttribute('class');
@@ -44,8 +44,8 @@ try {
 } catch (e) { record('template_preview', false, e); }
 
 try {
-  await page.goto(BASE + '/sample-preview.html?type=frontend&id=FE-08', { waitUntil: 'networkidle', timeout: 45000 });
-  const title = await page.locator('#sampleTitle').innerText();
+  await page.goto(BASE + '/sample-preview.html?type=frontend&id=FE-08', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => document.querySelector('#sampleTitle')?.textContent.includes('FE-08'), null, {timeout:20000});\n  const title = await page.locator('#sampleTitle').innerText();
   const before = await page.locator('#sampleList .sample-item').count();
   await page.locator('#sampleSearch').fill('Skyline');
   await sleep(150);
@@ -57,8 +57,8 @@ try {
 } catch (e) { record('frontend_interaction', false, e); }
 
 try {
-  await page.goto(BASE + '/sample-preview.html?type=backend&id=BE-01', { waitUntil: 'networkidle', timeout: 45000 });
-  await page.locator('#runApi').click();
+  await page.goto(BASE + '/sample-preview.html?type=backend&id=BE-01', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForSelector('#runApi',{timeout:20000});\n  await page.locator('#runApi').click();
   await page.waitForFunction(() => document.querySelector('#apiConsole')?.textContent.includes('HTTP 200'), null, { timeout: 25000 });
   const output = await page.locator('#apiConsole').innerText();
   record('backend_live_request', output.includes('HTTP 200') && output.includes('rest-api'), output.slice(0, 300));
@@ -67,11 +67,11 @@ try {
 let cleanupId = null;
 try {
   const unique = 'E2E ' + Date.now();
-  await page.goto(BASE + '/sample-preview.html?type=fullstack&id=FS-01', { waitUntil: 'networkidle', timeout: 45000 });
-  await page.locator('#fsInput').fill(unique);
+  await page.goto(BASE + '/sample-preview.html?type=fullstack&id=FS-01', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForSelector('#fsInput',{timeout:20000});\n  await page.locator('#fsInput').fill(unique);
   await page.locator('#fsAdd').click();
   await page.waitForFunction(v => document.querySelector('#fsList')?.innerText.includes(v), unique, { timeout: 25000 });
-  await page.reload({ waitUntil: 'networkidle', timeout: 45000 });
+  await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForFunction(v => document.querySelector('#fsList')?.innerText.includes(v), unique, { timeout: 25000 });
   const data = await page.evaluate(() => fetch('/api/demo/fs-appointment').then(r => r.json()));
   cleanupId = (data.records || []).find(r => r.label === unique)?.id || null;
@@ -88,17 +88,17 @@ try {
 }
 
 try {
-  await page.goto(BASE + '/services.html', { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(BASE + '/services.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.evaluate(() => localStorage.setItem('xs-country','US'));
-  await page.reload({ waitUntil: 'networkidle', timeout: 45000 });
-  const meta = await page.locator('.xs-country-meta').innerText();
+  await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => document.querySelector('.xs-country-meta')?.textContent.includes('USD'), null, {timeout:20000});\n  const meta = await page.locator('.xs-country-meta').innerText();
   const price = await page.locator('[data-inr="999"]').first().innerText();
   record('currency_us', meta.includes('USD') && (price.includes('$') || price.includes('US$')), `meta=${meta}; price=${price}`);
   await page.evaluate(() => localStorage.removeItem('xs-country'));
 } catch (e) { record('currency_us', false, e); }
 
 try {
-  await page.goto(BASE + '/reader.html?xh=billionaire-god-of-war&chapter=1', { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(BASE + '/reader.html?xh=billionaire-god-of-war&chapter=1', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForFunction(() => document.querySelector('#readerContent')?.innerText.includes('Fingol'), null, { timeout: 60000 });
   const original = (await page.locator('#readerContent').innerText()).slice(0, 160);
   await page.locator('#languageSelect').selectOption('hi');
@@ -114,7 +114,7 @@ try {
   const mp = await mobile.newPage();
   const bad = [];
   for (const path of ['/website-catalog.html','/business-templates.html','/template-preview.html?id=DENT-18']) {
-    await mp.goto(BASE + path, { waitUntil: 'networkidle', timeout: 45000 });
+    await mp.goto(BASE + path, { waitUntil: 'domcontentloaded', timeout: 30000 });
     const dims = await mp.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
     if (dims.sw > dims.cw + 2) bad.push({ path, ...dims });
   }
