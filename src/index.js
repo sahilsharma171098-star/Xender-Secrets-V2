@@ -42,18 +42,22 @@ const TRANSLATION_LANGUAGES=new Set(["hi","es","fr","de","pt","ar","id","tr","nl
 async function translateOne(text,target){
   const raw=String(text??"");
   if(!raw.trim())return raw;
-  const u=new URL("https://translate.googleapis.com/translate_a/single");
-  u.searchParams.set("client","gtx");
-  u.searchParams.set("sl","en");
-  u.searchParams.set("tl",target);
-  u.searchParams.set("dt","t");
-  u.searchParams.set("q",raw.slice(0,5000));
-  const r=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"}});
-  if(!r.ok)throw new Error("Translation upstream error "+r.status);
-  const j=await r.json();
-  const translated=Array.isArray(j?.[0])?j[0].map(x=>x?.[0]||"").join(""):"";
-  if(!translated)throw new Error("Translation returned no text");
-  return translated;
+  let lastError=null;
+  for(const host of ["https://translate.googleapis.com/translate_a/single","https://translate.google.com/translate_a/single"]){
+    const u=new URL(host);
+    u.searchParams.set("client","gtx");u.searchParams.set("sl","en");u.searchParams.set("tl",target);u.searchParams.set("dt","t");u.searchParams.set("q",raw.slice(0,4800));
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+    try{
+      const r=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"},signal:controller.signal});
+      if(!r.ok){lastError=new Error("Translation upstream error "+r.status);continue}
+      const j=await r.json();
+      const translated=Array.isArray(j?.[0])?j[0].map(x=>x?.[0]||"").join(""):"";
+      if(translated)return translated;
+      lastError=new Error("Translation returned no text");
+    }catch(e){lastError=e}
+    finally{clearTimeout(timer)}
+  }
+  throw lastError||new Error("Translation unavailable");
 }
 async function translateBatch(texts,target){
   const delimiter="\n\n[[[XENDER_PARAGRAPH_BREAK_7A1F]]]\n\n";

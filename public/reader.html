@@ -103,30 +103,39 @@ async function loadChapter(n){
 function renderChapter(chapterHeading,paragraphs,lang){ct.textContent=chapterHeading;content.innerHTML=(paragraphs||[]).map(x=>"<p>"+esc(x)+"</p>").join("");const rtl=["ar","ur"].includes(lang);content.dir=rtl?"rtl":"ltr";content.lang=lang||"en";}
 async function translateCurrent(target){
  if(!originalChapter||!Array.isArray(originalChapter.paragraphs))return;
- if(target==="original"||target===(originalChapter.language||sourceLanguage||"en")){renderChapter(originalChapter.title,originalChapter.paragraphs,originalChapter.language||sourceLanguage||"en");translateStatus.textContent="Original";localStorage.setItem("xsReaderLanguage",target);return;}
+ if(target==="en"){renderChapter(originalChapter.title,originalChapter.paragraphs,"en");translateStatus.textContent="Original";localStorage.setItem("xsReaderLanguage","en");return;}
  const key=sourceType+":"+slug+":"+chapter+":"+target;translateBtn.disabled=true;translateStatus.textContent="Translating…";
  try{
   let translated=translationCache.get(key);
   if(!translated){
-   const texts=[originalChapter.title,...originalChapter.paragraphs],batches=[];let batch=[],chars=0;
-   for(const raw of texts){
-    const text=String(raw??"");
-    if(batch.length&&(batch.length>=35||chars+text.length>18000)){batches.push(batch);batch=[];chars=0}
+   const merged=[];let chunk="";
+   for(const raw of originalChapter.paragraphs){
+    const p=String(raw??"").trim();if(!p)continue;
+    if(chunk&&chunk.length+p.length+2>3400){merged.push(chunk);chunk=""}
+    chunk+=(chunk?"\n\n":"")+p;
+   }
+   if(chunk)merged.push(chunk);
+   const texts=[originalChapter.title,...merged],translatedBlocks=[];let batch=[],chars=0,batchNo=0;
+   const batches=[];
+   for(const text of texts){
+    if(batch.length&&(batch.length>=8||chars+text.length>24000)){batches.push(batch);batch=[];chars=0}
     batch.push(text);chars+=text.length;
    }
    if(batch.length)batches.push(batch);
-   translated=[];
-   for(let i=0;i<batches.length;i++){
-    translateStatus.textContent=batches.length>1?("Translating "+(i+1)+"/"+batches.length+"…"):"Translating…";
-    const resp=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,texts:batches[i]})});
+   for(const part of batches){
+    batchNo++;translateStatus.textContent=batches.length>1?("Translating "+batchNo+"/"+batches.length+"…"):"Translating…";
+    const resp=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,texts:part})});
     const data=await resp.json();if(!resp.ok||!data.ok)throw new Error(data.error||"Translation unavailable");
-    translated.push(...data.translated);
+    translatedBlocks.push(...data.translated);
    }
+   const translatedTitle=translatedBlocks[0]||originalChapter.title;
+   const translatedParagraphs=translatedBlocks.slice(1).flatMap(block=>String(block||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean));
+   translated={title:translatedTitle,paragraphs:translatedParagraphs.length?translatedParagraphs:translatedBlocks.slice(1)};
    translationCache.set(key,translated);
   }
-  renderChapter(translated[0]||originalChapter.title,translated.slice(1),target);translateStatus.textContent="Translated";localStorage.setItem("xsReaderLanguage",target);
- }
- catch(e){translateStatus.textContent=e.message||"Translation unavailable";renderChapter(originalChapter.title,originalChapter.paragraphs,originalChapter.language||sourceLanguage||"en")}finally{translateBtn.disabled=false}
+  renderChapter(translated.title||originalChapter.title,translated.paragraphs||[],target);translateStatus.textContent="Translated";localStorage.setItem("xsReaderLanguage",target);
+ }catch(e){translateStatus.textContent=e.message||"Translation unavailable";renderChapter(originalChapter.title,originalChapter.paragraphs,"en")}
+ finally{translateBtn.disabled=false}
 }
 const supported=[...languageSelect.options].map(o=>o.value),savedLang=localStorage.getItem("xsReaderLanguage"),browserLang=(navigator.language||"en").split("-")[0];
 languageSelect.value=supported.includes(savedLang)?savedLang:"original";
