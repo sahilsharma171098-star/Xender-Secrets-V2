@@ -409,6 +409,7 @@ const XH_COMPLETED = {
     summary: "A completed translated romance following a broken marriage, reunion, family growth and long-form relationship drama.",
     verifiedEnding: "Chapter 1476 contains THE END.",
     supplementalRanges: [
+      {start:1,end:2,url:"https://xperimentalhamid.com/novels/chapter-01-02-of-take-my-breath-away-novel-new/"},
       {start:46,end:50,url:"https://xperimentalhamid.com/novels/chapter-50-51-of-take-my-breath-away-novel-free-online-new/",postId:11158},
       {start:1296,end:1300,url:"https://xperimentalhamid.com/novels/chapter-1296-1-300-of-take-my-breath-away-novel-free-online-new/",postId:14906},
       {start:1396,end:1400,url:"https://xperimentalhamid.com/novels/chapter-1396-1400-of-take-my-breath-away-novel-free-online-new/",postId:15214}
