@@ -1,6 +1,6 @@
 {
   "source": "LiddRead",
-  "updatedAt": "2026-10-04T14:02:39.202Z",
+  "updatedAt": "2026-10-04T14:02:45.592Z",
   "novels": {
     "absolute-god": {
       "slug": "absolute-god",
@@ -73,8 +73,8 @@
       "indexUrl": "https://liddread.com/code-mage/",
       "permissionScope": "completed-only",
       "complete": false,
-      "startedAt": "2026-10-04T13:59:30.744Z",
-      "finishedAt": "2026-10-04T13:59:30.744Z",
+      "startedAt": "2026-10-04T14:02:45.591Z",
+      "finishedAt": "2026-10-04T14:02:45.591Z",
       "fatalError": "Could not fetch index: Error: jina HTTP 403",
       "finalChapter": 601,
       "archivedChapters": 0,
