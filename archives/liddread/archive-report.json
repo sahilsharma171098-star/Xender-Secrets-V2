@@ -1,6 +1,6 @@
 {
   "source": "LiddRead",
-  "updatedAt": "2026-10-04T14:00:37.662Z",
+  "updatedAt": "2026-10-04T14:02:13.066Z",
   "novels": {
     "absolute-god": {
       "slug": "absolute-god",
@@ -8,8 +8,8 @@
       "indexUrl": "https://liddread.com/absolute-god/",
       "permissionScope": "completed-only",
       "complete": false,
-      "startedAt": "2026-10-04T13:58:57.042Z",
-      "finishedAt": "2026-10-04T13:58:57.042Z",
+      "startedAt": "2026-10-04T14:02:13.065Z",
+      "finishedAt": "2026-10-04T14:02:13.065Z",
       "fatalError": "Could not fetch index: Error: jina HTTP 403",
       "finalChapter": 2772,
       "archivedChapters": 0,
