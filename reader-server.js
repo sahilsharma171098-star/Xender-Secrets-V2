@@ -634,7 +634,7 @@ const server = http.createServer(async (req,res) => {
 
 
   if (url.pathname === "/gutenberg/catalog") {
-    const items=Object.entries(GUTENBERG_SERIALS).map(([slug,n])=>({slug,title:n.title,author:n.author,translator:n.translator,finalChapter:n.finalChapter,genres:n.genres,summary:n.summary,sourceSite:n.sourceSite,indexStatus:{gaps:[]}}));
+    const items=Object.entries(GUTENBERG_SERIALS).map(([slug,n])=>({slug,title:n.title,author:n.author,translator:n.translator,finalChapter:n.finalChapter,genres:n.genres,summary:n.summary,language:n.language||"en",sourceSite:n.sourceSite,indexStatus:{gaps:[]}}));
     cors(res,200);
     return res.end(JSON.stringify({ok:true,completedOnly:true,items}));
   }
@@ -644,7 +644,7 @@ const server = http.createServer(async (req,res) => {
       const slug=url.searchParams.get("slug")||"",n=GUTENBERG_SERIALS[slug];
       if(!n)throw new Error("Novel not found");
       cors(res,200);
-      return res.end(JSON.stringify({ok:true,slug,title:n.title,author:n.author,translator:n.translator,finalChapter:n.finalChapter,genres:n.genres,summary:n.summary,gaps:[],sourceSite:n.sourceSite}));
+      return res.end(JSON.stringify({ok:true,slug,title:n.title,author:n.author,translator:n.translator,finalChapter:n.finalChapter,genres:n.genres,summary:n.summary,language:n.language||"en",gaps:[],sourceSite:n.sourceSite}));
     }catch(e){cors(res,404);return res.end(JSON.stringify({ok:false,error:String(e)}));}
   }
 
