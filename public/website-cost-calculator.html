@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Free Website Cost Calculator India | Xender Secrets</title>
+  <meta name="description" content="Estimate website development cost in India in under a minute. Choose pages, ecommerce, booking, login, automation and more to get a practical project estimate.">
+  <link rel="canonical" href="https://www.xendersecrets.com/website-cost-calculator.html">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">Xender Secrets</a>
+  <nav><a href="/services.html">Services</a><a href="/website-catalog.html">Portfolio</a><a href="/ideas.html">Ideas</a><a href="/articles.html">Articles</a><a href="/contact.html">Contact</a></nav>
+</header>
+<main class="container">
+<section class="hero">
+  <p class="eyebrow">FREE TOOL</p>
+  <h1>Website Cost Calculator — India</h1>
+  <p>Choose what you need and get an instant practical estimate. No signup required.</p>
+</section>
+
+<section class="idea-shell">
+  <div class="idea-panel">
+    <h2>1. What are you building?</h2>
+    <label>Website type
+      <select id="type">
+        <option value="7000">Landing page</option>
+        <option value="12000">Business website</option>
+        <option value="18000">Portfolio / personal brand</option>
+        <option value="28000">Ecommerce store</option>
+        <option value="35000">Web app / SaaS MVP</option>
+      </select>
+    </label>
+    <label>Number of pages
+      <input id="pages" type="number" min="1" max="50" value="5">
+    </label>
+    <div class="calc-options">
+      <label><input type="checkbox" class="addon" value="6000"> Ecommerce / payments</label>
+      <label><input type="checkbox" class="addon" value="3500"> Booking / appointment flow</label>
+      <label><input type="checkbox" class="addon" value="5000"> Login / member area</label>
+      <label><input type="checkbox" class="addon" value="4500"> CRM / lead automation</label>
+      <label><input type="checkbox" class="addon" value="6000"> AI workflow / chatbot</label>
+      <label><input type="checkbox" class="addon" value="3000"> Blog / CMS</label>
+    </div>
+  </div>
+
+  <aside class="idea-panel">
+    <p class="eyebrow">ESTIMATE</p>
+    <h2 id="estimate">₹15,000 – ₹22,500</h2>
+    <p id="breakdown">A rough planning range based on your selections. Final price depends on design depth, integrations and content readiness.</p>
+    <a id="quoteBtn" class="button" href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20used%20your%20website%20cost%20calculator%20and%20want%20a%20quote.">Get a real quote on WhatsApp</a>
+  </aside>
+</section>
+
+<section class="content-section">
+  <h2>What changes website cost?</h2>
+  <p>Typical cost depends on page count, custom design, ecommerce, payments, booking, login, dashboards, APIs, automation and AI features. A simple lead-generation website can be much cheaper than a custom full-stack application.</p>
+  <p>This calculator is for planning, not a binding quotation. Xender Secrets can scope the project and suggest the smallest useful version first.</p>
+</section>
+</main>
+<script>
+function recalc(){
+  const base=Number(document.getElementById('type').value);
+  const pages=Math.max(1,Number(document.getElementById('pages').value||1));
+  const pageExtra=Math.max(0,pages-5)*1200;
+  let addons=0;
+  document.querySelectorAll('.addon:checked').forEach(x=>addons+=Number(x.value));
+  const low=base+pageExtra+addons;
+  const high=Math.round(low*1.45/500)*500;
+  document.getElementById('estimate').textContent='₹'+low.toLocaleString('en-IN')+' – ₹'+high.toLocaleString('en-IN');
+  const type=document.getElementById('type').selectedOptions[0].text;
+  const msg='Hi Xender Secrets, I used the website cost calculator. Type: '+type+', Pages: '+pages+', Estimate: ₹'+low.toLocaleString('en-IN')+'–₹'+high.toLocaleString('en-IN')+'. Please help me scope it.';
+  document.getElementById('quoteBtn').href='https://wa.me/919821941814?text='+encodeURIComponent(msg);
+}
+document.querySelectorAll('#type,#pages,.addon').forEach(el=>el.addEventListener('change',recalc));
+recalc();
+</script>
+</body>
+</html>
