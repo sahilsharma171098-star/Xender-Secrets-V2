@@ -152,7 +152,7 @@ async function scanXH(minChapter=1000) {
     const title=stripTags(post?.title?.rendered||x.title||"");
     const html=post?.content?.rendered||"";
     const body=stripTags(html);
-    const links=extractLinks(html).filter(a=>/chapter|novel/i.test(a.url+" "+a.text));
+    const links=extractLinks(html).filter(a=>/chapter/i.test(a.url+" "+a.text) && !/#comment-|\/comments?\//i.test(a.url));
     const ranges=[];
     for(const a of links){
       const r=chapterRange(a.text+" "+a.url);
