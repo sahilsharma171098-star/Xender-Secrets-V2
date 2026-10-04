@@ -122,7 +122,9 @@ document.getElementById('menu')?.addEventListener('click',()=>document.querySele
     try{return new Intl.DisplayNames([navigator.language||"en"],{type:"region"}).of(code)||code}catch{return code}
   };
   const mount=()=>{
-    const header=document.querySelector("header"); if(!header||document.getElementById("xsCountryPicker"))return;
+    const header=document.querySelector("header"); if(!header)return;
+    const existing=document.getElementById("xsCountryPicker");
+    if(existing)return {select:existing.querySelector("select"),meta:existing.querySelector(".xs-country-meta")};
     const wrap=document.createElement("div"); wrap.id="xsCountryPicker"; wrap.className="xs-country-picker";
     const select=document.createElement("select"); select.setAttribute("aria-label","Country and currency");
     COUNTRY_OPTIONS.forEach(([code,name])=>{const o=document.createElement("option");o.value=code;o.textContent=name;select.appendChild(o)});
@@ -152,7 +154,7 @@ document.getElementById('menu')?.addEventListener('click',()=>document.querySele
     paint();
   }
   const style=document.createElement("style");
-  style.textContent=".xs-country-picker{display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:10px;font-size:11px;white-space:nowrap}.xs-country-picker select{max-width:145px;background:#111827;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 9px;font:inherit}.xs-country-meta{opacity:.75}.xs-country-picker>a{font-size:9px;opacity:.45;color:inherit;text-decoration:none}@media(max-width:900px){.xs-country-picker{order:3;width:100%;margin:7px 0 0;justify-content:flex-end}.xs-country-picker select{max-width:160px}.xs-country-meta{font-size:10px}}";
+  style.textContent=".xs-country-picker{display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:10px;font-size:11px;white-space:nowrap}.xs-country-picker select{max-width:145px;background:#111827;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 9px;font:inherit}.xs-country-meta{opacity:.75}.xs-country-picker>a{font-size:9px;opacity:.45;color:inherit;text-decoration:none}@media(max-width:900px){.xs-country-picker{position:absolute;right:54px;top:17px;width:auto;margin:0;justify-content:flex-end}.xs-country-picker select{max-width:118px;padding:6px 8px}.xs-country-meta,.xs-country-picker>a{display:none}}";
   document.head.appendChild(style);
   mount();
   load(localStorage.getItem("xs-country")||"");
