@@ -85,6 +85,38 @@ const CATALOG_PRODUCTS=[
   {id:"cable-protectors",name:"Cable Protector Sleeves — 4 Pack",category:"mobile",categoryLabel:"Mobile Accessories",price:99,rating:4.1}
 ];
 
+const DEMO_KEYS=new Set([
+  "rest-api","lead-crm","contact-form","search-api","user-management","role-access","file-metadata","notifications","webhooks","quote-api","orders-api","inventory-api","analytics-events","reviews-api","subscriber-api","support-api",
+  "fs-appointment","fs-mini-crm","fs-project-saas","fs-commerce","fs-lead-dashboard","fs-restaurant-reservations","fs-property-enquiries","fs-recruitment-portal","fs-support-portal","fs-membership","fs-course-dashboard","fs-inventory-manager","fs-sales-dashboard","fs-event-booking","fs-quote-invoice","fs-client-portal","fs-review-manager","fs-content-manager","fs-service-marketplace","fs-subscription-saas"
+]);
+const DEMO_NAMES={
+  "rest-api":"REST resource","lead-crm":"Lead","contact-form":"Enquiry","search-api":"Search item","user-management":"User","role-access":"Role","file-metadata":"File","notifications":"Notification","webhooks":"Webhook event","quote-api":"Quote","orders-api":"Order","inventory-api":"Inventory item","analytics-events":"Analytics event","reviews-api":"Review","subscriber-api":"Subscriber","support-api":"Support ticket",
+  "fs-appointment":"Appointment","fs-mini-crm":"Lead","fs-project-saas":"Task","fs-commerce":"Order","fs-lead-dashboard":"Lead","fs-restaurant-reservations":"Reservation","fs-property-enquiries":"Property enquiry","fs-recruitment-portal":"Candidate","fs-support-portal":"Ticket","fs-membership":"Member","fs-course-dashboard":"Course","fs-inventory-manager":"Inventory item","fs-sales-dashboard":"Opportunity","fs-event-booking":"Event booking","fs-quote-invoice":"Invoice","fs-client-portal":"Client request","fs-review-manager":"Review","fs-content-manager":"Content item","fs-service-marketplace":"Provider","fs-subscription-saas":"Subscription"
+};
+function demoSeed(key){
+  const seeds={
+    "rest-api":[{id:"r-101",name:"Northwind record",status:"active"},{id:"r-102",name:"Atlas record",status:"review"}],
+    "lead-crm":[{id:"L-1042",name:"Aarav Labs",stage:"Qualified"},{id:"L-1041",name:"Urban Nest",stage:"Proposal"}],
+    "contact-form":[{id:"E-91",name:"Mira Foods",subject:"Website enquiry"},{id:"E-90",name:"North Legal",subject:"Consultation"}],
+    "search-api":[{id:"S-1",name:"Website automation",score:.98},{id:"S-2",name:"Lead qualification",score:.91}],
+    "user-management":[{id:"U-88",name:"Aarav",role:"Admin"},{id:"U-87",name:"Mira",role:"Member"}],
+    "role-access":[{role:"Admin",permissions:["read","write","manage"]},{role:"Member",permissions:["read","write"]}],
+    "file-metadata":[{id:"F-21",name:"proposal.pdf",size:482193},{id:"F-20",name:"brief.docx",size:193204}],
+    "notifications":[{id:"N-9",channel:"email",status:"sent"},{id:"N-8",channel:"in-app",status:"queued"}],
+    "webhooks":[{id:"W-4",event:"order.created",status:"accepted"},{id:"W-3",event:"lead.qualified",status:"accepted"}],
+    "quote-api":[{id:"Q-71",subtotal:12000,tax:2160,total:14160},{id:"Q-70",subtotal:7500,tax:1350,total:8850}],
+    "orders-api":[{id:"O-4281",status:"paid",total:2499},{id:"O-4279",status:"shipped",total:1499}],
+    "inventory-api":[{sku:"SKU-101",name:"Cable Kit",stock:42},{sku:"SKU-102",name:"Desk Stand",stock:18}],
+    "analytics-events":[{event:"page_view",count:1284},{event:"lead_submit",count:86}],
+    "reviews-api":[{id:"R-12",rating:5,status:"published"},{id:"R-11",rating:4,status:"review"}],
+    "subscriber-api":[{id:"SUB-91",email:"reader@example.com",status:"active"},{id:"SUB-90",email:"member@example.com",status:"active"}],
+    "support-api":[{id:"T-52",title:"Login help",status:"open"},{id:"T-51",title:"Billing question",status:"resolved"}]
+  };
+  if(seeds[key])return seeds[key];
+  const label=DEMO_NAMES[key]||"Record";
+  return [{id:key+"-demo-1",name:label+" Alpha",status:"active"},{id:key+"-demo-2",name:label+" Beta",status:"pending"}];
+}
+
 export class AppState extends DurableObject {
   constructor(ctx,env){
     super(ctx,env);
@@ -185,6 +217,14 @@ export class AppState extends DurableObject {
           owner TEXT NOT NULL,
           created_at TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS demo_records (
+          id TEXT PRIMARY KEY,
+          demo_key TEXT NOT NULL,
+          label TEXT NOT NULL,
+          payload TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_demo_records_key ON demo_records(demo_key,created_at);
         CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
         CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token_hash);
         CREATE INDEX IF NOT EXISTS idx_sessions_expiry ON sessions(expires_at);
@@ -479,6 +519,36 @@ export class AppState extends DurableObject {
       const all=this.sql.exec("SELECT id FROM tasks ORDER BY created_at DESC").toArray();
       for(const old of all.slice(100))this.sql.exec("DELETE FROM tasks WHERE id=?",old.id);
       return json({ok:true,task,message:"Task saved."},201);
+    }
+
+    if(path.startsWith("/api/demo/")){
+      const key=clean(path.slice("/api/demo/".length),80);
+      if(!DEMO_KEYS.has(key))return json({ok:false,error:"Unknown demo API."},404);
+      if(method==="GET"){
+        const saved=this.sql.exec("SELECT id,label,payload,created_at AS createdAt FROM demo_records WHERE demo_key=? ORDER BY created_at DESC LIMIT 25",key).toArray().map(x=>{let data={};try{data=JSON.parse(x.payload)}catch{}return {...x,data}});
+        const seed=demoSeed(key);
+        const q=clean(url.searchParams.get("q")||"",80).toLowerCase();
+        const filtered=q?seed.filter(x=>JSON.stringify(x).toLowerCase().includes(q)):seed;
+        return json({ok:true,demo:key,capability:DEMO_NAMES[key]||key,persistent:true,seed:filtered,records:saved,total:filtered.length+saved.length});
+      }
+      if(method==="POST"){
+        const body=await request.json().catch(()=>({}));
+        const safe={};
+        for(const [k,v] of Object.entries(body).slice(0,12))safe[clean(k,50)]=typeof v==="string"?clean(v,500):v;
+        const label=clean(safe.name||safe.title||safe.email||safe.value||DEMO_NAMES[key]||"Demo record",120);
+        const id="demo-"+crypto.randomUUID().slice(0,10),createdAt=new Date().toISOString();
+        this.sql.exec("INSERT INTO demo_records(id,demo_key,label,payload,created_at) VALUES(?,?,?,?,?)",id,key,label,JSON.stringify(safe).slice(0,4000),createdAt);
+        const rows=this.sql.exec("SELECT id FROM demo_records WHERE demo_key=? ORDER BY created_at DESC",key).toArray();
+        for(const old of rows.slice(25))this.sql.exec("DELETE FROM demo_records WHERE id=?",old.id);
+        return json({ok:true,demo:key,record:{id,label,data:safe,createdAt},persistent:true},201);
+      }
+      if(method==="DELETE"){
+        const id=clean(url.searchParams.get("id")||"",80);
+        if(!id)return json({ok:false,error:"Record id is required."},400);
+        this.sql.exec("DELETE FROM demo_records WHERE id=? AND demo_key=?",id,key);
+        return json({ok:true,deleted:id});
+      }
+      return json({ok:false,error:"Method not allowed."},405);
     }
 
     if(path==="/api/quote" && method==="POST"){
