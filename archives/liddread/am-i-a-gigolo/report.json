@@ -1,0 +1,13 @@
+{
+  "slug": "am-i-a-gigolo",
+  "title": "Am I a Gigolo",
+  "indexUrl": "https://liddread.com/am-i-a-gigolo-2/",
+  "permissionScope": "completed-only",
+  "complete": false,
+  "startedAt": "2026-10-04T13:59:17.088Z",
+  "finishedAt": "2026-10-04T13:59:17.088Z",
+  "fatalError": "Could not fetch index: Error: jina HTTP 403",
+  "finalChapter": 1827,
+  "archivedChapters": 0,
+  "errors": []
+}
