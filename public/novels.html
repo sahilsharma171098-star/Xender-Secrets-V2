@@ -3,201 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Xender Novels | English-Translated Chinese Literature</title>
-<meta name="description" content="Discover English-translated Chinese literature with a web-novel style browsing experience: latest updates, genres, search and reader links.">
+<title>Xender Novels | Addictive Original Web Fiction</title>
+<meta name="description" content="Read original binge-style English web fiction: cultivation, systems, hidden heirs, regression, revenge, urban fantasy and more.">
 <link rel="canonical" href="https://www.xendersecrets.com/novels.html">
 <meta name="robots" content="index,follow">
 <link rel="stylesheet" href="style.css">
 <style>
-.nv-hero{padding-bottom:34px}
-.nv-hero h1{font-size:clamp(46px,7vw,82px);line-height:1;margin:16px 0;max-width:960px}
-.nv-hero .lead{max-width:800px}
-.nv-shell{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
-.nv-panel{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px}
-.nv-panel h3{margin:0 0 16px}
-.nv-search{display:flex;gap:10px;margin:20px 0 28px;flex-wrap:wrap}
-.nv-search input{flex:1;min-width:240px;background:#0e1319;border:1px solid #ffffff18;color:#eef2f5;border-radius:10px;padding:13px 15px;font:inherit}
-.nv-tabs{display:flex;gap:8px;flex-wrap:wrap}
-.nv-tabs button{background:#0e1319;border:1px solid #ffffff18;color:#c8d1d7;padding:9px 12px;border-radius:999px;cursor:pointer}
-.nv-tabs button.active{background:#4de6ad;color:#04100c;border-color:#4de6ad}
-.latest-list{display:grid;gap:10px}
-.latest-item{display:flex;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid #ffffff0e}
-.latest-item:last-child{border-bottom:0}
-.latest-item a{color:#eef2f5;font-weight:750}
-.latest-item small{color:#75818a}
-.nv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.nv-card{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:20px;display:flex;flex-direction:column;min-height:330px}
-.nv-card h3{font-size:23px;line-height:1.15;margin:12px 0 9px}
-.nv-card p{color:#96a1aa}
-.nv-meta{font-size:14px;color:#c6cdd2;margin:2px 0}
-.nv-badges{display:flex;gap:7px;flex-wrap:wrap}
-.nv-badge{font-size:10px;letter-spacing:.1em;font-weight:800;border:1px solid #4de6ad35;color:#4de6ad;padding:5px 8px;border-radius:999px}
-.nv-read{margin-top:auto;background:#4de6ad;color:#04100c!important;padding:11px 14px;border-radius:8px;text-align:center;font-weight:800}
-.nv-source{font-size:12px;color:#74818a;margin-top:10px}
-.sidebar-list{display:grid;gap:10px}
-.sidebar-list a{padding:10px 0;border-bottom:1px solid #ffffff0e}
-.rights-box{margin-top:20px;padding:15px 16px;background:#4de6ad0b;border:1px solid #4de6ad35;border-radius:12px;color:#aeb8bf;font-size:14px}
-@media(max-width:950px){.nv-shell{grid-template-columns:1fr}.nv-grid{grid-template-columns:1fr}}
+.nv-hero{padding-bottom:34px}.nv-hero h1{font-size:clamp(46px,7vw,82px);line-height:1;margin:16px 0;max-width:980px}
+.nv-shell{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px;align-items:start}.nv-panel{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px}
+.nv-search{display:flex;gap:10px;margin:18px 0 30px;flex-wrap:wrap}.nv-search input{flex:1;min-width:240px;background:#0e1319;border:1px solid #ffffff18;color:#eef2f5;border-radius:10px;padding:13px 15px;font:inherit}
+.nv-tabs{display:flex;gap:8px;flex-wrap:wrap}.nv-tabs button{background:#0e1319;border:1px solid #ffffff18;color:#c8d1d7;padding:9px 12px;border-radius:999px;cursor:pointer}.nv-tabs button.active{background:#4de6ad;color:#04100c;border-color:#4de6ad}
+.nv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.nv-card{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:20px;display:flex;flex-direction:column;min-height:345px;position:relative;overflow:hidden}
+.nv-card:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:4px;background:linear-gradient(90deg,#4de6ad,#47a8ff)}
+.nv-card h3{font-size:25px;line-height:1.12;margin:14px 0 9px}.nv-card p{color:#96a1aa}.nv-meta{font-size:13px;color:#c6cdd2;margin:2px 0}
+.nv-badges{display:flex;gap:7px;flex-wrap:wrap}.nv-badge{font-size:10px;letter-spacing:.08em;font-weight:800;border:1px solid #4de6ad35;color:#4de6ad;padding:5px 8px;border-radius:999px}
+.nv-read{margin-top:auto;background:#4de6ad;color:#04100c!important;padding:11px 14px;border-radius:8px;text-align:center;font-weight:800}.latest-list{display:grid;gap:10px}.latest-item{padding:13px 0;border-bottom:1px solid #ffffff0e}.latest-item a{font-weight:750}.latest-item small{display:block;color:#77838c;margin-top:3px}.genre-list{display:flex;gap:8px;flex-wrap:wrap}.genre-list span{background:#ffffff08;border:1px solid #ffffff12;padding:7px 10px;border-radius:999px;font-size:12px}
+.note{margin-top:18px;color:#8e9aa3;font-size:13px}@media(max-width:950px){.nv-shell{grid-template-columns:1fr}.nv-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header>
-<a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
-<button id="menu" aria-label="Menu">☰</button>
-<nav><a href="community.html">Community</a><a href="articles.html">Articles</a><a href="website-catalog.html">Websites</a><a href="resources.html">Resources</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a></nav>
-<a class="pill desktop" href="https://wa.me/919821941814">Let's Talk</a>
-</header>
-
+<header><a class="logo" href="index.html">XENDER <span>SECRETS</span></a><button id="menu" aria-label="Menu">☰</button><nav><a href="community.html">Community</a><a href="articles.html">Articles</a><a href="website-catalog.html">Websites</a><a href="resources.html">Resources</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a></nav><a class="pill desktop" href="novels.html">Read Now</a></header>
 <main>
 <section class="catalog-hero nv-hero">
-<div class="kicker">XENDER NOVELS</div>
-<h1>Chinese stories. <em>English reading experience.</em></h1>
-<p class="lead">A web-novel style reading hub for English-translated Chinese literature: fast discovery, latest updates, genres, search and clean reading links.</p>
-<div class="rights-box"><b>Rights policy:</b> Xender only hosts or republishes text when the translation is public-domain, licensed, original, or otherwise authorized. Other works can be listed or linked without copying their chapter text.</div>
+<div class="kicker">XENDER ORIGINALS</div>
+<h1>Fast chapters. Big hooks. <em>One more chapter.</em></h1>
+<p class="lead">Original English web fiction built for binge reading — cultivation, systems, hidden heirs, regression, revenge, CEO drama, transmigration and urban fantasy.</p>
 </section>
 
 <section class="catalog-body">
 <div class="nv-search">
-<input id="nvSearch" type="search" placeholder="Search title, author or translator…" aria-label="Search novels">
+<input id="nvSearch" type="search" placeholder="Search novels or genres…" aria-label="Search novels">
 <div class="nv-tabs">
 <button class="active" data-filter="all">All</button>
-<button data-filter="novel">Novels</button>
-<button data-filter="stories">Short Stories</button>
-<button data-filter="historical">Historical</button>
+<button data-filter="System">System</button>
+<button data-filter="Cultivation">Cultivation</button>
+<button data-filter="Urban">Urban</button>
+<button data-filter="Regression">Regression</button>
+<button data-filter="Female Lead">Female Lead</button>
+<button data-filter="Fantasy">Fantasy</button>
 </div>
 </div>
 
 <div class="nv-shell">
 <div>
 <div class="nv-panel" style="margin-bottom:24px">
-<div class="section-head"><div><div class="kicker">LATEST UPDATES</div><h2>Fresh reading <span>first.</span></h2></div></div>
-<div class="latest-list">
-<div class="latest-item"><a href="#three-kingdoms">Romance of the Three Kingdoms — English Volume 1</a><small>Historical Epic</small></div>
-<div class="latest-item"><a href="#dream-2">Dream of the Red Chamber — English Book II</a><small>Family Saga</small></div>
-<div class="latest-item"><a href="#strange-2">Strange Stories from a Chinese Studio — Vol. 2</a><small>Supernatural</small></div>
-<div class="latest-item"><a href="#dream-1">Dream of the Red Chamber — English Book I</a><small>Classic Novel</small></div>
-</div>
+<div class="kicker">LATEST CHAPTERS</div>
+<h2 style="font-size:32px;margin:8px 0 12px">Fresh updates. <span>Start here.</span></h2>
+<div class="latest-list" id="latestList"></div>
 </div>
 
-<div class="section-head"><div><div class="kicker">NOVEL DIRECTORY</div><h2>Browse all <span>English translations.</span></h2></div></div>
-
-<div class="nv-grid" id="nvGrid">
-<article id="dream-1" class="nv-card" data-type="novel" data-search="dream red chamber book 1 cao xueqin h bencraft joly">
-<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">CLASSIC NOVEL</span></div>
-<h3>Hung Lou Meng, or, The Dream of the Red Chamber — Book I</h3>
-<p class="nv-meta"><b>Author:</b> Cao Xueqin</p>
-<p class="nv-meta"><b>English translator:</b> H. Bencraft Joly</p>
-<p>The opening English volume of the great Qing-era family saga, following the Jia household and its intricate world of love, rank and decline.</p>
-<a class="nv-read" href="reader.html?book=9603">Read on Xender →</a>
-<div class="nv-source">Project Gutenberg #9603</div>
-</article>
-
-<article id="dream-2" class="nv-card" data-type="novel" data-search="dream red chamber book 2 cao xueqin h bencraft joly">
-<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">CLASSIC NOVEL</span></div>
-<h3>Hung Lou Meng, or, The Dream of the Red Chamber — Book II</h3>
-<p class="nv-meta"><b>Author:</b> Cao Xueqin</p>
-<p class="nv-meta"><b>English translator:</b> H. Bencraft Joly</p>
-<p>The second English volume continues the family drama and relationships at the heart of the novel.</p>
-<a class="nv-read" href="reader.html?book=9604">Read on Xender →</a>
-<div class="nv-source">Project Gutenberg #9604</div>
-</article>
-
-<article id="strange-1" class="nv-card" data-type="stories" data-search="strange stories chinese studio volume 1 pu songling herbert a giles">
-<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">SUPERNATURAL</span></div>
-<h3>Strange Stories from a Chinese Studio — Vol. 1</h3>
-<p class="nv-meta"><b>Author:</b> Pu Songling</p>
-<p class="nv-meta"><b>English translator:</b> Herbert A. Giles</p>
-<p>Ghosts, fox spirits, scholars and strange encounters in one of China's most famous collections of supernatural tales.</p>
-<a class="nv-read" href="reader.html?book=43627">Read on Xender →</a>
-<div class="nv-source">Project Gutenberg #43627</div>
-</article>
-
-<article id="strange-2" class="nv-card" data-type="stories" data-search="strange stories chinese studio volume 2 pu songling herbert a giles">
-<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">SUPERNATURAL</span></div>
-<h3>Strange Stories from a Chinese Studio — Vol. 2</h3>
-<p class="nv-meta"><b>Author:</b> Pu Songling</p>
-<p class="nv-meta"><b>English translator:</b> Herbert A. Giles</p>
-<p>The second volume continues Pu Songling's uncanny, satirical and often deeply human stories.</p>
-<a class="nv-read" href="reader.html?book=43628">Read on Xender →</a>
-<div class="nv-source">Project Gutenberg #43628</div>
-</article>
-
-<article class="nv-card" data-type="stories" data-search="strange stories chinese studio combined pu songling herbert a giles">
-<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">COLLECTED EDITION</span></div>
-<h3>Strange Stories from a Chinese Studio — Volumes 1 &amp; 2</h3>
-<p class="nv-meta"><b>Author:</b> Pu Songling</p>
-<p class="nv-meta"><b>English translator:</b> Herbert A. Giles</p>
-<p>A combined English edition for readers who want both translated volumes together.</p>
-<a class="nv-read" href="reader.html?book=43629">Read on Xender →</a>
-<div class="nv-source">Project Gutenberg #43629</div>
-</article>
-
-<article id="three-kingdoms" class="nv-card" data-type="novel historical" data-search="romance three kingdoms san kuo luo guanzhong c h brewitt taylor">
-<div class="nv-badges"><span class="nv-badge">TRANSLATED FROM CHINESE</span><span class="nv-badge">HISTORICAL EPIC</span></div>
-<h3>San Kuo; or, Romance of the Three Kingdoms — Vol. 1</h3>
-<p class="nv-meta"><b>Author:</b> Luo Guanzhong</p>
-<p class="nv-meta"><b>English translator:</b> C. H. Brewitt-Taylor</p>
-<p>A sweeping epic of war, alliances, loyalty, ambition and political rivalry during China's Three Kingdoms era.</p>
-<a class="nv-read" href="reader.html?book=77416">Read on Xender →</a>
-<div class="nv-source">Project Gutenberg #77416</div>
-</article>
-</div>
+<div class="section-head"><div><div class="kicker">NOVEL DIRECTORY</div><h2>Pick your <span>next addiction.</span></h2></div></div>
+<div class="nv-grid" id="nvGrid"></div>
 </div>
 
 <aside>
-<div class="nv-panel">
-<h3>Popular genres</h3>
-<div class="sidebar-list">
-<a href="#three-kingdoms">Historical / War</a>
-<a href="#strange-1">Supernatural / Folklore</a>
-<a href="#dream-1">Romance / Family Saga</a>
-<a href="#dream-2">Classic Chinese Fiction</a>
-</div>
-</div>
-<div class="nv-panel" style="margin-top:18px">
-<h3>Modern web novels</h3>
-<p style="color:#96a1aa">Cultivation, reincarnation, system, urban fantasy, CEO romance and martial-arts series can be added here once Xender has a license, author permission or another clear right to republish the English translation.</p>
-</div>
-<div class="nv-panel" style="margin-top:18px">
-<h3>Reader roadmap</h3>
-<div class="sidebar-list">
-<a href="#">Bookmarks & reading history</a>
-<a href="#">Next / previous chapter</a>
-<a href="#">Latest release feed</a>
-<a href="#">Comments & community</a>
-<a href="#">Telegram / email alerts</a>
-</div>
-</div>
+<div class="nv-panel"><h3>Popular genres</h3><div class="genre-list"><span>Cultivation</span><span>System</span><span>Hidden Heir</span><span>Revenge</span><span>Regression</span><span>Apocalypse</span><span>CEO</span><span>Transmigration</span><span>Medical</span><span>Martial Arts</span></div></div>
+<div class="nv-panel" style="margin-top:18px"><h3>Why Xender Originals?</h3><p style="color:#96a1aa">Shorter chapters, immediate hooks, frequent twists and cliffhangers — written specifically for mobile web-fiction readers.</p><div class="note">All titles and stories on this page are original Xender fiction, not copied from another novel site.</div></div>
 </aside>
 </div>
 </section>
 </main>
-
-<footer>
-<div><b>XENDER SECRETS</b><p>English-translated Chinese literature + digital projects</p></div>
-<div class="footer-links"><a href="index.html">Home</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
-<small>© 2026 Xender Secrets.</small>
-</footer>
-
+<footer><div><b>XENDER SECRETS</b><p>Original web fiction + digital projects</p></div><div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div><small>© 2026 Xender Secrets.</small></footer>
 <script src="script.js"></script>
+<script src="original-novels.js"></script>
 <script>
-const search=document.getElementById('nvSearch');
-const cards=[...document.querySelectorAll('.nv-card')];
-let filter='all';
-function applyFilter(){
+const stories=window.XENDER_FICTION||{};
+const grid=document.getElementById("nvGrid"),latest=document.getElementById("latestList"),search=document.getElementById("nvSearch");
+let active="all";
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function render(){
  const q=search.value.trim().toLowerCase();
- cards.forEach(card=>{
-   const type=(card.dataset.type||'').split(' ');
-   const okType=filter==='all'||type.includes(filter);
-   const okSearch=!q||(card.dataset.search||'').includes(q);
-   card.style.display=okType&&okSearch?'flex':'none';
+ grid.innerHTML="";
+ Object.entries(stories).forEach(([slug,s])=>{
+   const hay=(s.title+" "+s.tagline+" "+s.genre.join(" ")).toLowerCase();
+   const okFilter=active==="all"||s.genre.includes(active);
+   if(!okFilter||(q&&!hay.includes(q)))return;
+   const a=document.createElement("article");a.className="nv-card";
+   a.innerHTML='<div class="nv-badges">'+s.genre.slice(0,3).map(g=>'<span class="nv-badge">'+esc(g)+'</span>').join("")+'</div>'+
+   '<h3>'+esc(s.title)+'</h3><p class="nv-meta"><b>'+esc(s.author)+'</b> · '+esc(s.status)+' · '+s.chapters.length+' chapters</p>'+
+   '<p>'+esc(s.tagline)+'</p><a class="nv-read" href="reader.html?story='+encodeURIComponent(slug)+'&chapter=1">Start Reading →</a>';
+   grid.appendChild(a);
  });
 }
-document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{
- document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
- btn.classList.add('active'); filter=btn.dataset.filter; applyFilter();
-}));
-search.addEventListener('input',applyFilter);
+latest.innerHTML=Object.entries(stories).slice(0,5).map(([slug,s])=>{
+ const n=s.chapters.length,c=s.chapters[n-1];
+ return '<div class="latest-item"><a href="reader.html?story='+encodeURIComponent(slug)+'&chapter='+n+'">'+esc(s.title)+' — '+esc(c.title)+'</a><small>'+esc(s.genre.slice(0,2).join(" · "))+'</small></div>';
+}).join("");
+document.querySelectorAll("[data-filter]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));btn.classList.add("active");active=btn.dataset.filter;render();});
+search.addEventListener("input",render);render();
 </script>
 </body>
 </html>
