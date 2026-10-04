@@ -62,10 +62,21 @@ async function googleTranslate(raw,target,source){
   let lastError=null;
   for(const host of ["https://translate.googleapis.com/translate_a/single","https://translate.google.com/translate_a/single"]){
     const u=new URL(host);
-    u.searchParams.set("client","gtx");u.searchParams.set("sl",source);u.searchParams.set("tl",target);u.searchParams.set("dt","t");u.searchParams.set("q",raw);
+    u.searchParams.set("client","gtx");u.searchParams.set("sl",source);u.searchParams.set("tl",target);u.searchParams.set("dt","t");
+    const usePost=encodeURIComponent(raw).length>1400;
+    if(!usePost)u.searchParams.set("q",raw);
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
     try{
-      const response=await fetch(u.toString(),{headers:{"accept":"application/json","user-agent":"XenderSecrets/1.0"},signal:controller.signal});
+      const response=await fetch(u.toString(),{
+        method:usePost?"POST":"GET",
+        headers:{
+          "accept":"application/json",
+          "user-agent":"XenderSecrets/1.0",
+          ...(usePost?{"content-type":"application/x-www-form-urlencoded;charset=UTF-8"}:{})
+        },
+        body:usePost?new URLSearchParams({q:raw}).toString():undefined,
+        signal:controller.signal
+      });
       if(!response.ok){lastError=new Error("Translation upstream error "+response.status);continue}
       const data=await response.json();
       const translated=Array.isArray(data?.[0])?data[0].map(x=>x?.[0]||"").join(""):"";
@@ -103,18 +114,16 @@ async function translateOne(text,target,ai,source="en"){
   for(const chunk of chunks)translated.push(await translateChunk(chunk,target,ai,source));
   return translated.join(" ");
 }
-function markerFor(n){return "\n[[[XENDER_SPLIT_"+String(n).padStart(4,"0")+"]]]\n"}
+const TRANSLATION_SPLIT="\uE000\uE001\uE000";
 async function translateGroup(texts,target,ai,source){
   if(texts.length===1)return [await translateOne(texts[0],target,ai,source)];
-  let joined=String(texts[0]??"");
-  for(let i=1;i<texts.length;i++)joined+=markerFor(i)+String(texts[i]??"");
+  const joined=texts.map(x=>String(x??"")).join(TRANSLATION_SPLIT);
   try{
     const translated=await translateOne(joined,target,ai,source);
-    const marker=/\n?\[\[\[XENDER_SPLIT_\d{4}\]\]\]\n?/g;
-    const parts=translated.split(marker);
+    const parts=translated.split(TRANSLATION_SPLIT);
     if(parts.length===texts.length)return parts.map(x=>x.trim());
   }catch(e){}
-  const out=new Array(texts.length),queue=[...texts.keys()],workers=Math.min(4,texts.length);
+  const out=new Array(texts.length),queue=[...texts.keys()],workers=Math.min(5,texts.length);
   async function worker(){
     while(queue.length){
       const n=queue.shift();
