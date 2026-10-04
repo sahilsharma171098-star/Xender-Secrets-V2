@@ -1,6 +1,6 @@
 {
   "source": "LiddRead",
-  "updatedAt": "2026-10-04T14:00:10.794Z",
+  "updatedAt": "2026-10-04T14:00:17.328Z",
   "novels": {
     "absolute-god": {
       "slug": "absolute-god",
@@ -155,6 +155,19 @@
       "finishedAt": "2026-10-04T14:00:10.793Z",
       "fatalError": "Could not fetch index: Error: jina HTTP 403",
       "finalChapter": 3050,
+      "archivedChapters": 0,
+      "errors": []
+    },
+    "medical-genius": {
+      "slug": "medical-genius",
+      "title": "Medical Genius",
+      "indexUrl": "https://liddread.com/medical-genius/",
+      "permissionScope": "completed-only",
+      "complete": false,
+      "startedAt": "2026-10-04T14:00:17.328Z",
+      "finishedAt": "2026-10-04T14:00:17.328Z",
+      "fatalError": "Could not fetch index: Error: jina HTTP 403",
+      "finalChapter": 4398,
       "archivedChapters": 0,
       "errors": []
     }
