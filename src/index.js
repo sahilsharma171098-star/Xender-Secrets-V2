@@ -931,6 +931,17 @@ export default {
         result.googlePivot=await googleTranslate(result.googleEnglish,"hi","en");
       }catch(e){result.googlePivotError=String(e?.message||e)}
       try{result.aiDirect=await aiTranslate(sample,"hi",env.AI,"zh-CN")}catch(e){result.aiDirectError=String(e?.message||e)}
+      try{
+        const glm=await env.AI.run("@cf/zai-org/glm-4.7-flash",{
+          messages:[
+            {role:"system",content:"Translate Classical Chinese fiction into natural, faithful Hindi. Preserve names, meaning, tone, and sentence order. Output only the Hindi translation, with no commentary."},
+            {role:"user",content:sample}
+          ],
+          temperature:0.1,
+          max_completion_tokens:300
+        });
+        result.glmDirect=String(glm?.response||glm?.choices?.[0]?.message?.content||"").trim();
+      }catch(e){result.glmDirectError=String(e?.message||e)}
       return json(result);
     }
 
