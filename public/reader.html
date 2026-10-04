@@ -120,7 +120,14 @@ async function translateCurrent(target){
    if(batch.length)batches.push(batch);
    for(let i=0;i<batches.length;i++){
     translateStatus.textContent=batches.length>1?("Translating "+(i+1)+"/"+batches.length+"…"):"Translating…";
-    const resp=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,source,texts:batches[i]})});
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
+    let resp;
+    try{
+     resp=await fetch("/api/translate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({target,source,texts:batches[i]}),signal:controller.signal});
+    }catch(e){
+     if(e?.name==="AbortError")throw new Error("Translation timed out. Tap Translate chapter to retry.");
+     throw e;
+    }finally{clearTimeout(timer)}
     const data=await resp.json().catch(()=>({}));if(!resp.ok||!data.ok)throw new Error(data.error||"Translation unavailable");
     translatedBlocks.push(...(Array.isArray(data.translated)?data.translated:[]));
    }
