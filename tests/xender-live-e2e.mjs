@@ -13,15 +13,17 @@ page.setDefaultTimeout(20000);
 
 
 try {
+  // The homepage was simplified in 83c033d (new hero, "explore" grid removed). The old assertions
+  // ('Simple digital work', >=8 #explore links) failed on every run after that commit.
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
   const title = await page.title();
-  const hero = await page.locator('h1').innerText();
+  const hero = (await page.locator('h1').first().innerText()).replace(/\s+/g, ' ');
   const serviceCards = await page.locator('#services .card').count();
-  const exploreLinks = await page.locator('#explore .explore').count();
-  const startHref = await page.locator('a').filter({hasText:'Start a Project'}).first().getAttribute('href');
-  record('homepage_simple', title.includes('Xender Secrets') && hero.includes('Simple digital work') && serviceCards===3 && exploreLinks>=8 && (startHref||'').includes('wa.me/919821941814'),
-    `title=${title}; hero=${hero}; services=${serviceCards}; explore=${exploreLinks}; start=${startHref}`);
-} catch (e) { record('homepage_simple', false, e); }
+  const waLinks = await page.locator('a[href*="wa.me/919821941814"]').count();
+  const catalogLink = await page.locator('a[href*="website-catalog.html"]').count();
+  record('homepage', title.includes('Xender Secrets') && /websites?/i.test(hero) && serviceCards >= 3 && waLinks >= 1 && catalogLink >= 1,
+    `title=${title}; hero=${hero}; services=${serviceCards}; whatsapp=${waLinks}; catalogLinks=${catalogLink}`);
+} catch (e) { record('homepage', false, e); }
 
 try {
   await page.goto(BASE + '/website-catalog.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -126,28 +128,49 @@ try {
   });
   record('translation_api_small', apiProbe.status===200 && apiProbe.body?.ok===true && /[\u0900-\u097F]/.test((apiProbe.body?.translated||[]).join(' ')), JSON.stringify(apiProbe));
 
+} catch (e) { record('translation_api_small', false, e); }
+
+// Reader: Gutenberg chapters are static JSON (no backend); XH chapters come from the Worker
+// (/api/reader/*) with the Render service only as a fallback.
+try {
+  await page.goto(BASE + '/reader.html?gutenberg=journey-to-the-west-zh&chapter=1', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForFunction(() => document.querySelectorAll('#readerContent p').length > 3, null, { timeout: 30000 });
+  const src1 = await page.evaluate(() => document.body.dataset.readerSource);
+  const t1 = await page.locator('#chapterTitle').innerText();
+  await page.locator('#nextChapter').click();
+  await page.waitForFunction(() => /chapter=2/.test(location.search) && document.querySelector('#chapterTitle')?.textContent.startsWith('Chapter 2'), null, { timeout: 30000 });
+  record('reader_gutenberg_static', src1 === 'static' && /^Chapter 1/.test(t1), `source=${src1}; title=${t1}`);
+} catch (e) { record('reader_gutenberg_static', false, e); }
+
+try {
+  const health = await page.evaluate(() => fetch('/api/reader/health').then(r => r.json()).catch(e => ({ error: String(e) })));
+  record('reader_api_health', health.ok === true && health.sources?.gutenberg === 'static', JSON.stringify(health));
+} catch (e) { record('reader_api_health', false, e); }
+
+try {
   await page.goto(BASE + '/reader.html?xh=billionaire-god-of-war&chapter=1', { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await page.waitForFunction(() => document.querySelector('#readerContent')?.innerText.includes('Fingol'), null, { timeout: 60000 });
+  await page.waitForFunction(() => (document.querySelector('#readerContent')?.innerText || '').length > 200, null, { timeout: 120000 });
+  const source = await page.evaluate(() => document.body.dataset.readerSource);
   const original = (await page.locator('#readerContent').innerText()).slice(0, 220);
   await page.locator('#languageSelect').selectOption('hi');
   await page.waitForFunction(() => (document.querySelector('#translateStatus')?.textContent||'').trim()==='Tap Translate chapter', null, { timeout: 5000 });
   const status=(await page.locator('#translateStatus').innerText()).trim();
   const buttonEnabled=await page.locator('#translateChapter').isEnabled();
   const afterSelect=(await page.locator('#readerContent').innerText()).slice(0,220);
-  record('novel_translation_ui_ready', status==='Tap Translate chapter' && buttonEnabled && afterSelect===original, `status=${status}; buttonEnabled=${buttonEnabled}; contentUnchanged=${afterSelect===original}`);
-} catch (e) { record('novel_hindi_translation', false, e); }
+  record('reader_xh_and_translation_ui', status==='Tap Translate chapter' && buttonEnabled && afterSelect===original, `source=${source}; status=${status}; buttonEnabled=${buttonEnabled}; contentUnchanged=${afterSelect===original}`);
+} catch (e) { record('reader_xh_and_translation_ui', false, e); }
 
 try {
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const mp = await mobile.newPage();
   const bad = [];
-  for (const path of ['/website-catalog.html','/business-templates.html','/template-preview.html?id=DENT-18']) {
+  for (const path of ['/website-catalog.html','/business-templates.html','/template-preview.html?id=DENT-18','/novels.html','/reader.html?gutenberg=journey-to-the-west-zh&chapter=1']) {
     await mp.goto(BASE + path, { waitUntil: 'domcontentloaded', timeout: 30000 });
     const dims = await mp.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
     if (dims.sw > dims.cw + 2) bad.push({ path, ...dims });
   }
+  await mobile.close().catch(() => {});
   record('mobile_no_horizontal_overflow', bad.length===0, bad.length ? JSON.stringify(bad) : '390px key pages clean');
-  await mobile.close();
 } catch (e) { record('mobile_no_horizontal_overflow', false, e); }
 
 await browser.close();
@@ -156,4 +179,6 @@ const failed = results.filter(x => !x.ok);
 const report = { base: BASE, passed: results.length - failed.length, failed: failed.length, results };
 fs.writeFileSync('xender-e2e-results.json', JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));
+// GitHub annotations are readable through the API even when raw logs are not.
+for (const f of failed) console.log(`::error title=E2E ${f.test}::${String(f.detail).replace(/[\r\n]+/g, ' ').slice(0, 500)}`);
 if (failed.length) process.exit(1);

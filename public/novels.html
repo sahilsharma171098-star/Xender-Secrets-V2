@@ -172,8 +172,8 @@ body.novel-light footer,body.novel-dark footer{background:var(--nv-card);border-
 const API="https://xender-reader-stable.onrender.com";
 
 const fallbackGutenberg=[
- {slug:"dream-red-chamber",title:"The Dream of the Red Chamber",finalChapter:56,genres:["Chinese Classic","Supernatural","Family","Romance"],summary:"A monumental Chinese classic blending family rise and decline, love, status, dreams, spirituality and supernatural symbolism.",sourceSite:"Project Gutenberg"},
- {slug:"romance-three-kingdoms-vol-1",title:"Romance of the Three Kingdoms — Volume I",finalChapter:60,genres:["Chinese Classic","War","Strategy","Power"],summary:"Warlords, sworn brothers, betrayals, battlefield strategy and the struggle for supremacy during the fall of the Han.",sourceSite:"Project Gutenberg"}
+ {slug:"dream-red-chamber-zh",title:"Dream of the Red Chamber — Complete Chinese Edition",finalChapter:120,genres:["Chinese Classic","Family","Romance","Supernatural","Drama"],summary:"The complete 120-chapter Chinese edition chronicling the rise and decline of an aristocratic family through love, dreams and spiritual symbolism.",sourceSite:"Project Gutenberg",language:"zh-CN"},
+ {slug:"romance-three-kingdoms-zh",title:"Romance of the Three Kingdoms — Complete Chinese Edition",finalChapter:120,genres:["Chinese Classic","War","Strategy","Power","Revenge"],summary:"The complete 120-chapter Chinese epic of warlords, sworn brothers, betrayal, strategy and the struggle to rule a fractured empire.",sourceSite:"Project Gutenberg",language:"zh-CN"}
 ];
 
 const fallbackXh=[
@@ -249,7 +249,7 @@ function renderAlpha(){
  alphaBar.querySelectorAll("button").forEach(b=>b.onclick=()=>{activeLetter=b.dataset.letter;renderAlpha();renderMain();});
 }
 function renderNew(){
- const added=[...imported,...fallbackGutenberg,...licensed,...fallbackXh];
+ const added=[...stories];
  const unique=[]; const seen=new Set();
  for(const s of added){if(!seen.has(s.slug)){seen.add(s.slug);unique.push(s)}}
  newList.innerHTML=unique.slice(0,8).map(miniRow).join("")||'<div class="empty">No novels added yet.</div>';
@@ -268,10 +268,20 @@ function renderSidebar(){
  catCloud.querySelectorAll("button").forEach(b=>b.onclick=()=>{genreFilter.value=b.dataset.cat;activeLetter="all";renderAlpha();renderMain();window.scrollTo({top:0,behavior:"smooth"});});
 }
 async function loadRemote(){
- let xh=fallbackXh,gutenberg=fallbackGutenberg;
- const [xr,gr]=await Promise.allSettled([fetch(API+"/xh/catalog"),fetch(API+"/gutenberg/catalog")]);
- try{if(xr.status==="fulfilled"){const d=await xr.value.json();if(d.ok&&Array.isArray(d.items)&&d.items.length)xh=d.items}}catch(e){}
- try{if(gr.status==="fulfilled"){const d=await gr.value.json();if(d.ok&&Array.isArray(d.items)&&d.items.length)gutenberg=d.items}}catch(e){}
+ // Primary: pre-generated static catalog (no backend, served from Cloudflare's edge).
+ // Fallback: the Render reader service, only if the static catalog is unavailable.
+ let xh=fallbackXh,gutenberg=fallbackGutenberg,loaded=false;
+ const timed=(url,ms)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);return fetch(url,{signal:c.signal}).then(r=>r.json()).finally(()=>clearTimeout(t))};
+ try{
+  const d=await timed("novel-data/catalog.json",15000);
+  if(d.ok&&Array.isArray(d.gutenberg)&&d.gutenberg.length){gutenberg=d.gutenberg;loaded=true}
+  if(d.ok&&Array.isArray(d.xh)&&d.xh.length)xh=d.xh;
+ }catch(e){}
+ if(!loaded){
+  const [xr,gr]=await Promise.allSettled([timed(API+"/xh/catalog",60000),timed(API+"/gutenberg/catalog",60000)]);
+  if(xr.status==="fulfilled"&&xr.value.ok&&Array.isArray(xr.value.items)&&xr.value.items.length)xh=xr.value.items;
+  if(gr.status==="fulfilled"&&gr.value.ok&&Array.isArray(gr.value.items)&&gr.value.items.length)gutenberg=gr.value.items;
+ }
  stories=[...imported,...gutenberg,...licensed,...xh];
  renderNew();renderMain();renderSidebar();
 }

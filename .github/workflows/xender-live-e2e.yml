@@ -22,19 +22,32 @@ on:
       - 'public/script.js'
       - 'public/services.html'
       - 'public/reader.html'
+      - 'public/novels.html'
+      - 'public/novel-data/**'
+      - 'scripts/build-novel-data.mjs'
+      - 'tests/**'
+      - 'src/**'
+  pull_request:
+    paths:
+      - 'public/reader.html'
+      - 'public/novels.html'
+      - 'public/novel-data/**'
+      - 'scripts/build-novel-data.mjs'
+      - 'tests/**'
       - 'src/**'
 
 concurrency:
-  group: xender-live-e2e
+  group: xender-live-e2e-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  live-e2e:
+  checks:
+    name: Offline checks (unit + mocked browser)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,6 +59,48 @@ jobs:
         run: |
           npm install --no-save playwright@1.57.0
           npx playwright install --with-deps chromium
+      - name: Reader data + Worker reader API unit tests
+        run: node --test tests/unit/*.test.mjs
+      - name: Committed novel data is consistent
+        run: node scripts/build-novel-data.mjs --check
+      - name: Reader sources in a real browser (network mocked)
+        run: node --test tests/reader-sources.test.mjs
+
+  live-e2e:
+    needs: checks
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Wait for Cloudflare to serve this commit
+        # Cloudflare deploys a few minutes after the push. Testing earlier checks the OLD site and
+        # produces false failures, so wait until a file changed by this push is live.
+        if: github.event_name == 'push'
+        env:
+          BASE: https://www.xendersecrets.com
+        run: |
+          FILE=$(git diff --name-only HEAD~1 HEAD -- public | grep -E '\.(html|js|css|json)$' | grep -v '^public/novel-data/' | head -1 || true)
+          if [ -z "$FILE" ]; then echo "No public file changed; waiting 120s for the Worker deploy"; sleep 120; exit 0; fi
+          URLPATH="${FILE#public}"
+          WANT=$(sha256sum "$FILE" | cut -d' ' -f1)
+          for i in $(seq 1 40); do
+            GOT=$(curl -fsSL -H 'cache-control: no-cache' "$BASE$URLPATH?deploycheck=$GITHUB_SHA" | sha256sum | cut -d' ' -f1 || true)
+            if [ "$GOT" = "$WANT" ]; then echo "Production serves this commit's $URLPATH"; exit 0; fi
+            sleep 15
+          done
+          echo "::warning::$URLPATH did not match after 10 minutes; testing anyway"
       - name: Run live Xender E2E
         env:
           XENDER_BASE_URL: https://www.xendersecrets.com

@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { handleReaderApi } from "./reader/api.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
 const enc=new TextEncoder();
@@ -149,6 +150,7 @@ async function translateBatch(texts,target,ai,source="en"){
   for(const g of groups)out.push(...await translateGroup(g,target,ai,source));
   return out;
 }
+
 async function inrRate(currency){
   if(currency==="INR")return {rate:1,source:"base",updatedAt:null};
   try{
@@ -850,7 +852,7 @@ function chatReply(raw){
 }
 
 export default {
-  async fetch(request,env){
+  async fetch(request,env,ctx){
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
 
@@ -958,6 +960,8 @@ export default {
 
     if(path==="/api/health" && method==="GET")return json({ok:true,service:"Xender Secrets API",architecture:"Cloudflare Worker + SQLite Durable Object",persistent:true,time:new Date().toISOString()});
     if(path==="/api/catalog" && method==="GET")return json({ok:true,categories:["Frontend","Backend / API","Full Stack"],builds:9,persistentBackend:true});
+
+    if(path.startsWith("/api/reader/"))return handleReaderApi(request,{assets:env.ASSETS,cache:typeof caches!=="undefined"?caches.default:null,ctx});
 
     if(path.startsWith("/api/")){
       const id=env.APP_STATE.idFromName("xender-secrets");
