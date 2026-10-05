@@ -196,6 +196,47 @@ export function splitChapterPage(html, wanted, group) {
   return {paragraphs:[],detected:[...sections.keys()].sort((a,b)=>a-b)};
 }
 
+// ---- v2 paragraphing for Chinese editions -----------------------------------------------
+// Gutenberg Chinese texts are hard-wrapped at ~35 characters. The legacy code either joined
+// wrapped lines with spaces (stray spaces inside sentences) or, for editions without blank
+// lines, made every wrapped line its own "paragraph" (breaks mid-sentence). v2 joins wrapped
+// lines without spaces and, when a block is very long, regroups it at sentence ends.
+function joinWrapped(lines) {
+  let out = "";
+  for (const raw of lines) {
+    const l = raw.replace(/[ \t]+/g, " ").replace(/^[\u3000 ]+|[\u3000 ]+$/g, "");
+    if (!l) continue;
+    if (out && /[A-Za-z0-9,.;:!?'"\])]$/.test(out) && /^[A-Za-z0-9"'(\[]/.test(l)) out += " "; // only Latin text needs a space at a wrap
+    out += l;
+  }
+  return out;
+}
+function regroup(text, target = 260, max = 900) {
+  if (text.length <= max) return [text];
+  const sentences = text.match(/[^。！？．!?]*[。！？．!?]+[」』”"）)]*|[^。！？．!?]+$/g) || [text];
+  const out = [];
+  let cur = "";
+  for (const s of sentences) {
+    cur += s;
+    if (cur.length >= target) { out.push(cur.trim()); cur = ""; }
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+export function cjkParagraphs(raw) {
+  const lines = String(raw || "").split(/\r?\n/);
+  const blocks = [];
+  let cur = [];
+  for (const l of lines) {
+    if (l.trim() === "") { if (cur.length) blocks.push(cur), (cur = []); continue; }
+    // a new paragraph also starts at an indented line (full-width or 2+ spaces)
+    if (cur.length && /^(\u3000|  )/.test(l)) { blocks.push(cur); cur = []; }
+    cur.push(l);
+  }
+  if (cur.length) blocks.push(cur);
+  return blocks.map(joinWrapped).filter(Boolean).flatMap((b) => regroup(b));
+}
+
 // ---- v2 Chinese chapter splitter (used for pre-generated static data) ---------------------
 // The legacy splitter above (still used by reader-server.js on Render) has two defects that the
 // static build exposed on real Gutenberg editions:
@@ -234,8 +275,8 @@ export function splitGutenbergChineseChaptersV2(text, maxChapter = 999) {
   for (let k = 0; k < marks.length; k++) {
     const cur = marks[k], next = marks[k + 1];
     const raw = lines.slice(cur.bodyLine, next ? next.line : lines.length).filter((l) => !SEPARATOR.test(l)).join("\n").trim();
-    const paragraphs = paragraphsFromRaw(raw);
-    const size = paragraphs.join(" ").length;
+    const paragraphs = cjkParagraphs(raw);
+    const size = paragraphs.join("").length;
     if (size < 40) continue; // table-of-contents entries
     const prev = out.get(cur.num);
     if (!prev || size > prev._size) out.set(cur.num, { title: cur.title, paragraphs, _size: size });

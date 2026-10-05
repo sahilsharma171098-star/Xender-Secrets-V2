@@ -173,3 +173,20 @@ test('v2 splitter: same-line titles without a space are still headings; ToC entr
   assert.equal(v2.get(1).title, 'Chapter 1 — 甄士隱夢幻識通靈');
   assert.ok(v2.get(1).paragraphs[0].startsWith('此開卷第一回也'));
 });
+
+test('cjkParagraphs: joins hard-wrapped lines without spaces and regroups unbroken text at sentence ends', async () => {
+  const { cjkParagraphs } = await import('../../src/reader/text.mjs');
+  // blank-line separated, hard-wrapped
+  assert.deepEqual(cjkParagraphs('詩曰：\r\n混沌未分天地亂，\r\n茫茫渺渺無人見。\r\n\r\n　　蓋聞天地之數，\r\n有十二萬九千六百歲為一元。'),
+    ['詩曰：混沌未分天地亂，茫茫渺渺無人見。', '蓋聞天地之數，有十二萬九千六百歲為一元。']);
+  // no blank lines at all (Dream of the Red Chamber edition): no mid-sentence breaks
+  const wrapped = Array.from({ length: 150 }, (_, i) => `這是第${"一二三四五六七八九"[i % 9]}句，內容在這裡。`).join('').match(/.{1,35}/g).join('\n');
+  const paras = cjkParagraphs(wrapped);
+  assert.ok(paras.length > 1 && paras.length < 20, `paragraph count ${paras.length}`);
+  assert.ok(paras.every((p) => /[。」]$/.test(p)), 'every paragraph ends at a sentence end');
+  assert.ok(!paras.join('').includes(' '), 'no stray spaces inside Chinese text');
+  // indentation starts a new paragraph even without a blank line
+  assert.equal(cjkParagraphs('　　第一段。\n　　第二段。').length, 2);
+  // English stays space-joined
+  assert.deepEqual(cjkParagraphs('Hello\nworld.'), ['Hello world.']);
+});
