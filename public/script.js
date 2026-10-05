@@ -1,3 +1,19 @@
+/* XENDER THEME CONTROL */
+(()=> {
+  const saved=localStorage.getItem("xs-theme");
+  if(saved==="dark")document.documentElement.dataset.theme="dark";
+  else document.documentElement.removeAttribute("data-theme");
+  const mount=()=>{
+    const header=document.querySelector("header");if(!header||document.getElementById("xsThemeToggle"))return;
+    const b=document.createElement("button");b.id="xsThemeToggle";b.className="xs-theme-toggle";b.type="button";
+    const paint=()=>{const dark=document.documentElement.dataset.theme==="dark";b.innerHTML=dark?"☀️ <span>Light</span>":"🌙 <span>Dark</span>";b.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode")};
+    b.onclick=()=>{const dark=document.documentElement.dataset.theme==="dark";if(dark){document.documentElement.removeAttribute("data-theme");localStorage.setItem("xs-theme","light")}else{document.documentElement.dataset.theme="dark";localStorage.setItem("xs-theme","dark")}paint()};
+    const nav=header.querySelector("nav"),desktop=header.querySelector(".desktop");
+    if(desktop)header.insertBefore(b,desktop);else if(nav)header.insertBefore(b,nav);else header.appendChild(b);
+    paint();
+  };
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
+})();
 document.getElementById('menu')?.addEventListener('click',()=>document.querySelector('nav')?.classList.toggle('open'));document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>document.querySelector('nav')?.classList.remove('open')));;document.querySelectorAll('.filter[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter[data-filter]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const filter=btn.dataset.filter;document.querySelectorAll('.catalog-products .product-card[data-category]').forEach(card=>card.classList.toggle('hidden',filter!=='all'&&card.dataset.category!==filter));}));
 ;(()=> {
   if(document.getElementById('xsChat')) return;
