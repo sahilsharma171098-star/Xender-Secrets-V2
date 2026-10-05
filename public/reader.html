@@ -40,7 +40,7 @@
 </main>
 <script src="script.js"></script><script src="licensed-novels.js"></script><script src="novel-data/catalog.js"></script>
 <script>
-const API="https://xender-reader-api.onrender.com";
+const API="https://xender-reader-stable.onrender.com";
 const p=new URLSearchParams(location.search),xhSlug=p.get("xh"),licensedSlug=p.get("licensed"),importedSlug=p.get("imported"),gutenbergSlug=p.get("gutenberg");
 const sourceType=gutenbergSlug?"gutenberg":importedSlug?"imported":licensedSlug?"licensed":xhSlug?"xh":null,slug=gutenbergSlug||importedSlug||licensedSlug||xhSlug||"";
 let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map(),browserTranslators=new Map(),sessionAutoTranslate=false,localNovel=null,sourceLanguage="en";
