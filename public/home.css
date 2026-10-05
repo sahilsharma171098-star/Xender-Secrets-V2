@@ -64,3 +64,17 @@ html:not([data-theme="dark"]) .home-theme-toggle{background:#fff;color:#26323c;b
  .home-theme-toggle{margin-left:auto}
  .menu{margin-left:0}
 }
+
+/* XENDER SIMPLE HOME */
+.hero-simple{max-width:900px;padding-right:20px}
+.hero-simple h1{max-width:900px}
+.hero-simple p{font-size:1.12rem;color:var(--muted);max-width:700px;margin:0 0 28px}
+.novel-strip{padding:46px 0}
+.novel-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:28px;border:1px solid var(--line);border-radius:20px;padding:28px;background:rgba(14,26,34,.65)}
+.novel-strip h2{margin:6px 0 8px;font-size:clamp(1.8rem,3.5vw,3rem)}
+.novel-strip p{margin:0;color:var(--muted)}
+html:not([data-theme="dark"]) .novel-strip-inner{background:#fff;border-color:#dfe5ea;box-shadow:0 10px 28px rgba(15,23,42,.04)}
+html:not([data-theme="dark"]) .novel-strip p{color:#66737e}
+@media(max-width:760px){
+ .novel-strip-inner{align-items:flex-start;flex-direction:column}
+}
