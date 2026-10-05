@@ -195,3 +195,51 @@ export function splitChapterPage(html, wanted, group) {
   }
   return {paragraphs:[],detected:[...sections.keys()].sort((a,b)=>a-b)};
 }
+
+// ---- v2 Chinese chapter splitter (used for pre-generated static data) ---------------------
+// The legacy splitter above (still used by reader-server.js on Render) has two defects that the
+// static build exposed on real Gutenberg editions:
+//  1. `[：:\s　]*` crosses line breaks, so for "第五回\n-----\n回目" the separator line becomes the
+//     chapter title and the real title becomes body text.
+//  2. Any body line that merely starts with "第四回…" (e.g. "第四回中既將薛家母子…") is treated as a
+//     chapter heading, cutting the real chapter short and overwriting another chapter.
+// v2 only accepts a heading when it is a line of its own: "第N回", optionally followed on the same
+// line by a title (after a space/colon, or a short punctuation-free title), and picks the title up
+// from the next line when the heading line has none.
+const CN_HEADING = /^[ \t　]*第([〇○零一二兩两三四五六七八九十百千]+)回(.*)$/;
+const SEPARATOR = /^[\s　]*[-=_*~·•]{4,}[\s　]*$/;
+const SENTENCE_PUNCT = /[，。．！？；「」『』：:、]/;
+export function splitGutenbergChineseChaptersV2(text, maxChapter = 999) {
+  const lines = gutenbergBody(text).split(/\r?\n/);
+  const marks = [];
+  for (let i = 0; i < lines.length; i++) {
+    const m = CN_HEADING.exec(lines[i]);
+    if (!m) continue;
+    const num = chineseChapterNumber(m[1]);
+    if (num < 1 || num > maxChapter) continue;
+    const rest = m[2];
+    const restTrim = rest.replace(/^[ \t　：:]+/, "").trim();
+    const separated = rest === "" || /^[ \t　：:]/.test(rest);
+    if (!separated && (restTrim.length > 40 || SENTENCE_PUNCT.test(restTrim))) continue; // prose that starts with "第N回…"
+    let title = restTrim;
+    let body = i + 1;
+    while (body < lines.length && (lines[body].trim() === "" || SEPARATOR.test(lines[body]))) body++;
+    if (!title && body < lines.length) {
+      const cand = lines[body].trim();
+      if (cand && cand.length <= 40 && !/[，。．！？；「」]/.test(cand) && !CN_HEADING.test(cand)) { title = cand.replace(/[ \t　]+/g, " "); body++; }
+    }
+    marks.push({ num, line: i, bodyLine: body, title: "Chapter " + num + (title ? " — " + title.replace(/[ \t　]+/g, " ").slice(0, 180) : "") });
+  }
+  const out = new Map();
+  for (let k = 0; k < marks.length; k++) {
+    const cur = marks[k], next = marks[k + 1];
+    const raw = lines.slice(cur.bodyLine, next ? next.line : lines.length).filter((l) => !SEPARATOR.test(l)).join("\n").trim();
+    const paragraphs = paragraphsFromRaw(raw);
+    const size = paragraphs.join(" ").length;
+    if (size < 40) continue; // table-of-contents entries
+    const prev = out.get(cur.num);
+    if (!prev || size > prev._size) out.set(cur.num, { title: cur.title, paragraphs, _size: size });
+  }
+  for (const ch of out.values()) delete ch._size;
+  return out;
+}

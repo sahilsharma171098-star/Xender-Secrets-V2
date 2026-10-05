@@ -21,7 +21,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { GUTENBERG_SERIALS, XH_COMPLETED } from "../src/reader/catalog.mjs";
-import { splitGutenbergChineseChapters, splitGutenbergRomanChapters } from "../src/reader/text.mjs";
+import { splitGutenbergChineseChapters, splitGutenbergChineseChaptersV2, splitGutenbergRomanChapters } from "../src/reader/text.mjs";
 import { createXhSource } from "../src/reader/xh.mjs";
 
 const UA = "XenderSecretsReaderBuild/1.0 (+https://www.xendersecrets.com)";
@@ -63,7 +63,7 @@ export async function politeFetch(url, { fetchImpl = fetch, attempts = 4, accept
 /** Turn a full Gutenberg text into chunk files + manifest. Pure: easy to unit test. */
 export function buildGutenbergNovel(slug, novel, text, { chunk = CHUNK } = {}) {
   const src = novel.sources[0];
-  const map = src.mode === "chinese" ? splitGutenbergChineseChapters(text, novel.finalChapter) : splitGutenbergRomanChapters(text);
+  const map = src.mode === "chinese" ? splitGutenbergChineseChaptersV2(text, novel.finalChapter) : splitGutenbergRomanChapters(text);
   const chapters = [];
   const missing = [];
   for (let n = 1; n <= novel.finalChapter; n++) {
@@ -111,6 +111,26 @@ export function gapHints(text, gaps) {
     };
   }
   return out;
+}
+
+/** Chapters that look wrong: separator titles, very short bodies, or chapters that are mostly another chapter. */
+export function chapterQuality(built) {
+  const all = built.files.flatMap((f) => f.body.chapters);
+  const sizes = all.map((c) => c.paragraphs.join("").length).sort((a, b) => a - b);
+  const median = sizes[Math.floor(sizes.length / 2)] || 0;
+  const suspicious = all.filter((c) => /—\s*[-=_*~]{3,}/.test(c.title) || c.paragraphs.length < 3 || c.paragraphs.join("").length < median * 0.2)
+    .map((c) => ({ n: c.n, title: c.title.slice(0, 40), paragraphs: c.paragraphs.length, chars: c.paragraphs.join("").length }));
+  return { medianChars: median, suspicious };
+}
+/** Which chapters differ from what the Render service (legacy splitter) serves. */
+export function diffVsLegacy(text, novel, built) {
+  const legacy = splitGutenbergChineseChapters(text, novel.finalChapter);
+  const changed = [];
+  for (const c of built.files.flatMap((f) => f.body.chapters)) {
+    const l = legacy.get(c.n);
+    if (!l || l.title !== c.title || JSON.stringify(l.paragraphs) !== JSON.stringify(c.paragraphs)) changed.push(c.n);
+  }
+  return changed;
 }
 
 function writeNovel(dir, { manifest, files }) {
@@ -194,6 +214,8 @@ async function main() {
         writeNovel(path.join(OUT, "gutenberg", slug), built);
         report.gutenberg[slug] = { chapters: built.manifest.chapterCount, finalChapter: novel.finalChapter, gaps: built.manifest.gaps, files: built.files.length, bytes: text.length };
         if (built.manifest.gaps.length) report.gutenberg[slug].gapHints = gapHints(text, built.manifest.gaps);
+        report.gutenberg[slug].quality = chapterQuality(built);
+        if (novel.sources[0].mode === "chinese") report.gutenberg[slug].changedVsRender = diffVsLegacy(text, novel, built);
         console.log(`gutenberg ${slug}: ${built.manifest.chapterCount}/${novel.finalChapter} chapters in ${built.files.length} files`);
       } catch (e) {
         report.gutenberg[slug] = { error: String(e.message || e) };

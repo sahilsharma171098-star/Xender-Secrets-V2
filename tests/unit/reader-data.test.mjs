@@ -142,3 +142,34 @@ test('upstream failure becomes a 502 the reader can fall back from', async () =>
   assert.equal(r.status, 502);
   assert.equal((await r.json()).ok, false);
 });
+
+test('v2 splitter: heading on its own line with a separator and the title on the next line', async () => {
+  const { splitGutenbergChineseChaptersV2, splitGutenbergChineseChapters } = await import('../../src/reader/text.mjs');
+  const body = (n) => Array.from({ length: 3 }, (_, p) => `第${n}章正文第${p + 1}段，內容足夠長的一段文字，用來測試。`).join('\n\n');
+  const text = '*** START OF THE PROJECT GUTENBERG EBOOK X ***\n' +
+    '第四回　薄命女偏逢薄命郎\n\n' + body(4) + '\n\n' +
+    '第五回\n------------------------------------------------------------\n游幻境指迷十二釵　飲仙醪曲演紅樓夢\n\n' +
+    '第四回中既將薛家母子在榮府內寄居等事略已表明，此回則暫不能寫矣．\n\n' + body(5) + '\n\n' +
+    '第六回：賈寶玉初試云雨情\n\n' + body(6) + '\n*** END OF THE PROJECT GUTENBERG EBOOK X ***';
+  const v2 = splitGutenbergChineseChaptersV2(text, 10);
+  assert.deepEqual([...v2.keys()], [4, 5, 6]);
+  assert.equal(v2.get(5).title, 'Chapter 5 — 游幻境指迷十二釵 飲仙醪曲演紅樓夢');
+  assert.ok(v2.get(5).paragraphs[0].startsWith('第四回中既將'), 'prose line starting with 第四回 stays in chapter 5');
+  assert.ok(v2.get(4).paragraphs[0].includes('第4章'), 'chapter 4 keeps its own text');
+  assert.ok(!v2.get(5).paragraphs.some((p) => /^-+$/.test(p)), 'separator lines dropped');
+  assert.equal(v2.get(6).title, 'Chapter 6 — 賈寶玉初試云雨情');
+  // the legacy splitter (Render) gets this wrong — documents why the build uses v2
+  const v1 = splitGutenbergChineseChapters(text, 10);
+  assert.ok(!v1.has(5) || /-{5}/.test(v1.get(5).title) || v1.get(4).paragraphs[0].includes('第4章') === false);
+});
+
+test('v2 splitter: same-line titles without a space are still headings; ToC entries ignored', async () => {
+  const { splitGutenbergChineseChaptersV2 } = await import('../../src/reader/text.mjs');
+  const text = '*** START OF THE PROJECT GUTENBERG EBOOK X ***\n目錄\n第一回甄士隱夢幻識通靈\n第二回賈夫人仙逝揚州城\n\n' +
+    '第一回甄士隱夢幻識通靈\n\n' + '此開卷第一回也，作者自云曾歷過一番夢幻之後。'.repeat(3) + '\n\n' +
+    '第二回賈夫人仙逝揚州城\n\n' + '詩云：一局輸贏料不真，香銷茶盡尚逡巡。'.repeat(3) + '\n*** END OF THE PROJECT GUTENBERG EBOOK X ***';
+  const v2 = splitGutenbergChineseChaptersV2(text, 10);
+  assert.deepEqual([...v2.keys()], [1, 2]);
+  assert.equal(v2.get(1).title, 'Chapter 1 — 甄士隱夢幻識通靈');
+  assert.ok(v2.get(1).paragraphs[0].startsWith('此開卷第一回也'));
+});
