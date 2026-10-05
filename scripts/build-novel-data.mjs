@@ -130,7 +130,12 @@ export function diffVsLegacy(text, novel, built) {
     const l = legacy.get(c.n);
     if (!l || l.title !== c.title || JSON.stringify(l.paragraphs) !== JSON.stringify(c.paragraphs)) changed.push(c.n);
   }
-  return changed;
+  const detail = changed.slice(0, 4).map((n) => {
+    const l = legacy.get(n), c = built.files.flatMap((f) => f.body.chapters).find((x) => x.n === n);
+    const sig = (ch) => ch ? { title: ch.title.slice(0, 50), paras: ch.paragraphs.length, chars: ch.paragraphs.join("").length, head: ch.paragraphs.slice(0, 2).map((p) => p.slice(0, 30)), tail: ch.paragraphs[ch.paragraphs.length - 1].slice(-30) } : null;
+    return { n, render: sig(l), static: sig(c) };
+  });
+  return { count: changed.length, chapters: changed, detail };
 }
 
 function writeNovel(dir, { manifest, files }) {
