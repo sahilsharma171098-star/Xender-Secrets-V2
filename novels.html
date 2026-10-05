@@ -1,145 +1,293 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>English Translated Chinese Novels | Xender Secrets</title>
-  <meta name="description" content="Read and discover public-domain English translations of classic Chinese literature curated by Xender Secrets.">
-  <link rel="canonical" href="https://www.xendersecrets.com/novels.html">
-  <meta name="robots" content="index,follow">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .novel-hero{padding-bottom:45px}
-    .novel-hero h1{font-size:clamp(44px,7vw,82px);line-height:1;margin:18px 0;max-width:1000px}
-    .novel-hero p{max-width:800px;color:#9ba7af;font-size:18px}
-    .notice{margin-top:28px;padding:16px 18px;border:1px solid #4de6ad35;background:#4de6ad0b;border-radius:12px;color:#aeb8bf}
-    .library{padding-top:30px}
-    .novel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px}
-    .novel-card{background:#0e1319;border:1px solid #ffffff12;border-radius:16px;padding:22px;display:flex;flex-direction:column;min-height:360px}
-    .novel-card .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-    .novel-card .tag{font-size:10px;letter-spacing:.12em;font-weight:800;border:1px solid #4de6ad35;color:#4de6ad;padding:5px 8px;border-radius:99px}
-    .novel-card h2{font-size:25px;line-height:1.15;margin:0 0 12px}
-    .novel-card .meta{font-size:14px;color:#c5cdd2;margin:0 0 4px}
-    .novel-card p{color:#96a1aa}
-    .novel-card .read{margin-top:auto;display:inline-block;background:#4de6ad;color:#04100c;padding:11px 14px;border-radius:8px;text-align:center;font-weight:800}
-    .novel-card .source{font-size:12px;color:#74818a;margin-top:12px}
-    .searchbar{width:100%;max-width:560px;background:#0e1319;border:1px solid #ffffff18;color:#eef2f5;border-radius:10px;padding:13px 15px;font:inherit}
-    .back{color:#4de6ad}
-    @media(max-width:900px){.novel-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:650px){.novel-grid{grid-template-columns:1fr}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Xender Novels | Completed Novels</title>
+<meta name="description" content="Browse completed novels on Xender Secrets. Read full available chapters free, continue where you left off, and translate chapters on demand.">
+<link rel="canonical" href="https://www.xendersecrets.com/novels.html">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="style.css">
+<style>
+:root{
+  --nv-bg:#f6f7f8;--nv-card:#ffffff;--nv-text:#15181b;--nv-muted:#6d747b;--nv-line:#e4e7ea;
+  --nv-accent:#16855b;--nv-accent-soft:#e8f6f0;--nv-side:#fbfbfc;--nv-shadow:0 8px 30px rgba(20,30,40,.06)
+}
+body.novel-light{background:var(--nv-bg);color:var(--nv-text)}
+body.novel-dark{
+  --nv-bg:#0c1014;--nv-card:#121820;--nv-text:#eef2f5;--nv-muted:#96a0a9;--nv-line:#26303a;
+  --nv-accent:#4de6ad;--nv-accent-soft:#10251e;--nv-side:#10161d;--nv-shadow:0 8px 30px rgba(0,0,0,.22);
+  background:var(--nv-bg);color:var(--nv-text)
+}
+body.novel-light header,body.novel-dark header{background:var(--nv-card);border-bottom:1px solid var(--nv-line)}
+body.novel-light header a,body.novel-dark header a{color:var(--nv-text)}
+body.novel-light header .logo span,body.novel-dark header .logo span{color:var(--nv-accent)}
+body.novel-light footer,body.novel-dark footer{background:var(--nv-card);border-top:1px solid var(--nv-line);color:var(--nv-muted)}
+
+.novels-shell{max-width:1180px;margin:0 auto;padding:30px 22px 72px}
+.crumbs{font-size:13px;color:var(--nv-muted);margin:5px 0 18px}.crumbs a{color:var(--nv-accent)}
+.novels-title{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}
+.novels-title h1{font-size:clamp(38px,6vw,62px);line-height:1;margin:0 0 10px;color:var(--nv-text)}
+.novels-title p{max-width:720px;margin:0;color:var(--nv-muted);font-size:16px;line-height:1.65}
+.theme-btn{white-space:nowrap;background:var(--nv-card);border:1px solid var(--nv-line);color:var(--nv-text);padding:10px 13px;border-radius:8px;cursor:pointer;font:inherit}
+.nv-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--nv-card);border:1px solid var(--nv-line);box-shadow:var(--nv-shadow);padding:12px;border-radius:10px;margin-bottom:24px}
+.nv-toolbar input,.nv-toolbar select{background:var(--nv-bg);border:1px solid var(--nv-line);color:var(--nv-text);border-radius:7px;padding:11px 12px;font:inherit}
+.nv-toolbar input{flex:1;min-width:220px}.nv-toolbar select{min-width:170px}
+.nv-count{margin-left:auto;color:var(--nv-muted);font-size:13px;padding:0 4px}
+
+.nv-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start}
+.nv-main,.nv-sidebar{min-width:0}
+.nv-section{background:var(--nv-card);border:1px solid var(--nv-line);border-radius:10px;box-shadow:var(--nv-shadow);padding:22px;margin-bottom:24px}
+.nv-section-head{display:flex;justify-content:space-between;align-items:end;gap:14px;border-bottom:1px solid var(--nv-line);padding-bottom:13px;margin-bottom:10px}
+.nv-section-head h2{font-size:26px;margin:0;color:var(--nv-text)}
+.nv-section-head small{color:var(--nv-muted)}
+
+.new-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+.novel-mini{display:block;padding:15px 2px;border-bottom:1px solid var(--nv-line);text-decoration:none}
+.novel-mini:hover .mini-title{color:var(--nv-accent)}
+.mini-title{display:block;color:var(--nv-text);font-weight:800;font-size:17px;line-height:1.28;margin-bottom:5px}
+.mini-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:var(--nv-muted);font-size:12px}
+.status-complete{font-weight:800;color:var(--nv-accent);background:var(--nv-accent-soft);padding:3px 6px;border-radius:5px}
+
+.alpha-bar{display:flex;gap:5px;flex-wrap:wrap;margin:2px 0 14px}
+.alpha-bar button{width:30px;height:30px;background:var(--nv-bg);border:1px solid var(--nv-line);border-radius:5px;color:var(--nv-muted);cursor:pointer;font-size:12px}
+.alpha-bar button:hover,.alpha-bar button.active{background:var(--nv-accent);color:#fff;border-color:var(--nv-accent)}
+.directory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+.directory-item{display:flex;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--nv-line);text-decoration:none;align-items:flex-start}
+.directory-item:hover .dir-title{color:var(--nv-accent)}
+.dir-title{font-size:15px;font-weight:750;color:var(--nv-text);line-height:1.35}
+.dir-sub{display:block;color:var(--nv-muted);font-weight:400;font-size:11px;margin-top:3px}
+.dir-chapters{flex:0 0 auto;color:var(--nv-muted);font-size:11px;padding-top:2px}
+.empty{padding:28px 4px;color:var(--nv-muted)}
+
+.side-card{background:var(--nv-card);border:1px solid var(--nv-line);border-radius:10px;box-shadow:var(--nv-shadow);padding:18px;margin-bottom:18px}
+.side-card h3{font-size:18px;margin:0 0 13px;color:var(--nv-text)}
+.side-card p{font-size:13px;line-height:1.6;color:var(--nv-muted)}
+.telegram{background:var(--nv-accent);border-color:var(--nv-accent);color:#fff}
+.telegram h3,.telegram p{color:#fff}.telegram a{display:inline-block;margin-top:7px;background:#fff;color:#0f6a49!important;font-weight:800;padding:9px 12px;border-radius:7px}
+.side-list{list-style:none;padding:0;margin:0}
+.side-list li{border-top:1px solid var(--nv-line);padding:10px 0}
+.side-list li:first-child{border-top:0;padding-top:0}
+.side-list a{color:var(--nv-text);text-decoration:none;font-size:13px;font-weight:700;line-height:1.35}
+.side-list a:hover{color:var(--nv-accent)}
+.side-list span{display:block;font-size:11px;color:var(--nv-muted);margin-top:3px}
+.cat-cloud{display:flex;gap:7px;flex-wrap:wrap}
+.cat-cloud button{background:var(--nv-bg);border:1px solid var(--nv-line);color:var(--nv-text);padding:7px 9px;border-radius:999px;cursor:pointer;font-size:12px}
+.cat-cloud button:hover{border-color:var(--nv-accent);color:var(--nv-accent)}
+
+@media(max-width:880px){.nv-layout{grid-template-columns:1fr}.nv-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.side-card{margin:0}}
+@media(max-width:640px){
+ .novels-shell{padding:22px 14px 60px}.novels-title{display:block}.theme-btn{margin-top:15px}
+ .new-list,.directory{grid-template-columns:1fr}.nv-sidebar{grid-template-columns:1fr}
+ .nv-count{width:100%;margin-left:0}.nv-section{padding:17px}
+}
+</style>
 </head>
-<body>
+<body class="novel-light">
 <header>
-  <a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
-  <button id="menu" aria-label="Menu">☰</button>
-  <nav>
-    <a href="index.html#catalog">Websites</a>
-    <a href="novels.html">Web Novels</a>
-    <a href="index.html#products">Digital Products</a>
-    <a href="index.html#services">Services</a>
-  </nav>
-  <a class="pill desktop" href="index.html#home">Home</a>
+<a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
+<button id="menu" aria-label="Menu">☰</button>
+<nav>
+<a href="community.html">Community</a><a href="ideas.html">Ideas</a><a href="articles.html">Articles</a>
+<a href="website-catalog.html">Websites</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a>
+</nav>
+<a class="pill desktop" href="novels.html">Read Now</a>
 </header>
 
-<main>
-  <section class="novel-hero">
-    <div class="kicker">XENDER READING ROOM</div>
-    <h1>Chinese classics, <em>translated into English.</em></h1>
-    <p>A curated shelf of real Chinese literature in English translation. No Mandarin-only listings, no fake placeholder novels, and no scraped modern web-novel translations.</p>
-    <div class="notice">Public-domain English editions sourced from Project Gutenberg. Availability outside the U.S. may depend on local copyright law.</div>
-  </section>
+<main class="novels-shell">
+<div class="crumbs"><a href="index.html">Home</a> / Novels</div>
 
-  <section class="library">
-    <div class="kicker">ENGLISH TRANSLATIONS</div>
-    <h2>Browse the <span>library.</span></h2>
-    <input id="novelSearch" class="searchbar" type="search" placeholder="Search title, author or translator…" aria-label="Search novels">
+<div class="novels-title">
+  <div>
+    <h1>Novels</h1>
+    <p>Completed long-form fiction in a simple reading directory. Open a novel, continue your last chapter, or translate the chapter inside Xender Reader.</p>
+  </div>
+  <button class="theme-btn" id="themeToggle">🌙 Dark mode</button>
+</div>
 
-    <div class="novel-grid" id="novelGrid">
-      <article class="novel-card" data-search="dream red chamber cao xueqin h bencraft joly romance family classic">
-        <div class="tags"><span class="tag">TRANSLATED FROM CHINESE</span><span class="tag">CLASSIC</span></div>
-        <h2>Hung Lou Meng, or, The Dream of the Red Chamber — Book I</h2>
-        <p class="meta"><b>Author:</b> Cao Xueqin</p>
-        <p class="meta"><b>English translator:</b> H. Bencraft Joly</p>
-        <p>An English edition of one of China's great classical novels, centred on the Jia family, love, status, decline and the world surrounding the Grand View Garden.</p>
-        <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/9603">Read English Translation →</a>
-        <div class="source">Source: Project Gutenberg #9603</div>
-      </article>
+<div class="nv-toolbar">
+  <input id="search" type="search" placeholder="Search novels…" aria-label="Search novels">
+  <select id="genreFilter" aria-label="Filter novels">
+    <option value="all">All categories</option>
+    <option value="System">System</option>
+    <option value="Urban">Urban</option>
+    <option value="Revenge">Revenge</option>
+    <option value="Cultivation">Cultivation</option>
+    <option value="Romance">Romance</option>
+    <option value="Chinese Classic">Chinese classics</option>
+    <option value="War">War / power</option>
+  </select>
+  <div class="nv-count" id="countLine">Loading library…</div>
+</div>
 
-      <article class="novel-card" data-search="dream red chamber cao xueqin h bencraft joly romance family classic book ii">
-        <div class="tags"><span class="tag">TRANSLATED FROM CHINESE</span><span class="tag">CLASSIC</span></div>
-        <h2>Hung Lou Meng, or, The Dream of the Red Chamber — Book II</h2>
-        <p class="meta"><b>Author:</b> Cao Xueqin</p>
-        <p class="meta"><b>English translator:</b> H. Bencraft Joly</p>
-        <p>The second English volume continues the family drama, relationships and social world of the monumental Qing-era novel.</p>
-        <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/9604">Read English Translation →</a>
-        <div class="source">Source: Project Gutenberg #9604</div>
-      </article>
+<div class="nv-layout">
+  <div class="nv-main">
+    <section class="nv-section">
+      <div class="nv-section-head"><h2>New Novels</h2><small>Recently added to Xender</small></div>
+      <div id="newList" class="new-list"><div class="empty">Loading novels…</div></div>
+    </section>
 
-      <article class="novel-card" data-search="strange stories chinese studio pu songling herbert a giles supernatural folklore volume 1">
-        <div class="tags"><span class="tag">TRANSLATED FROM CHINESE</span><span class="tag">SUPERNATURAL</span></div>
-        <h2>Strange Stories from a Chinese Studio — Vol. 1</h2>
-        <p class="meta"><b>Author:</b> Pu Songling</p>
-        <p class="meta"><b>English translator:</b> Herbert A. Giles</p>
-        <p>A celebrated collection of strange, supernatural and satirical tales involving spirits, foxes, scholars, officials and ordinary people.</p>
-        <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43627">Read English Translation →</a>
-        <div class="source">Source: Project Gutenberg #43627</div>
-      </article>
+    <section class="nv-section">
+      <div class="nv-section-head"><h2>Novels</h2><small id="directoryCount"></small></div>
+      <div class="alpha-bar" id="alphaBar"></div>
+      <div id="directory" class="directory"><div class="empty">Loading library…</div></div>
+    </section>
+  </div>
 
-      <article class="novel-card" data-search="strange stories chinese studio pu songling herbert a giles supernatural folklore volume 2">
-        <div class="tags"><span class="tag">TRANSLATED FROM CHINESE</span><span class="tag">SUPERNATURAL</span></div>
-        <h2>Strange Stories from a Chinese Studio — Vol. 2</h2>
-        <p class="meta"><b>Author:</b> Pu Songling</p>
-        <p class="meta"><b>English translator:</b> Herbert A. Giles</p>
-        <p>The second volume continues Pu Songling's uncanny and often sharply observant stories from late-imperial China.</p>
-        <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43628">Read English Translation →</a>
-        <div class="source">Source: Project Gutenberg #43628</div>
-      </article>
+  <aside class="nv-sidebar">
+    <section class="side-card telegram">
+      <h3>Join Telegram Group</h3>
+      <p>Discuss novels, recommendations and new additions with Xender readers.</p>
+      <a href="https://t.me/+S0mWe81MlUpjNzQ1" target="_blank" rel="noopener">Join Telegram →</a>
+    </section>
 
-      <article class="novel-card" data-search="strange stories chinese studio pu songling herbert a giles supernatural folklore complete">
-        <div class="tags"><span class="tag">TRANSLATED FROM CHINESE</span><span class="tag">COLLECTED EDITION</span></div>
-        <h2>Strange Stories from a Chinese Studio — Volumes 1 & 2</h2>
-        <p class="meta"><b>Author:</b> Pu Songling</p>
-        <p class="meta"><b>English translator:</b> Herbert A. Giles</p>
-        <p>A combined English edition for readers who want both translated volumes in one place.</p>
-        <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/43629">Read English Translation →</a>
-        <div class="source">Source: Project Gutenberg #43629</div>
-      </article>
+    <section class="side-card">
+      <h3>Popular Completed</h3>
+      <ul class="side-list" id="popularList"><li>Loading…</li></ul>
+    </section>
 
-      <article class="novel-card" data-search="romance three kingdoms san kuo luo guanzhong c h brewitt taylor historical war volume 1">
-        <div class="tags"><span class="tag">TRANSLATED FROM CHINESE</span><span class="tag">HISTORICAL EPIC</span></div>
-        <h2>San Kuo; or, Romance of the Three Kingdoms — Vol. 1</h2>
-        <p class="meta"><b>Author:</b> Luo Guanzhong</p>
-        <p class="meta"><b>English translator:</b> C. H. Brewitt-Taylor</p>
-        <p>The classic historical epic of fractured empire, military strategy, loyalty, ambition and the rival powers struggling for control of China.</p>
-        <a class="read" target="_blank" rel="noopener" href="https://www.gutenberg.org/ebooks/77416">Read English Translation →</a>
-        <div class="source">Source: Project Gutenberg #77416</div>
-      </article>
-    </div>
-  </section>
+    <section class="side-card">
+      <h3>Browse Categories</h3>
+      <div class="cat-cloud" id="catCloud"></div>
+    </section>
 
-  <section class="cta">
-    <div class="kicker">CURATION POLICY</div>
-    <h2>English reading first. <span>Rights respected.</span></h2>
-    <p>We only add public-domain, licensed or otherwise authorized English translations. Modern copyrighted translations are not mirrored without permission.</p>
-    <a class="secondary" href="index.html">← Back to Xender Secrets</a>
-  </section>
+    <section class="side-card">
+      <h3>Reader</h3>
+      <p>Every supported novel opens in the same Xender reader with chapter progress, jump-to-chapter, light/dark reading and on-demand translation.</p>
+    </section>
+  </aside>
+</div>
 </main>
 
 <footer>
-  <div><b>XENDER SECRETS</b><p>Curated digital reading & web experiences.</p></div>
-  <div class="footer-links"><a href="index.html">Home</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
-  <small>© 2026 Xender Secrets.</small>
+<div><b>XENDER SECRETS</b><p>Completed web fiction + digital projects</p></div>
+<div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div>
+<small>© 2026 Xender Secrets.</small>
 </footer>
 
 <script src="script.js"></script>
+<script src="licensed-novels.js"></script>
+<script src="novel-data/catalog.js"></script>
 <script>
-  const q=document.getElementById('novelSearch');
-  const cards=[...document.querySelectorAll('.novel-card')];
-  q.addEventListener('input',()=>{
-    const term=q.value.trim().toLowerCase();
-    cards.forEach(card=>card.style.display=card.dataset.search.includes(term)?'flex':'none');
-  });
+const API="https://xender-reader-stable.onrender.com";
+
+const fallbackGutenberg=[
+ {slug:"dream-red-chamber",title:"The Dream of the Red Chamber",finalChapter:56,genres:["Chinese Classic","Supernatural","Family","Romance"],summary:"A monumental Chinese classic blending family rise and decline, love, status, dreams, spirituality and supernatural symbolism.",sourceSite:"Project Gutenberg"},
+ {slug:"romance-three-kingdoms-vol-1",title:"Romance of the Three Kingdoms — Volume I",finalChapter:60,genres:["Chinese Classic","War","Strategy","Power"],summary:"Warlords, sworn brothers, betrayals, battlefield strategy and the struggle for supremacy during the fall of the Han.",sourceSite:"Project Gutenberg"}
+];
+
+const fallbackXh=[
+ {slug:"billionaire-god-of-war",title:"Billionaire God of War",finalChapter:2495,genres:["Urban","War God","Hidden Power","Romance"],summary:"A long translated urban power fantasy with revenge, hidden strength, family conflict and war-god escalation.",sourceSite:"XperimentalHamid"},
+ {slug:"my-husband-warm-the-bed",title:"My Husband Warm The Bed",finalChapter:1985,genres:["Urban Romance","Marriage","CEO","Family"],summary:"A very long translated marriage and family romance built around Kevin/Karen and later generations.",sourceSite:"XperimentalHamid"},
+ {slug:"take-my-breath-away",title:"Take My Breath Away",finalChapter:1476,genres:["Urban Romance","Marriage","CEO","Drama"],summary:"A completed translated romance following a broken marriage, reunion, family growth and long-form relationship drama.",sourceSite:"XperimentalHamid"}
+];
+
+const licensed=Object.entries(window.XENDER_LICENSED_FICTION||{}).map(([slug,x])=>({
+ slug,title:x.title,finalChapter:(x.chapters||[]).length,genres:x.genre||[],summary:x.synopsis||"Completed licensed fiction.",
+ sourceSite:"Licensed Fiction",license:x.license
+}));
+const imported=Object.entries(window.XENDER_IMPORTED_NOVELS||{}).map(([slug,x])=>({
+ slug,...x,sourceSite:x.sourceSite||"Authorized Import"
+}));
+
+let stories=[...imported,...fallbackGutenberg,...licensed,...fallbackXh];
+let activeLetter="all";
+
+const newList=document.getElementById("newList");
+const directory=document.getElementById("directory");
+const search=document.getElementById("search");
+const genreFilter=document.getElementById("genreFilter");
+const countLine=document.getElementById("countLine");
+const directoryCount=document.getElementById("directoryCount");
+const popularList=document.getElementById("popularList");
+const catCloud=document.getElementById("catCloud");
+const alphaBar=document.getElementById("alphaBar");
+
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const genreText=s=>(s.genres||[]).join(" ");
+const isImported=s=>imported.some(x=>x.slug===s.slug);
+
+function storageKey(s){
+ const t=s.sourceSite==="Licensed Fiction"?"licensed":s.sourceSite==="Project Gutenberg"?"gutenberg":isImported(s)?"imported":"xh";
+ return "xs-"+t+"-reading-"+s.slug;
+}
+function hrefFor(s,n=1){
+ if(s.sourceSite==="Licensed Fiction") return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(s.sourceSite==="Project Gutenberg") return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(isImported(s)) return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;
+ return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n;
+}
+function filtered(){
+ const q=search.value.trim().toLowerCase();
+ const g=genreFilter.value;
+ return stories.filter(s=>{
+  const hay=(s.title+" "+genreText(s)+" "+(s.sourceSite||"")).toLowerCase();
+  const genreOk=g==="all"||hay.includes(g.toLowerCase());
+  const letterOk=activeLetter==="all"||String(s.title||"").toUpperCase().startsWith(activeLetter);
+  return genreOk&&letterOk&&(!q||hay.includes(q));
+ }).sort((a,b)=>a.title.localeCompare(b.title));
+}
+function miniRow(s){
+ const saved=Math.max(1,Math.min(Number(s.finalChapter)||1,Number(localStorage.getItem(storageKey(s))||1)));
+ const target=saved>1?saved:1;
+ return '<a class="novel-mini" href="'+hrefFor(s,target)+'">'+
+  '<span class="mini-title">'+esc(s.title)+'</span>'+
+  '<span class="mini-meta"><span class="status-complete">Completed</span><span>'+Number(s.finalChapter||0).toLocaleString()+' chapters</span><span>• '+esc(s.sourceSite||"Xender")+'</span>'+(saved>1?'<span>• Continue Ch. '+saved+'</span>':'')+'</span>'+
+ '</a>';
+}
+function dirRow(s){
+ const saved=Math.max(1,Math.min(Number(s.finalChapter)||1,Number(localStorage.getItem(storageKey(s))||1)));
+ const target=saved>1?saved:1;
+ return '<a class="directory-item" href="'+hrefFor(s,target)+'">'+
+  '<span class="dir-title">'+esc(s.title)+'<span class="dir-sub">'+esc((s.genres||[]).slice(0,3).join(" • ")||s.sourceSite||"Completed")+'</span></span>'+
+  '<span class="dir-chapters">'+Number(s.finalChapter||0).toLocaleString()+' ch.</span>'+
+ '</a>';
+}
+function renderAlpha(){
+ const letters=["all",..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+ alphaBar.innerHTML=letters.map(l=>'<button data-letter="'+l+'" class="'+(activeLetter===l?'active':'')+'">'+(l==="all"?"All":l)+'</button>').join("");
+ alphaBar.querySelectorAll("button").forEach(b=>b.onclick=()=>{activeLetter=b.dataset.letter;renderAlpha();renderMain();});
+}
+function renderNew(){
+ const added=[...imported,...fallbackGutenberg,...licensed,...fallbackXh];
+ const unique=[]; const seen=new Set();
+ for(const s of added){if(!seen.has(s.slug)){seen.add(s.slug);unique.push(s)}}
+ newList.innerHTML=unique.slice(0,8).map(miniRow).join("")||'<div class="empty">No novels added yet.</div>';
+}
+function renderMain(){
+ const list=filtered();
+ directoryCount.textContent=list.length+" titles";
+ directory.innerHTML=list.length?list.map(dirRow).join(""):'<div class="empty">No matching novels found.</div>';
+ countLine.textContent=stories.length.toLocaleString()+" completed novels • "+stories.reduce((n,s)=>n+Number(s.finalChapter||0),0).toLocaleString()+" chapters mapped";
+}
+function renderSidebar(){
+ const popular=[...stories].sort((a,b)=>Number(b.finalChapter||0)-Number(a.finalChapter||0)).slice(0,7);
+ popularList.innerHTML=popular.map(s=>'<li><a href="'+hrefFor(s,1)+'">'+esc(s.title)+'</a><span>'+Number(s.finalChapter||0).toLocaleString()+' chapters • Completed</span></li>').join("");
+ const cats=["System","Urban","Revenge","Cultivation","Romance","Chinese Classic","War"];
+ catCloud.innerHTML=cats.map(c=>'<button data-cat="'+esc(c)+'">'+esc(c)+'</button>').join("");
+ catCloud.querySelectorAll("button").forEach(b=>b.onclick=()=>{genreFilter.value=b.dataset.cat;activeLetter="all";renderAlpha();renderMain();window.scrollTo({top:0,behavior:"smooth"});});
+}
+async function loadRemote(){
+ let xh=fallbackXh,gutenberg=fallbackGutenberg;
+ const [xr,gr]=await Promise.allSettled([fetch(API+"/xh/catalog"),fetch(API+"/gutenberg/catalog")]);
+ try{if(xr.status==="fulfilled"){const d=await xr.value.json();if(d.ok&&Array.isArray(d.items)&&d.items.length)xh=d.items}}catch(e){}
+ try{if(gr.status==="fulfilled"){const d=await gr.value.json();if(d.ok&&Array.isArray(d.items)&&d.items.length)gutenberg=d.items}}catch(e){}
+ stories=[...imported,...gutenberg,...licensed,...xh];
+ renderNew();renderMain();renderSidebar();
+}
+
+search.addEventListener("input",renderMain);
+genreFilter.addEventListener("change",()=>{activeLetter="all";renderAlpha();renderMain()});
+
+const themeToggle=document.getElementById("themeToggle");
+function applyTheme(mode){
+ const dark=mode==="dark";document.body.classList.toggle("novel-dark",dark);document.body.classList.toggle("novel-light",!dark);
+ themeToggle.textContent=dark?"☀️ Light mode":"🌙 Dark mode";localStorage.setItem("xsNovelTheme",dark?"dark":"light");
+}
+applyTheme(localStorage.getItem("xsNovelTheme")==="dark"?"dark":"light");
+themeToggle.onclick=()=>applyTheme(document.body.classList.contains("novel-dark")?"light":"dark");
+
+renderAlpha();renderNew();renderMain();renderSidebar();loadRemote();
 </script>
 </body>
 </html>
