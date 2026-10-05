@@ -24,7 +24,7 @@
 <div class="statsline"><div class="stat"><b id="novelCount">0</b><span>completed novels available</span></div><div class="stat"><b id="chapterCount">0</b><span>completed chapters available</span></div><div class="stat"><b id="sourceCount">0</b><span>active content sources</span></div></div>
 </section>
 <section class="catalog-body">
-<div class="toolbar"><input id="search" type="search" placeholder="Search title, source or genre…" aria-label="Search completed novels"><div class="tabs"><button class="active" data-filter="all">All</button><button data-filter="XperimentalHamid">XH</button><button data-filter="Licensed Fiction">Licensed</button><button data-filter="Project Gutenberg">Classics</button><button data-filter="Authorized Import">Imported</button><button data-filter="Urban">Urban</button><button data-filter="Romance">Romance</button><button data-filter="War God">War God</button><button data-filter="Marriage">Marriage</button></div></div>
+<div class="toolbar"><input id="search" type="search" placeholder="Search title, source or genre…" aria-label="Search completed novels"><div class="tabs"><button class="active" data-filter="all">All</button><button data-filter="XperimentalHamid">XH</button><button data-filter="Licensed Fiction">Licensed</button><button data-filter="Project Gutenberg">Classics</button><button data-filter="Avraread">Avraread</button><button data-filter="Authorized Import">Imported</button><button data-filter="Urban">Urban</button><button data-filter="Romance">Romance</button><button data-filter="War God">War God</button><button data-filter="Marriage">Marriage</button></div></div>
 <div class="section-head"><div><div class="kicker">VERIFIED COMPLETED LIBRARY</div><h2>Pick a story. <span>Finish the whole thing.</span></h2></div></div>
 <div id="grid" class="grid2"><div class="loading">Loading long completed novels…</div></div>
 </section>
@@ -56,8 +56,8 @@ let stories=[...fallbackGutenberg,...fallback,...licensed,...imported],active="a
 const grid=document.getElementById("grid"),search=document.getElementById("search");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function allGenres(s){return ((s.genres||[]).join(" ")+" "+(s.sourceSite||""));}
-function storageKey(s){const t=s.sourceSite==="Licensed Fiction"?"licensed":s.sourceSite==="Project Gutenberg"?"gutenberg":s.sourceSite==="Authorized Import"||imported.some(x=>x.slug===s.slug)?"imported":"xh";return "xs-"+t+"-reading-"+s.slug}
-function hrefFor(s,n){if(s.sourceSite==="Licensed Fiction")return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Project Gutenberg")return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;if(imported.some(x=>x.slug===s.slug))return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n}
+function storageKey(s){const t=s.sourceSite==="Licensed Fiction"?"licensed":s.sourceSite==="Project Gutenberg"?"gutenberg":s.sourceSite==="Avraread"?"avra":s.sourceSite==="Authorized Import"||imported.some(x=>x.slug===s.slug)?"imported":"xh";return "xs-"+t+"-reading-"+s.slug}
+function hrefFor(s,n){if(s.sourceSite==="Licensed Fiction")return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Project Gutenberg")return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Avraread")return "reader.html?avra="+encodeURIComponent(s.slug)+"&chapter="+n;if(imported.some(x=>x.slug===s.slug))return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n}
 function render(){
  const q=search.value.trim().toLowerCase();grid.innerHTML="";
  const visible=stories.filter(s=>{const hay=(s.title+" "+allGenres(s)).toLowerCase();return (active==="all"||allGenres(s).toLowerCase().includes(active.toLowerCase()))&&(!q||hay.includes(q));});
@@ -65,7 +65,7 @@ function render(){
  for(const s of visible){
   const saved=Math.max(1,Math.min(Number(s.finalChapter)||1,Number(localStorage.getItem(storageKey(s))||1)));
   const gaps=s.indexStatus?.gaps||[];
-  const note=s.sourceSite==="Licensed Fiction"?'<p class="source">Full chapter text is hosted locally under '+esc(s.license||"the stated license")+'.</p>':(imported.some(x=>x.slug===s.slug)?'<p class="source">Full chapter text is hosted locally from an authorized import package.</p>':(gaps.length?'<p class="source">Source-index validator currently flags '+gaps.length+' range gap(s); missing chapters will not be silently skipped.</p>':'<p class="source">Source index coverage validated with no numbered range gaps detected.</p>'));
+  const note=s.sourceSite==="Licensed Fiction"?'<p class="source">Full chapter text is hosted locally under '+esc(s.license||"the stated license")+'.</p>':(s.sourceSite==="Avraread"?'<p class="source">Authorized partner source via Avraread. '+(gaps.length?('Validator flags '+gaps.length+' source range gap(s); Xender will not silently substitute missing chapters.'):'Completed chapter index validated.')+'</p>':(imported.some(x=>x.slug===s.slug)?'<p class="source">Full chapter text is hosted locally from an authorized import package.</p>':(gaps.length?'<p class="source">Source-index validator currently flags '+gaps.length+' range gap(s); missing chapters will not be silently skipped.</p>':'<p class="source">Source index coverage validated with no numbered range gaps detected.</p>')));
   const el=document.createElement("article");el.className="card";
   el.innerHTML='<div class="badges"><span class="badge">COMPLETED</span><span class="badge">'+Number(s.finalChapter).toLocaleString()+' CHAPTERS</span><span class="badge">'+esc(s.sourceSite)+'</span>'+(s.genres||[]).slice(0,2).map(g=>'<span class="badge">'+esc(g)+'</span>').join("")+'</div>'+
    '<h3>'+esc(s.title)+'</h3><div class="meta">'+Number(s.finalChapter).toLocaleString()+' chapters · '+esc(s.sourceSite)+'</div>'+
@@ -75,10 +75,11 @@ function render(){
  }
 }
 async function load(){
- let xh=fallback,gutenberg=fallbackGutenberg;
+ let xh=fallback,gutenberg=fallbackGutenberg,avra=[];
  try{const r=await fetch(API+"/xh/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)xh=data.items}catch(e){}
  try{const r=await fetch(API+"/gutenberg/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)gutenberg=data.items}catch(e){}
- stories=[...gutenberg,...xh,...licensed,...imported];
+ try{const r=await fetch(API+"/avra/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)avra=data.items}catch(e){}
+ stories=[...avra,...gutenberg,...xh,...licensed,...imported];
  document.getElementById("novelCount").textContent=stories.length.toLocaleString();
  document.getElementById("chapterCount").textContent=stories.reduce((a,s)=>a+Number(s.finalChapter||0),0).toLocaleString();
  document.getElementById("sourceCount").textContent=new Set(stories.map(s=>s.sourceSite||"Unknown")).size.toLocaleString();
