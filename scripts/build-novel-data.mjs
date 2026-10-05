@@ -90,6 +90,24 @@ export function buildGutenbergNovel(slug, novel, text, { chunk = CHUNK } = {}) {
   return { manifest, files };
 }
 
+/** For each missing chapter, show the source lines that mention it so a parser fix can be targeted. */
+const ZH_DIGITS = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+export function zhNumeral(n) {
+  if (n < 10) return ZH_DIGITS[n];
+  if (n < 20) return "十" + (n % 10 ? ZH_DIGITS[n % 10] : "");
+  if (n < 100) return ZH_DIGITS[Math.floor(n / 10)] + "十" + (n % 10 ? ZH_DIGITS[n % 10] : "");
+  return "一百" + (n % 100 ? (n % 100 < 10 ? "零" : "") + zhNumeral(n % 100).replace(/^一十/, "一十") : "");
+}
+export function gapHints(text, gaps) {
+  const lines = text.split(/\r?\n/);
+  const out = {};
+  for (const [a, b] of gaps) for (let n = a; n <= Math.min(b, a + 4); n++) {
+    const z = zhNumeral(n);
+    out[n] = lines.map((l, i) => ({ i, l })).filter(({ l }) => l.includes(z + "回") || l.includes("第" + z) || new RegExp("CHAPTER\\s+" + n + "\\b", "i").test(l)).slice(0, 4).map(({ i, l }) => `L${i}: ${JSON.stringify(l.slice(0, 80))}`);
+  }
+  return out;
+}
+
 function writeNovel(dir, { manifest, files }) {
   fs.rmSync(dir, { recursive: true, force: true });
   for (const f of files) writeJson(path.join(dir, f.file), f.body);
@@ -170,6 +188,7 @@ async function main() {
         const built = buildGutenbergNovel(slug, novel, text);
         writeNovel(path.join(OUT, "gutenberg", slug), built);
         report.gutenberg[slug] = { chapters: built.manifest.chapterCount, finalChapter: novel.finalChapter, gaps: built.manifest.gaps, files: built.files.length, bytes: text.length };
+        if (built.manifest.gaps.length) report.gutenberg[slug].gapHints = gapHints(text, built.manifest.gaps);
         console.log(`gutenberg ${slug}: ${built.manifest.chapterCount}/${novel.finalChapter} chapters in ${built.files.length} files`);
       } catch (e) {
         report.gutenberg[slug] = { error: String(e.message || e) };
