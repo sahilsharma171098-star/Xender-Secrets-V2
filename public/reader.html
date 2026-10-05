@@ -41,6 +41,45 @@
 <script src="script.js"></script><script src="licensed-novels.js"></script><script src="novel-data/catalog.js"></script>
 <script>
 const API="https://xender-reader-stable.onrender.com";
+// ---- Reader data sources -------------------------------------------------------------------
+// Primary ("edge"): Gutenberg chapters are pre-generated static JSON under /novel-data (no backend),
+// XH partner chapters come from the Cloudflare Worker (/api/reader/xh/*, edge-cached).
+// Rollback: change READER_PRIMARY to "render" to send every request to the Render service again.
+// Any edge failure automatically falls back to Render for that request.
+const READER_PRIMARY="edge";
+async function getJson(url,{timeout=20000}={}){
+ const c=new AbortController(),t=setTimeout(()=>c.abort(),timeout);
+ try{const r=await fetch(url,{signal:c.signal});const d=await r.json().catch(()=>({ok:false,error:"Bad response ("+r.status+")"}));if(!r.ok||d.ok===false)throw new Error(d.error||("HTTP "+r.status));return d}
+ catch(e){throw e.name==="AbortError"?new Error("Request timed out"):e}finally{clearTimeout(t)}
+}
+async function renderGet(path){
+ // Render free instances sleep when idle; tell the reader instead of showing a blank page.
+ const slow=setTimeout(()=>{status.hidden=false;status.className="status";status.textContent="Waking up the backup reading server… this can take up to a minute."},6000);
+ try{return await getJson(API+path,{timeout:75000})}finally{clearTimeout(slow)}
+}
+const staticCache=new Map();
+function staticJson(path){if(!staticCache.has(path))staticCache.set(path,getJson(path).catch(e=>{staticCache.delete(path);throw e}));return staticCache.get(path)}
+async function staticManifest(kind,slug){return staticJson("novel-data/"+kind+"/"+encodeURIComponent(slug)+"/manifest.json")}
+async function staticChapter(kind,slug,n){
+ const m=await staticManifest(kind,slug),c=(m.chunks||[]).find(x=>n>=Number(x.from)&&n<=Number(x.to));
+ if(!c)throw new Error("Chapter "+n+" is not in the static edition");
+ const chunk=await staticJson("novel-data/"+kind+"/"+encodeURIComponent(slug)+"/"+encodeURIComponent(c.file));
+ const ch=(chunk.chapters||[]).find(x=>Number(x.n)===n);if(!ch)throw new Error("Chapter "+n+" missing from chunk");
+ return {ok:true,chapterTitle:ch.title,paragraphs:Array.isArray(ch.paragraphs)?ch.paragraphs:String(ch.body||"").split(/\n\s*\n/).filter(Boolean),language:m.language};
+}
+let readerSource="";
+async function readerApi(kind,op,n){
+ if(READER_PRIMARY==="edge"){
+  try{
+   let d;
+   if(kind==="gutenberg")d=op==="novel"?await staticManifest("gutenberg",slug):await staticChapter("gutenberg",slug,n);
+   else d=await getJson("/api/reader/"+kind+"/"+op+"?slug="+encodeURIComponent(slug)+(op==="chapter"?"&n="+n:""),{timeout:25000});
+   readerSource=kind==="gutenberg"?"static":"edge";return d;
+  }catch(e){console.warn("Reader edge source failed, using Render fallback:",e.message)}
+ }
+ readerSource="render";
+ return renderGet("/"+kind+"/"+op+"?slug="+encodeURIComponent(slug)+(op==="chapter"?"&n="+n:""));
+}
 const p=new URLSearchParams(location.search),xhSlug=p.get("xh"),licensedSlug=p.get("licensed"),importedSlug=p.get("imported"),gutenbergSlug=p.get("gutenberg");
 const sourceType=gutenbergSlug?"gutenberg":importedSlug?"imported":licensedSlug?"licensed":xhSlug?"xh":null,slug=gutenbergSlug||importedSlug||licensedSlug||xhSlug||"";
 let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map(),browserTranslators=new Map(),sessionAutoTranslate=false,localNovel=null,sourceLanguage="en";
@@ -52,7 +91,7 @@ async function loadMeta(){
  if(!sourceType||!slug){title.textContent="Novel not found";status.textContent="Return to the library and choose a completed novel.";prev.disabled=next.disabled=true;return false;}
  if(sourceType==="gutenberg"){
   try{
-   const r=await fetch(API+"/gutenberg/novel?slug="+encodeURIComponent(slug));const d=await r.json();if(!d.ok)throw new Error(d.error||"Novel unavailable");
+   const d=await readerApi("gutenberg","novel");
    title.textContent=d.title;finalChapter=Number(d.finalChapter||1);meta.textContent=Number(finalChapter).toLocaleString()+" chapters • "+(d.genres||[]).join(" • ")+" • Completed";jumpInput.max=finalChapter;
    sourceLanguage=d.language||"en";readerNote.textContent="Public-domain edition sourced from Project Gutenberg. Reading is free; your last chapter is saved on this device.";
    return true;
@@ -69,7 +108,7 @@ async function loadMeta(){
   title.textContent=localNovel.title;finalChapter=(localNovel.chapters||[]).length||1;meta.textContent=Number(finalChapter).toLocaleString()+" chapters • "+(localNovel.genre||[]).join(" • ")+" • Completed";jumpInput.max=finalChapter;readerNote.textContent=localNovel.attribution||("Licensed under "+(localNovel.license||"the stated license")+".");return true;
  }
  try{
-  const r=await fetch(API+"/xh/novel?slug="+encodeURIComponent(slug));const d=await r.json();if(!d.ok)throw new Error(d.error||"Novel unavailable");
+  const d=await readerApi("xh","novel");
   title.textContent=d.title;finalChapter=Number(d.finalChapter||1);meta.textContent=Number(finalChapter).toLocaleString()+" chapters • "+(d.genres||[]).join(" • ")+" • Completed";jumpInput.max=finalChapter;
   readerNote.textContent="Republished on Xender with permission from XperimentalHamid. Reading is free; your last chapter is saved on this device.";
   if(Array.isArray(d.gaps)&&d.gaps.length)readerNote.textContent="Source index validator has flagged missing ranges: "+d.gaps.map(g=>g[0]+"-"+g[1]).join(", ")+". Xender will not silently skip them.";
@@ -81,7 +120,7 @@ async function loadChapter(n){
  prev.disabled=chapter<=1;next.disabled=chapter>=finalChapter;jumpInput.value=chapter;counter.textContent="of "+Number(finalChapter).toLocaleString();bar.style.width=((chapter/finalChapter)*100)+"%";updateUrl();
  try{
   if(sourceType==="gutenberg"){
-   const r=await fetch(API+"/gutenberg/chapter?slug="+encodeURIComponent(slug)+"&n="+chapter);const d=await r.json();if(!d.ok)throw new Error(d.error||"Chapter unavailable");
+   const d=await readerApi("gutenberg","chapter",chapter);
    sourceLanguage=d.language||sourceLanguage||"en";originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[],language:sourceLanguage};
   }else if(sourceType==="imported"){
    const manifest=await fetch("novel-data/"+encodeURIComponent(slug)+"/manifest.json").then(r=>{if(!r.ok)throw new Error("Manifest unavailable");return r.json()});
@@ -93,10 +132,10 @@ async function loadChapter(n){
    const ch=localNovel?.chapters?.[chapter-1];if(!ch)throw new Error("Chapter unavailable");
    const paragraphs=String(ch.body||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);originalChapter={title:ch.title||("Chapter "+chapter),paragraphs};
   }else{
-   const r=await fetch(API+"/xh/chapter?slug="+encodeURIComponent(slug)+"&n="+chapter);const d=await r.json();if(!d.ok)throw new Error(d.error||"Chapter unavailable");
+   const d=await readerApi("xh","chapter",chapter);
    originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[]};
   }
-  renderChapter(originalChapter.title,originalChapter.paragraphs,originalChapter.language||sourceLanguage||"en");translateStatus.textContent="";status.hidden=true;localStorage.setItem(storageKey(),String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
+  renderChapter(originalChapter.title,originalChapter.paragraphs,originalChapter.language||sourceLanguage||"en");translateStatus.textContent="";status.hidden=true;document.body.dataset.readerSource=readerSource;localStorage.setItem(storageKey(),String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
   const preferred=languageSelect.value;if(preferred!=="original"&&sessionAutoTranslate)translateCurrent(preferred);
  }catch(e){status.hidden=false;status.className="status error";status.textContent="Chapter "+chapter+" could not be loaded. Xender did not skip it. Try again or choose another chapter.";}
 }

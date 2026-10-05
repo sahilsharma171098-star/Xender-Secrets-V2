@@ -1,0 +1,5 @@
+node_modules/
+.wrangler/
+.dev.vars
+xender-e2e-results.json
+wrangler.local.jsonc

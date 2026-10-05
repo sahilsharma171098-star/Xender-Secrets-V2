@@ -5,7 +5,10 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "import:novels": "node scripts/import-authorized-novels.mjs",
-    "review:site": "node scripts/review-site-html.mjs"
+    "review:site": "node scripts/review-site-html.mjs",
+    "test": "node --test tests/unit/*.test.mjs && node --test tests/reader-sources.test.mjs",
+    "build:novels": "node scripts/build-novel-data.mjs --all",
+    "check:novels": "node scripts/build-novel-data.mjs --check"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

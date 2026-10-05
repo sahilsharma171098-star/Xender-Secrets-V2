@@ -70,3 +70,9 @@ It runs Playwright-based live E2E checks against production for selected fronten
 - Preserve mobile responsiveness.
 - Treat authentication/session and Durable Object changes as high-risk.
 - Prefer incremental, reviewable migrations rather than large rewrites.
+
+## Novel reader (see `docs/READER_ARCHITECTURE.md`)
+- Catalog and Project Gutenberg chapters: pre-generated static JSON in `public/novel-data/`
+  (built by `scripts/build-novel-data.mjs` via the "Build static novel data" workflow).
+- XperimentalHamid partner chapters: Worker route `/api/reader/xh/*` (`src/reader/`), edge-cached.
+- Render `xender-reader-stable` (`reader-server.js`): automatic fallback and rollback only.

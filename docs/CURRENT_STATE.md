@@ -29,3 +29,9 @@ Rules:
 
 ## Important
 This document is a snapshot, not a replacement for inspecting current code. Update it after major merged changes.
+
+## Reader backend (XEND-READER-001, branch `reader-static-edge`)
+- Gutenberg novels and the novel catalog move to static JSON; XH partner chapters move to the
+  Cloudflare Worker with edge caching; Render stays as automatic fallback until retired.
+- Live E2E failures on 2026-10-05 were caused by stale homepage assertions after `83c033d`
+  (not by Render) plus tests racing the Cloudflare deploy; both fixed on the same branch.

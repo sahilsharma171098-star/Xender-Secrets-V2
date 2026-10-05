@@ -64,3 +64,20 @@ Acceptance:
 
 ## Task creation rule
 New work should receive a stable `XEND-...` ID before implementation when practical. Keep one primary owner per task and use PRs for handoff/review.
+
+## XEND-READER-001 — Remove Render from the reader's critical path at ₹0
+Status: REVIEW
+Owner: Claude
+Branch: `reader-static-edge`
+
+Scope:
+- Pre-generate Gutenberg chapters + catalog as static JSON; XH chapters via Worker `/api/reader/*`.
+- Keep Render as automatic fallback and one-line rollback (`READER_PRIMARY`).
+- Fix Live E2E (stale homepage assertions, deploy race) and add offline reader tests.
+
+Acceptance:
+- Offline tests pass; build workflow commits data with parity vs Render; E2E green after merge.
+
+Open:
+- Sahil: confirm whether XH permission allows storing text in this public repo.
+- After ~2 weeks of healthy edge traffic, suspend the Render service.
