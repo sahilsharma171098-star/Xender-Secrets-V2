@@ -41,13 +41,13 @@
 <script src="script.js"></script><script src="licensed-novels.js"></script><script src="novel-data/catalog.js"></script>
 <script>
 const API="https://xender-reader-api.onrender.com";
-const p=new URLSearchParams(location.search),xhSlug=p.get("xh"),licensedSlug=p.get("licensed"),importedSlug=p.get("imported"),gutenbergSlug=p.get("gutenberg");
-const sourceType=gutenbergSlug?"gutenberg":importedSlug?"imported":licensedSlug?"licensed":xhSlug?"xh":null,slug=gutenbergSlug||importedSlug||licensedSlug||xhSlug||"";
+const p=new URLSearchParams(location.search),xhSlug=p.get("xh"),avraSlug=p.get("avra"),licensedSlug=p.get("licensed"),importedSlug=p.get("imported"),gutenbergSlug=p.get("gutenberg");
+const sourceType=avraSlug?"avra":gutenbergSlug?"gutenberg":importedSlug?"imported":licensedSlug?"licensed":xhSlug?"xh":null,slug=avraSlug||gutenbergSlug||importedSlug||licensedSlug||xhSlug||"";
 let chapter=Math.max(1,Number(p.get("chapter")||1)),finalChapter=1,originalChapter=null,translationCache=new Map(),browserTranslators=new Map(),sessionAutoTranslate=false,localNovel=null,sourceLanguage="en";
 const title=document.getElementById("storyTitle"),meta=document.getElementById("storyMeta"),ct=document.getElementById("chapterTitle"),content=document.getElementById("readerContent"),status=document.getElementById("status"),prev=document.getElementById("prevChapter"),next=document.getElementById("nextChapter"),bar=document.getElementById("progressBar"),jumpInput=document.getElementById("jumpInput"),counter=document.getElementById("counter"),languageSelect=document.getElementById("languageSelect"),translateBtn=document.getElementById("translateChapter"),translateStatus=document.getElementById("translateStatus"),readerNote=document.getElementById("readerNote");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function storageKey(){return "xs-"+sourceType+"-reading-"+slug}
-function updateUrl(){const u=new URL(location.href);u.searchParams.delete("xh");u.searchParams.delete("licensed");u.searchParams.delete("imported");u.searchParams.delete("gutenberg");if(sourceType)u.searchParams.set(sourceType,slug);u.searchParams.set("chapter",chapter);history.replaceState(null,"",u);}
+function updateUrl(){const u=new URL(location.href);u.searchParams.delete("xh");u.searchParams.delete("avra");u.searchParams.delete("licensed");u.searchParams.delete("imported");u.searchParams.delete("gutenberg");if(sourceType)u.searchParams.set(sourceType,slug);u.searchParams.set("chapter",chapter);history.replaceState(null,"",u);}
 async function loadMeta(){
  if(!sourceType||!slug){title.textContent="Novel not found";status.textContent="Return to the library and choose a completed novel.";prev.disabled=next.disabled=true;return false;}
  if(sourceType==="gutenberg"){
@@ -57,6 +57,15 @@ async function loadMeta(){
    sourceLanguage=d.language||"en";readerNote.textContent="Public-domain edition sourced from Project Gutenberg. Reading is free; your last chapter is saved on this device.";
    return true;
   }catch(e){status.className="status error";status.textContent="Could not load this classic right now.";return false;}
+ }
+ if(sourceType==="avra"){
+  try{
+   const r=await fetch(API+"/avra/novel?slug="+encodeURIComponent(slug));const d=await r.json();if(!d.ok)throw new Error(d.error||"Novel unavailable");
+   title.textContent=d.title;finalChapter=Number(d.finalChapter||1);meta.textContent=Number(finalChapter).toLocaleString()+" chapters • "+(d.genres||[]).join(" • ")+" • Completed";jumpInput.max=finalChapter;
+   sourceLanguage=d.language||"en";readerNote.textContent="Completed partner edition republished by Xender with publisher permission. Source index via Avraread.";
+   if(Array.isArray(d.gaps)&&d.gaps.length)readerNote.textContent+=" Source validator flags "+d.gaps.length+" range gap(s); Xender will not silently skip them.";
+   return true;
+  }catch(e){status.className="status error";status.textContent="Could not load this Avraread partner novel right now.";return false;}
  }
  if(sourceType==="imported"){
   localNovel=(window.XENDER_IMPORTED_NOVELS||{})[slug];
@@ -82,6 +91,9 @@ async function loadChapter(n){
  try{
   if(sourceType==="gutenberg"){
    const r=await fetch(API+"/gutenberg/chapter?slug="+encodeURIComponent(slug)+"&n="+chapter);const d=await r.json();if(!d.ok)throw new Error(d.error||"Chapter unavailable");
+   sourceLanguage=d.language||sourceLanguage||"en";originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[],language:sourceLanguage};
+  }else if(sourceType==="avra"){
+   const r=await fetch(API+"/avra/chapter?slug="+encodeURIComponent(slug)+"&n="+chapter);const d=await r.json();if(!d.ok)throw new Error(d.error||"Chapter unavailable");
    sourceLanguage=d.language||sourceLanguage||"en";originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[],language:sourceLanguage};
   }else if(sourceType==="imported"){
    const manifest=await fetch("novel-data/"+encodeURIComponent(slug)+"/manifest.json").then(r=>{if(!r.ok)throw new Error("Manifest unavailable");return r.json()});
