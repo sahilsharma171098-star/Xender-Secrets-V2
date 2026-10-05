@@ -103,7 +103,12 @@ export function gapHints(text, gaps) {
   const out = {};
   for (const [a, b] of gaps) for (let n = a; n <= Math.min(b, a + 4); n++) {
     const z = zhNumeral(n);
-    out[n] = lines.map((l, i) => ({ i, l })).filter(({ l }) => l.includes(z + "回") || l.includes("第" + z) || new RegExp("CHAPTER\\s+" + n + "\\b", "i").test(l)).slice(0, 4).map(({ i, l }) => `L${i}: ${JSON.stringify(l.slice(0, 80))}`);
+    const hits = lines.map((l, i) => ({ i, l })).filter(({ l }) => l.includes(z + "回") || l.includes("第" + z) || new RegExp("CHAPTER\\s+" + n + "\\b", "i").test(l));
+    const exact = hits.find(({ l }) => l.trim().startsWith("第" + z + "回"));
+    out[n] = {
+      matches: hits.slice(0, 4).map(({ i, l }) => `L${i}: ${JSON.stringify(l.slice(0, 80))}`),
+      context: exact ? lines.slice(Math.max(0, exact.i - 3), exact.i + 8).map((l, k) => `L${Math.max(0, exact.i - 3) + k}: ${JSON.stringify(l.slice(0, 60))}`) : [],
+    };
   }
   return out;
 }
