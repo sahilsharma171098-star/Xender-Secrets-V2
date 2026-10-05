@@ -43,7 +43,7 @@ Scope:
 - Convert validated findings into a prioritized implementation backlog.
 
 ## XEND-ACQ-001 — Zero-spend site review and acquisition workflow
-Status: REVIEW
+Status: DONE
 Owner: ChatGPT
 
 Scope:
