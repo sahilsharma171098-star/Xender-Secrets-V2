@@ -30,7 +30,7 @@
 </section>
 </main>
 <footer><div><b>XENDER SECRETS</b><p>Completed translated web fiction + digital projects</p></div><div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div><small>© 2026 Xender Secrets.</small></footer>
-<script src="script.js"></script><script src="licensed-novels.js"></script><script src="novel-data/catalog.js"></script>
+<script src="script.js"></script><script src="licensed-novels.js"></script><script src="novel-data/catalog.js"></script><script src="avraread-completed.js"></script>
 <script>
 const API="https://xender-reader-api.onrender.com";
 const fallbackGutenberg=[
@@ -52,12 +52,13 @@ const fallback=[
 ];
 const licensed=Object.entries(window.XENDER_LICENSED_FICTION||{}).map(([slug,x])=>({slug,title:x.title,finalChapter:(x.chapters||[]).length,genres:x.genre||[],summary:x.synopsis||"Completed licensed fiction.",sourceSite:"Licensed Fiction",license:x.license,indexStatus:{gaps:[]}}));
 const imported=Object.entries(window.XENDER_IMPORTED_NOVELS||{}).map(([slug,x])=>({slug,...x,sourceSite:x.sourceSite||"Authorized Import",indexStatus:{gaps:[]}}));
-let stories=[...fallbackGutenberg,...fallback,...licensed,...imported],active="all";
+const avra=Object.entries(window.XENDER_AVRAREAD_COMPLETED||{}).map(([slug,x])=>({slug,...x,indexStatus:{gaps:[]}}));
+let stories=[...avra,...fallbackGutenberg,...fallback,...licensed,...imported],active="all";
 const grid=document.getElementById("grid"),search=document.getElementById("search");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function allGenres(s){return ((s.genres||[]).join(" ")+" "+(s.sourceSite||""));}
 function storageKey(s){const t=s.sourceSite==="Licensed Fiction"?"licensed":s.sourceSite==="Project Gutenberg"?"gutenberg":s.sourceSite==="Avraread"?"avra":s.sourceSite==="Authorized Import"||imported.some(x=>x.slug===s.slug)?"imported":"xh";return "xs-"+t+"-reading-"+s.slug}
-function hrefFor(s,n){if(s.sourceSite==="Licensed Fiction")return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Project Gutenberg")return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Avraread")return "reader.html?avra="+encodeURIComponent(s.slug)+"&chapter="+n;if(imported.some(x=>x.slug===s.slug))return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n}
+function hrefFor(s,n){if(s.sourceSite==="Licensed Fiction")return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Project Gutenberg")return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;if(s.sourceSite==="Avraread"&&s.ready)return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;if(imported.some(x=>x.slug===s.slug))return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n}
 function render(){
  const q=search.value.trim().toLowerCase();grid.innerHTML="";
  const visible=stories.filter(s=>{const hay=(s.title+" "+allGenres(s)).toLowerCase();return (active==="all"||allGenres(s).toLowerCase().includes(active.toLowerCase()))&&(!q||hay.includes(q));});
@@ -65,20 +66,21 @@ function render(){
  for(const s of visible){
   const saved=Math.max(1,Math.min(Number(s.finalChapter)||1,Number(localStorage.getItem(storageKey(s))||1)));
   const gaps=s.indexStatus?.gaps||[];
-  const note=s.sourceSite==="Licensed Fiction"?'<p class="source">Full chapter text is hosted locally under '+esc(s.license||"the stated license")+'.</p>':(s.sourceSite==="Avraread"?'<p class="source">Authorized partner source via Avraread. '+(gaps.length?('Validator flags '+gaps.length+' source range gap(s); Xender will not silently substitute missing chapters.'):'Completed chapter index validated.')+'</p>':(imported.some(x=>x.slug===s.slug)?'<p class="source">Full chapter text is hosted locally from an authorized import package.</p>':(gaps.length?'<p class="source">Source-index validator currently flags '+gaps.length+' range gap(s); missing chapters will not be silently skipped.</p>':'<p class="source">Source index coverage validated with no numbered range gaps detected.</p>')));
+  const note=s.sourceSite==="Licensed Fiction"?'<p class="source">Full chapter text is hosted locally under '+esc(s.license||"the stated license")+'.</p>':(s.sourceSite==="Avraread"?'<p class="source">Verified completed title from Avraread. Republished under permission; static chapter copy is being prepared before reader access is enabled.</p>':(imported.some(x=>x.slug===s.slug)?'<p class="source">Full chapter text is hosted locally from an authorized import package.</p>':(gaps.length?'<p class="source">Source-index validator currently flags '+gaps.length+' range gap(s); missing chapters will not be silently skipped.</p>':'<p class="source">Source index coverage validated with no numbered range gaps detected.</p>')));
   const el=document.createElement("article");el.className="card";
+  const actions=s.sourceSite==="Avraread"&&!s.ready
+   ? '<div class="actions2"><span class="continue" aria-disabled="true">Static copy importing</span></div>'
+   : '<div class="actions2"><a class="read" href="'+hrefFor(s,1)+'">Start from Chapter 1 →</a>'+(saved>1?'<a class="continue" href="'+hrefFor(s,saved)+'">Continue Ch. '+saved+' →</a>':'')+'</div>';
   el.innerHTML='<div class="badges"><span class="badge">COMPLETED</span><span class="badge">'+Number(s.finalChapter).toLocaleString()+' CHAPTERS</span><span class="badge">'+esc(s.sourceSite)+'</span>'+(s.genres||[]).slice(0,2).map(g=>'<span class="badge">'+esc(g)+'</span>').join("")+'</div>'+
    '<h3>'+esc(s.title)+'</h3><div class="meta">'+Number(s.finalChapter).toLocaleString()+' chapters · '+esc(s.sourceSite)+'</div>'+
-   '<p>'+esc(s.summary||"Completed long-form fiction.")+'</p>'+note+
-   '<div class="actions2"><a class="read" href="'+hrefFor(s,1)+'">Start from Chapter 1 →</a>'+(saved>1?'<a class="continue" href="'+hrefFor(s,saved)+'">Continue Ch. '+saved+' →</a>':'')+'</div>';
+   '<p>'+esc(s.summary||"Completed long-form fiction.")+'</p>'+note+actions;
   grid.appendChild(el);
  }
 }
 async function load(){
- let xh=fallback,gutenberg=fallbackGutenberg,avra=[];
+ let xh=fallback,gutenberg=fallbackGutenberg;
  try{const r=await fetch(API+"/xh/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)xh=data.items}catch(e){}
  try{const r=await fetch(API+"/gutenberg/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)gutenberg=data.items}catch(e){}
- try{const r=await fetch(API+"/avra/catalog");const data=await r.json();if(data.ok&&Array.isArray(data.items)&&data.items.length)avra=data.items}catch(e){}
  stories=[...avra,...gutenberg,...xh,...licensed,...imported];
  document.getElementById("novelCount").textContent=stories.length.toLocaleString();
  document.getElementById("chapterCount").textContent=stories.reduce((a,s)=>a+Number(s.finalChapter||0),0).toLocaleString();
