@@ -42,5 +42,25 @@ Scope:
 - Remove false positives/duplicates.
 - Convert validated findings into a prioritized implementation backlog.
 
+## XEND-ACQ-001 — Zero-spend site review and acquisition workflow
+Status: DONE
+Owner: ChatGPT
+
+Scope:
+- Add a deterministic site-quality reviewer for locally saved public HTML.
+- Document the discover -> review -> personalize -> preview -> close acquisition loop.
+- Keep active prospect data out of the public repository.
+- Execute a small evidence-based first-touch batch using connected tools.
+
+Branch:
+- `xend-acq-001-site-quality`
+
+Acceptance:
+- Site review detects common trust, mobile, metadata, CTA and unfinished-copy issues.
+- The review command is exposed through package scripts.
+- Acquisition workflow and authenticated action queue are documented.
+- No paid Apollo credits, secrets or active prospect list are committed.
+- Initial personalized outreach is labeled for follow-up in Gmail.
+
 ## Task creation rule
 New work should receive a stable `XEND-...` ID before implementation when practical. Keep one primary owner per task and use PRs for handoff/review.

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
-    "import:novels": "node scripts/import-authorized-novels.mjs"
+    "import:novels": "node scripts/import-authorized-novels.mjs",
+    "review:site": "node scripts/review-site-html.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
