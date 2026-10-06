@@ -6,6 +6,9 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/xender-live-e2e.yml'
+      - 'public/*.html'
+      - 'public/_redirects'
+      - 'scripts/commercial/**'
       - 'tests/xender-live-e2e.mjs'
       - 'public/index.html'
       - 'public/home.css'
@@ -32,6 +35,11 @@ on:
       - 'src/**'
   pull_request:
     paths:
+      - 'scripts/commercial/**'
+      - 'scripts/build-commercial-pages.mjs'
+      - 'public/*.html'
+      - 'public/_redirects'
+      - 'public/sitemap.xml'
       - 'public/index.html'
       - 'public/home.css'
       - 'public/home.js'
@@ -71,6 +79,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Reader data + Worker reader API unit tests
         run: node --test tests/unit/*.test.mjs
+      - name: Generated commercial pages + sitemap are up to date
+        run: node scripts/build-commercial-pages.mjs --check
       - name: Committed novel data is consistent
         run: node scripts/build-novel-data.mjs --check
       - name: Reader sources in a real browser (network mocked)

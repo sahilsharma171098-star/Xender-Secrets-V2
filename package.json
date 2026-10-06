@@ -8,7 +8,9 @@
     "review:site": "node scripts/review-site-html.mjs",
     "test": "node --test tests/unit/*.test.mjs && node --test tests/reader-sources.test.mjs tests/commercial-funnel.test.mjs",
     "build:novels": "node scripts/build-novel-data.mjs --all",
-    "check:novels": "node scripts/build-novel-data.mjs --check"
+    "check:novels": "node scripts/build-novel-data.mjs --check",
+    "build:pages": "node scripts/build-commercial-pages.mjs",
+    "check:pages": "node scripts/build-commercial-pages.mjs --check"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

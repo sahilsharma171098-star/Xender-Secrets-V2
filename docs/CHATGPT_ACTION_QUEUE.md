@@ -78,3 +78,13 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 4. **Approve payment terms** (recommendation in `docs/REVENUE_ARCHITECTURE.md` §5: ₹999 preview-first, 100% before go-live; larger packages 50/50).
 5. Optional free trust fix: Cloudflare Email Routing `hello@xendersecrets.com` → your Gmail, then Claude swaps the public email.
 6. Optional: set `CLAUDE_CODE_OAUTH_TOKEN` repo secret if you want `@claude` issue comments to work (Executor fails without it).
+
+### CQ-006 — Re-submit sitemap after XEND-DEV-002 deploys (added 2026-10-06)
+- Priority: P2 · Channel: Google Search Console / Bing Webmaster (if connected)
+- Action: after PR for `claude/xend-dev-002-commercial-pages` is live, resubmit `https://www.xendersecrets.com/sitemap.xml`. The old sitemap contained a literal "\n" text node (invalid XML) and pointed at `.html` URLs that 307-redirect; canonicals/sitemap now use the final extensionless URLs. Four thin city pages (Mumbai/Bangalore/Hyderabad/Pune) now 301 to `/small-business-website-india`.
+- Expected: cleaner indexing of commercial pages. MIS: none.
+
+### CQ-007 — Use industry landing pages in outreach (added 2026-10-06)
+- Priority: P0 · Channel: Gmail / LinkedIn
+- Action: link the matching page instead of the homepage: CA → `/accountant-website-development`, clinics/dentists → `/clinic-website-development`, agents → `/real-estate-website-development`, recruiters → `/recruitment-agency-website-development`, coaching → `/coaching-website-development`, consultants → `/consultant-website-development`. Always add `?utm_source=<channel>&utm_campaign=<yyyymmdd>-<segment>`.
+- Expected: higher click→enquiry rate (each page has industry FAQs, matching concept templates and the lead form).
