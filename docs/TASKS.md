@@ -115,3 +115,8 @@ Acceptance: funnel browser test extended to these pages; no overflow at 375px; l
 Status: REVIEW · Owner: Claude · Branch: `claude/xend-sales-002-preview-system` (stacked on PR #20)
 Delivered: 5 vertical previews (dental/clinic, real estate, professional services, fitness, restaurant), builder, admin-only short links `/p/<id>`, view tracking in MIS, expiry, draft banner. SOP: `docs/REVENUE_SPRINT.md`.
 Also delivered: gym + restaurant landing pages, `review:site --message` free-check generator, MIS daily scorecard (MIS-001).
+
+## XEND-IG-001 — Instagram organic launch + Gurugram prospects (Issue #19 handoff)
+Status: IN_PROGRESS · Owner: Claude (+ Sahil for profile edits and DMs) · Branch: `claude/instagram-execution-bqkq8g`
+Delivered: profile audit, ready-to-paste bio/username/link fix, 7-post week-1 calendar with 22 on-brand creatives (`marketing/instagram/2026-10-week1/`), post 1 published 2026-10-06 via Windsor, daily publish routine Oct 7–12, private Gurugram prospect doc. Handoff: `docs/handoffs/instagram-gurugram.md`.
+Blocked on Sahil: profile edit (§2), linking Instagram in Metricool (optional), sending Instagram DMs by hand.
