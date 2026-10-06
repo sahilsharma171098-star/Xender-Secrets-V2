@@ -111,3 +111,5 @@
 ## Re-running these checks
 
 The crawler and feature checks are in `qa/` on branch `claude/qa-deep-check`, and the workflow is `.github/workflows/qa-deep-check.yml`. Pushing to that branch re-runs everything read-only against production and commits the results to `qa/results/`. The branch isn't merged into `main` and can be deleted at any time.
+
+<!-- recheck 2026-10-06T10:42:14Z: admin token reported set by Sahil -->
