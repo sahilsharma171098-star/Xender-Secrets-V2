@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Preview Builder | Xender</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#0b1220;--muted:#5b6678;--line:#e2e8f0;--accent:#1d4ed8;--ok:#047857;--bad:#b91c1c;color-scheme:light}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+h1{font-size:15px;margin:0;letter-spacing:.08em}h2{font-size:14px;margin:0 0 8px}
+.layout{display:grid;grid-template-columns:420px 1fr;gap:16px;padding:16px;align-items:start}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+label{display:block;font-weight:600;font-size:12px;margin:10px 0 4px}label small{font-weight:400;color:var(--muted)}
+input,select,textarea,button{font:inherit;color:inherit;width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;background:#fff}
+textarea{min-height:70px;resize:vertical}.row{display:flex;gap:8px}.row>*{flex:1}
+button{cursor:pointer;background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;width:auto;padding:9px 14px}button.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+iframe{width:100%;height:78vh;border:1px solid var(--line);border-radius:12px;background:#fff}
+.devices{display:flex;gap:6px;margin-bottom:8px}.devices button{padding:6px 10px}
+.out{word-break:break-all;background:#f1f5f9;border-radius:8px;padding:10px;font-family:ui-monospace,monospace;font-size:12px;white-space:pre-wrap}
+.muted{color:var(--muted)}.ok{color:var(--ok)}.bad{color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:6px;border-bottom:1px solid var(--line);text-align:left}
+</style>
+</head>
+<body>
+<header><h1>XENDER · PREVIEW BUILDER</h1><span class="muted">Fill from the prospect's <b>public</b> info only · never invent reviews, results or credentials</span><a href="/admin.html">MIS →</a></header>
+<div class="layout">
+  <div>
+    <section class="card">
+      <h2>1 · Start</h2>
+      <div class="row"><select id="sample"><option value="">Load a fictional sample…</option></select><button class="ghost" id="importBtn" type="button">Import JSON</button></div>
+      <textarea id="importBox" hidden placeholder='Paste a config JSON (e.g. drafted by ChatGPT) and click Import again'></textarea>
+    </section>
+    <form class="card" id="f">
+      <h2>2 · Prospect details</h2>
+      <label>Vertical<select name="vertical" id="vertical"></select></label>
+      <label>Business name *<input name="name" required maxlength="80"></label>
+      <label>Headline <small>(what they do, for whom)</small><input name="tagline" maxlength="140" placeholder="Gentle, modern dental care in Sector 56"></label>
+      <div class="row"><label>Area<input name="area" maxlength="80"></label><label>City<input name="city" maxlength="60"></label></div>
+      <div class="row"><label>Phone<input name="phone" maxlength="20"></label><label>WhatsApp <small>(defaults to phone)</small><input name="whatsapp" maxlength="20"></label></div>
+      <label>Email<input name="email" maxlength="254"></label>
+      <label>Address<input name="address" maxlength="200"></label>
+      <label>Map search <small>(name + area, as on Google Maps)</small><input name="mapsQuery" maxlength="200"></label>
+      <label>Services <small>one per line: Name | description | price(optional) — leave empty for labelled samples</small><textarea name="services" rows="5"></textarea></label>
+      <label>Highlights <small>one per line — only facts visible publicly (e.g. "Open Sundays")</small><textarea name="highlights" rows="3"></textarea></label>
+      <label>Hours <small>one per line: Days | Time</small><textarea name="hours" rows="3" placeholder="Mon–Sat | 10:00 am – 8:00 pm"></textarea></label>
+      <label>About <small>(from their own public description)</small><textarea name="about" rows="3" maxlength="900"></textarea></label>
+      <div class="row"><label>Google profile URL<input name="googleUrl"></label><label>Instagram URL<input name="instagram"></label></div>
+      <div class="row"><label>Accent colour<input name="accent" type="color" value="#1d4ed8"></label><label>CTA text<input name="cta" maxlength="40" placeholder="(vertical default)"></label></div>
+      <label>Hero image URL <small>(only an image they publish themselves)</small><input name="heroImage"></label>
+    </form>
+    <section class="card">
+      <h2>3 · Share</h2>
+      <div class="row"><label>Link to lead <small>(XS-… optional)</small><input id="leadId" placeholder="XS-261006-ABCD"></label><label>Expires in days<input id="days" type="number" min="1" max="90" value="30"></label></div>
+      <p><button id="save" type="button">Create share link</button> <span id="saveStatus"></span></p>
+      <div id="shareOut" hidden>
+        <p class="out" id="link"></p>
+        <h2>Message to send</h2>
+        <p class="out" id="pitch"></p>
+        <p><button class="ghost" id="copyLink" type="button">Copy link</button> <button class="ghost" id="copyPitch" type="button">Copy message</button></p>
+      </div>
+      <p class="muted" id="tokenHint"></p>
+    </section>
+    <section class="card"><h2>Existing previews</h2><div id="list" class="muted">Unlock with the admin token to see previews and views.</div></section>
+  </div>
+  <div>
+    <div class="devices"><button class="ghost" data-w="390" type="button">Phone</button><button class="ghost" data-w="820" type="button">Tablet</button><button class="ghost" data-w="" type="button">Desktop</button></div>
+    <iframe id="frame" src="/preview.html?builder=1" title="Live preview"></iframe>
+  </div>
+</div>
+<script type="module">
+import { VERTICALS, sanitizeConfig } from "/preview/preview-core.mjs";
+const $ = (id) => document.getElementById(id);
+const form = $("f"), frame = $("frame");
+const TOKEN_KEY = "xs-admin-token";
+const token = () => sessionStorage.getItem(TOKEN_KEY) || "";
+
+const SAMPLES = {
+  dental: { vertical: "dental", name: "Sample Smile Dental (fictional)", tagline: "Gentle, modern dental care for the whole family", area: "Sector 56", city: "Gurugram", phone: "9800000000", mapsQuery: "Sector 56 Gurugram", hours: "Mon–Sat | 10:00 am – 8:00 pm\nSunday | 10:00 am – 1:00 pm", accent: "#0e7490" },
+  realestate: { vertical: "realestate", name: "Sample Homes Realty (fictional)", tagline: "2 & 3 BHK homes on Golf Course Extension Road", area: "Golf Course Extension Road", city: "Gurugram", phone: "9800000000", accent: "#b45309" },
+  pro: { vertical: "pro", name: "Sample & Co. Chartered Accountants (fictional)", tagline: "GST, income tax and audit for growing businesses", area: "Udyog Vihar", city: "Gurugram", phone: "9800000000", accent: "#1d4ed8" },
+  fitness: { vertical: "fitness", name: "Sample Strong Gym (fictional)", tagline: "Coached strength training — book a free trial", area: "DLF Phase 3", city: "Gurugram", phone: "9800000000", accent: "#dc2626" },
+  restaurant: { vertical: "restaurant", name: "Sample Kitchen Café (fictional)", tagline: "Fresh, homestyle food and great coffee", area: "Cyber Hub", city: "Gurugram", phone: "9800000000", accent: "#9a3412" },
+};
+
+for (const [k, v] of Object.entries(VERTICALS)) {
+  $("vertical").insertAdjacentHTML("beforeend", `<option value="${k}">${v.label}</option>`);
+  $("sample").insertAdjacentHTML("beforeend", `<option value="${k}">${v.label}</option>`);
+}
+const read = () => Object.fromEntries(new FormData(form).entries());
+const fill = (cfg) => {
+  form.reset();
+  for (const [k, v] of Object.entries(cfg)) {
+    const el = form.elements[k]; if (!el) continue;
+    el.value = Array.isArray(v) ? v.map((x) => (Array.isArray(x) ? x.join(" | ") : typeof x === "object" ? [x.name, x.desc, x.price].filter(Boolean).join(" | ") : x)).join("\n") : v;
+  }
+  if (!cfg.accent) form.elements.accent.value = VERTICALS[form.elements.vertical.value]?.accent || "#1d4ed8";
+  push();
+};
+let ready = false;
+const push = () => { if (ready) frame.contentWindow.postMessage(read(), location.origin); };
+addEventListener("message", (e) => { if (e.origin === location.origin && e.data?.previewReady) { ready = true; push(); } });
+form.addEventListener("input", push);
+$("vertical").addEventListener("change", () => { form.elements.accent.value = VERTICALS[form.elements.vertical.value].accent; push(); });
+$("sample").onchange = (e) => { if (SAMPLES[e.target.value]) fill(SAMPLES[e.target.value]); };
+$("importBtn").onclick = () => {
+  const box = $("importBox");
+  if (box.hidden) { box.hidden = false; box.focus(); return; }
+  try { fill(JSON.parse(box.value)); box.hidden = true; box.value = ""; } catch { alert("That isn't valid JSON."); }
+};
+document.querySelectorAll(".devices button").forEach((b) => (b.onclick = () => { frame.style.width = b.dataset.w ? b.dataset.w + "px" : "100%"; }));
+
+const api = async (path, opts = {}) => {
+  const r = await fetch(path, { ...opts, headers: { authorization: "Bearer " + token(), "content-type": "application/json" } });
+  return { status: r.status, body: await r.json().catch(() => ({})) };
+};
+const ensureToken = () => {
+  if (token()) return true;
+  const t = prompt("Admin token (ADMIN_TOKEN secret) — kept only in this tab");
+  if (t) sessionStorage.setItem(TOKEN_KEY, t.trim());
+  return !!t;
+};
+$("tokenHint").textContent = token() ? "Admin token loaded for this tab." : "Creating a share link needs the admin token (same as /admin.html).";
+
+$("save").onclick = async () => {
+  const cfg = read();
+  const check = sanitizeConfig(cfg);
+  if (!check.ok) { $("saveStatus").textContent = check.errors[0]; $("saveStatus").className = "bad"; return; }
+  if (!ensureToken()) return;
+  $("saveStatus").textContent = "Saving…"; $("saveStatus").className = "";
+  const { status, body } = await api("/api/admin/previews", { method: "POST", body: JSON.stringify({ config: cfg, lead_id: $("leadId").value.trim(), days: $("days").value }) });
+  if (status === 401 || status === 503) { sessionStorage.removeItem(TOKEN_KEY); $("saveStatus").textContent = body.error || "Unauthorized"; $("saveStatus").className = "bad"; return; }
+  if (!body.ok) { $("saveStatus").textContent = body.error || "Failed"; $("saveStatus").className = "bad"; return; }
+  const link = "https://www.xendersecrets.com" + body.path;
+  const first = (cfg.name || "").replace(/\s*\(fictional\)/, "");
+  $("link").textContent = link;
+  $("pitch").textContent = `Hi! I made a quick draft of what a website for ${first} could look like — no cost, no obligation:\n${link}\n\nIt works on mobile and the WhatsApp/call buttons go straight to you. If you like it, we can finish it with your real photos and details from ₹999 (one page). Happy to change anything.\n\n— Sahil, Xender Secrets`;
+  $("shareOut").hidden = false;
+  $("saveStatus").textContent = "Saved · expires " + body.expires_at.slice(0, 10); $("saveStatus").className = "ok";
+  loadList();
+};
+const copy = (id) => navigator.clipboard?.writeText($(id).textContent);
+$("copyLink").onclick = () => copy("link");
+$("copyPitch").onclick = () => copy("pitch");
+
+async function loadList() {
+  if (!token()) return;
+  const { status, body } = await api("/api/admin/previews");
+  if (status !== 200) return;
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  $("list").innerHTML = body.previews.length ? "<table><tr><th>Link</th><th>Business</th><th>Views</th><th>Last view</th><th>Expires</th></tr>" + body.previews.map((p) =>
+    `<tr><td><a href="/preview.html?id=${p.id}&nocount=1" target="_blank">/p/${p.id}</a></td><td>${esc(p.business)}</td><td>${p.views}</td><td>${esc((p.last_view_at || "—").slice(0, 16).replace("T", " "))}</td><td>${esc(p.expires_at.slice(0, 10))}</td></tr>`).join("") + "</table>" : "No previews yet.";
+}
+loadList();
+</script>
+</body>
+</html>

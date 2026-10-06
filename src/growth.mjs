@@ -13,6 +13,8 @@
 // The module is dependency-injected (sql, env, now) so the same code runs in Node tests
 // against node:sqlite.
 
+import { sanitizeConfig } from "../public/preview/preview-core.mjs";
+
 export const LEAD_STAGES = ["new", "contacted", "qualified", "proposal", "won", "lost"];
 export const OFFERS = [
   "free-website-check",
@@ -26,6 +28,7 @@ export const OFFERS = [
 export const EVENTS = new Set([
   "page_view", "cta_click", "whatsapp_click", "email_click", "phone_click",
   "lead_start", "lead_submit", "lead_error", "demo_view", "offer_view", "js_error",
+  "preview_cta",
 ]);
 
 const LIMITS = {
@@ -162,6 +165,18 @@ export function ensureGrowthSchema(sql) {
       change TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_growth_lead_log_lead ON growth_lead_log(lead_id,at);
+    CREATE TABLE IF NOT EXISTS growth_previews (
+      id TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      business TEXT NOT NULL,
+      vertical TEXT NOT NULL,
+      config TEXT NOT NULL,
+      lead_id TEXT,
+      views INTEGER NOT NULL DEFAULT 0,
+      first_view_at TEXT,
+      last_view_at TEXT
+    );
   `);
 }
 
@@ -383,8 +398,45 @@ export function buildReport(sql, { days = 30, nowMs = Date.now() } = {}) {
       collected: pipeline.reduce((s, p) => s + Number(p.collected), 0),
       deals_won: Number(won?.leads || 0),
     },
+    previews: rows("SELECT id,business,vertical,views,last_view_at FROM growth_previews ORDER BY COALESCE(last_view_at,created_at) DESC LIMIT 20"),
     follow_ups_due: rows("SELECT id,name,business,stage,next_action,next_action_at FROM growth_leads WHERE is_test=0 AND stage NOT IN ('won','lost') AND next_action_at<>'' AND next_action_at<=? ORDER BY next_action_at", new Date(nowMs).toISOString().slice(0, 10)),
   };
+}
+
+
+// ---------------------------------------------------------------- client previews (Issue #19)
+const PREVIEW_ID = /^[a-z2-9]{6}$/;
+export function previewId() {
+  const alphabet = "abcdefghjkmnpqrstuvwxyz23456789";
+  return Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => alphabet[b % alphabet.length]).join("");
+}
+
+export function createPreview(sql, body = {}, nowMs = Date.now()) {
+  const { ok, errors, config } = sanitizeConfig(body.config || {});
+  if (!ok) return { status: 400, body: { ok: false, error: errors[0], errors } };
+  const days = Math.min(90, Math.max(1, Math.round(Number(body.days) || 30)));
+  let id = previewId();
+  while (sql.exec("SELECT 1 AS x FROM growth_previews WHERE id=?", id).toArray().length) id = previewId();
+  const now = new Date(nowMs);
+  const expires = new Date(nowMs + days * 86400000).toISOString();
+  const leadId = /^XS-\d{6}-[A-Z0-9]{4}$/.test(String(body.lead_id || "")) ? body.lead_id : null;
+  sql.exec("INSERT INTO growth_previews (id,created_at,expires_at,business,vertical,config,lead_id) VALUES (?,?,?,?,?,?,?)",
+    id, now.toISOString(), expires, config.name, config.vertical, JSON.stringify(config), leadId);
+  return { status: 201, body: { ok: true, id, path: "/p/" + id, expires_at: expires, config } };
+}
+
+export function getPreview(sql, id, { count = true, nowMs = Date.now() } = {}) {
+  if (!PREVIEW_ID.test(id)) return { status: 404, body: { ok: false, error: "Preview not found." } };
+  const row = sql.exec("SELECT id,expires_at,config FROM growth_previews WHERE id=?", id).toArray()[0];
+  if (!row) return { status: 404, body: { ok: false, error: "Preview not found." } };
+  const now = new Date(nowMs).toISOString();
+  if (row.expires_at <= now) return { status: 410, body: { ok: false, expired: true, error: "This preview has expired." } };
+  if (count) sql.exec("UPDATE growth_previews SET views=views+1,last_view_at=?,first_view_at=COALESCE(first_view_at,?) WHERE id=?", now, now, id);
+  return { status: 200, body: { ok: true, id, expires_at: row.expires_at, config: JSON.parse(row.config) } };
+}
+
+export function listPreviews(sql) {
+  return sql.exec("SELECT id,created_at,expires_at,business,vertical,lead_id,views,first_view_at,last_view_at FROM growth_previews ORDER BY created_at DESC LIMIT 200").toArray();
 }
 
 function safeEqual(a, b) {
@@ -423,6 +475,11 @@ export async function handleGrowth(request, { sql, env = {}, nowMs = Date.now() 
     if (r.notify) res.headers.set("x-xender-lead-notify", encodeURIComponent(r.notify).slice(0, 3500));
     return res;
   }
+  const pv = path.match(/^\/api\/preview\/([a-z2-9]{6})$/);
+  if (pv && method === "GET") {
+    const r = getPreview(sql, pv[1], { count: url.searchParams.get("nocount") !== "1", nowMs });
+    return json(r.body, r.status);
+  }
   if (path === "/api/event" && method === "POST") {
     const body = await request.json().catch(() => null);
     if (!body || typeof body !== "object") return json({ ok: false, error: "Invalid request." }, 400);
@@ -450,6 +507,17 @@ export async function handleGrowth(request, { sql, env = {}, nowMs = Date.now() 
       if (!lead) return json({ ok: false, error: "Lead not found." }, 404);
       const log = sql.exec("SELECT at,change FROM growth_lead_log WHERE lead_id=? ORDER BY at", m[1]).toArray();
       return json({ ok: true, lead, log });
+    }
+    if (path === "/api/admin/previews" && method === "GET") return json({ ok: true, previews: listPreviews(sql) });
+    if (path === "/api/admin/previews" && method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const r = createPreview(sql, body, nowMs);
+      return json(r.body, r.status);
+    }
+    const pd = path.match(/^\/api\/admin\/previews\/([a-z2-9]{6})$/);
+    if (pd && method === "DELETE") {
+      sql.exec("DELETE FROM growth_previews WHERE id=?", pd[1]);
+      return json({ ok: true });
     }
     if (path === "/api/admin/report" && method === "GET") {
       return json(buildReport(sql, { days: url.searchParams.get("days"), nowMs }));

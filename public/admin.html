@@ -26,7 +26,7 @@ a{color:var(--accent)}
 </style>
 </head>
 <body>
-<header><h1>XENDER · MIS</h1><div class="row"><label>Days <select id="days"><option>7</option><option selected>30</option><option>90</option></select></label><label><input type="checkbox" id="showTest"> show test leads</label><button class="ghost" id="refresh">Refresh</button><button class="ghost" id="csv">Export CSV</button><button class="ghost" id="logout">Lock</button></div></header>
+<header><h1>XENDER · MIS</h1><div class="row"><a href="/preview-builder.html">Preview builder</a><label>Days <select id="days"><option>7</option><option selected>30</option><option>90</option></select></label><label><input type="checkbox" id="showTest"> show test leads</label><button class="ghost" id="refresh">Refresh</button><button class="ghost" id="csv">Export CSV</button><button class="ghost" id="logout">Lock</button></div></header>
 <section id="login" class="card" hidden>
   <h2>Admin access</h2>
   <p class="muted">Enter the <code>ADMIN_TOKEN</code> Worker secret. It is kept only in this browser tab (sessionStorage) and sent to <code>/api/admin/*</code> over HTTPS.</p>
@@ -36,6 +36,7 @@ a{color:var(--accent)}
 <main id="app" hidden>
   <section class="kpis" id="kpis"></section>
   <section class="card"><h2>Follow-ups due</h2><div id="due" class="muted">—</div></section>
+  <section class="card"><h2>Client previews <a href="/preview-builder.html" style="font-size:12px;font-weight:600">+ build one</a></h2><p class="muted">A view means the prospect (or someone they shared it with) opened the link — a good moment to follow up.</p><div id="previews" class="muted">—</div></section>
   <section class="card"><h2>Leads &amp; pipeline</h2><p class="muted">Stages: new → contacted → qualified → proposal → won / lost. Quote = agreed price (booked when won). Collected = cash actually received.</p><div id="leads">Loading…</div></section>
   <div class="grid2">
     <section class="card"><h2>Sources</h2><div id="sources"></div></section>
@@ -76,6 +77,7 @@ a{color:var(--accent)}
     ];
     $("kpis").innerHTML = kpis.map(([k, n]) => `<div class="kpi"><b>${esc(n)}</b><span>${esc(k)}</span></div>`).join("");
     $("due").innerHTML = rep.follow_ups_due.length ? table(rep.follow_ups_due, [["Due", "next_action_at"], ["Lead", (r) => r.name + (r.business ? " — " + r.business : "")], ["Stage", "stage"], ["Next action", "next_action"]]) : "Nothing due. Set a next-action date on every open lead.";
+    $("previews").innerHTML = table(rep.previews || [], [["Link", (r) => "/p/" + r.id], ["Business", "business"], ["Type", "vertical"], ["Views", "views"], ["Last view", (r) => String(r.last_view_at || "—").slice(0, 16).replace("T", " ")]]);
     $("sources").innerHTML = table(rep.sources, [["Source", "source"], ["Views", "views"], ["WhatsApp", "whatsapp"], ["Leads", "leads"]]);
     $("pages").innerHTML = table(rep.top_pages, [["Page", "path"], ["Views", "views"]]);
     $("ctas").innerHTML = table(rep.ctas, [["Type", "event"], ["Label", "label"], ["Page", "path"], ["Clicks", "clicks"]]);

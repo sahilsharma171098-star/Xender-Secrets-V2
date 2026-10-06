@@ -35,6 +35,7 @@ on:
       - 'src/**'
   pull_request:
     paths:
+      - 'public/preview/**'
       - 'scripts/commercial/**'
       - 'scripts/build-commercial-pages.mjs'
       - 'public/*.html'

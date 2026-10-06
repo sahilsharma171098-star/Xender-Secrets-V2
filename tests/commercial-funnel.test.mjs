@@ -13,7 +13,7 @@ import { ensureGrowthSchema, handleGrowth } from '../src/growth.mjs';
 const PUBLIC = path.resolve('public');
 const ORIGIN = 'http://xender.test';
 const ADMIN = 'test-admin-token-0123456789abcdef';
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
 
 function doSql() {
   const db = new DatabaseSync(':memory:');
@@ -285,4 +285,41 @@ test('international visitors see the US$299 anchor, Indian visitors do not', asy
     assert.equal(await page.locator('[data-intl-note]').isVisible(), visible, country);
     await context.close();
   }
+});
+
+test('preview builder: live draft, admin-only share link, prospect view is counted and escaped', async () => {
+  const sql = doSql();
+  const { page, db, log, context } = await newPage({ sql });
+  await page.goto(ORIGIN + '/preview-builder.html');
+  await page.selectOption('#sample', 'dental');
+  const frame = page.frameLocator('#frame');
+  await frame.locator('.xp-banner').waitFor();
+  assert.match(await frame.locator('h1').innerText(), /Gentle, modern dental care/);
+  await page.fill('[name=name]', 'Riya <b>Dental</b>');
+  await page.fill('[name=services]', 'Root canal | Single sitting where possible | from ₹4,000');
+  await page.waitForFunction(() => document.querySelector('#frame').contentDocument.body.innerText.includes('Root canal'));
+  assert.equal(await frame.locator('b').count(), 0, 'builder preview escapes markup');
+
+  page.once('dialog', (d) => d.accept(ADMIN));
+  await page.click('#save');
+  await page.waitForSelector('#shareOut:not([hidden])');
+  const link = await page.locator('#link').innerText();
+  assert.match(link, /^https:\/\/www\.xendersecrets\.com\/p\/[a-z2-9]{6}$/);
+  assert.match(await page.locator('#pitch').innerText(), /from ₹999/);
+  const id = link.slice(-6);
+
+  const prospect = await context.newPage();
+  await prospect.goto(ORIGIN + '/preview.html?id=' + id);
+  await prospect.waitForSelector('.xp-banner');
+  assert.match(await prospect.locator('.xp-banner').innerText(), /Draft website preview.*not the official website/s);
+  assert.match(await prospect.locator('.xp-logo').innerText(), /Riya <b>Dental<\/b>/, 'shown as text');
+  assert.equal(await prospect.getAttribute('meta[name=robots]', 'content'), 'noindex,nofollow');
+  const d = await prospect.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+  assert.ok(d.sw <= d.cw + 1);
+  assert.equal(rows(db, 'SELECT views FROM growth_previews')[0].views, 1);
+
+  await prospect.goto(ORIGIN + '/preview.html?id=zzzzzz');
+  await prospect.waitForFunction(() => /not found/i.test(document.body.innerText));
+  assert.deepEqual(log.errors, []);
+  await context.close();
 });

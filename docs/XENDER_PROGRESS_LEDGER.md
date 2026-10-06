@@ -73,6 +73,10 @@ Merged PR #16 — XEND-READER-001.
 - services false-error bug fixed; contact form; demo CRM isolated
 - revenue architecture, measurement plan, sales playbook, ChatGPT action queue
 
+### Commercial pages + client previews (2026-10-06, PRs #20 and preview PR; pending merge)
+- every commercial/industry/location page generated from one source; sitemap/canonical fixes; clinic page
+- 5-vertical client preview system with share links, view tracking and expiry (Issue #19)
+
 ## IN PROGRESS / ACTIVE
 
 ### XEND-WARROOM-001
