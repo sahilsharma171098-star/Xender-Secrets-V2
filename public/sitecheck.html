@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Xender SiteCheck | Free Website QA &amp; Conversion Checker</title>
+  <meta name="description" content="Free browser extension that checks any webpage for SEO basics, accessibility, usability and conversion friction — locally in your browser.">
+  <link rel="canonical" href="https://www.xendersecrets.com/sitecheck.html">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Xender SiteCheck — Free Website QA &amp; Conversion Checker">
+  <meta property="og:description" content="Check any webpage for SEO basics, accessibility issues, usability problems and conversion friction. Runs locally in your browser.">
+  <meta property="og:url" content="https://www.xendersecrets.com/sitecheck.html">
+  <meta property="og:image" content="https://www.xendersecrets.com/sitecheck-popup.png">
+  <link rel="icon" href="/sitecheck-icon.png" type="image/png">
+  <link rel="stylesheet" href="/home.css">
+  <style>
+    .sc-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:48px;align-items:center}
+    .sc-hero h1{font-size:clamp(2.4rem,5vw,4.4rem)}
+    .sc-shot{justify-self:center;width:min(380px,100%);border-radius:18px;border:1px solid var(--line);box-shadow:0 26px 70px rgba(15,23,42,.18)}
+    .stores{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .store{display:inline-flex;align-items:center;gap:8px;border:1px dashed #9fb0ba;border-radius:12px;padding:11px 15px;font-weight:800;color:var(--muted)}
+    .store small{font-weight:700;font-size:.78rem;border-radius:999px;padding:2px 8px;background:rgba(115,240,181,.18);color:inherit}
+    .checks{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+    .checks .card h3{font-size:1.08rem}.checks .card p{font-size:.94rem;margin:0}
+    .ticks{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+    .ticks li{padding-left:28px;position:relative;color:var(--muted)}
+    .ticks li::before{content:"✓";position:absolute;left:0;color:#1f9d6a;font-weight:900}
+    .ticks li b{color:inherit}
+    .browser-table{width:100%;border-collapse:collapse;font-size:.98rem}
+    .browser-table th,.browser-table td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line)}
+    .browser-table th{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .examples{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}
+    .note{font-size:.92rem;color:var(--muted);margin-top:16px}
+    html:not([data-theme="dark"]) .store{border-color:#b9c6cf;color:#4f5d68}
+    html:not([data-theme="dark"]) .browser-table th,html:not([data-theme="dark"]) .browser-table td{border-bottom-color:#e3e9ed}
+    html:not([data-theme="dark"]) .ticks li,html:not([data-theme="dark"]) .note{color:#56636e}
+    @media(max-width:1000px){.checks{grid-template-columns:repeat(2,1fr)}.examples{grid-template-columns:1fr 1fr}}
+    @media(max-width:900px){.sc-hero{grid-template-columns:1fr}}
+    @media(max-width:560px){.checks,.examples{grid-template-columns:1fr}.browser-table th:nth-child(3),.browser-table td:nth-child(3){display:none}}
+  
+    html:not([data-theme="dark"]) .kicker,html:not([data-theme="dark"]) .eyebrow,html:not([data-theme="dark"]) h1 span,html:not([data-theme="dark"]) h2 span,html:not([data-theme="dark"]) .card a{color:#127a52}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">XENDER <span>SECRETS</span></a>
+      <button class="menu" id="menu" aria-label="Open menu">☰</button>
+      <nav class="nav" id="nav">
+        <a href="#checks">What it checks</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#free-audit">Free audit</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a class="btn primary header-cta" href="#free-audit">Get a free audit</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap sc-hero">
+        <div>
+          <div class="eyebrow">BROWSER EXTENSION · FREE</div>
+          <h1>Xender SiteCheck: <span>free website QA</span> &amp; conversion checker</h1>
+          <p>Click once on any webpage to see what may be hurting it: SEO basics, accessibility issues, usability problems and conversion friction. Each issue comes with a plain-English fix, and it all runs locally in your browser.</p>
+          <div class="stores" aria-label="Store availability">
+            <span class="store">Microsoft Edge <small>Coming soon</small></span>
+            <span class="store">Firefox <small>Coming soon</small></span>
+            <span class="store">Chrome <small>Coming soon</small></span>
+          </div>
+          <p class="note">SiteCheck is being prepared for the browser add-on stores. Install links will appear here once each listing is live.</p>
+        </div>
+        <img class="sc-shot" src="/sitecheck-popup.png" width="400" height="600" alt="The Xender SiteCheck popup showing a Website Health Score of 87 out of 100, with separate scores for accessibility, conversion, SEO, technical and usability, and a list of issues">
+      </div>
+    </section>
+
+    <section id="checks">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="kicker">WHAT IT CHECKS</div>
+            <h2>47 practical checks. <span>Clear fixes.</span></h2>
+            <p>Every issue explains what's wrong, why it matters and what to change. You get a Website Health Score from 0 to 100. It is a documented Xender SiteCheck heuristic score, not a Lighthouse score.</p>
+          </div>
+        </div>
+        <div class="checks">
+          <article class="card"><div class="kicker">SEO</div><h3>Search basics</h3><p>Title, meta description, canonical, noindex, H1 and Open Graph previews for WhatsApp and LinkedIn.</p></article>
+          <article class="card"><div class="kicker">ACCESSIBILITY</div><h3>Usable by everyone</h3><p>Alt text, form labels, button and link names, heading order, ARIA mistakes and measured text contrast.</p></article>
+          <article class="card"><div class="kicker">USABILITY</div><h3>Things that frustrate</h3><p>Links that go nowhere, malformed URLs, forms without a submit button and missing autofill.</p></article>
+          <article class="card"><div class="kicker">CONVERSION</div><h3>Friction to enquiries</h3><p>Vague or competing calls to action, no visible contact method, missing trust pages and long forms.</p></article>
+          <article class="card"><div class="kicker">TECHNICAL</div><h3>Security &amp; basics</h3><p>HTTPS, mixed content, insecure forms, mobile viewport, oversized images and verified broken links.</p></article>
+        </div>
+        <p class="note">SiteCheck is a fast automated check, not a complete accessibility (WCAG) audit or a performance test. Conversion suggestions are clearly labelled as heuristics.</p>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <div class="wrap simple">
+        <div>
+          <div class="kicker">PRIVACY FIRST</div>
+          <h2>Your pages stay <span>in your browser.</span></h2>
+          <p class="note">SiteCheck has no servers and no accounts. It only runs when you click it.</p>
+        </div>
+        <ul class="ticks">
+          <li><b>Runs only when you click it</b>, only on the current tab.</li>
+          <li><b>Analysis happens locally.</b> Audit results are never sent to Xender Secrets.</li>
+          <li><b>Never reads</b> form values, passwords, cookies or browsing history.</li>
+          <li><b>No analytics, no ads, no remote code.</b></li>
+          <li><b>Two permissions only:</b> activeTab and scripting.</li>
+          <li>Read the <a href="/sitecheck-privacy.html">SiteCheck privacy policy</a>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="browsers">
+      <div class="wrap">
+        <div class="kicker">SUPPORTED BROWSERS</div>
+        <h2>Edge, Firefox and <span>Chrome.</span></h2>
+        <table class="browser-table">
+          <thead><tr><th>Browser</th><th>Status</th><th>Minimum version</th></tr></thead>
+          <tbody>
+            <tr><td>Microsoft Edge</td><td>Coming soon on Edge Add-ons</td><td>Current Edge (Manifest V3)</td></tr>
+            <tr><td>Mozilla Firefox</td><td>Coming soon on Firefox Add-ons</td><td>Firefox 140+ (Android 142+)</td></tr>
+            <tr><td>Google Chrome</td><td>Coming soon on Chrome</td><td>Current Chrome (Manifest V3)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="cta" id="free-audit">
+      <div class="wrap">
+        <div class="cta-box">
+          <div class="kicker">WANT A HUMAN REVIEW?</div>
+          <h2>Get a free website audit from Xender Secrets</h2>
+          <p>A tool finds patterns, and a person sees the whole picture. Send us your website and we will reply with the few changes most likely to bring you more enquiries. It's free and there's no obligation.</p>
+          <div class="actions">
+            <a class="btn primary" href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%27d%20like%20a%20free%20website%20audit%20for%3A%20">Request on WhatsApp →</a>
+            <a class="btn ghost" href="/contact.html">Other ways to contact us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="custom-extensions">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="kicker">FOR BUSINESSES</div>
+            <h2>Need a custom browser extension <span>for your business?</span></h2>
+            <p>We built SiteCheck, and we can build focused, privacy-respecting extensions for your team too.</p>
+          </div>
+        </div>
+        <div class="examples">
+          <article class="card"><h3>Workflow automation</h3><p>Remove repetitive copy-paste and clicking from daily browser tasks.</p></article>
+          <article class="card"><h3>Internal tools</h3><p>Small helpers that sit on top of the web apps your team already uses.</p></article>
+          <article class="card"><h3>CRM helpers</h3><p>Capture leads and details from the page you're on into your CRM or sheet.</p></article>
+          <article class="card"><h3>Productivity extensions</h3><p>Shortcuts, checklists and quality checks built around how you work.</p></article>
+        </div>
+        <a class="btn primary" href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20this%20browser%20task%20automated%3A%20">Tell us what browser task you want automated →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div>
+        <strong>XENDER SECRETS</strong><br>
+        Founded by Sahil Kumar Sharma · India<br>
+        GSTIN: 06IQFPS4456B1ZP
+      </div>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/services.html">Services</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/sitecheck-privacy.html">SiteCheck privacy</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/home.js"></script>
+</body>
+</html>
