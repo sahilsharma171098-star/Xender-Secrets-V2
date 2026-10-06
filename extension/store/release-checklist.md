@@ -24,10 +24,12 @@
 11. Narrow the window to ~400px on a page and re-run (↻) → sideways-scroll check reflects the new width.
 12. Switch the OS to dark mode → popup follows.
 
-## Store submission order (₹0 rule)
-1. **Microsoft Edge Add-ons** — free developer registration. See `edge-listing.md`.
-2. **Firefox AMO** — free. See `firefox-listing.md`.
-3. **Chrome Web Store** — US$5 one-time registration fee. **Do not pay until Sahil approves after first revenue.** See `chrome-listing.md`.
+## Store submission order
+Sahil explicitly approved the one-time Chrome Web Store US$5 developer registration fee on 6 October 2026. This is a specific exception to the otherwise zero-spend rule; do not incur any other paid extension costs without approval.
+
+1. **Chrome Web Store** — US$5 one-time developer registration approved by Sahil. See `chrome-listing.md`.
+2. **Microsoft Edge Add-ons** — free developer registration. See `edge-listing.md`.
+3. **Firefox AMO** — free. See `firefox-listing.md`.
 
 ### Edge — shortest path (Sahil)
 1. Sign in at https://partner.microsoft.com/dashboard/microsoftedge/overview with your Microsoft account; complete the free developer registration (name, email, country, agreement).
@@ -41,8 +43,8 @@
 2. "Submit a New Add-on" → "On this site" → upload `xender-sitecheck-firefox.zip` → answer "No" to "Do you need to submit source code?" (code is not minified or generated).
 3. Paste name, summary, description, categories, tags, homepage, support email and privacy policy from firefox-listing.md / privacy-policy.md; add screenshots; paste reviewer notes → Submit.
 
-### Chrome — later
-1. After first revenue and Sahil's approval: register at https://chrome.google.com/webstore/devconsole (US$5 one-time).
+### Chrome
+1. Register at https://chrome.google.com/webstore/devconsole (US$5 one-time). Sahil approved this registration fee on 6 October 2026.
 2. Upload `xender-sitecheck-chrome.zip`; paste chrome-listing.md fields, including the Privacy practices tab; upload assets → Submit for review.
 
 ## After approval
