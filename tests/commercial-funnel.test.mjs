@@ -73,8 +73,8 @@ test('homepage answers the buyer questions and keeps the live-E2E contract', asy
   const text = await page.locator('main').innerText();
   for (const must of ['₹999', '₹1,999', '₹3,499', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
   assert.ok(await page.locator('form[data-lead-form]').count() === 1);
-  assert.equal(await page.locator('script[type="application/ld+json"]').count(), 1);
-  JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
+  const lds = (await page.locator('script[type="application/ld+json"]').allInnerTexts()).map((t) => JSON.parse(t)['@type']);
+  assert.deepEqual(lds, ['ProfessionalService', 'FAQPage']);
   assert.deepEqual(log.errors, []);
   assert.deepEqual(log.external, [], 'no third-party requests');
   await context.close();
@@ -102,7 +102,7 @@ test('mobile: no horizontal overflow, menu toggles, key pages clean', async () =
 test('offer button preselects the offer; empty contact is caught client-side', async () => {
   const { page, log, context } = await newPage();
   await page.goto(ORIGIN + '/');
-  await page.click('[data-cta="offer-1999"]');
+  await page.click('[data-cta="home-offer-business-starter-1999"]');
   assert.equal(await page.inputValue('#lf-offer'), 'business-starter-1999');
   await page.fill('#lf-name', 'Asha');
   await page.click('form[data-lead-form] [type="submit"]');
@@ -114,7 +114,7 @@ test('offer button preselects the offer; empty contact is caught client-side', a
 test('lead submit stores attribution, shows reference and a one-tap WhatsApp follow-up', async () => {
   const { page, db, log, context } = await newPage();
   await page.goto(ORIGIN + '/?utm_source=linkedin&utm_campaign=clinics-oct');
-  await page.click('[data-cta="hero-card-999"]');
+  await page.click('[data-cta="home-card"]');
   await page.fill('#lf-name', 'Asha Verma');
   await page.fill('#lf-phone', '98765 43210');
   await page.fill('#lf-business', 'Verma Dental, Gurugram');
@@ -165,7 +165,7 @@ test('server failure keeps the form usable and records lead_error', async () => 
 test('whatsapp clicks are measured; GPC visitors send no events', async () => {
   const { page, db, context } = await newPage();
   await page.goto(ORIGIN + '/');
-  await page.locator('[data-cta="hero-whatsapp"]').click({ modifiers: [] }).catch(() => {});
+  await page.locator('[data-cta="home-hero-whatsapp"]').click({ modifiers: [] }).catch(() => {});
   await flushEvents(page);
   await page.waitForTimeout(300);
   assert.equal(rows(db, "SELECT SUM(count) n FROM growth_daily WHERE event='whatsapp_click'")[0].n, 1);
@@ -193,12 +193,12 @@ test('theme: light by default, dark persists across reloads', async () => {
 test('services and contact forms submit through the same pipeline', async () => {
   const { page, db, log, context } = await newPage();
   await page.goto(ORIGIN + '/services.html');
-  await page.click('[data-cta="services-hero-999"]');
-  assert.equal(await page.inputValue('#serviceLeadForm [name="offer"]'), 'founding-website-999');
-  await page.fill('#serviceLeadForm [name="name"]', 'Kunal');
-  await page.fill('#serviceLeadForm [name="email"]', 'kunal@example.com');
-  await page.fill('#serviceLeadForm [name="message"]', 'Need a CA firm site');
-  await page.click('#serviceLeadForm [type="submit"]');
+  await page.click('[data-cta="services-card"]');
+  assert.equal(await page.inputValue('#lf-offer'), 'founding-website-999');
+  await page.fill('#lf-name', 'Kunal');
+  await page.fill('#lf-email', 'kunal@example.com');
+  await page.fill('#lf-message', 'Need a CA firm site');
+  await page.click('form[data-lead-form] [type="submit"]');
   await page.waitForSelector('.lead-success');
   await page.goto(ORIGIN + '/contact.html');
   await page.fill('form[data-lead-form] [name="name"]', 'Meera');
@@ -242,4 +242,47 @@ test('admin MIS: locked without token, shows pipeline and saves stage changes', 
   assert.deepEqual({ ...lead }, { stage: 'won', quote_value: 1999, collected_value: 1000 });
   assert.deepEqual(log.errors, []);
   await context.close();
+});
+
+test('every generated commercial page: one lead form, valid metadata, no broken internal links, no overflow', async () => {
+  const { allPages } = await import('../scripts/commercial/pages.mjs');
+  const { page, log, context } = await newPage({ viewport: { width: 375, height: 812 } });
+  const broken = new Set();
+  for (const { file } of allPages()) {
+    await page.goto(ORIGIN + '/' + file);
+    assert.equal(await page.locator('h1').count(), 1, file + ' has one h1');
+    assert.equal(await page.locator('form[data-lead-form]').count(), 1, file + ' has one lead form');
+    assert.equal(await page.locator('#start').count(), 1, file + ' #start target');
+    const canonical = await page.getAttribute('link[rel=canonical]', 'href');
+    assert.ok(canonical.startsWith('https://www.xendersecrets.com/'), file + ' canonical');
+    const desc = await page.getAttribute('meta[name=description]', 'content');
+    assert.ok(desc.length >= 70 && desc.length <= 200, `${file} description length ${desc.length}`);
+    for (const ld of await page.locator('script[type="application/ld+json"]').allInnerTexts()) JSON.parse(ld);
+    const d = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+    assert.ok(d.sw <= d.cw + 1, `${file} overflows at 375px: ${JSON.stringify(d)}`);
+    const hrefs = await page.locator('a[href^="/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+    for (const h of hrefs) {
+      const p = h.split(/[?#]/)[0];
+      const f = p === '/' ? 'index.html' : p.slice(1);
+      if (!fs.existsSync(path.join(PUBLIC, f))) broken.add(file + ' -> ' + h);
+    }
+    const offers = await page.locator('[data-offer]').evaluateAll((els) => els.map((e) => e.dataset.offer));
+    const options = await page.locator('form[data-lead-form] [name=offer] option').evaluateAll((os) => os.map((o) => o.value));
+    for (const o of offers) assert.ok(options.includes(o), `${file}: data-offer ${o} exists in form`);
+  }
+  assert.deepEqual([...broken], [], 'no broken internal links');
+  assert.deepEqual(log.errors, []);
+  assert.deepEqual(log.missing.filter((m) => !m.startsWith('/api/')), []);
+  await context.close();
+});
+
+test('international visitors see the US$299 anchor, Indian visitors do not', async () => {
+  for (const [country, visible] of [['US', true], ['IN', false]]) {
+    const { page, context } = await newPage();
+    await context.route('**/api/locale*', (route) => route.fulfill({ json: { ok: true, country, currency: country === 'IN' ? 'INR' : 'USD', rate: 1 } }));
+    await page.goto(ORIGIN + '/services.html');
+    await page.waitForTimeout(300);
+    assert.equal(await page.locator('[data-intl-note]').isVisible(), visible, country);
+    await context.close();
+  }
 });

@@ -110,12 +110,14 @@ try {
 }
 
 try {
-  await page.goto(BASE + '/services.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  // Currency conversion lives on the shop catalog. Commercial pages show India ₹ pricing plus a
+  // US$299 international anchor instead of converting ₹999 to a misleadingly tiny amount (XEND-DEV-002).
+  await page.goto(BASE + '/catalog.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.evaluate(() => localStorage.setItem('xs-country','US'));
   await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForFunction(() => document.querySelector('.xs-country-meta')?.textContent.includes('USD'), null, {timeout:20000});
   const meta = await page.locator('.xs-country-meta').innerText();
-  const price = await page.locator('[data-inr="999"]').first().innerText();
+  const price = await page.locator('[data-inr]').first().innerText();
   record('currency_us', meta.includes('USD') && (price.includes('$') || price.includes('US$')), `meta=${meta}; price=${price}`);
   await page.evaluate(() => localStorage.removeItem('xs-country'));
 } catch (e) { record('currency_us', false, e); }
@@ -141,6 +143,18 @@ try {
   });
   record('lead_api_smoke', probe.status === 201 && /^XS-\d{6}-[A-Z2-9]{4}$/.test(probe.body?.id || ''), JSON.stringify(probe));
 } catch (e) { record('lead_api_smoke', false, e); }
+
+try {
+  const bad = [];
+  for (const p of ['/services.html', '/clinic-website-development.html', '/website-development-gurugram.html', '/contact.html', '/about.html']) {
+    const r = await page.goto(BASE + p, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    const forms = await page.locator('form[data-lead-form]').count();
+    if (!r || r.status() !== 200 || forms !== 1) bad.push(`${p}:${r && r.status()}:${forms}`);
+  }
+  const redirect = await page.goto(BASE + '/website-development-mumbai.html', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  if (!redirect || !/\/small-business-website-india(\.html)?$/.test(redirect.url())) bad.push('mumbai-redirect:' + (redirect && redirect.url()));
+  record('commercial_pages', bad.length === 0, bad.join(', ') || 'all commercial pages have one lead form; city redirect ok');
+} catch (e) { record('commercial_pages', false, e); }
 
 // Reader: Gutenberg chapters are static JSON (no backend); XH chapters come from the Worker
 // (/api/reader/*) with the Render service only as a fallback.

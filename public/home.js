@@ -21,4 +21,16 @@
   menu?.addEventListener("click", () => setOpen(!nav.classList.contains("open")));
   nav?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+
+  // International visitors: the ₹ packages are India pricing, so show the US$299 anchor instead of
+  // converting ₹999 into a misleadingly tiny foreign amount. Uses the existing /api/locale (CF country).
+  const notes = document.querySelectorAll("[data-intl-note]");
+  if (notes.length) {
+    let saved = "";
+    try { saved = localStorage.getItem("xs-country") || ""; } catch {}
+    fetch("/api/locale" + (/^[A-Z]{2}$/.test(saved) ? "?country=" + saved : ""))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j && j.ok && j.country && j.country !== "IN") notes.forEach((n) => { n.hidden = false; }); })
+      .catch(() => {});
+  }
 })();
