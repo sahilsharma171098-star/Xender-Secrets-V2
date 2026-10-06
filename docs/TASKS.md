@@ -3,7 +3,7 @@
 Statuses: `READY`, `IN_PROGRESS`, `REVIEW`, `BLOCKED`, `DONE`
 
 ## XEND-AI-001 — Establish shared ChatGPT + Claude workflow
-Status: IN_PROGRESS
+Status: DONE
 Owner: ChatGPT
 
 Scope:
@@ -66,7 +66,7 @@ Acceptance:
 New work should receive a stable `XEND-...` ID before implementation when practical. Keep one primary owner per task and use PRs for handoff/review.
 
 ## XEND-READER-001 — Remove Render from the reader's critical path at ₹0
-Status: REVIEW
+Status: DONE
 Owner: Claude
 Branch: `reader-static-edge`
 
@@ -81,3 +81,21 @@ Acceptance:
 Open:
 - Sahil: confirm whether XH permission allows storing text in this public repo.
 - After ~2 weeks of healthy edge traffic, suspend the Render service.
+
+
+## XEND-HANDOFF-001 — Recreate full Xender project context for Claude
+Status: DONE
+Owner: ChatGPT
+
+Scope:
+- Consolidate recoverable Xender history from project origin through current execution.
+- Preserve business decisions, completed work, constraints, side tracks and current priorities.
+- Add Claude bootstrap/read order so a fresh Claude session can resume without reconstructing chat history.
+- Keep GitHub as the durable cross-agent memory layer.
+
+Deliverables:
+- docs/XENDER_PROJECT_MEMORY.md
+- docs/XENDER_PROGRESS_LEDGER.md
+- docs/XENDER_OPERATING_SYSTEM.md
+- docs/CLAUDE_PROJECT_BOOTSTRAP.md
+- CLAUDE.md updated to require these files before work.
