@@ -7,11 +7,11 @@ Goal: turn a verified prospect into a personalised preview + proposal fast, and 
 |---|---|---|---|
 | 1 | This checklist | `docs/REVENUE_SPRINT.md` | done |
 | 2 | Reusable previews by vertical — Dental/Clinic, Real Estate, Professional Services, Fitness, Restaurant | `public/preview/preview-core.mjs`, `public/preview.html`, `public/preview-builder.html`, `/api/admin/previews`, `/p/<id>` | PR (branch `claude/xend-sales-002-preview-system`) |
-| 3 | Xender sales-page conversion | homepage/offers/lead form/MIS (PR #18); all commercial + industry pages (PR #20) | PRs open |
+| 3 | Xender sales-page conversion | homepage/offers/lead form/MIS (PR #18 → **live**, a400b29); all commercial + industry pages (PR #20) | #18 live, #20 open |
 | 4 | PR with screenshots + test evidence | PR descriptions | done |
 | 5 | What ChatGPT should use in outreach | §3 below + `docs/sales/SALES_PLAYBOOK.md` + `docs/CHATGPT_ACTION_QUEUE.md` | done |
 
-**Merge order:** #18 → #20 → preview-system PR (each stacked on the previous). After merging, set the `ADMIN_TOKEN` Worker secret: previews and the MIS both depend on it.
+**Merge order:** #20 (→ `main`) then #21 (stacked on #20). #18 is already live. After merging, set the `ADMIN_TOKEN` Worker secret: previews and the MIS both depend on it.
 
 ## 1. Preview system — how it works
 - **Builder** (`/preview-builder.html`, noindex): choose a vertical, fill in the prospect's **public** details and watch a live phone/desktop preview. "Create share link" (needs `ADMIN_TOKEN`) returns `https://www.xendersecrets.com/p/<id>` plus a ready-to-send message.
@@ -57,7 +57,8 @@ Config JSON template (ChatGPT can draft this; Sahil pastes it into the builder):
 15 verified prospects · ≤5 personalised first touches (scale only if reply quality holds) · previews within 12 h of a positive reply · proposal same day · track booked vs **collected** in `/admin.html`.
 
 ## 5. Remaining checklist
-- [ ] Sahil: merge #18 → #20 → preview PR; set `ADMIN_TOKEN`; create one test preview from a phone.
+- [x] #18 live on production (a400b29), production E2E green.
+- [ ] Sahil: merge #20 then #21; set `ADMIN_TOKEN` if not done; create one test preview from a phone.
 - [ ] Sahil: GST inclusive/exclusive + payment terms decision (blocks quotes).
 - [ ] ChatGPT: CQ-001…CQ-007 in `docs/CHATGPT_ACTION_QUEUE.md`.
 - [ ] Claude (next): fitness and restaurant industry landing pages; turn `npm run review:site` output into a client-ready "free check" message; weekly MIS summary.

@@ -67,7 +67,7 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Commercial pages no longer convert ₹ into foreign currency (₹999 ≈ $11 undercut the US$299 positioning); non-IN visitors see a US$299 note. Currency conversion remains on the shop (`catalog.html`); live E2E `currency_us` moved there.
 - Old `script.js` chat widget no longer loads on commercial pages (it led with Shop/Novels).
 
-## XEND-SALES-002 client previews (2026-10-06, Claude) — branch `claude/xend-sales-002-preview-system`, stacked on PR #20 (Issue #19)
+## XEND-SALES-002 client previews (2026-10-06, Claude) — branch `claude/xend-sales-002-preview-system`, PR #21 stacked on PR #20 (Issue #19)
 - `public/preview/preview-core.mjs` (shared by browser + Worker): `VERTICALS`, `sanitizeConfig` (single input gate), `renderPreview` (escaped output, mandatory draft banner).
 - Worker: table `growth_previews`; `POST/GET /api/admin/previews`, `DELETE /api/admin/previews/:id` (ADMIN_TOKEN); public `GET /api/preview/:id` (counts views unless `?nocount=1`; 410 after expiry).
 - Pages: `/preview-builder.html` (live draft via same-origin postMessage only), `/preview.html?id=` and short link `/p/:id` (`public/_redirects`). All noindex + robots-disallowed.
