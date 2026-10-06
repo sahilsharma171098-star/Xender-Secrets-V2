@@ -31,7 +31,8 @@
 - **Next step:** Check the Worker logs for the thrown error. It is likely an AI model limit or timeout on long blocks. Chunk the text smaller, or fall back per block instead of failing the whole chapter.
 - **Tested:** One novel and one language only.
 
-### 3. Admin/MIS is locked on production, so leads can't be read
+### 3. ✅ RESOLVED 2026-10-06 10:45 UTC — Admin/MIS is locked on production, so leads can't be read
+- **Recheck:** Sahil set a new `ADMIN_TOKEN`; `/api/admin/report` without a token now returns `401 Unauthorized` instead of `503 admin_token_too_short`, so the admin page accepts a valid token.
 - `/api/admin/report` → `503 admin_token_too_short`. The `ADMIN_TOKEN` Worker secret is shorter than 24 characters.
 - This was already known in `docs/CURRENT_STATE.md` and is **still open**. Leads are being stored safely but can't be viewed.
 - **Action (Sahil):** Set `ADMIN_TOKEN` to a random value of 32+ characters in Cloudflare.
@@ -103,8 +104,8 @@
 
 ## Suggested fix order
 
-1. Items 1, 5, 6, 9 and 10 are small code changes that can go in one PR.
-2. Items 3 and 4 are Cloudflare settings that only Sahil can change.
+1. Items 1, 5, 6, 9, 10 and 11 are fixed in PR #30 (waiting to merge).
+2. Item 3 is done. Item 4 is a Cloudflare setting that only Sahil can change (still open at the 10:45 UTC recheck: HTTP and the apex domain both still return 200).
 3. Item 2 needs the Worker logs.
 4. Items 7 and 8 are product decisions: hide or connect the social login, and how the calculator should show currency.
 
