@@ -49,3 +49,13 @@ This document is a snapshot, not a replacement for inspecting current code. Upda
 ## Recent merged implementation
 - PR #14 XEND-ACQ-001: zero-spend site reviewer + acquisition workflow.
 - PR #16 XEND-READER-001: static/edge reader modernization, Render fallback, reader/E2E test fixes.
+
+## XEND-WARROOM-001 revenue engine (2026-10-06, Claude) — branch `claude/xend-warroom-001-revenue-engine`
+State at handoff: **implemented and tested on the branch; PR open; not yet merged/deployed.** Verify `main` before assuming it is live.
+- Homepage rebuilt (light default, dark optional): ICP, ₹0 check / ₹999 / ₹1,999 / ₹3,499 / custom, labelled concept demos, process, FAQ, lead form `#start`.
+- `src/growth.mjs` (wired into `AppState` + main fetch): `POST /api/lead` (v2, writes `growth_leads`), `POST /api/event` (aggregate `growth_daily`), `GET/PATCH /api/admin/leads[...]`, `/api/admin/report`, `/api/admin/leads.csv` — admin requires Worker secret `ADMIN_TOKEN` (503 until set). Optional Telegram alert via `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID`. Additive tables only; legacy `leads` untouched.
+- `public/xs-growth.js` on every public page; `public/admin.html` private MIS (noindex, robots-disallowed, no-store).
+- Services form false-error bug fixed; contact page form added; CRM demo submissions flagged as test.
+- Tests: `npm test` = 22 unit + reader browser (8) + commercial funnel browser (9), all passing locally; CI offline job runs the funnel test; live E2E adds `homepage_lead_form` and `lead_api_smoke` (test-flagged lead, no notification).
+- Docs: CLAUDE_REPO_AUDIT, CLAUDE_WARROOM_PLAN, REVENUE_ARCHITECTURE, DATA_MEASUREMENT_PLAN, sales/SALES_PLAYBOOK, CHATGPT_ACTION_QUEUE (CQ-001…005 + Sahil actions).
+- Blocked on Sahil: set `ADMIN_TOKEN`, merge, GST-inclusive/exclusive decision, payment terms approval.
