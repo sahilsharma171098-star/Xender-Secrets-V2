@@ -20,11 +20,18 @@ Primary current objective: maximize the probability of first real collected cust
 
 Before working, read:
 1. `AGENTS.md`
-2. `docs/XENDER_ARCHITECTURE.md`
-3. `docs/CURRENT_STATE.md`
-4. `docs/TASKS.md`
-5. `docs/XENDER_PROJECT_CONTEXT.md`
-6. GitHub issue `XEND-WARROOM-001` / Issue #8
+2. `docs/CLAUDE_PROJECT_BOOTSTRAP.md`
+3. `docs/XENDER_PROJECT_MEMORY.md`
+4. `docs/XENDER_PROGRESS_LEDGER.md`
+5. `docs/XENDER_OPERATING_SYSTEM.md`
+6. `docs/XENDER_ARCHITECTURE.md`
+7. `docs/CURRENT_STATE.md`
+8. `docs/TASKS.md`
+9. `docs/XENDER_PROJECT_CONTEXT.md` if present
+10. GitHub issue `XEND-WARROOM-001` / Issue #8
+11. Current open Claude issues, PRs and workflow results
+
+The project-memory files above are the durable handoff of Xender's recoverable discussion history from the original August 2025 concept through the current 2026 execution state. Do not rely on a fresh chat session to reconstruct that history.
 
 ## Operating authority
 
