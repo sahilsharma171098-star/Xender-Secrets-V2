@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Xender MIS</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#0b1220;--muted:#5b6678;--line:#e2e8f0;--accent:#1d4ed8;--ok:#047857;--bad:#b91c1c;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0a0f1a;--card:#121a2a;--ink:#eef2f8;--muted:#97a3b6;--line:#223049;--accent:#6ea8ff;--ok:#34d399;--bad:#f87171;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+h1{font-size:16px;margin:0;letter-spacing:.08em}h2{font-size:15px;margin:0 0 10px}
+main{padding:16px;max-width:1300px;margin:auto;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}.kpi b{display:block;font-size:22px}.kpi span{color:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:600;white-space:nowrap}
+input,select,textarea,button{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.muted{color:var(--muted)}.ok{color:var(--ok)}.bad{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:800px){.grid2{grid-template-columns:1fr}}
+.lead-cell small{display:block;color:var(--muted)}td input[type=number]{width:90px}td input[type=date]{width:140px}td textarea{width:220px;min-height:54px}
+#login{max-width:420px;margin:60px auto}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><h1>XENDER · MIS</h1><div class="row"><label>Days <select id="days"><option>7</option><option selected>30</option><option>90</option></select></label><label><input type="checkbox" id="showTest"> show test leads</label><button class="ghost" id="refresh">Refresh</button><button class="ghost" id="csv">Export CSV</button><button class="ghost" id="logout">Lock</button></div></header>
+<section id="login" class="card" hidden>
+  <h2>Admin access</h2>
+  <p class="muted">Enter the <code>ADMIN_TOKEN</code> Worker secret. It is kept only in this browser tab (sessionStorage) and sent to <code>/api/admin/*</code> over HTTPS.</p>
+  <form id="loginForm" class="row"><input id="token" type="password" autocomplete="current-password" placeholder="Admin token" style="flex:1" required><button>Unlock</button></form>
+  <p id="loginMsg" class="bad"></p>
+</section>
+<main id="app" hidden>
+  <section class="kpis" id="kpis"></section>
+  <section class="card"><h2>Follow-ups due</h2><div id="due" class="muted">—</div></section>
+  <section class="card"><h2>Leads &amp; pipeline</h2><p class="muted">Stages: new → contacted → qualified → proposal → won / lost. Quote = agreed price (booked when won). Collected = cash actually received.</p><div id="leads">Loading…</div></section>
+  <div class="grid2">
+    <section class="card"><h2>Sources</h2><div id="sources"></div></section>
+    <section class="card"><h2>Top pages</h2><div id="pages"></div></section>
+    <section class="card"><h2>CTA clicks</h2><div id="ctas"></div></section>
+    <section class="card"><h2>Offers</h2><div id="offers"></div><h2 style="margin-top:16px">Errors</h2><div id="errors"></div></section>
+  </div>
+</main>
+<script>
+(() => {
+  const KEY = "xs-admin-token";
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const inr = (n) => "₹" + Number(n || 0).toLocaleString("en-IN");
+  const token = () => sessionStorage.getItem(KEY) || "";
+  let stages = ["new", "contacted", "qualified", "proposal", "won", "lost"];
+
+  async function api(path, opts = {}) {
+    const res = await fetch(path, { ...opts, headers: { authorization: "Bearer " + token(), "content-type": "application/json", ...(opts.headers || {}) } });
+    if (res.status === 401 || res.status === 503) { const j = await res.json().catch(() => ({})); lock(j.error || "Unauthorized"); throw new Error("auth"); }
+    return res;
+  }
+  function lock(msg) { sessionStorage.removeItem(KEY); $("app").hidden = true; $("login").hidden = false; $("loginMsg").textContent = msg || ""; }
+  const table = (rows, cols) => rows.length ? "<table><tr>" + cols.map((c) => "<th>" + esc(c[0]) + "</th>").join("") + "</tr>" + rows.map((r) => "<tr>" + cols.map((c) => "<td>" + esc(typeof c[1] === "function" ? c[1](r) : r[c[1]]) + "</td>").join("") + "</tr>").join("") + "</table>" : '<p class="muted">No data yet.</p>';
+
+  async function load() {
+    const days = $("days").value;
+    const [rep, leads] = await Promise.all([
+      api("/api/admin/report?days=" + days).then((r) => r.json()),
+      api("/api/admin/leads" + ($("showTest").checked ? "?test=1" : "")).then((r) => r.json()),
+    ]);
+    stages = leads.stages || stages;
+    const f = rep.funnel, v = rep.revenue;
+    const kpis = [
+      ["Visits (" + days + "d)", f.page_views], ["Form starts", f.lead_starts], ["Leads", f.lead_submits],
+      ["Visit → lead", f.visit_to_lead_pct + "%"], ["WhatsApp clicks", f.whatsapp_clicks],
+      ["Open pipeline", inr(v.open_pipeline_value)], ["Booked (won)", inr(v.booked)], ["Cash collected", inr(v.collected)], ["Deals won", v.deals_won],
+    ];
+    $("kpis").innerHTML = kpis.map(([k, n]) => `<div class="kpi"><b>${esc(n)}</b><span>${esc(k)}</span></div>`).join("");
+    $("due").innerHTML = rep.follow_ups_due.length ? table(rep.follow_ups_due, [["Due", "next_action_at"], ["Lead", (r) => r.name + (r.business ? " — " + r.business : "")], ["Stage", "stage"], ["Next action", "next_action"]]) : "Nothing due. Set a next-action date on every open lead.";
+    $("sources").innerHTML = table(rep.sources, [["Source", "source"], ["Views", "views"], ["WhatsApp", "whatsapp"], ["Leads", "leads"]]);
+    $("pages").innerHTML = table(rep.top_pages, [["Page", "path"], ["Views", "views"]]);
+    $("ctas").innerHTML = table(rep.ctas, [["Type", "event"], ["Label", "label"], ["Page", "path"], ["Clicks", "clicks"]]);
+    $("offers").innerHTML = table(rep.offers, [["Offer", "offer"], ["Leads", "leads"], ["Won", "won"]]);
+    $("errors").innerHTML = table(rep.errors, [["Error", "label"], ["Page", "path"], ["Count", "n"]]);
+    renderLeads(leads.leads || []);
+  }
+
+  function waHref(l) {
+    const digits = String(l.phone || "").replace(/\D/g, "");
+    if (!digits) return "";
+    const first = String(l.name || "").split(" ")[0];
+    return "https://wa.me/" + digits + "?text=" + encodeURIComponent(`Hi ${first}, this is Sahil from Xender Secrets — thanks for your enquiry (${l.id}).`);
+  }
+
+  function renderLeads(leads) {
+    if (!leads.length) { $("leads").innerHTML = '<p class="muted">No leads yet.</p>'; return; }
+    $("leads").innerHTML = "<table><tr><th>Lead</th><th>Need</th><th>Source</th><th>Stage</th><th>Quote ₹</th><th>Collected ₹</th><th>Next action</th><th>Notes</th><th></th></tr>" + leads.map((l) => {
+      const wa = waHref(l);
+      return `<tr data-id="${esc(l.id)}">
+        <td class="lead-cell"><b>${esc(l.name)}</b>${l.is_test ? ' <span class="muted">(test)</span>' : ""}<small>${esc(l.business)}</small><small>${esc(l.id)} · ${esc(String(l.created_at).slice(0, 16).replace("T", " "))}</small>
+          <small>${wa ? `<a href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp ${esc(l.phone)}</a>` : ""} ${l.email ? `<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>` : ""}</small>
+          ${l.website ? `<small><a href="${esc(l.website)}" target="_blank" rel="noopener noreferrer">${esc(l.website)}</a></small>` : ""}</td>
+        <td>${esc(l.offer)}<small class="muted" style="display:block;max-width:240px;white-space:pre-wrap">${esc(l.message)}</small></td>
+        <td>${esc(l.source)}${l.campaign ? "<br><small class=muted>" + esc(l.campaign) + "</small>" : ""}<br><small class="muted">${esc(l.page)}</small></td>
+        <td><select name="stage">${stages.map((s) => `<option ${s === l.stage ? "selected" : ""}>${s}</option>`).join("")}</select></td>
+        <td><input name="quote_value" type="number" min="0" step="1" value="${l.quote_value ?? ""}"></td>
+        <td><input name="collected_value" type="number" min="0" step="1" value="${l.collected_value ?? ""}"></td>
+        <td><input name="next_action" value="${esc(l.next_action)}" placeholder="e.g. Send preview"><br><input name="next_action_at" type="date" value="${esc(l.next_action_at)}"></td>
+        <td><textarea name="notes">${esc(l.notes)}</textarea></td>
+        <td><button data-save>Save</button><small class="status"></small></td></tr>`;
+    }).join("") + "</table>";
+  }
+
+  $("leads").addEventListener("click", async (e) => {
+    if (!e.target.matches("[data-save]")) return;
+    const tr = e.target.closest("tr"), status = tr.querySelector(".status");
+    const patch = {};
+    tr.querySelectorAll("[name]").forEach((el) => { patch[el.name] = el.value === "" && el.type === "number" ? null : el.value; });
+    status.textContent = "…";
+    try {
+      const r = await api("/api/admin/leads/" + encodeURIComponent(tr.dataset.id), { method: "PATCH", body: JSON.stringify(patch) });
+      const j = await r.json();
+      status.textContent = j.ok ? " saved" : " " + (j.error || "error");
+      status.className = "status " + (j.ok ? "ok" : "bad");
+      if (j.ok) load();
+    } catch (err) { status.textContent = " failed"; }
+  });
+
+  $("csv").onclick = async () => {
+    const r = await api("/api/admin/leads.csv" + ($("showTest").checked ? "?test=1" : ""));
+    const url = URL.createObjectURL(await r.blob());
+    const a = Object.assign(document.createElement("a"), { href: url, download: "xender-leads-" + new Date().toISOString().slice(0, 10) + ".csv" });
+    a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  $("loginForm").onsubmit = (e) => { e.preventDefault(); sessionStorage.setItem(KEY, $("token").value.trim()); start(); };
+  $("logout").onclick = () => lock("");
+  $("refresh").onclick = () => load().catch(() => {});
+  $("days").onchange = $("showTest").onchange = () => load().catch(() => {});
+  function start() { if (!token()) return lock(""); $("login").hidden = true; $("app").hidden = false; load().catch(() => {}); }
+  start();
+})();
+</script>
+</body>
+</html>

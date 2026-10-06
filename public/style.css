@@ -158,3 +158,12 @@ html:not([data-theme="dark"]) .xs-theme-toggle{background:#fff;color:#26323c;bor
  html:not([data-theme="dark"]) nav{background:#fff;border-top:1px solid #e2e8ed}
  .xs-theme-toggle{position:absolute;right:72px;top:18px;padding:7px 10px}
 }
+/* XEND-WARROOM-001 shared lead form states (xs-growth.js) */
+.lead-success{border:2px solid #10b981;border-radius:14px;padding:22px;background:rgba(16,185,129,.07)}
+.lead-success h3{margin:6px 0 8px}
+.lead-success-kicker{color:#10b981;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:12px;margin:0}
+.lead-success .btn{display:inline-block;background:#10b981;color:#04130c;padding:11px 16px;border-radius:10px;font-weight:800;text-decoration:none}
+.lead-success-note{font-size:13px;opacity:.75}
+[data-lead-status]{min-height:1.2em;font-weight:600;margin:0}
+[data-lead-status][data-kind="error"]{color:#ef4444}
+html:not([data-theme="dark"]) .lead-form input,html:not([data-theme="dark"]) .lead-form select,html:not([data-theme="dark"]) .lead-form textarea{background:#fff;color:#17212b;border-color:#cfd8df}

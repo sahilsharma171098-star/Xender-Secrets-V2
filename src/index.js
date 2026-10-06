@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
+import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
 const enc=new TextEncoder();
@@ -325,6 +326,7 @@ export class AppState extends DurableObject {
         CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at);
         CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date,slot);
       `);
+      ensureGrowthSchema(this.sql);
       const now=new Date().toISOString();
       for(const p of CATALOG_PRODUCTS){
         this.sql.exec("INSERT OR IGNORE INTO products (id,name,category,category_label,price,rating,active,updated_at) VALUES (?,?,?,?,?,?,1,?)",p.id,p.name,p.category,p.categoryLabel,p.price,p.rating,now);
@@ -370,6 +372,10 @@ export class AppState extends DurableObject {
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
     if(method!=="GET" && !this.sameOrigin(request)) return json({ok:false,error:"Invalid request origin."},403);
+
+    // XEND-WARROOM-001: lead capture v2, funnel events and private admin MIS (src/growth.mjs).
+    const growth=await handleGrowth(request,{sql:this.sql,env:this.env});
+    if(growth)return growth;
 
     if(path==="/api/auth/status" && method==="GET") return json({ok:true,available:true,mode:"persistent"});
 
@@ -962,6 +968,16 @@ export default {
     if(path==="/api/catalog" && method==="GET")return json({ok:true,categories:["Frontend","Backend / API","Full Stack"],builds:9,persistentBackend:true});
 
     if(path.startsWith("/api/reader/"))return handleReaderApi(request,{assets:env.ASSETS,cache:typeof caches!=="undefined"?caches.default:null,ctx});
+
+    if(path==="/api/lead" && method==="POST"){
+      const stub=env.APP_STATE.get(env.APP_STATE.idFromName("xender-secrets"));
+      const res=await stub.fetch(request);
+      const summary=res.headers.get("x-xender-lead-notify");
+      if(!summary)return res;
+      const headers=new Headers(res.headers);headers.delete("x-xender-lead-notify");
+      ctx.waitUntil(notifyLead(env,decodeURIComponent(summary)));
+      return new Response(res.body,{status:res.status,headers});
+    }
 
     if(path.startsWith("/api/")){
       const id=env.APP_STATE.idFromName("xender-secrets");

@@ -251,4 +251,4 @@ let size=Number(localStorage.getItem("xsReaderSize")||19);function setSize(){siz
 const themeToggle=document.getElementById("themeToggle");if(localStorage.getItem("xsReaderTheme")==="light"){document.body.classList.add("reader-light");themeToggle.textContent="Dark mode"}themeToggle.onclick=()=>{document.body.classList.toggle("reader-light");const light=document.body.classList.contains("reader-light");themeToggle.textContent=light?"Dark mode":"Light mode";localStorage.setItem("xsReaderTheme",light?"light":"dark")};
 (async()=>{if(await loadMeta())loadChapter(chapter)})();
 </script>
-</body></html>
+<script src="/xs-growth.js" defer></script></body></html>

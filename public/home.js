@@ -1,17 +1,24 @@
-/* XENDER HOME THEME CONTROL */
-(()=> {
-  const saved=localStorage.getItem("xs-theme");
-  if(saved==="dark")document.documentElement.dataset.theme="dark";
-  else document.documentElement.removeAttribute("data-theme");
-  const mount=()=>{
-    const row=document.querySelector(".header-inner");if(!row||document.getElementById("homeThemeToggle"))return;
-    const b=document.createElement("button");b.id="homeThemeToggle";b.className="home-theme-toggle";b.type="button";
-    const paint=()=>{const dark=document.documentElement.dataset.theme==="dark";b.innerHTML=dark?"☀️ <span>Light</span>":"🌙 <span>Dark</span>";b.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode")};
-    b.onclick=()=>{const dark=document.documentElement.dataset.theme==="dark";if(dark){document.documentElement.removeAttribute("data-theme");localStorage.setItem("xs-theme","light")}else{document.documentElement.dataset.theme="dark";localStorage.setItem("xs-theme","dark")}paint()};
-    const cta=row.querySelector(".header-cta");cta?row.insertBefore(b,cta):row.appendChild(b);paint();
+/* Xender homepage: theme toggle (light default, dark optional) and mobile menu. */
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById("themeToggle");
+  const paint = () => {
+    const dark = root.dataset.theme === "dark";
+    if (btn) { btn.textContent = dark ? "☀" : "◐"; btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode"); }
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0a0f1a" : "#ffffff");
   };
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
-})();
+  btn?.addEventListener("click", () => {
+    const dark = root.dataset.theme === "dark";
+    if (dark) root.removeAttribute("data-theme"); else root.dataset.theme = "dark";
+    try { localStorage.setItem("xs-theme", dark ? "light" : "dark"); } catch {}
+    paint();
+  });
+  paint();
 
-document.getElementById('menu')?.addEventListener('click',()=>document.getElementById('nav')?.classList.toggle('open'));
-document.querySelectorAll('#nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('nav')?.classList.remove('open')));
+  const menu = document.getElementById("menu");
+  const nav = document.getElementById("nav");
+  const setOpen = (open) => { nav?.classList.toggle("open", open); menu?.setAttribute("aria-expanded", String(open)); };
+  menu?.addEventListener("click", () => setOpen(!nav.classList.contains("open")));
+  nav?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+})();
