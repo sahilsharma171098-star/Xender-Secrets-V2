@@ -104,7 +104,7 @@
 
 ## Suggested fix order
 
-1. Items 1, 5, 6, 9, 10 and 11 are fixed in PR #30 (waiting to merge).
+1. Items 1, 5, 6, 9, 10 and 11 are fixed in PR #30 (merged 2026-10-06 10:44 UTC).
 2. Item 3 is done. Item 4 is a Cloudflare setting that only Sahil can change (still open at the 10:45 UTC recheck: HTTP and the apex domain both still return 200).
 3. Item 2 needs the Worker logs.
 4. Items 7 and 8 are product decisions: hide or connect the social login, and how the calculator should show currency.
