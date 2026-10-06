@@ -15,3 +15,13 @@ https://:version.:subdomain.workers.dev/*
   Cache-Control: no-store
   Referrer-Policy: no-referrer
   X-Frame-Options: DENY
+
+/preview*
+  X-Robots-Tag: noindex, nofollow
+  Referrer-Policy: no-referrer
+
+/p/*
+  X-Robots-Tag: noindex, nofollow
+
+/preview/*.mjs
+  Content-Type: text/javascript; charset=utf-8

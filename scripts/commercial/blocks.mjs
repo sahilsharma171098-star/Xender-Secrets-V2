@@ -1,5 +1,5 @@
 // Reusable sections for generated commercial pages.
-import { esc, wa, offerById } from "./layout.mjs";
+import { esc, wa, offerById, inclGst } from "./layout.mjs";
 
 export function hero({ eyebrow, h1, lede, primary = "Get a free website check", primaryOffer = "free-website-check", waText, card, ctaPrefix }) {
   return `<section class="hero">
@@ -28,10 +28,10 @@ export function offerCard({ offer, title, bullets, cta, featured = false, ctaPre
   const o = offerById(offer);
   return `<aside class="hero-card" aria-labelledby="rec-title">
           <p class="tag">${esc(title)}</p>
-          <h2 id="rec-title">${esc(o.name)} — ${o.price}</h2>
+          <h2 id="rec-title">${esc(o.name)} — ${o.price} <small class="gst">+ GST</small></h2>
           <ul class="checks">${bullets.map((b) => `<li>${b}</li>`).join("")}</ul>
           <a class="btn primary block" href="#start" data-offer="${o.id}" data-cta="${ctaPrefix}-card">${esc(cta || "Choose " + o.price)}</a>
-          <p class="fine">Domain and any paid hosting are billed at cost, separately. Scope confirmed in writing first.</p>
+          <p class="fine">${o.base ? `${inclGst(o.base)} total incl. 18% GST. ` : ""}Domain and any paid hosting are billed at cost, separately. Scope confirmed in writing first.</p>
         </aside>`;
 }
 
@@ -53,7 +53,8 @@ export function pricingBlock({ ctaPrefix, heading = 'Simple packages. <span>Clea
         <div class="offers">
           ${cards.map(([id2, price, unit, p, list, label]) => `<article class="card offer${id2 === featured ? " featured" : ""}">
             <p class="offer-name">${esc(offerById(id2).name)}</p>
-            <p class="price">${price}${unit ? ` <small>${unit}</small>` : ""}</p>
+            <p class="price">${price}${unit ? ` <small>+ 18% GST</small>` : ""}</p>
+            ${offerById(id2).base ? `<p class="gst-total">${inclGst(offerById(id2).base)} incl. GST · ${unit}</p>` : `<p class="gst-total">No cost, no obligation</p>`}
             <p>${p}</p>
             <ul class="checks small">${list.map((l) => `<li>${l}</li>`).join("")}</ul>
             <a class="btn ${id2 === featured ? "primary" : "ghost"} block" href="#start" data-offer="${id2}" data-cta="${ctaPrefix}-offer-${id2}">${label}</a>
@@ -61,7 +62,7 @@ export function pricingBlock({ ctaPrefix, heading = 'Simple packages. <span>Clea
         </div>
         <div class="custom-row card">
           <div>
-            <p class="offer-name">Redesign or custom build · from ₹4,999</p>
+            <p class="offer-name">Redesign or custom build · from ₹4,999 + GST</p>
             <p>Redesign of an existing site, booking or quote flows, dashboards, lead routing and automation. Quoted after a short discovery chat. Outside India, landing pages start from US$299.</p>
           </div>
           <a class="btn ghost" href="#start" data-offer="custom-build" data-cta="${ctaPrefix}-offer-custom">Discuss a project</a>

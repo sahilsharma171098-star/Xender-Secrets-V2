@@ -145,6 +145,32 @@ try {
 } catch (e) { record('lead_api_smoke', false, e); }
 
 try {
+  // Admin/MIS must be configured (401 without a valid token; 503 means ADMIN_TOKEN is missing).
+  const auth = await page.evaluate(async () => {
+    const none = await fetch('/api/admin/report');
+    const wrong = await fetch('/api/admin/report', { headers: { authorization: 'Bearer wrong-token-wrong-token-wrong' } });
+    const why = none.status === 503 ? (await none.json().catch(() => ({}))).code || 'unknown' : '';
+    return { none: none.status, wrong: wrong.status, why };
+  });
+  record('admin_auth_configured', auth.none === 401 && auth.wrong === 401, JSON.stringify(auth));
+} catch (e) { record('admin_auth_configured', false, e); }
+
+// Full lead -> Durable Object -> admin read-back, only when the repo has the XENDER_ADMIN_TOKEN Actions secret.
+if (process.env.XENDER_ADMIN_TOKEN) {
+  try {
+    const token = process.env.XENDER_ADMIN_TOKEN;
+    const r = await page.evaluate(async (token) => {
+      const sent = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'E2E readback', email: 'e2e-readback@xendersecrets.com', test: true, page: '/e2e', cta: 'live-e2e-readback' }) }).then((x) => x.json());
+      const leads = await fetch('/api/admin/leads?test=1&limit=50', { headers: { authorization: 'Bearer ' + token } });
+      const report = await fetch('/api/admin/report?days=1', { headers: { authorization: 'Bearer ' + token } });
+      const list = await leads.json();
+      return { id: sent.id, leadsStatus: leads.status, reportStatus: report.status, found: (list.leads || []).some((l) => l.id === sent.id && l.is_test === 1) };
+    }, token);
+    record('lead_admin_readback', r.leadsStatus === 200 && r.reportStatus === 200 && r.found, JSON.stringify(r));
+  } catch (e) { record('lead_admin_readback', false, String(e).replace(/Bearer \S+/g, 'Bearer ***')); }
+}
+
+try {
   const bad = [];
   for (const p of ['/services.html', '/clinic-website-development.html', '/website-development-gurugram.html', '/contact.html', '/about.html']) {
     const r = await page.goto(BASE + p, { waitUntil: 'domcontentloaded', timeout: 30000 });

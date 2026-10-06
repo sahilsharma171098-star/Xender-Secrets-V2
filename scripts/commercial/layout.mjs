@@ -7,11 +7,17 @@ export const EMAIL = "Sahilsharma171098@gmail.com";
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 export const wa = (text) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
 
+/** Approved 2026-10-06: package prices are exclusive of 18% GST (Xender is GST-registered). */
+export const GST_RATE = 0.18;
+export const inr = (n) => "₹" + Number(n).toLocaleString("en-IN", { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 });
+/** 999 → "₹1,178.82" (base + 18% GST, rounded to paise). */
+export const inclGst = (base) => inr(Math.round(base * (1 + GST_RATE) * 100) / 100);
+
 export const OFFERS = [
   { id: "free-website-check", name: "Free website check", price: "₹0", unit: "", short: "Free website check" },
-  { id: "founding-website-999", name: "Founding Website", price: "₹999", unit: "one-time", short: "₹999 Founding Website (1 page)" },
-  { id: "business-starter-1999", name: "Business Starter", price: "₹1,999", unit: "one-time", short: "₹1,999 Business Starter (3 pages)" },
-  { id: "business-pro-3499", name: "Business Pro", price: "₹3,499", unit: "one-time", short: "₹3,499 Business Pro (5 pages)" },
+  { id: "founding-website-999", name: "Founding Website", price: "₹999", base: 999, unit: "one-time", short: "₹999 + GST · Founding Website (1 page)" },
+  { id: "business-starter-1999", name: "Business Starter", price: "₹1,999", base: 1999, unit: "one-time", short: "₹1,999 + GST · Business Starter (3 pages)" },
+  { id: "business-pro-3499", name: "Business Pro", price: "₹3,499", base: 3499, unit: "one-time", short: "₹3,499 + GST · Business Pro (5 pages)" },
   { id: "redesign", short: "Redesign my existing website" },
   { id: "custom-build", short: "Custom build / automation" },
   { id: "not-sure", short: "Not sure yet" },
@@ -75,6 +81,8 @@ export function footer() {
       <a href="/recruitment-agency-website-development.html">Recruitment</a>
       <a href="/consultant-website-development.html">Consultants</a>
       <a href="/coaching-website-development.html">Coaching</a>
+      <a href="/gym-website-development.html">Gyms</a>
+      <a href="/restaurant-website-development.html">Restaurants</a>
       <a href="/website-development-gurugram.html">Gurugram</a>
       <a href="/website-development-delhi.html">Delhi</a>
       <a href="/website-development-noida.html">Noida</a>
@@ -163,7 +171,7 @@ export const ORG_JSONLD = {
   description: "Business websites, landing pages and website redesigns for small businesses.",
   founder: { "@type": "Person", name: "Sahil Kumar Sharma" }, areaServed: ["IN", "GB", "US", "CA"],
   telephone: "+91-9821941814", address: { "@type": "PostalAddress", addressLocality: "Gurugram", addressRegion: "Haryana", addressCountry: "IN" },
-  priceRange: "₹999–₹4,999+",
+  priceRange: "₹999–₹4,999+ (+18% GST)",
 };
 
 export function breadcrumbJsonLd(trail) {

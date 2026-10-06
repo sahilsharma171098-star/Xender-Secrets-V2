@@ -2,5 +2,8 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /api/
+Disallow: /p/
+Disallow: /preview
+Disallow: /preview-builder
 
 Sitemap: https://www.xendersecrets.com/sitemap.xml

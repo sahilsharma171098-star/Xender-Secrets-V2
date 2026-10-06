@@ -7,3 +7,6 @@
 /website-development-bangalore /small-business-website-india 301
 /website-development-hyderabad /small-business-website-india 301
 /website-development-pune /small-business-website-india 301
+
+# Issue #19: short links for client website previews.
+/p/:id /preview?id=:id 302

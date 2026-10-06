@@ -111,6 +111,7 @@ Delivered: generator `scripts/build-commercial-pages.mjs` + `scripts/commercial/
 Scope: shared light header/footer, offer CTA and `data-lead-form` on `services.html`, 6 industry pages, 7 city pages; chat widget leads with free check.
 Acceptance: funnel browser test extended to these pages; no overflow at 375px; live E2E green.
 
-## XEND-SALES-002 — Free-check + preview delivery kit
-Status: READY · Owner: Claude
-Scope: reviewer output → client-ready fix list; template → personalised 1-page preview in <30 min.
+## XEND-SALES-002 — Client preview system (Issue #19)
+Status: REVIEW · Owner: Claude · Branch: `claude/xend-sales-002-preview-system` (stacked on PR #20)
+Delivered: 5 vertical previews (dental/clinic, real estate, professional services, fitness, restaurant), builder, admin-only short links `/p/<id>`, view tracking in MIS, expiry, draft banner. SOP: `docs/REVENUE_SPRINT.md`.
+Also delivered: gym + restaurant landing pages, `review:site --message` free-check generator, MIS daily scorecard (MIS-001).

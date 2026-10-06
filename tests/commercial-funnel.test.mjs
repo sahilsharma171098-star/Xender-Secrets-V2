@@ -13,7 +13,7 @@ import { ensureGrowthSchema, handleGrowth } from '../src/growth.mjs';
 const PUBLIC = path.resolve('public');
 const ORIGIN = 'http://xender.test';
 const ADMIN = 'test-admin-token-0123456789abcdef';
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
 
 function doSql() {
   const db = new DatabaseSync(':memory:');
@@ -71,7 +71,7 @@ test('homepage answers the buyer questions and keeps the live-E2E contract', asy
   assert.ok(await page.locator('a[href*="wa.me/919821941814"]').count() >= 1);
   assert.ok(await page.locator('a[href*="website-catalog.html"]').count() >= 1);
   const text = await page.locator('main').innerText();
-  for (const must of ['₹999', '₹1,999', '₹3,499', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
+  for (const must of ['₹999', '₹1,999', '₹3,499', '+ 18% GST', '₹1,178.82 incl. GST', '₹2,358.82 incl. GST', '₹4,128.82 incl. GST', 'Are prices inclusive of GST?', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
   assert.ok(await page.locator('form[data-lead-form]').count() === 1);
   const lds = (await page.locator('script[type="application/ld+json"]').allInnerTexts()).map((t) => JSON.parse(t)['@type']);
   assert.deepEqual(lds, ['ProfessionalService', 'FAQPage']);
@@ -126,7 +126,7 @@ test('lead submit stores attribution, shows reference and a one-tap WhatsApp fol
   const wa = await page.getAttribute('.lead-success a', 'href');
   assert.ok(wa.startsWith('https://wa.me/919821941814?text='));
   assert.ok(decodeURIComponent(wa).includes(ref));
-  assert.ok(decodeURIComponent(wa).includes('₹999 Founding Website'));
+  assert.ok(decodeURIComponent(wa).includes('₹999 + GST · Founding Website'));
   const lead = rows(db, 'SELECT * FROM growth_leads')[0];
   assert.equal(lead.name, 'Asha Verma');
   assert.equal(lead.phone, '+919876543210');
@@ -238,6 +238,12 @@ test('admin MIS: locked without token, shows pipeline and saves stage changes', 
   await tr.locator('[name="collected_value"]').fill('1000');
   await tr.locator('[data-save]').click();
   await page.waitForFunction(() => [...document.querySelectorAll('.kpi')].some((k) => k.textContent.includes('Cash collected') && k.textContent.includes('1,000')));
+  await page.click('#scorecard');
+  await page.waitForSelector('#scorecardBox:not([hidden])');
+  const card = await page.locator('#scorecardText').innerText();
+  assert.match(card, /Xender daily scorecard — \d{4}-\d{2}-\d{2}/);
+  assert.match(card, /Cash collected ₹1,000/);
+  assert.match(card, /won 1/);
   const lead = rows(db, 'SELECT stage,quote_value,collected_value FROM growth_leads')[0];
   assert.deepEqual({ ...lead }, { stage: 'won', quote_value: 1999, collected_value: 1000 });
   assert.deepEqual(log.errors, []);
@@ -269,6 +275,11 @@ test('every generated commercial page: one lead form, valid metadata, no broken 
     const offers = await page.locator('[data-offer]').evaluateAll((els) => els.map((e) => e.dataset.offer));
     const options = await page.locator('form[data-lead-form] [name=offer] option').evaluateAll((os) => os.map((o) => o.value));
     for (const o of offers) assert.ok(options.includes(o), `${file}: data-offer ${o} exists in form`);
+    // GST rule (approved 2026-10-06): every visible package price says it is exclusive of GST.
+    const bare = await page.locator('main').evaluate((m) => (m.innerText.match(/₹(?:999|1,999|3,499|4,999)(?![\d,])(?!\s*(?:\+\s*(?:18% )?GST|website|Founding|Business|\/))[^\n]{0,30}/g) || []));
+    const priced = await page.locator('.price').count();
+    if (priced) assert.equal(await page.locator('.gst-total').count(), priced, `${file}: every price card shows the GST-inclusive total`);
+    assert.ok(bare.length === 0 || (await page.locator('main').innerText()).includes('GST'), `${file}: prices without GST context: ${bare.join(' | ')}`);
   }
   assert.deepEqual([...broken], [], 'no broken internal links');
   assert.deepEqual(log.errors, []);
@@ -285,4 +296,41 @@ test('international visitors see the US$299 anchor, Indian visitors do not', asy
     assert.equal(await page.locator('[data-intl-note]').isVisible(), visible, country);
     await context.close();
   }
+});
+
+test('preview builder: live draft, admin-only share link, prospect view is counted and escaped', async () => {
+  const sql = doSql();
+  const { page, db, log, context } = await newPage({ sql });
+  await page.goto(ORIGIN + '/preview-builder.html');
+  await page.selectOption('#sample', 'dental');
+  const frame = page.frameLocator('#frame');
+  await frame.locator('.xp-banner').waitFor();
+  assert.match(await frame.locator('h1').innerText(), /Gentle, modern dental care/);
+  await page.fill('[name=name]', 'Riya <b>Dental</b>');
+  await page.fill('[name=services]', 'Root canal | Single sitting where possible | from ₹4,000');
+  await page.waitForFunction(() => document.querySelector('#frame').contentDocument.body.innerText.includes('Root canal'));
+  assert.equal(await frame.locator('b').count(), 0, 'builder preview escapes markup');
+
+  page.once('dialog', (d) => d.accept(ADMIN));
+  await page.click('#save');
+  await page.waitForSelector('#shareOut:not([hidden])');
+  const link = await page.locator('#link').innerText();
+  assert.match(link, /^https:\/\/www\.xendersecrets\.com\/p\/[a-z2-9]{6}$/);
+  assert.match(await page.locator('#pitch').innerText(), /from ₹999/);
+  const id = link.slice(-6);
+
+  const prospect = await context.newPage();
+  await prospect.goto(ORIGIN + '/preview.html?id=' + id);
+  await prospect.waitForSelector('.xp-banner');
+  assert.match(await prospect.locator('.xp-banner').innerText(), /Draft website preview.*not the official website/s);
+  assert.match(await prospect.locator('.xp-logo').innerText(), /Riya <b>Dental<\/b>/, 'shown as text');
+  assert.equal(await prospect.getAttribute('meta[name=robots]', 'content'), 'noindex,nofollow');
+  const d = await prospect.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+  assert.ok(d.sw <= d.cw + 1);
+  assert.equal(rows(db, 'SELECT views FROM growth_previews')[0].views, 1);
+
+  await prospect.goto(ORIGIN + '/preview.html?id=zzzzzz');
+  await prospect.waitForFunction(() => /not found/i.test(document.body.innerText));
+  assert.deepEqual(log.errors, []);
+  await context.close();
 });

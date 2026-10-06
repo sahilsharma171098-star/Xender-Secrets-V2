@@ -66,3 +66,17 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - SEO fixes: sitemap was invalid XML (literal `\n`) — now generated; canonical/og:url/sitemap use final extensionless URLs because Cloudflare `auto-trailing-slash` 307s `/x.html → /x`; Mumbai/Bangalore/Hyderabad/Pune pages removed with 301s in `public/_redirects`.
 - Commercial pages no longer convert ₹ into foreign currency (₹999 ≈ $11 undercut the US$299 positioning); non-IN visitors see a US$299 note. Currency conversion remains on the shop (`catalog.html`); live E2E `currency_us` moved there.
 - Old `script.js` chat widget no longer loads on commercial pages (it led with Shop/Novels).
+
+## XEND-SALES-002 client previews (2026-10-06, Claude) — branch `claude/xend-sales-002-preview-system`, PR #21 stacked on PR #20 (Issue #19)
+- `public/preview/preview-core.mjs` (shared by browser + Worker): `VERTICALS`, `sanitizeConfig` (single input gate), `renderPreview` (escaped output, mandatory draft banner).
+- Worker: table `growth_previews`; `POST/GET /api/admin/previews`, `DELETE /api/admin/previews/:id` (ADMIN_TOKEN); public `GET /api/preview/:id` (counts views unless `?nocount=1`; 410 after expiry).
+- Pages: `/preview-builder.html` (live draft via same-origin postMessage only), `/preview.html?id=` and short link `/p/:id` (`public/_redirects`). All noindex + robots-disallowed.
+- MIS shows previews with views/last view. SOP + outreach guidance: `docs/REVENUE_SPRINT.md`.
+- Same branch (PR #21) also adds: `gym-website-development.html` + `restaurant-website-development.html` (generated), `scripts/lib/free-check-message.mjs` (`npm run review:site -- page.html --message`), and "Copy daily scorecard" in `/admin.html`.
+
+## Production verification + GST (2026-10-06 ~11:45 IST, Claude)
+- `main` = fe5b892 (PR #20 squash) + 43e9eac (`secrets.required: ["ADMIN_TOKEN"]` in wrangler.jsonc). Live E2E on fe5b892 passed: commercial pages, Mumbai→India 301, lead smoke.
+- Live E2E dispatched against production (run 37421027989): **lead capture works** (`lead_api_smoke` 201), but **`admin_auth_configured` failed — `/api/admin/report` returns 503**, i.e. the running Worker does not see a usable `ADMIN_TOKEN` (missing at runtime, or < 24 chars). PR #21 makes the 503 say which (`code: admin_token_missing | admin_token_too_short`) and trims copy-paste whitespace.
+- Leads submitted meanwhile are stored safely in `growth_leads`; they become readable in `/admin.html` as soon as the secret is fixed. Nothing is lost.
+- Optional full proof: add the same value as GitHub Actions secret `XENDER_ADMIN_TOKEN`; live E2E then runs `lead_admin_readback` (submit test lead on production → read it back via admin API).
+- **GST approved:** all ₹ package prices are exclusive of 18% GST. Generated pages show "₹999 + 18% GST" with the incl.-GST total (₹1,178.82 / ₹2,358.82 / ₹4,128.82), an "Are prices inclusive of GST?" FAQ, and "+ GST" in titles, previews, free-check messages, builder pitch and quotes. MIS amounts are recorded excluding GST. US$ pricing unchanged (export of services; CA to confirm LUT).

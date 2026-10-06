@@ -26,7 +26,7 @@ a{color:var(--accent)}
 </style>
 </head>
 <body>
-<header><h1>XENDER · MIS</h1><div class="row"><label>Days <select id="days"><option>7</option><option selected>30</option><option>90</option></select></label><label><input type="checkbox" id="showTest"> show test leads</label><button class="ghost" id="refresh">Refresh</button><button class="ghost" id="csv">Export CSV</button><button class="ghost" id="logout">Lock</button></div></header>
+<header><h1>XENDER · MIS</h1><div class="row"><a href="/preview-builder.html">Preview builder</a><label>Days <select id="days"><option>7</option><option selected>30</option><option>90</option></select></label><label><input type="checkbox" id="showTest"> show test leads</label><button class="ghost" id="refresh">Refresh</button><button class="ghost" id="scorecard">Copy daily scorecard</button><button class="ghost" id="csv">Export CSV</button><button class="ghost" id="logout">Lock</button></div></header>
 <section id="login" class="card" hidden>
   <h2>Admin access</h2>
   <p class="muted">Enter the <code>ADMIN_TOKEN</code> Worker secret. It is kept only in this browser tab (sessionStorage) and sent to <code>/api/admin/*</code> over HTTPS.</p>
@@ -35,8 +35,10 @@ a{color:var(--accent)}
 </section>
 <main id="app" hidden>
   <section class="kpis" id="kpis"></section>
+  <section class="card" id="scorecardBox" hidden><h2>Daily scorecard</h2><p class="muted">Copied to clipboard — paste into Issue #5 / WhatsApp. Outreach numbers (found/contacted/replies) live in the private CRM, so fill those in before posting.</p><pre id="scorecardText" style="white-space:pre-wrap;margin:0"></pre></section>
   <section class="card"><h2>Follow-ups due</h2><div id="due" class="muted">—</div></section>
-  <section class="card"><h2>Leads &amp; pipeline</h2><p class="muted">Stages: new → contacted → qualified → proposal → won / lost. Quote = agreed price (booked when won). Collected = cash actually received.</p><div id="leads">Loading…</div></section>
+  <section class="card"><h2>Client previews <a href="/preview-builder.html" style="font-size:12px;font-weight:600">+ build one</a></h2><p class="muted">A view means the prospect (or someone they shared it with) opened the link — a good moment to follow up.</p><div id="previews" class="muted">—</div></section>
+  <section class="card"><h2>Leads &amp; pipeline</h2><p class="muted">Stages: new → contacted → qualified → proposal → won / lost. Quote = agreed price <b>excluding GST</b> (booked when won). Collected = cash actually received <b>excluding the 18% GST</b> (GST collected is a liability, not revenue).</p><div id="leads">Loading…</div></section>
   <div class="grid2">
     <section class="card"><h2>Sources</h2><div id="sources"></div></section>
     <section class="card"><h2>Top pages</h2><div id="pages"></div></section>
@@ -76,6 +78,7 @@ a{color:var(--accent)}
     ];
     $("kpis").innerHTML = kpis.map(([k, n]) => `<div class="kpi"><b>${esc(n)}</b><span>${esc(k)}</span></div>`).join("");
     $("due").innerHTML = rep.follow_ups_due.length ? table(rep.follow_ups_due, [["Due", "next_action_at"], ["Lead", (r) => r.name + (r.business ? " — " + r.business : "")], ["Stage", "stage"], ["Next action", "next_action"]]) : "Nothing due. Set a next-action date on every open lead.";
+    $("previews").innerHTML = table(rep.previews || [], [["Link", (r) => "/p/" + r.id], ["Business", "business"], ["Type", "vertical"], ["Views", "views"], ["Last view", (r) => String(r.last_view_at || "—").slice(0, 16).replace("T", " ")]]);
     $("sources").innerHTML = table(rep.sources, [["Source", "source"], ["Views", "views"], ["WhatsApp", "whatsapp"], ["Leads", "leads"]]);
     $("pages").innerHTML = table(rep.top_pages, [["Page", "path"], ["Views", "views"]]);
     $("ctas").innerHTML = table(rep.ctas, [["Type", "event"], ["Label", "label"], ["Page", "path"], ["Clicks", "clicks"]]);
@@ -93,7 +96,7 @@ a{color:var(--accent)}
 
   function renderLeads(leads) {
     if (!leads.length) { $("leads").innerHTML = '<p class="muted">No leads yet.</p>'; return; }
-    $("leads").innerHTML = "<table><tr><th>Lead</th><th>Need</th><th>Source</th><th>Stage</th><th>Quote ₹</th><th>Collected ₹</th><th>Next action</th><th>Notes</th><th></th></tr>" + leads.map((l) => {
+    $("leads").innerHTML = "<table><tr><th>Lead</th><th>Need</th><th>Source</th><th>Stage</th><th>Quote ₹ <small>(excl. GST)</small></th><th>Collected ₹ <small>(excl. GST)</small></th><th>Next action</th><th>Notes</th><th></th></tr>" + leads.map((l) => {
       const wa = waHref(l);
       return `<tr data-id="${esc(l.id)}">
         <td class="lead-cell"><b>${esc(l.name)}</b>${l.is_test ? ' <span class="muted">(test)</span>' : ""}<small>${esc(l.business)}</small><small>${esc(l.id)} · ${esc(String(l.created_at).slice(0, 16).replace("T", " "))}</small>
@@ -134,6 +137,27 @@ a{color:var(--accent)}
   $("loginForm").onsubmit = (e) => { e.preventDefault(); sessionStorage.setItem(KEY, $("token").value.trim()); start(); };
   $("logout").onclick = () => lock("");
   $("refresh").onclick = () => load().catch(() => {});
+  // MIS-001 daily scorecard: today's site funnel + pipeline snapshot, as paste-ready text.
+  $("scorecard").onclick = async () => {
+    const [today, all] = await Promise.all([api("/api/admin/report?days=1").then((r) => r.json()), api("/api/admin/leads").then((r) => r.json())]);
+    const f = today.funnel, v = today.revenue, d = new Date().toISOString().slice(0, 10);
+    const stage = Object.fromEntries((today.pipeline || []).map((p) => [p.stage, p.leads]));
+    const newToday = (all.leads || []).filter((l) => String(l.created_at).startsWith(d)).length;
+    const viewedToday = (today.previews || []).filter((p) => String(p.last_view_at || "").startsWith(d)).length;
+    const lines = [
+      `Xender daily scorecard — ${d}`,
+      `Qualified leads found: __ · Contacted: __ · Replies: __  (from CRM)`,
+      `Website: ${f.page_views} visits · ${f.lead_starts} form starts · ${newToday} new enquiries · ${f.whatsapp_clicks} WhatsApp clicks`,
+      `Previews opened today: ${viewedToday}`,
+      `Pipeline: new ${stage.new || 0} · contacted ${stage.contacted || 0} · qualified ${stage.qualified || 0} · proposal ${stage.proposal || 0} · won ${stage.won || 0} · lost ${stage.lost || 0}`,
+      `Open pipeline ${inr(v.open_pipeline_value)} · Booked ${inr(v.booked)} · Cash collected ${inr(v.collected)}`,
+      `Follow-ups due: ${(today.follow_ups_due || []).length}`,
+      `Active delivery: __ · Blockers: __`,
+    ];
+    $("scorecardText").textContent = lines.join("\n");
+    $("scorecardBox").hidden = false;
+    try { await navigator.clipboard.writeText(lines.join("\n")); } catch {}
+  };
   $("days").onchange = $("showTest").onchange = () => load().catch(() => {});
   function start() { if (!token()) return lock(""); $("login").hidden = true; $("app").hidden = false; load().catch(() => {}); }
   start();
