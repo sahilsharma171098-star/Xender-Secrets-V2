@@ -183,3 +183,7 @@ p{margin:0 0 1em;color:var(--ink-2)}
 .footer-industries a:hover{color:var(--ink)}
 .hero .narrow h1{max-width:760px}
 @media (max-width:860px){.contact-grid{grid-template-columns:1fr}}
+
+/* GST-exclusive pricing (approved 2026-10-06) */
+.gst-total{font-size:.85rem;color:var(--muted);margin:-6px 0 12px}
+h2 small.gst{font-size:.6em;font-weight:600;color:var(--muted)}

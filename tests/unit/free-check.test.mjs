@@ -48,3 +48,12 @@ test('every reviewer issue code has a client-facing explanation', () => {
   const out = freeCheckMessage({ issues: [...codes].map((code) => ({ code, points: 1 })) }, { max: 99 });
   assert.deepEqual(out.unknownCodes, []);
 });
+
+test('GST helpers: 18% added and rounded to paise', async () => {
+  const { inclGst, GST_RATE } = await import('../../scripts/commercial/layout.mjs');
+  assert.equal(GST_RATE, 0.18);
+  assert.equal(inclGst(999), '₹1,178.82');
+  assert.equal(inclGst(1999), '₹2,358.82');
+  assert.equal(inclGst(3499), '₹4,128.82');
+  assert.equal(inclGst(4999), '₹5,898.82');
+});

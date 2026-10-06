@@ -448,8 +448,10 @@ function safeEqual(a, b) {
 
 /** Admin auth: bearer token compared against the ADMIN_TOKEN Worker secret (min 24 chars). */
 export function adminAuth(request, env) {
-  const expected = String(env?.ADMIN_TOKEN || "");
-  if (expected.length < 24) return { ok: false, status: 503, error: "Admin access is not configured (set the ADMIN_TOKEN secret)." };
+  const expected = String(env?.ADMIN_TOKEN || "").trim();
+  // Diagnostics only say *why* admin is disabled — never anything about the value itself.
+  if (!expected) return { ok: false, status: 503, code: "admin_token_missing", error: "Admin access is not configured: the Worker has no ADMIN_TOKEN at runtime. Add it under Workers → xender-secrets-v2 → Settings → Variables and Secrets (type Secret), not as a build variable." };
+  if (expected.length < 24) return { ok: false, status: 503, code: "admin_token_too_short", error: "Admin access is disabled: ADMIN_TOKEN is shorter than 24 characters. Replace it with a longer random value (32+ characters recommended)." };
   const header = request.headers.get("authorization") || "";
   const got = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
   if (!safeEqual(got, expected)) return { ok: false, status: 401, error: "Unauthorized." };
@@ -488,7 +490,7 @@ export async function handleGrowth(request, { sql, env = {}, nowMs = Date.now() 
   }
   if (path.startsWith("/api/admin/")) {
     const auth = adminAuth(request, env);
-    if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
+    if (!auth.ok) return json({ ok: false, error: auth.error, ...(auth.code ? { code: auth.code } : {}) }, auth.status);
     if (path === "/api/admin/leads" && method === "GET") {
       return json({ ok: true, stages: LEAD_STAGES, leads: listLeads(sql, {
         stage: url.searchParams.get("stage") || "",

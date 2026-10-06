@@ -124,8 +124,14 @@ test('admin routes require the ADMIN_TOKEN secret', async () => {
   const sql = setup();
   let res = await handleGrowth(req('/api/admin/leads'), { sql, env: {} });
   assert.equal(res.status, 503);
-  res = await handleGrowth(req('/api/admin/leads'), { sql, env: { ADMIN_TOKEN: 'short' } });
+  assert.equal((await res.json()).code, 'admin_token_missing');
+  res = await handleGrowth(req('/api/admin/leads'), { sql, env: { ADMIN_TOKEN: 'Qz7mK2' } });
   assert.equal(res.status, 503);
+  const body = await res.json();
+  assert.equal(body.code, 'admin_token_too_short');
+  assert.ok(!JSON.stringify(body).includes('Qz7mK2'), 'never echoes the token');
+  res = await handleGrowth(req('/api/admin/leads', { token: ADMIN }), { sql, env: { ADMIN_TOKEN: '  ' + ADMIN + '\n' } });
+  assert.equal(res.status, 200, 'surrounding whitespace from copy-paste is ignored');
   res = await handleGrowth(req('/api/admin/leads', { token: 'b'.repeat(32) }), { sql, env });
   assert.equal(res.status, 401);
   res = await handleGrowth(req('/api/admin/leads'), { sql, env });

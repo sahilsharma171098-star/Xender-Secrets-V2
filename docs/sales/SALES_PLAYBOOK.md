@@ -18,7 +18,7 @@ Subject: Quick fix for {Business}'s website on mobile
 >
 > I was looking at {Business} on Google — {one specific observation, e.g. "the site has no call or WhatsApp button on mobile, so people have to copy your number"}.
 >
-> I run Xender Secrets, a small Gurugram-based web studio. I can send you a free list of 3–5 fixes for your site, no strings attached — or, if you'd rather start fresh, we build one-page business sites from ₹999 with WhatsApp and call buttons built in.
+> I run Xender Secrets, a small Gurugram-based web studio. I can send you a free list of 3–5 fixes for your site, no strings attached — or, if you'd rather start fresh, we build one-page business sites from ₹999 + GST with WhatsApp and call buttons built in.
 >
 > You can see example builds here: https://www.xendersecrets.com/?utm_source=gmail&utm_campaign={yyyymmdd}-{segment}#work
 >
@@ -28,10 +28,10 @@ Subject: Quick fix for {Business}'s website on mobile
 > Xender Secrets · GST-registered · +91 98219 41814
 
 ## 2. First touch — LinkedIn DM (after connecting)
-> Hi {Name} — noticed {Business} {observation}. I build fast, mobile-first sites for {industry} firms (from ₹999, no lock-in). Happy to send a free 5-point check of your current site — would that help?
+> Hi {Name} — noticed {Business} {observation}. I build fast, mobile-first sites for {industry} firms (from ₹999 + GST, no lock-in). Happy to send a free 5-point check of your current site — would that help?
 
 ## 3. First touch — business WhatsApp (only numbers published as the business's contact)
-> Namaste {Name} ji, I'm Sahil from Xender Secrets, Gurugram. I saw {Business} on Google Maps — {observation}. I make simple business websites with WhatsApp/call buttons, starting ₹999. Shall I send a free check of what to improve? If not relevant, no problem at all — I won't message again.
+> Namaste {Name} ji, I'm Sahil from Xender Secrets, Gurugram. I saw {Business} on Google Maps — {observation}. I make simple business websites with WhatsApp/call buttons, starting ₹999 + GST. Shall I send a free check of what to improve? If not relevant, no problem at all — I won't message again.
 
 ## 4. Reply to an inbound form lead (send within 2 hours)
 > Hi {Name}, Sahil from Xender Secrets — thanks for your enquiry ({XS-ref}). Quick questions so I can suggest the right option:
@@ -46,19 +46,19 @@ Run `npm run review:site -- <saved-page.html> --message --name "<contact>" --sit
 > 1. {Most important fix — mobile/CTA/speed/trust}
 > 2. …
 > 3. …
-> The first two you can fix yourself today. If you want us to handle all of it, the {offer} is ₹{price}, delivered by {date agreed}. Want a preview first?
+> The first two you can fix yourself today. If you want us to handle all of it, the {offer} is ₹{price} + 18% GST, delivered by {date agreed}. Want a preview first?
 
 ## 6. Written quote (paste into WhatsApp/email or a doc)
 ```
 Xender Secrets — Quote {XS-ref}
 Client: {Business}, {City}
-Package: {Founding Website ₹999 / Business Starter ₹1,999 / Business Pro ₹3,499 / Custom}
+Package: {Founding Website ₹999 / Business Starter ₹1,999 / Business Pro ₹3,499 / Custom} — prices exclusive of GST
 Pages & sections: {list}
 Included: mobile-first design, WhatsApp + call buttons, contact/map, basic on-page SEO, {forms}, testing, full handover
 Not included: domain & paid hosting (at cost), paid plugins/photos, work beyond this scope (quoted first)
 Revisions: {2} rounds on the preview
 Delivery: {date}, provided content (logo/photos/text) is received by {date}
-Price: ₹{amount} {+ GST if applicable — confirm with your CA}
+Price: ₹{amount} + 18% GST ₹{gst} = ₹{total}  (Haryana client: CGST 9% + SGST 9%; other state: IGST 18%)
 Payment: {terms approved by Sahil, see REVENUE_ARCHITECTURE §5}
 Payment method: UPI / bank transfer to Xender Secrets; GST invoice issued
 Valid until: {date + 7 days}

@@ -149,7 +149,8 @@ try {
   const auth = await page.evaluate(async () => {
     const none = await fetch('/api/admin/report');
     const wrong = await fetch('/api/admin/report', { headers: { authorization: 'Bearer wrong-token-wrong-token-wrong' } });
-    return { none: none.status, wrong: wrong.status };
+    const why = none.status === 503 ? (await none.json().catch(() => ({}))).code || 'unknown' : '';
+    return { none: none.status, wrong: wrong.status, why };
   });
   record('admin_auth_configured', auth.none === 401 && auth.wrong === 401, JSON.stringify(auth));
 } catch (e) { record('admin_auth_configured', false, e); }

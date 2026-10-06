@@ -91,8 +91,8 @@ export function freeCheckMessage(review, { name = "", site = "", max = 4, previe
       : "These need some development work, but none of them is a big job.";
     const offer = recommendation === "redesign"
       ? (preview
-        ? "If it helps, I can make a free draft of a mobile-friendly version so you can compare side by side — no obligation. A complete one-page site starts at ₹999."
-        : "If you'd like, we can rebuild it as a fast, mobile-friendly site — a complete one-page site starts at ₹999.")
+        ? "If it helps, I can make a free draft of a mobile-friendly version so you can compare side by side — no obligation. A complete one-page site starts at ₹999 + GST."
+        : "If you'd like, we can rebuild it as a fast, mobile-friendly site — a complete one-page site starts at ₹999 + GST.")
       : "If you'd rather not deal with it, we can fix these for you at a fixed price — happy to quote.";
     body = `${hi} I had a look at${where} — here's a quick free check:\n\n${list}\n\n${quickLine} ${offer}`;
   }

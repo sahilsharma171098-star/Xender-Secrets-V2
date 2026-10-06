@@ -136,7 +136,7 @@ $("save").onclick = async () => {
   const link = "https://www.xendersecrets.com" + body.path;
   const first = (cfg.name || "").replace(/\s*\(fictional\)/, "");
   $("link").textContent = link;
-  $("pitch").textContent = `Hi! I made a quick draft of what a website for ${first} could look like — no cost, no obligation:\n${link}\n\nIt works on mobile and the WhatsApp/call buttons go straight to you. If you like it, we can finish it with your real photos and details from ₹999 (one page). Happy to change anything.\n\n— Sahil, Xender Secrets`;
+  $("pitch").textContent = `Hi! I made a quick draft of what a website for ${first} could look like — no cost, no obligation:\n${link}\n\nIt works on mobile and the WhatsApp/call buttons go straight to you. If you like it, we can finish it with your real photos and details from ₹999 + GST (one page). Happy to change anything.\n\n— Sahil, Xender Secrets`;
   $("shareOut").hidden = false;
   $("saveStatus").textContent = "Saved · expires " + body.expires_at.slice(0, 10); $("saveStatus").className = "ok";
   loadList();

@@ -63,4 +63,6 @@ Config JSON template (ChatGPT can draft this; Sahil pastes it into the builder):
 - [ ] Sahil: GST inclusive/exclusive + payment terms decision (blocks quotes).
 - [ ] ChatGPT: CQ-001…CQ-007 in `docs/CHATGPT_ACTION_QUEUE.md`.
 - [x] Claude: gym and restaurant landing pages; `review:site --message` free-check generator; "Copy daily scorecard" in `/admin.html` (MIS-001).
-- [ ] Claude (next): ship the release once #20/#21 merge, and verify the production E2E run, `/p/` redirects and `.mjs` content type.
+- [x] #20 live (fe5b892), production E2E green. GST-exclusive pricing applied in PR #21.
+- [ ] **Sahil: fix `ADMIN_TOKEN` at runtime.** Production returns 503 (missing or < 24 chars). After #21 is live, opening https://www.xendersecrets.com/api/admin/report in a browser shows `code` = `admin_token_missing` or `admin_token_too_short`.
+- [ ] Claude (next): after #21 merges, verify the production E2E run, `/p/` redirects, `.mjs` content type and the admin read-back.

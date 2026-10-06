@@ -9,6 +9,7 @@ export const CONTENT_DATE = "2026-10-06";
 const COMMON_FAQ = [
   ["How long does it take?", "It depends on the package and how quickly we receive your logo, photos and text. We agree a delivery date in writing with your quote, before any payment."],
   ["How do payments work?", "You receive a written quote with scope, price and delivery date first. Payment terms are stated on the quote, and every payment gets a GST-compliant invoice."],
+  ["Are prices inclusive of GST?", "No — package prices are shown before GST, and 18% GST is added on the invoice. For example, the Founding Website is ₹999 + ₹179.82 GST = ₹1,178.82. Xender Secrets is GST-registered (GSTIN 06IQFPS4456B1ZP), so you receive a proper tax invoice; GST-registered businesses can usually claim the GST as input tax credit — confirm with your CA."],
   ["Do I have to pay every month?", "No. There is no compulsory maintenance or retainer. You pay only for hosting or a domain if your setup needs them, and only for support if you choose it."],
   ["Who owns the website?", "You do. We hand over the files, content and access at launch."],
 ];
@@ -29,8 +30,8 @@ const FOUNDER = `<section class="section alt">
 export const INDUSTRIES = [
   {
     file: "accountant-website-development.html", slug: "ca", business: "accountants", code: "CA", label: "CA firm",
-    title: "Website for CA Firms & Accountants from ₹999 | Xender Secrets",
-    description: "Mobile-first websites for CA firms, accountants and tax consultants — service pages for GST, ITR, audit and payroll, WhatsApp consultation buttons. From ₹999, fixed price.",
+    title: "Website for CA Firms & Accountants from ₹999 + GST | Xender Secrets",
+    description: "Mobile-first websites for CA firms, accountants and tax consultants — service pages for GST, ITR, audit and payroll, WhatsApp consultation buttons. From ₹999 + GST, fixed price.",
     eyebrow: "Websites for CA firms &amp; accountants",
     h1: "A CA firm website that earns trust <em>before the first call.</em>",
     lede: "Clients choose an accountant they feel they can trust with their numbers. We build clean, professional sites that explain your services — GST, ITR, audit, payroll, company registration — and make booking a consultation one tap away.",
@@ -51,8 +52,8 @@ export const INDUSTRIES = [
   },
   {
     file: "clinic-website-development.html", slug: "clinic", business: "dentists", code: "DENT", label: "Clinic",
-    title: "Clinic & Dental Website from ₹999 | Appointment-ready | Xender Secrets",
-    description: "Websites for dental clinics, doctors and physiotherapy clinics — treatments, doctor profiles, timings, map and one-tap WhatsApp appointment requests. From ₹999, fixed price.",
+    title: "Clinic & Dental Website from ₹999 + GST | Appointment-ready | Xender Secrets",
+    description: "Websites for dental clinics, doctors and physiotherapy clinics — treatments, doctor profiles, timings, map and one-tap WhatsApp appointment requests. From ₹999 + GST, fixed price.",
     eyebrow: "Websites for clinics &amp; dentists",
     h1: "Clinic websites that turn searches into <em>appointment requests.</em>",
     lede: "Patients look up a clinic on their phone, often minutes before deciding. We build fast, calm, mobile-first sites that show your treatments, doctors, timings and location — with a one-tap WhatsApp or call button to request an appointment.",
@@ -74,8 +75,8 @@ export const INDUSTRIES = [
   },
   {
     file: "real-estate-website-development.html", slug: "realestate", business: "real-estate", code: "REAL", label: "Real estate",
-    title: "Real Estate Agent Website from ₹999 | Property Enquiries | Xender Secrets",
-    description: "Websites for real-estate agents, brokers and builders — property listings, locality pages, site-visit and WhatsApp enquiry buttons. From ₹999, fixed price.",
+    title: "Real Estate Agent Website from ₹999 + GST | Property Enquiries | Xender Secrets",
+    description: "Websites for real-estate agents, brokers and builders — property listings, locality pages, site-visit and WhatsApp enquiry buttons. From ₹999 + GST, fixed price.",
     eyebrow: "Websites for real-estate agents &amp; brokers",
     h1: "A property website that gets you <em>site-visit enquiries.</em>",
     lede: "Buyers and tenants shortlist on their phones. We build fast real-estate sites that show your listings and localities clearly and turn interest into a WhatsApp message or call about a specific property.",
@@ -96,8 +97,8 @@ export const INDUSTRIES = [
   },
   {
     file: "recruitment-agency-website-development.html", slug: "recruitment", business: "recruitment", code: "RECR", label: "Recruitment",
-    title: "Recruitment Agency Website from ₹1,999 | Employer Enquiries | Xender Secrets",
-    description: "Websites for recruitment and staffing agencies — employer hiring enquiries, sectors you hire for, open roles and candidate applications. From ₹999, fixed price.",
+    title: "Recruitment Agency Website from ₹1,999 + GST | Employer Enquiries | Xender Secrets",
+    description: "Websites for recruitment and staffing agencies — employer hiring enquiries, sectors you hire for, open roles and candidate applications. From ₹999 + GST, fixed price.",
     eyebrow: "Websites for recruitment &amp; staffing agencies",
     h1: "A recruitment site that brings in <em>employers, not just CVs.</em>",
     lede: "Most agency sites attract candidates but leave employers unsure what you do. We build sites with a clear employer path — sectors, roles you fill, how you work — plus a simple route for candidates.",
@@ -118,8 +119,8 @@ export const INDUSTRIES = [
   },
   {
     file: "consultant-website-development.html", slug: "consultant", business: "consultants", code: "CONS", label: "Consultant",
-    title: "Consultant Website from ₹999 | Book Discovery Calls | Xender Secrets",
-    description: "Websites for consultants and advisors — clear positioning, services, approach and a direct path to a discovery call. From ₹999, fixed price.",
+    title: "Consultant Website from ₹999 + GST | Book Discovery Calls | Xender Secrets",
+    description: "Websites for consultants and advisors — clear positioning, services, approach and a direct path to a discovery call. From ₹999 + GST, fixed price.",
     eyebrow: "Websites for consultants &amp; advisors",
     h1: "A consulting site that makes your expertise <em>easy to buy.</em>",
     lede: "Prospects hire consultants who are specific. We build focused sites that state who you help, the problem you solve and how an engagement works — ending in a simple request for a discovery call.",
@@ -140,8 +141,8 @@ export const INDUSTRIES = [
   },
   {
     file: "coaching-website-development.html", slug: "coaching", business: "coaching", code: "COCH", label: "Coaching institute",
-    title: "Coaching Institute Website from ₹999 | Admission Enquiries | Xender Secrets",
-    description: "Websites for coaching institutes, tutors and academies — courses, batches, faculty, fees and WhatsApp admission enquiries for parents and students. From ₹999.",
+    title: "Coaching Institute Website from ₹999 + GST | Admission Enquiries | Xender Secrets",
+    description: "Websites for coaching institutes, tutors and academies — courses, batches, faculty, fees and WhatsApp admission enquiries for parents and students. From ₹999 + GST.",
     eyebrow: "Websites for coaching institutes &amp; tutors",
     h1: "Coaching websites that bring <em>admission enquiries</em> from parents.",
     lede: "Parents and students compare institutes on their phones. We build clear sites with your courses, batches, faculty and location — and an easy WhatsApp path to ask about admission or a demo class.",
@@ -162,8 +163,8 @@ export const INDUSTRIES = [
   },
   {
     file: "gym-website-development.html", slug: "gym", business: "gyms", code: "GYM", label: "Gym",
-    title: "Gym & Fitness Studio Website from ₹999 | Free-Trial Enquiries | Xender Secrets",
-    description: "Websites for gyms, fitness studios and personal trainers — programs, trainers, timings, membership enquiries and one-tap WhatsApp free-trial bookings. From ₹999.",
+    title: "Gym & Fitness Studio Website from ₹999 + GST | Free-Trial Enquiries | Xender Secrets",
+    description: "Websites for gyms, fitness studios and personal trainers — programs, trainers, timings, membership enquiries and one-tap WhatsApp free-trial bookings. From ₹999 + GST.",
     eyebrow: "Websites for gyms &amp; fitness studios",
     h1: "A gym website that turns scrollers into <em>free-trial bookings.</em>",
     lede: "People choose a gym on their phone — usually after checking location, timings and what a session feels like. We build fast, energetic sites that show your programs, trainers and timings, with a one-tap WhatsApp button to book a free trial.",
@@ -184,8 +185,8 @@ export const INDUSTRIES = [
   },
   {
     file: "restaurant-website-development.html", slug: "restaurant", business: "restaurants", code: "REST", label: "Restaurant",
-    title: "Restaurant & Café Website from ₹999 | Menu, Reservations | Xender Secrets",
-    description: "Websites for restaurants, cafés and cloud kitchens — menu, photos, timings, map, table reservations and WhatsApp orders. From ₹999, no commission.",
+    title: "Restaurant & Café Website from ₹999 + GST | Menu, Reservations | Xender Secrets",
+    description: "Websites for restaurants, cafés and cloud kitchens — menu, photos, timings, map, table reservations and WhatsApp orders. From ₹999 + GST, no commission.",
     eyebrow: "Websites for restaurants &amp; cafés",
     h1: "A restaurant website with your menu, <em>bookings and orders</em> one tap away.",
     lede: "Diners check the menu, prices, timings and location before they visit or order. We build quick, appetising sites that show your menu clearly and let guests reserve a table or order on WhatsApp — without paying a commission on every order.",
@@ -233,8 +234,8 @@ function industryPage(ind) {
 export const LOCATIONS = [
   {
     file: "website-development-gurugram.html", slug: "gurugram", city: "Gurugram",
-    title: "Website Development in Gurugram from ₹999 | Xender Secrets",
-    description: "Gurugram-based website development for local businesses — mobile-first sites with WhatsApp and call buttons, fixed prices from ₹999, meet in person or on WhatsApp.",
+    title: "Website Development in Gurugram from ₹999 + GST | Xender Secrets",
+    description: "Gurugram-based website development for local businesses — mobile-first sites with WhatsApp and call buttons, fixed prices from ₹999 + GST, meet in person or on WhatsApp.",
     h1: "Website development in Gurugram, <em>from a Gurugram studio.</em>",
     lede: "Xender Secrets is based in Gurugram. We build fast, mobile-first websites for local clinics, CA firms, agents, coaching centres, gyms and shops — and we can meet you in person or work entirely over WhatsApp.",
     local: [
@@ -246,8 +247,8 @@ export const LOCATIONS = [
   },
   {
     file: "website-development-delhi.html", slug: "delhi", city: "Delhi",
-    title: "Website Development for Delhi Businesses from ₹999 | Xender Secrets",
-    description: "Mobile-first websites for Delhi businesses from a Delhi NCR studio — WhatsApp enquiry buttons, fixed prices from ₹999, full handover.",
+    title: "Website Development for Delhi Businesses from ₹999 + GST | Xender Secrets",
+    description: "Mobile-first websites for Delhi businesses from a Delhi NCR studio — WhatsApp enquiry buttons, fixed prices from ₹999 + GST, full handover.",
     h1: "Business websites for <em>Delhi</em> — fixed prices, NCR-based.",
     lede: "We're a Delhi NCR studio based in Gurugram, building fast websites for Delhi's clinics, CA firms, agents, institutes and shops. Most projects run over WhatsApp and video calls; meeting in person in NCR can be arranged.",
     local: [
@@ -259,8 +260,8 @@ export const LOCATIONS = [
   },
   {
     file: "website-development-noida.html", slug: "noida", city: "Noida",
-    title: "Website Development for Noida Businesses from ₹999 | Xender Secrets",
-    description: "Mobile-first websites for Noida and Greater Noida businesses from a Delhi NCR studio — WhatsApp enquiries, fixed prices from ₹999, full handover.",
+    title: "Website Development for Noida Businesses from ₹999 + GST | Xender Secrets",
+    description: "Mobile-first websites for Noida and Greater Noida businesses from a Delhi NCR studio — WhatsApp enquiries, fixed prices from ₹999 + GST, full handover.",
     h1: "Websites for <em>Noida</em> businesses that bring enquiries.",
     lede: "From our Delhi NCR base in Gurugram, we build mobile-first websites for Noida and Greater Noida businesses — coaching centres, clinics, real-estate agents, consultants and shops — with fixed prices and full handover.",
     local: [
@@ -272,14 +273,14 @@ export const LOCATIONS = [
   },
   {
     file: "small-business-website-india.html", slug: "india", city: "India",
-    title: "Small Business Website in India from ₹999 | Xender Secrets",
-    description: "Affordable, professional small business websites for Indian businesses — mobile-first, WhatsApp and call buttons, basic SEO, full handover. From ₹999, no monthly fees.",
-    h1: "A professional small-business website <em>from ₹999.</em>",
+    title: "Small Business Website in India from ₹999 + GST | Xender Secrets",
+    description: "Affordable, professional small business websites for Indian businesses — mobile-first, WhatsApp and call buttons, basic SEO, full handover. From ₹999 + GST, no monthly fees.",
+    h1: "A professional small-business website <em>from ₹999 + GST.</em>",
     lede: "For shops, clinics, gyms, salons, tutors, trades and service businesses anywhere in India. We build fast, mobile-first websites with WhatsApp and call buttons, set up the SEO basics and hand everything over — with no compulsory monthly fees.",
     local: [
       ["Works anywhere in India", "Brief, preview, feedback and launch all happen over WhatsApp — no need to meet."],
       ["Made for phones", "Most of your customers will see your site on a phone; we design for that first."],
-      ["Fixed, upfront prices", "₹999, ₹1,999 or ₹3,499 — you know the price before we start."],
+      ["Fixed, upfront prices", "₹999, ₹1,999 or ₹3,499 (+ 18% GST) — you know the full price before we start."],
     ],
     faq: [["Do you build sites for businesses outside Delhi NCR?", "Yes — anywhere in India, entirely over WhatsApp and video calls."], ["Can you set up my Google Business profile?", "We can guide you and link your website to it. The profile itself must be verified by you as the owner."]],
   },
@@ -313,9 +314,8 @@ function locationPage(loc) {
 
 // ---------------------------------------------------------------- core pages
 const HOME_FAQ = [
-  ["Is the ₹999 website real? What's the catch?", "It's a genuine launch price for our first 10 businesses: a one-page, mobile-first site with your branding, WhatsApp/contact integration and full handover. The catch is scope — it's one page. If you need more pages later, you can upgrade."],
-  ...COMMON_FAQ.slice(0, 2),
-  COMMON_FAQ[2], COMMON_FAQ[3],
+  ["Is the ₹999 website real? What's the catch?", "It's a genuine launch price for our first 10 businesses — ₹999 + 18% GST (₹1,178.82 in total): a one-page, mobile-first site with your branding, WhatsApp/contact integration and full handover. The catch is scope — it's one page. If you need more pages later, you can upgrade."],
+  ...COMMON_FAQ,
   ["Can you redesign my existing website?", "Yes. Start with the free website check — we'll tell you whether a few fixes are enough or a redesign is worth it."],
   ["Are the demos your client projects?", "No. The catalog contains concept demos we built ourselves to show capability, and they are labelled that way. We don't publish fake clients or testimonials."],
   ["Do you work with businesses outside India?", "Yes — we work with businesses in the UK, US and Canada too. Conversion-focused landing pages start from US$299."],
@@ -324,7 +324,7 @@ const HOME_FAQ = [
 function homePage() {
   const body = [
     hero({
-      eyebrow: "Websites for small businesses · from ₹999",
+      eyebrow: "Websites for small businesses · from ₹999 + GST",
       h1: "Business websites that turn visitors into <em>enquiries.</em>",
       lede: "Xender Secrets designs and builds fast, mobile-first websites and landing pages for clinics, CA firms, real-estate agents, recruiters and local services. Fixed prices, clear scope, full handover — no compulsory maintenance.",
       waText: "Hi Xender Secrets, I want a website for my business.", ctaPrefix: "home",
@@ -388,14 +388,15 @@ function homePage() {
       </div>
     </section>`,
   ].join("\n\n    ");
-  return page({ path: "/index.html", home: true, title: "Business Websites from ₹999 | Xender Secrets",
-    ogTitle: "Business websites from ₹999 — Xender Secrets",
-    description: "Fast, mobile-first business websites and landing pages for Indian small businesses — from ₹999. Fixed prices, clear scope, full handover, no compulsory maintenance. Free website check.",
+  return page({ path: "/index.html", home: true, title: "Business Websites from ₹999 + GST | Xender Secrets",
+    ogTitle: "Business websites from ₹999 + GST — Xender Secrets",
+    description: "Fast, mobile-first business websites and landing pages for Indian small businesses — from ₹999 + GST. Fixed prices, clear scope, full handover, no compulsory maintenance. Free website check.",
     body, jsonld: [ORG_JSONLD, faqJsonLd(HOME_FAQ)] });
 }
 
 function servicesPage() {
   const rows = [
+    ["Total incl. 18% GST", "₹1,178.82", "₹2,358.82", "₹4,128.82"],
     ["Pages", "1 (up to 6 sections)", "Up to 3", "Up to 5"],
     ["Mobile-first responsive design", "✓", "✓", "✓"],
     ["WhatsApp &amp; call buttons", "✓", "✓", "✓"],
@@ -410,7 +411,7 @@ function servicesPage() {
     ["What's not included?", "Domain names, paid hosting, paid plugins, stock photos and third-party subscriptions are billed at cost if you need them. Anything outside the agreed scope is quoted before we do it."],
     ["Can I start with ₹999 and upgrade later?", "Yes. Many businesses start with one page and add pages once enquiries come in; you pay only the difference in scope, quoted in writing."],
     ...COMMON_FAQ,
-    ["Do you do custom software, AI workflows or automation?", "Yes, as custom work from ₹4,999 — e.g. booking or quote flows, lead routing, dashboards, AI-assisted workflows. We scope it after a short discussion and suggest the simplest version that works."],
+    ["Do you do custom software, AI workflows or automation?", "Yes, as custom work from ₹4,999 + GST — e.g. booking or quote flows, lead routing, dashboards, AI-assisted workflows. We scope it after a short discussion and suggest the simplest version that works."],
   ];
   const body = [
     hero({ eyebrow: "Pricing &amp; packages", h1: "Website packages with <em>fixed prices.</em>", ctaPrefix: "services",
@@ -423,13 +424,13 @@ function servicesPage() {
         <div class="section-head"><p class="kicker">Compare</p><h2>What each package <span>includes.</span></h2></div>
         <div class="card table-wrap">
           <table class="compare">
-            <thead><tr><th scope="col">Feature</th><th scope="col">Founding · ₹999</th><th scope="col">Starter · ₹1,999</th><th scope="col">Pro · ₹3,499</th></tr></thead>
+            <thead><tr><th scope="col">Feature</th><th scope="col">Founding · ₹999 + GST</th><th scope="col">Starter · ₹1,999 + GST</th><th scope="col">Pro · ₹3,499 + GST</th></tr></thead>
             <tbody>${rows.map((r) => `<tr><th scope="row">${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody>
           </table>
         </div>
       </div>
     </section>`,
-    cardsBlock({ kicker: "Custom work · from ₹4,999", heading: "When you need more than <span>a website.</span>", intro: "Quoted after a short discovery chat. We suggest the simplest version that solves the problem.", items: [
+    cardsBlock({ kicker: "Custom work · from ₹4,999 + GST", heading: "When you need more than <span>a website.</span>", intro: "Quoted after a short discovery chat. We suggest the simplest version that solves the problem.", items: [
       ["Website redesign", "Rebuild an existing site around mobile, speed and enquiries — start with the free check."],
       ["Booking &amp; quote flows", "Appointment, site-visit or quote requests with confirmations. <a href=\"/sample-preview.html?type=fullstack&id=FS-01\">Try a demo →</a>"],
       ["Lead routing &amp; follow-up", "Send enquiries to the right person, acknowledge them instantly, never lose a lead."],
@@ -451,8 +452,8 @@ function servicesPage() {
     faqBlock(faq),
     leadForm({ cta: "services-start-form", heading: "Tell us what you need <span>— get a fixed quote.</span>" }),
   ].join("\n\n    ");
-  return page({ path: "/services.html", title: "Website Packages & Pricing from ₹999 | Xender Secrets",
-    description: "Fixed-price website packages: free website check, ₹999 one-page site, ₹1,999 Business Starter, ₹3,499 Business Pro, and custom builds from ₹4,999. No compulsory monthly fees.",
+  return page({ path: "/services.html", title: "Website Packages & Pricing from ₹999 + GST | Xender Secrets",
+    description: "Fixed-price website packages: free website check, ₹999 one-page site, ₹1,999 Business Starter, ₹3,499 Business Pro, and custom builds from ₹4,999. All prices + 18% GST. No compulsory monthly fees.",
     body, jsonld: [ORG_JSONLD, faqJsonLd(faq), breadcrumbJsonLd([["Home", "/"], ["Pricing", "/services.html"]])] });
 }
 

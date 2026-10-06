@@ -18,13 +18,15 @@ Secondary (international): UK/US/CA small firms via email/LinkedIn, landing page
 | Step | Offer | Price | Job |
 |---|---|---|---|
 | Entry | Free website check | ₹0 | Lead magnet. Personal list of fixes. Converts cold prospects into conversations. |
-| Core | Founding Website — 1 page, ≤6 sections | ₹999 (first 10) | Easiest yes. Low risk for buyer, fast for us using templates. |
-| Upgrade | Business Starter — ≤3 pages + form + city SEO | ₹1,999 | Default recommendation for professionals. |
-| Upgrade | Business Pro — ≤5 pages + forms + analytics | ₹3,499 | Multi-service businesses. |
-| Custom | Redesign / booking / CRM / automation | from ₹4,999 | Quoted after discovery. |
+| Core | Founding Website — 1 page, ≤6 sections | ₹999 + GST = ₹1,178.82 (first 10) | Easiest yes. Low risk for buyer, fast for us using templates. |
+| Upgrade | Business Starter — ≤3 pages + form + city SEO | ₹1,999 + GST = ₹2,358.82 | Default recommendation for professionals. |
+| Upgrade | Business Pro — ≤5 pages + forms + analytics | ₹3,499 + GST = ₹4,128.82 | Multi-service businesses. |
+| Custom | Redesign / booking / CRM / automation | from ₹4,999 + GST | Quoted after discovery. |
 | Recurring (optional, after delivery) | Care plan: updates, small edits, uptime check | propose ₹499–999/mo | **Never** a condition of purchase. Sahil to approve price before offering. |
 
-Floor rule: nothing below ₹999 without Sahil's approval. Domain/hosting/paid assets billed at cost.
+**GST (approved by Sahil 2026-10-06):** all ₹ package prices are **exclusive of 18% GST**; the site shows "₹999 + 18% GST" with the all-in total beside it, and every invoice is a GST tax invoice (GSTIN 06IQFPS4456B1ZP). Haryana clients: CGST 9% + SGST 9%; other states: IGST 18%. International (US$) work is usually export of services (zero-rated, LUT required) — **confirm with the CA before the first international invoice**. MIS `quote_value`/`collected_value` are recorded **excluding GST**.
+
+Floor rule: nothing below ₹999 (+ GST) without Sahil's approval. Domain/hosting/paid assets billed at cost.
 
 ## 3. Lead → cash flow
 
@@ -41,6 +43,7 @@ Floor rule: nothing below ₹999 without Sahil's approval. Domain/hosting/paid a
 
 | Objection | Answer |
 |---|---|
+| "Is GST extra?" | Yes, 18% on the invoice — ₹1,178.82 in total for the Founding Website. GST-registered businesses can usually claim it back as input tax credit (their CA confirms). |
 | "₹999 is too cheap — what's the catch?" | Founding price for the first 10 businesses; the limit is scope (one page). Upgrade later if needed. |
 | "You have no clients / reviews." | True, and we say so: inspect working demos, see a free preview of *your* site before paying, GST invoice. |
 | "I already have Instagram." | Instagram doesn't show up when someone Googles "dentist near me"; the site links both. |
@@ -48,7 +51,7 @@ Floor rule: nothing below ₹999 without Sahil's approval. Domain/hosting/paid a
 | "Monthly charges?" | None compulsory. Hosting/domain at cost only if needed. |
 | "Send details, I'll think." | Send the specific preview/check, then follow up on day 2 and day 5 (cadence in playbook). |
 
-## 5. Payment collection (Sahil to approve — recommendation)
+## 5. Payment collection (terms: Sahil to approve — recommendation; GST approved)
 
 Zero-spend options, in order:
 1. **UPI / bank transfer to the business account** with a GST invoice — ₹0 fees.

@@ -71,7 +71,7 @@ test('homepage answers the buyer questions and keeps the live-E2E contract', asy
   assert.ok(await page.locator('a[href*="wa.me/919821941814"]').count() >= 1);
   assert.ok(await page.locator('a[href*="website-catalog.html"]').count() >= 1);
   const text = await page.locator('main').innerText();
-  for (const must of ['₹999', '₹1,999', '₹3,499', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
+  for (const must of ['₹999', '₹1,999', '₹3,499', '+ 18% GST', '₹1,178.82 incl. GST', '₹2,358.82 incl. GST', '₹4,128.82 incl. GST', 'Are prices inclusive of GST?', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
   assert.ok(await page.locator('form[data-lead-form]').count() === 1);
   const lds = (await page.locator('script[type="application/ld+json"]').allInnerTexts()).map((t) => JSON.parse(t)['@type']);
   assert.deepEqual(lds, ['ProfessionalService', 'FAQPage']);
@@ -126,7 +126,7 @@ test('lead submit stores attribution, shows reference and a one-tap WhatsApp fol
   const wa = await page.getAttribute('.lead-success a', 'href');
   assert.ok(wa.startsWith('https://wa.me/919821941814?text='));
   assert.ok(decodeURIComponent(wa).includes(ref));
-  assert.ok(decodeURIComponent(wa).includes('₹999 Founding Website'));
+  assert.ok(decodeURIComponent(wa).includes('₹999 + GST · Founding Website'));
   const lead = rows(db, 'SELECT * FROM growth_leads')[0];
   assert.equal(lead.name, 'Asha Verma');
   assert.equal(lead.phone, '+919876543210');
@@ -275,6 +275,11 @@ test('every generated commercial page: one lead form, valid metadata, no broken 
     const offers = await page.locator('[data-offer]').evaluateAll((els) => els.map((e) => e.dataset.offer));
     const options = await page.locator('form[data-lead-form] [name=offer] option').evaluateAll((os) => os.map((o) => o.value));
     for (const o of offers) assert.ok(options.includes(o), `${file}: data-offer ${o} exists in form`);
+    // GST rule (approved 2026-10-06): every visible package price says it is exclusive of GST.
+    const bare = await page.locator('main').evaluate((m) => (m.innerText.match(/₹(?:999|1,999|3,499|4,999)(?![\d,])(?!\s*(?:\+\s*(?:18% )?GST|website|Founding|Business|\/))[^\n]{0,30}/g) || []));
+    const priced = await page.locator('.price').count();
+    if (priced) assert.equal(await page.locator('.gst-total').count(), priced, `${file}: every price card shows the GST-inclusive total`);
+    assert.ok(bare.length === 0 || (await page.locator('main').innerText()).includes('GST'), `${file}: prices without GST context: ${bare.join(' | ')}`);
   }
   assert.deepEqual([...broken], [], 'no broken internal links');
   assert.deepEqual(log.errors, []);

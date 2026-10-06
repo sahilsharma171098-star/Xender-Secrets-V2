@@ -212,6 +212,6 @@ export function renderPreview(cfg, { id = "", expiresAt = "" } = {}) {
     </div>
   </section>
   <footer class="xp-foot"><div class="xp-wrap">© ${esc(cfg.name)} · Draft preview designed by <a href="https://www.xendersecrets.com/?utm_source=preview&utm_campaign=preview-footer" target="_blank" rel="noopener">Xender Secrets</a>${cfg.note ? ` · ${esc(cfg.note)}` : ""}</div></footer>
-  <div class="xp-float"><a class="xp-btn" href="${esc(waLink(XENDER_WA, xenderMsg))}" target="_blank" rel="noopener" data-cta="preview-float">Like it? Get this website from ₹999</a></div>
+  <div class="xp-float"><a class="xp-btn" href="${esc(waLink(XENDER_WA, xenderMsg))}" target="_blank" rel="noopener" data-cta="preview-float">Like it? Get this website from ₹999 + GST</a></div>
 </div>`;
 }

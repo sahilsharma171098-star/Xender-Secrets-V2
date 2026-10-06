@@ -93,3 +93,8 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 - Priority: P1 · Channel: GitHub Issue #5 (MIS-001)
 - Action: each evening Sahil clicks **Copy daily scorecard** in `/admin.html` (after #21 is live). ChatGPT fills in the outreach numbers from the private CRM (found / contacted / replies, plus delivery and blockers) and posts it as a comment on Issue #5.
 - Expected: one comparable daily record of funnel, pipeline, booked and collected revenue.
+
+### CQ-009 — Quote with GST (added 2026-10-06, P0 for every proposal)
+- All ₹ prices are **+ 18% GST** (approved). Quote as "₹999 + ₹179.82 GST = ₹1,178.82". Haryana clients: CGST 9% + SGST 9%; other states: IGST 18%. For US$ (international) quotes, don't add GST until the CA confirms LUT/export treatment.
+- Selling point for GST-registered clients: they can usually claim the GST as input tax credit (their CA confirms) — never promise it.
+- Record `quote_value` / `collected_value` in `/admin.html` **excluding GST**.
