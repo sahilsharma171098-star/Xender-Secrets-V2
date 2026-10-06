@@ -54,7 +54,8 @@ async function newPage(browser, opts = {}) {
     if (url.pathname === '/api/translate') {
       log.translate++;
       const body = JSON.parse(route.request().postData());
-      return route.fulfill({ json: { ok: true, translated: body.texts.map((t) => 'हिंदी ' + t) } });
+      const label = body.target === 'hi' ? 'हिंदी' : body.target === 'en' ? 'English' : body.target;
+      return route.fulfill({ json: { ok: true, translated: body.texts.map((t) => label + ' ' + t) } });
     }
     if (url.pathname.startsWith('/api/')) return route.fulfill({ status: 401, json: { ok: false } });
     const g = url.pathname.match(/^\/novel-data\/gutenberg\/([^/]+)\/([^/]+)$/);
@@ -82,7 +83,9 @@ test('Gutenberg chapter loads from static JSON with zero backend calls; next/pre
   await page.goto(ORIGIN + '/reader.html?gutenberg=journey-to-the-west-zh&chapter=10');
   await waitChapter(page, 'STATIC chapter 10');
   assert.equal(await page.locator('#storyTitle').innerText(), 'Journey to the West — Complete Chinese Edition');
-  assert.equal(await page.locator('#chapterTitle').innerText(), 'Chapter 10 — 回目');
+  assert.equal(await page.locator('#chapterTitle').innerText(), 'English Chapter 10 — 回目');
+  assert.equal(await page.locator('#languageSelect').inputValue(), 'en');
+  assert.ok(log.translate >= 1, 'Chinese source is translated to English automatically');
   assert.equal(await page.evaluate(() => document.body.dataset.readerSource), 'static');
   await page.locator('#nextChapter').click();
   await waitChapter(page, 'STATIC chapter 11');
