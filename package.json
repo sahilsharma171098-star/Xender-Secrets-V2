@@ -4,7 +4,14 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
-    "import:novels": "node scripts/import-authorized-novels.mjs"
+    "import:novels": "node scripts/import-authorized-novels.mjs",
+    "extension:install": "cd extension && npm ci",
+    "extension:lint": "cd extension && npm run lint",
+    "extension:lint:firefox": "cd extension && npm run lint:firefox",
+    "extension:test": "cd extension && npm test",
+    "extension:build": "cd extension && npm run build",
+    "extension:package": "cd extension && npm run package",
+    "extension:screenshots": "cd extension && npm run screenshots"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

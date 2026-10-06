@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Xender SiteCheck",
+  "short_name": "SiteCheck",
+  "version": "1.0.0",
+  "description": "Check the current page for SEO basics, accessibility issues, usability problems and conversion friction. Runs locally.",
+  "homepage_url": "https://www.xendersecrets.com/sitecheck.html",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_title": "Xender SiteCheck — audit this page",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "64": "icons/icon-64.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "64": "icons/icon-64.png",
+    "128": "icons/icon-128.png"
+  }
+}

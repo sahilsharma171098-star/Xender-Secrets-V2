@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ananya Handloom Sarees</title>
+  <meta property="og:title" content="Ananya Handloom Sarees">
+  <style>
+    body{margin:0;font-family:Georgia,serif;background:#fffaf3;color:#3a2a1a}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:#7a1f2b;color:#fff}
+    header a{color:#fff;margin-left:18px;text-decoration:none;font-family:sans-serif;font-size:14px}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;padding:64px 48px;align-items:center}
+    .hero h1{font-size:52px;line-height:1.05;margin:0 0 16px}
+    .hero p{font-size:18px;color:#6b5a4a}
+    .hero .muted{color:#c9b8a6;font-family:sans-serif;font-size:13px}
+    .btn{display:inline-block;background:#7a1f2b;color:#fff;padding:12px 20px;border-radius:6px;font-family:sans-serif;text-decoration:none;margin-right:8px}
+    .art{height:340px;border-radius:14px;background:repeating-linear-gradient(135deg,#c8553d 0 18px,#e3a857 18px 36px,#7a1f2b 36px 54px)}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:0 48px 48px}
+    .card{background:#fff;border:1px solid #eadccc;border-radius:12px;padding:14px;font-family:sans-serif}
+    .card img{width:100%;height:140px;background:#f0e3d2;display:block;border-radius:8px}
+    form{padding:0 48px 48px;font-family:sans-serif}
+    form input{display:block;margin:6px 0;padding:8px;width:280px}
+  </style>
+</head>
+<body>
+  <header>
+    <strong>ANANYA</strong>
+    <nav><a href="/">Home</a><a href="/sarees">Sarees</a><a href="#">Offers</a><a href="/about">Our weavers</a></nav>
+  </header>
+  <section class="hero">
+    <div>
+      <h1>Handwoven sarees from Varanasi looms</h1>
+      <p>Pure silk and cotton sarees woven by artisan families. Free shipping across India.</p>
+      <a class="btn" href="/sarees">Shop sarees</a><a class="btn" href="javascript:void(0)">Click here</a>
+      <p class="muted">Each saree takes 5 to 15 days to weave by hand.</p>
+    </div>
+    <div class="art" role="img" aria-label="Handloom pattern"></div>
+  </section>
+  <section class="grid">
+    <div class="card"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="><h3>Banarasi silk</h3><a href="/sarees/banarasi">View</a></div>
+    <div class="card"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="><h3>Chanderi cotton</h3><a href="/sarees/chanderi">View</a></div>
+    <div class="card"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="><h3>Tussar silk</h3><a href="/sarees/tussar">View</a></div>
+    <div class="card"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Kota doria saree"><h3>Kota doria</h3><a href="/sarees/kota">View</a></div>
+  </section>
+  <form action="/newsletter">
+    <h2>Get new arrivals</h2>
+    <input name="name" placeholder="Your name">
+    <input name="email" type="email" placeholder="Email">
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

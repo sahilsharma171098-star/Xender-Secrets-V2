@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Xender SiteCheck</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="top">
+    <img src="../icons/icon-32.png" width="22" height="22" alt="">
+    <div class="brand">
+      <strong>Xender SiteCheck</strong>
+      <span id="host" class="host">Website QA &amp; Conversion Audit</span>
+    </div>
+    <button id="rescan" class="icon-btn" type="button" title="Scan again" aria-label="Scan again" hidden>
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
+    </button>
+  </header>
+
+  <main id="main">
+    <section id="state-loading" class="state">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Checking this page…</p>
+    </section>
+
+    <section id="state-message" class="state" hidden>
+      <div class="msg-icon" aria-hidden="true">i</div>
+      <p id="message-text"></p>
+    </section>
+
+    <section id="results" hidden>
+      <div class="score-card">
+        <div class="ring" id="ring">
+          <svg viewBox="0 0 80 80" aria-hidden="true">
+            <circle cx="40" cy="40" r="34" class="ring-bg"/>
+            <circle cx="40" cy="40" r="34" class="ring-fg" id="ring-fg"/>
+          </svg>
+          <div class="ring-label"><b id="score">–</b><small>/100</small></div>
+        </div>
+        <div class="score-meta">
+          <div class="score-title">Website Health Score</div>
+          <div class="grade" id="grade"></div>
+          <div class="counts" id="counts"></div>
+        </div>
+      </div>
+      <p class="disclaimer">This is a Xender SiteCheck heuristic score, not a Lighthouse score.</p>
+
+      <div class="cats" id="cats" role="group" aria-label="Filter by category"></div>
+
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tab-issues" aria-selected="true" aria-controls="panel-issues" type="button">Issues <span id="issue-count"></span></button>
+        <button role="tab" id="tab-passed" aria-selected="false" aria-controls="panel-passed" type="button">Passed <span id="passed-count"></span></button>
+      </div>
+
+      <div id="panel-issues" role="tabpanel" aria-labelledby="tab-issues"></div>
+      <div id="panel-passed" role="tabpanel" aria-labelledby="tab-passed" hidden></div>
+
+      <div class="tools">
+        <div class="tool">
+          <div>
+            <strong>Broken link check</strong>
+            <span id="links-hint">Verify up to 40 links on this site. Only sends requests to this website.</span>
+          </div>
+          <button id="check-links" class="btn" type="button">Check links</button>
+        </div>
+        <div id="links-result" class="links-result" hidden></div>
+        <div class="tool">
+          <div>
+            <strong>Share with your developer</strong>
+            <span>Copies a plain-text report to your clipboard.</span>
+          </div>
+          <button id="copy" class="btn" type="button">Copy report</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="cta">
+      <strong>Want a human review?</strong>
+      <span>Get a free website audit from Xender Secrets — practical fixes for your site, from a real person.</span>
+      <a id="cta-link" href="https://www.xendersecrets.com/sitecheck.html#free-audit" target="_blank" rel="noopener">Get a free website audit →</a>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <span>Runs locally in your browser. Nothing is sent to Xender.</span>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

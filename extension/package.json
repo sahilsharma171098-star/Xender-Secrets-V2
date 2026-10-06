@@ -1,0 +1,22 @@
+{
+  "name": "xender-sitecheck",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Xender SiteCheck browser extension: local-first website QA & conversion audit.",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint . && node scripts/build.mjs && node scripts/validate-manifests.mjs",
+    "lint:firefox": "node scripts/build.mjs && web-ext lint --source-dir dist/firefox",
+    "test": "node scripts/build.mjs --test && node --test --test-concurrency=1 tests/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "package": "node scripts/build.mjs --zip",
+    "icons": "node scripts/icons.mjs",
+    "screenshots": "node scripts/build.mjs --test && node scripts/screenshots.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "playwright": "1.56.1",
+    "web-ext": "^10.7.0"
+  }
+}

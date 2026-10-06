@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="viewport" content="width=device-width"><title>Insecure and malformed links fixture</title>
+<script src="http://cdn.insecure.test/lib.js"></script></head>
+<body>
+  <h1>Links</h1>
+  <img src="http://cdn.insecure.test/photo.jpg" alt="Photo" width="10" height="10">
+  <a href="http://partner.insecure.test/">Our partner</a>
+  <a href="https://external.example.org/" target="_blank">External site</a>
+  <a href="#">Dead link</a>
+  <a href="javascript:void(0)">JS link</a>
+  <a href="www.example.com">Missing scheme</a>
+  <a href="mailto:">Email us</a>
+  <a href="/ok.html">Working page</a>
+  <a href="/missing.html">Missing page</a>
+  <a href="/logout">Log out</a>
+  <form action="http://forms.insecure.test/send"><label>Email <input type="email" name="e" autocomplete="email"></label><button>Send enquiry</button></form>
+</body></html>

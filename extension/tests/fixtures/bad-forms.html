@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta name="viewport" content="width=device-width"><title>Forms with usability problems fixture</title></head>
+<body>
+  <h1>Request a quote</h1>
+  <form id="long" action="/quote">
+    <input name="first_name" placeholder="First name">
+    <input name="last_name" placeholder="Last name">
+    <input name="email" type="email" placeholder="Email">
+    <input name="phone" type="tel" placeholder="Phone">
+    <input name="company" placeholder="Company">
+    <input name="website" placeholder="Website">
+    <input name="budget" placeholder="Budget">
+    <select name="source"><option>Google</option></select>
+    <textarea name="details" placeholder="Details"></textarea>
+  </form>
+  <form action="/subscribe">
+    <label>Email <input name="newsletter_email" type="email" autocomplete="email"></label>
+    <input type="submit" value="Submit">
+  </form>
+</body></html>
