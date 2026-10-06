@@ -78,7 +78,7 @@ HTTP/1.1 200 OK
 === quote
 {"ok":true,"subtotal":278,"shipping":49,"total":327,"currency":"INR"}
 === admin report
-{"ok":false,"error":"Admin access is disabled: ADMIN_TOKEN is shorter than 24 characters. Replace it with a longer random value (32+ characters recommended).","code":"admin_token_too_short"}
+{"ok":false,"error":"Unauthorized."}
 === sitemap urls
 50
 200 https://www.xendersecrets.com/

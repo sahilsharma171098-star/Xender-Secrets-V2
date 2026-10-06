@@ -1,2 +1,26 @@
+PASS mobile menu opens and closes on / 
+PASS mobile menu opens and closes on /services 
+PASS mobile menu opens and closes on /contact 
+PASS mobile menu opens and closes on /clinic-website-development 
+PASS mobile menu opens and closes on /website-development-gurugram 
+PASS theme toggle switches and persists (home) 
+PASS lead form: empty submit shows validation, sends nothing 
+PASS lead form: offer buttons preselect package 
+PASS website cost calculator updates estimate + WhatsApp link 
+PASS preview builder renders live draft 
+PASS chat widget answers a quick question 
+PASS website catalog grids render and sample links open 
+PASS business templates: search, filters, load more, preview 
+PASS shop: filter, search, cart, checkout form 
 PASS novels: list, search, open reader, next chapter, translate 
 FAIL account: wrong-password login shows error no error message
+PASS community + ideas pages load feeds (logged out) 
+PASS demo booking: load slots + book 
+PASS demo CRM lead (test-flagged) 
+PASS demo API explorer buttons 
+PASS demo commerce: products, cart, quote 
+PASS demo SaaS tasks: load + add 
+PASS demo store filters + cart; SaaS pricing toggle 
+PASS admin: wrong token rejected 
+PASS 404 page for unknown URL 
+PASS expired/unknown client preview link 
