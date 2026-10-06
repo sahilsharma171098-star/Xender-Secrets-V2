@@ -186,7 +186,7 @@ await test('novels: list, search, open reader, next chapter, translate', async (
   if (langs > 1) {
     await p.selectOption('#languageSelect', { index: 1 });
     const r = p.waitForResponse(r => r.url().includes('/api/translate'), { timeout: 30000 }).catch(() => null);
-    await p.click('#translateChapter'); const rr = await r; notes.push('translate: ' + (rr ? rr.status() : 'no request'));
+    await p.click('#translateChapter'); const rr = await r; notes.push('translate: ' + (rr ? rr.status() : 'no request')); await p.waitForTimeout(3000); notes.push('after translate: ' + (await p.locator('main, body').first().innerText()).slice(0, 300).replace(/\s+/g, ' ')); await p.screenshot({ path: 'shots/reader_translate.png' });
   }
   await p.fill('#jumpInput', '99999'); await p.click('#jumpBtn'); await p.waitForTimeout(1500); notes.push('jump 99999 -> ' + p.url() + ' / ' + (await p.locator('body').innerText()).slice(0, 120).replace(/\s+/g, ' '));
 });
@@ -195,7 +195,8 @@ await test('novels: list, search, open reader, next chapter, translate', async (
 await test('account: wrong-password login shows error', async (p, notes) => {
   await go(p, '/account');
   await p.fill('#loginForm [name=email]', 'nobody-qa@example.com'); await p.fill('#loginForm [name=password]', 'wrongpassword123');
-  await p.click('#loginForm [type=submit]'); await p.waitForTimeout(1500);
+  const lr = p.waitForResponse(r => r.url().includes('/api/auth/login'), { timeout: 20000 }); const t1 = Date.now();
+  await p.click('#loginForm [type=submit]'); const lres = await lr; notes.push('login API ' + lres.status() + ' in ' + (Date.now() - t1) + 'ms: ' + (await lres.text()).slice(0, 120)); await p.waitForTimeout(2500);
   const m = await text(p, '#authMessage'); notes.push('message: ' + m); ok(m.trim(), 'no error message');
   for (const prov of ['google', 'github', 'facebook', 'x']) { await p.click(`[data-provider=${prov}]`, { force: true }); await p.waitForTimeout(300); notes.push(prov + ': ' + (await text(p, '#authMessage')).slice(0, 90) + ' @ ' + new URL(p.url()).pathname); if (!p.url().includes('/account')) await go(p, '/account'); }
 });
