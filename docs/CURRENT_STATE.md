@@ -1,6 +1,6 @@
 # Xender Secrets V2 — Current State
 
-Snapshot date: 2026-10-05
+Snapshot date: 2026-10-06
 
 ## Source of truth
 Repository: `sahilsharma171098-star/Xender-Secrets-V2`
@@ -20,7 +20,7 @@ Main commit at AI-collaboration setup start:
 - Repository metadata reported zero open issues at the time of this snapshot.
 
 ## AI collaboration
-Shared workflow is being introduced so Claude and ChatGPT operate against the same GitHub source of truth.
+Shared workflow is active so Claude and ChatGPT operate against the same GitHub source of truth.
 
 Rules:
 - Claude may implement on task branches and prepare PRs.
@@ -35,3 +35,17 @@ This document is a snapshot, not a replacement for inspecting current code. Upda
   Cloudflare Worker with edge caching; Render stays as automatic fallback until retired.
 - Live E2E failures on 2026-10-05 were caused by stale homepage assertions after `83c033d`
   (not by Render) plus tests racing the Cloudflare deploy; both fixed on the same branch.
+
+
+## Full Claude project handoff (2026-10-06)
+- Added durable full-history project memory in docs/XENDER_PROJECT_MEMORY.md.
+- Added done/in-progress/pending ledger in docs/XENDER_PROGRESS_LEDGER.md.
+- Added six-department operating model in docs/XENDER_OPERATING_SYSTEM.md.
+- Added fresh-session bootstrap in docs/CLAUDE_PROJECT_BOOTSTRAP.md.
+- CLAUDE.md now requires these files in the startup read order.
+- This memory layer summarizes recoverable discussions; it is not a verbatim transcript export.
+- Current repository, PRs, issues, workflow runs and production behavior remain authoritative for implementation state.
+
+## Recent merged implementation
+- PR #14 XEND-ACQ-001: zero-spend site reviewer + acquisition workflow.
+- PR #16 XEND-READER-001: static/edge reader modernization, Render fallback, reader/E2E test fixes.
