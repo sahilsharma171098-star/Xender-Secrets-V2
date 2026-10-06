@@ -51,7 +51,7 @@ This document is a snapshot, not a replacement for inspecting current code. Upda
 - PR #16 XEND-READER-001: static/edge reader modernization, Render fallback, reader/E2E test fixes.
 
 ## XEND-WARROOM-001 revenue engine (2026-10-06, Claude) — branch `claude/xend-warroom-001-revenue-engine`
-State at handoff: **implemented and tested on the branch; PR open; not yet merged/deployed.** Verify `main` before assuming it is live.
+State at handoff: **implemented and tested on the branch; PR #18 open; not yet merged/deployed.** Verify `main` before assuming it is live.
 - Homepage rebuilt (light default, dark optional): ICP, ₹0 check / ₹999 / ₹1,999 / ₹3,499 / custom, labelled concept demos, process, FAQ, lead form `#start`.
 - `src/growth.mjs` (wired into `AppState` + main fetch): `POST /api/lead` (v2, writes `growth_leads`), `POST /api/event` (aggregate `growth_daily`), `GET/PATCH /api/admin/leads[...]`, `/api/admin/report`, `/api/admin/leads.csv` — admin requires Worker secret `ADMIN_TOKEN` (503 until set). Optional Telegram alert via `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID`. Additive tables only; legacy `leads` untouched.
 - `public/xs-growth.js` on every public page; `public/admin.html` private MIS (noindex, robots-disallowed, no-store).

@@ -101,7 +101,7 @@ Deliverables:
 
 
 ## XEND-WARROOM-001 — 7-day zero-spend revenue sprint (Issues #8–#11)
-Status: REVIEW (Day 1 shipped as PR) · Owner: Claude · Branch: `claude/xend-warroom-001-revenue-engine`
+Status: REVIEW (Day 1 shipped as PR #18) · Owner: Claude · Branch: `claude/xend-warroom-001-revenue-engine`
 Delivered: conversion homepage, lead capture v2, first-party events, private MIS, sales docs. See `docs/CLAUDE_WARROOM_PLAN.md`.
 Next (Claude): XEND-DEV-002. Next (ChatGPT): CQ-001…005 in `docs/CHATGPT_ACTION_QUEUE.md`. Next (Sahil): secrets, merge, GST + payment terms.
 

@@ -66,7 +66,7 @@ Merged PR #16 — XEND-READER-001.
 - 10-industry portfolio concept defined
 - website/template/frontend/backend/full-stack catalog direction defined
 
-### Revenue engine — XEND-WARROOM-001 Day 1 (2026-10-06, PR from `claude/xend-warroom-001-revenue-engine`; done on branch, pending merge)
+### Revenue engine — XEND-WARROOM-001 Day 1 (2026-10-06, PR #18 from `claude/xend-warroom-001-revenue-engine`; done on branch, pending merge)
 - conversion homepage with offer ladder and lead form
 - lead capture v2 + spam/rate protection + attribution
 - first-party aggregate events on all pages; private MIS (`/admin.html`) with booked vs collected
