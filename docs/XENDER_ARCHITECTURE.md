@@ -76,3 +76,10 @@ It runs Playwright-based live E2E checks against production for selected fronten
   (built by `scripts/build-novel-data.mjs` via the "Build static novel data" workflow).
 - XperimentalHamid partner chapters: Worker route `/api/reader/xh/*` (`src/reader/`), edge-cached.
 - Render `xender-reader-stable` (`reader-server.js`): automatic fallback and rollback only.
+
+## Growth / lead / MIS layer (XEND-WARROOM-001) — see `docs/DATA_MEASUREMENT_PLAN.md`
+- `src/growth.mjs`, called first inside `AppState.fetch`; tables `growth_leads`, `growth_daily`, `growth_lead_log`, `growth_rate`.
+- Routes: `POST /api/lead`, `POST /api/event`, `/api/admin/*` (Bearer `ADMIN_TOKEN` secret).
+- Main fetch intercepts `/api/lead` to send the optional Telegram alert via `ctx.waitUntil`.
+- Browser: `public/xs-growth.js` (all pages), `public/admin.html` (private MIS).
+- Local dev: `wrangler.local.jsonc` (gitignored, AI binding removed) + `.dev.vars` with a local ADMIN_TOKEN.

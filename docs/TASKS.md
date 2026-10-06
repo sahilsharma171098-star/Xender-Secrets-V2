@@ -18,7 +18,7 @@ Acceptance:
 - Changes are reviewable through a PR.
 
 ## XEND-AUDIT-001 — Claude full repository audit
-Status: READY
+Status: REVIEW (revenue-path audit delivered in `docs/CLAUDE_REPO_AUDIT.md`, 2026-10-06)
 Owner: Claude
 
 Instructions:
@@ -33,9 +33,8 @@ Deliverable:
 - Add `docs/CLAUDE_REPO_AUDIT.md` on a dedicated branch and open a PR.
 
 ## XEND-REVIEW-001 — Review Claude repository audit
-Status: BLOCKED
+Status: READY
 Owner: ChatGPT
-Blocked by: XEND-AUDIT-001
 
 Scope:
 - Review Claude audit against actual repository state.
@@ -99,3 +98,18 @@ Deliverables:
 - docs/XENDER_OPERATING_SYSTEM.md
 - docs/CLAUDE_PROJECT_BOOTSTRAP.md
 - CLAUDE.md updated to require these files before work.
+
+
+## XEND-WARROOM-001 — 7-day zero-spend revenue sprint (Issues #8–#11)
+Status: REVIEW (Day 1 shipped as PR #18) · Owner: Claude · Branch: `claude/xend-warroom-001-revenue-engine`
+Delivered: conversion homepage, lead capture v2, first-party events, private MIS, sales docs. See `docs/CLAUDE_WARROOM_PLAN.md`.
+Next (Claude): XEND-DEV-002. Next (ChatGPT): CQ-001…005 in `docs/CHATGPT_ACTION_QUEUE.md`. Next (Sahil): secrets, merge, GST + payment terms.
+
+## XEND-DEV-002 — Carry the new design + lead form to inner commercial pages
+Status: READY · Owner: Claude
+Scope: shared light header/footer, offer CTA and `data-lead-form` on `services.html`, 6 industry pages, 7 city pages; chat widget leads with free check.
+Acceptance: funnel browser test extended to these pages; no overflow at 375px; live E2E green.
+
+## XEND-SALES-002 — Free-check + preview delivery kit
+Status: READY · Owner: Claude
+Scope: reviewer output → client-ready fix list; template → personalised 1-page preview in <30 min.

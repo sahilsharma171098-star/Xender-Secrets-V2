@@ -21,6 +21,8 @@ try {
   const serviceCards = await page.locator('#services .card').count();
   const waLinks = await page.locator('a[href*="wa.me/919821941814"]').count();
   const catalogLink = await page.locator('a[href*="website-catalog.html"]').count();
+  const leadForm = await page.locator('form[data-lead-form]').count();
+  record('homepage_lead_form', leadForm === 1, `leadForms=${leadForm}`);
   record('homepage', title.includes('Xender Secrets') && /websites?/i.test(hero) && serviceCards >= 3 && waLinks >= 1 && catalogLink >= 1,
     `title=${title}; hero=${hero}; services=${serviceCards}; whatsapp=${waLinks}; catalogLinks=${catalogLink}`);
 } catch (e) { record('homepage', false, e); }
@@ -129,6 +131,16 @@ try {
   record('translation_api_small', apiProbe.status===200 && apiProbe.body?.ok===true && /[\u0900-\u097F]/.test((apiProbe.body?.translated||[]).join(' ')), JSON.stringify(apiProbe));
 
 } catch (e) { record('translation_api_small', false, e); }
+
+try {
+  // Lead capture is the revenue-critical path: smoke it on production with a test-flagged lead
+  // (hidden from the MIS by default and never sent as a notification).
+  const probe = await page.evaluate(async () => {
+    const r = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'E2E smoke', email: 'e2e-smoke@xendersecrets.com', test: true, page: '/e2e', cta: 'live-e2e' }) });
+    return { status: r.status, body: await r.json().catch(() => null) };
+  });
+  record('lead_api_smoke', probe.status === 201 && /^XS-\d{6}-[A-Z2-9]{4}$/.test(probe.body?.id || ''), JSON.stringify(probe));
+} catch (e) { record('lead_api_smoke', false, e); }
 
 // Reader: Gutenberg chapters are static JSON (no backend); XH chapters come from the Worker
 // (/api/reader/*) with the Render service only as a fallback.
