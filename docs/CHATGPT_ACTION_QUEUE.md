@@ -131,3 +131,9 @@ Already done by Claude: audited the company page (1 follower, 0 posts, generic A
 ### CQ-LI-05 — Connect LinkedIn to Metricool (optional)
 - Priority: P2 · Owner: Sahil
 - Action: connect the LinkedIn page at https://app.metricool.com/brands/connections?blogId=7266070. Then Claude can schedule posts there with best-time data, and Metricool analytics will cover LinkedIn. Not required for this week's plan.
+
+### CQ-IG — Instagram channel handoff (link, owned by the Instagram thread)
+- Handoff: `docs/handoffs/instagram-gurugram.md` in PR #24 (branch `claude/instagram-execution-bqkq8g`).
+- Private prospect doc (25 Gurugram businesses, already deduped against the LinkedIn doc and the Oct 5–6 emails): https://docs.google.com/document/d/1g_inZfoGPSqW63qhc4RmayPO_n-TVOhO9QZFjIukOxY/edit
+- Instagram posts publish via Windsor (@xande_r5955) daily Oct 7–12 at 18:52 IST. LinkedIn publishes at 09:52 IST.
+- Daily first-touch cap is shared across LinkedIn, Instagram and email: 5 per day in total until reply rates justify more.
