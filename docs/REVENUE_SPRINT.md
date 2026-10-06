@@ -51,7 +51,8 @@ Config JSON template (ChatGPT can draft this; Sahil pastes it into the builder):
 - **Link the matching industry page** (CQ-007) for cold first touches: `/clinic-website-development`, `/accountant-website-development`, `/real-estate-website-development`, etc., with UTM tags.
 - **Offer the preview, not a full free build**: "I can make a quick draft of what your website could look like — free, no obligation."
 - On a positive reply: hand Sahil the config JSON. The preview should go out within 12 hours with the builder's message. The proposal goes the same day interest is confirmed (quote template: playbook §6).
-- Fitness and restaurant prospects have previews but no industry landing page yet. Link the homepage `#work` or `/small-business-website-india` instead.
+- Fitness and restaurant prospects: use `/gym-website-development` and `/restaurant-website-development` (added in PR #21).
+- **Free-check message in one command:** save the prospect's homepage HTML, then run `npm run review:site -- page.html --message --name "Dr Asha Mehta" --site mehtadental.in`. It prints a plain-language, prospect-ready message: owner-visible problems first, no scores, and no promises. It recommends a free draft preview only when the site has serious problems. Always read it before sending.
 
 ## 4. Daily targets (Issue #19 — targets, not promises)
 15 verified prospects · ≤5 personalised first touches (scale only if reply quality holds) · previews within 12 h of a positive reply · proposal same day · track booked vs **collected** in `/admin.html`.
@@ -61,4 +62,5 @@ Config JSON template (ChatGPT can draft this; Sahil pastes it into the builder):
 - [ ] Sahil: merge #20 then #21; set `ADMIN_TOKEN` if not done; create one test preview from a phone.
 - [ ] Sahil: GST inclusive/exclusive + payment terms decision (blocks quotes).
 - [ ] ChatGPT: CQ-001…CQ-007 in `docs/CHATGPT_ACTION_QUEUE.md`.
-- [ ] Claude (next): fitness and restaurant industry landing pages; turn `npm run review:site` output into a client-ready "free check" message; weekly MIS summary.
+- [x] Claude: gym and restaurant landing pages; `review:site --message` free-check generator; "Copy daily scorecard" in `/admin.html` (MIS-001).
+- [ ] Claude (next): ship the release once #20/#21 merge, and verify the production E2E run, `/p/` redirects and `.mjs` content type.

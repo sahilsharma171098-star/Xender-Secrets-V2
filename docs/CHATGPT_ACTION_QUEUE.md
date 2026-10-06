@@ -86,5 +86,10 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 
 ### CQ-007 — Use industry landing pages in outreach (added 2026-10-06)
 - Priority: P0 · Channel: Gmail / LinkedIn
-- Action: link the matching page instead of the homepage: CA → `/accountant-website-development`, clinics/dentists → `/clinic-website-development`, agents → `/real-estate-website-development`, recruiters → `/recruitment-agency-website-development`, coaching → `/coaching-website-development`, consultants → `/consultant-website-development`. Always add `?utm_source=<channel>&utm_campaign=<yyyymmdd>-<segment>`.
+- Action: link the matching page instead of the homepage: CA → `/accountant-website-development`, clinics/dentists → `/clinic-website-development`, agents → `/real-estate-website-development`, recruiters → `/recruitment-agency-website-development`, coaching → `/coaching-website-development`, consultants → `/consultant-website-development`, gyms → `/gym-website-development`, restaurants/cafés → `/restaurant-website-development` (gym/restaurant live after PR #21). Always add `?utm_source=<channel>&utm_campaign=<yyyymmdd>-<segment>`.
 - Expected: higher click→enquiry rate (each page has industry FAQs, matching concept templates and the lead form).
+
+### CQ-008 — Post the daily scorecard (added 2026-10-06)
+- Priority: P1 · Channel: GitHub Issue #5 (MIS-001)
+- Action: each evening Sahil clicks **Copy daily scorecard** in `/admin.html` (after #21 is live). ChatGPT fills in the outreach numbers from the private CRM (found / contacted / replies, plus delivery and blockers) and posts it as a comment on Issue #5.
+- Expected: one comparable daily record of funnel, pipeline, booked and collected revenue.

@@ -238,6 +238,12 @@ test('admin MIS: locked without token, shows pipeline and saves stage changes', 
   await tr.locator('[name="collected_value"]').fill('1000');
   await tr.locator('[data-save]').click();
   await page.waitForFunction(() => [...document.querySelectorAll('.kpi')].some((k) => k.textContent.includes('Cash collected') && k.textContent.includes('1,000')));
+  await page.click('#scorecard');
+  await page.waitForSelector('#scorecardBox:not([hidden])');
+  const card = await page.locator('#scorecardText').innerText();
+  assert.match(card, /Xender daily scorecard — \d{4}-\d{2}-\d{2}/);
+  assert.match(card, /Cash collected ₹1,000/);
+  assert.match(card, /won 1/);
   const lead = rows(db, 'SELECT stage,quote_value,collected_value FROM growth_leads')[0];
   assert.deepEqual({ ...lead }, { stage: 'won', quote_value: 1999, collected_value: 1000 });
   assert.deepEqual(log.errors, []);

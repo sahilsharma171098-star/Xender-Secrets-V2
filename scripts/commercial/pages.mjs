@@ -160,6 +160,50 @@ export const INDUSTRIES = [
     ],
     wa: "Hi Xender Secrets, I want a website for my coaching institute.",
   },
+  {
+    file: "gym-website-development.html", slug: "gym", business: "gyms", code: "GYM", label: "Gym",
+    title: "Gym & Fitness Studio Website from ₹999 | Free-Trial Enquiries | Xender Secrets",
+    description: "Websites for gyms, fitness studios and personal trainers — programs, trainers, timings, membership enquiries and one-tap WhatsApp free-trial bookings. From ₹999.",
+    eyebrow: "Websites for gyms &amp; fitness studios",
+    h1: "A gym website that turns scrollers into <em>free-trial bookings.</em>",
+    lede: "People choose a gym on their phone — usually after checking location, timings and what a session feels like. We build fast, energetic sites that show your programs, trainers and timings, with a one-tap WhatsApp button to book a free trial.",
+    needs: [
+      ["Is it close and open when I'm free?", "Location, map and timings — including early-morning and late-evening slots."],
+      ["What can I do here?", "Strength, weight loss, personal training, group classes — explained in plain words."],
+      ["Who will train me?", "Trainer profiles and certifications you're comfortable publishing."],
+      ["How much, and can I try first?", "Membership plans or \"ask for prices\", plus a free-trial or visit button."],
+    ],
+    build: ["Home page with programs and gym highlights you choose", "Programs / classes section with timings", "Trainer profiles", "Membership plans (or \"ask for pricing\")", "Location, map and opening hours", "Free-trial WhatsApp button on every screen"],
+    rec: "founding-website-999", recWhy: "Most single-location gyms start well with one strong page.",
+    faq: [
+      ["Can members pay or renew online?", "Online payments need a payment-provider account in your name; integrating it is custom work and the provider charges its own fees. Many gyms start with WhatsApp enquiries and pay-at-desk."],
+      ["Can we show member transformations?", "Only with the member's written permission, and only genuine results. We never create or edit results."],
+      ["Can we post a class timetable that we update?", "Yes. For a timetable that changes weekly we can make it easy to update — ask and we'll quote the simplest option."],
+    ],
+    wa: "Hi Xender Secrets, I want a website for my gym.",
+  },
+  {
+    file: "restaurant-website-development.html", slug: "restaurant", business: "restaurants", code: "REST", label: "Restaurant",
+    title: "Restaurant & Café Website from ₹999 | Menu, Reservations | Xender Secrets",
+    description: "Websites for restaurants, cafés and cloud kitchens — menu, photos, timings, map, table reservations and WhatsApp orders. From ₹999, no commission.",
+    eyebrow: "Websites for restaurants &amp; cafés",
+    h1: "A restaurant website with your menu, <em>bookings and orders</em> one tap away.",
+    lede: "Diners check the menu, prices, timings and location before they visit or order. We build quick, appetising sites that show your menu clearly and let guests reserve a table or order on WhatsApp — without paying a commission on every order.",
+    needs: [
+      ["What's on the menu?", "A readable menu with prices, not a blurry photo of a printed card."],
+      ["Is it open now, and where is it?", "Timings, map, parking or delivery area."],
+      ["What's it like?", "Your own photos of the food and the space."],
+      ["Book or order", "Reserve-a-table and order-on-WhatsApp buttons that work on a phone."],
+    ],
+    build: ["Home page with signature dishes and photos you provide", "Menu section with prices (easy to update)", "Timings, location map and directions", "Reserve-a-table and WhatsApp-order buttons", "Links to your delivery-app and Google pages", "Basic on-page SEO for \"restaurant near {area}\" style searches"],
+    rec: "business-starter-1999", recWhy: "Home, menu and contact pages suit most restaurants and cafés.",
+    faq: [
+      ["Do you take a commission on orders?", "No. The website is a one-time fixed price. Orders that come through WhatsApp go straight to you."],
+      ["Can customers pay online for orders?", "That needs a payment-provider account in your name and is custom work; the provider charges its own fees."],
+      ["How do we update the menu?", "Send us changes and we update them, or for frequent changes we can make the menu easy for you to edit — ask for a quote."],
+    ],
+    wa: "Hi Xender Secrets, I want a website for my restaurant.",
+  },
 ];
 
 function industryPage(ind) {
@@ -253,6 +297,8 @@ function locationPage(loc) {
       ['<a href="/clinic-website-development.html">Clinics &amp; dentists</a>', "Treatments, doctor profiles, timings and appointment requests."],
       ['<a href="/real-estate-website-development.html">Real-estate agents</a>', "Listings, localities and property-specific WhatsApp enquiries."],
       ['<a href="/coaching-website-development.html">Coaching institutes</a>', "Courses, batches, faculty and admission enquiries."],
+      ['<a href="/gym-website-development.html">Gyms &amp; fitness studios</a>', "Programs, trainers, timings and free-trial bookings."],
+      ['<a href="/restaurant-website-development.html">Restaurants &amp; cafés</a>', "Menu, photos, reservations and WhatsApp orders."],
       ['<a href="/recruitment-agency-website-development.html">Recruitment agencies</a>', "Employer hiring enquiries and candidate paths."],
       ['<a href="/consultant-website-development.html">Consultants</a>', "Sharp positioning and discovery-call requests."],
     ] }),
@@ -294,7 +340,9 @@ function homePage() {
           <a href="/recruitment-agency-website-development.html">Recruitment agencies</a>
           <a href="/consultant-website-development.html">Consultants</a>
           <a href="/coaching-website-development.html">Coaches &amp; institutes</a>
-          <a href="/small-business-website-india.html">Gyms, salons, shops &amp; local services</a>
+          <a href="/gym-website-development.html">Gyms &amp; fitness</a>
+          <a href="/restaurant-website-development.html">Restaurants &amp; cafés</a>
+          <a href="/small-business-website-india.html">Salons, shops &amp; local services</a>
         </div>
       </div>
     </section>`,
@@ -396,6 +444,8 @@ function servicesPage() {
       ['<a href="/recruitment-agency-website-development.html">Recruitment agencies</a>', "Employer enquiries and candidate paths."],
       ['<a href="/consultant-website-development.html">Consultants</a>', "Positioning and discovery-call requests."],
       ['<a href="/coaching-website-development.html">Coaching institutes</a>', "Courses, batches and admission enquiries."],
+      ['<a href="/gym-website-development.html">Gyms &amp; fitness studios</a>', "Programs, trainers and free-trial bookings."],
+      ['<a href="/restaurant-website-development.html">Restaurants &amp; cafés</a>', "Menu, reservations and WhatsApp orders."],
     ] }),
     processBlock(),
     faqBlock(faq),

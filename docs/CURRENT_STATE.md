@@ -72,3 +72,4 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Worker: table `growth_previews`; `POST/GET /api/admin/previews`, `DELETE /api/admin/previews/:id` (ADMIN_TOKEN); public `GET /api/preview/:id` (counts views unless `?nocount=1`; 410 after expiry).
 - Pages: `/preview-builder.html` (live draft via same-origin postMessage only), `/preview.html?id=` and short link `/p/:id` (`public/_redirects`). All noindex + robots-disallowed.
 - MIS shows previews with views/last view. SOP + outreach guidance: `docs/REVENUE_SPRINT.md`.
+- Same branch (PR #21) also adds: `gym-website-development.html` + `restaurant-website-development.html` (generated), `scripts/lib/free-check-message.mjs` (`npm run review:site -- page.html --message`), and "Copy daily scorecard" in `/admin.html`.

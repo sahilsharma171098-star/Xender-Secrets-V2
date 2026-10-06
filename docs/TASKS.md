@@ -114,4 +114,4 @@ Acceptance: funnel browser test extended to these pages; no overflow at 375px; l
 ## XEND-SALES-002 — Client preview system (Issue #19)
 Status: REVIEW · Owner: Claude · Branch: `claude/xend-sales-002-preview-system` (stacked on PR #20)
 Delivered: 5 vertical previews (dental/clinic, real estate, professional services, fitness, restaurant), builder, admin-only short links `/p/<id>`, view tracking in MIS, expiry, draft banner. SOP: `docs/REVENUE_SPRINT.md`.
-Open: reviewer output → client-ready free-check message.
+Also delivered: gym + restaurant landing pages, `review:site --message` free-check generator, MIS daily scorecard (MIS-001).

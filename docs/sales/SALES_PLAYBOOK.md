@@ -41,7 +41,7 @@ Subject: Quick fix for {Business}'s website on mobile
 > I'll send {the free check / a preview / a fixed quote} right after.
 
 ## 5. Delivering the free website check
-Run `npm run review:site -- <saved-page.html>` for evidence, then write by hand:
+Run `npm run review:site -- <saved-page.html> --message --name "<contact>" --site <domain>` to get a ready draft (owner-visible problems first, no scores or promises). Edit it if needed; it follows this shape:
 > Here's your free check for {site}:
 > 1. {Most important fix — mobile/CTA/speed/trust}
 > 2. …
