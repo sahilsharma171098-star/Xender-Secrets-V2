@@ -105,3 +105,54 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 - Action: run SiteCheck on a prospect's homepage before first touch; quote 2–3 specific, verified findings (copy report → pick items) in the personalised message, and link `/sitecheck` for the free extension. Never paste the full report unsolicited, never claim the score is a Google/Lighthouse score.
 - Expected: more specific first messages and a reason to reply. MIS: note "SiteCheck used" on the lead.
 
+
+## Added by Claude — 2026-10-06 (XEND-SEO-TRAFFIC-001, branch `claude/xend-seo-traffic-001`)
+Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item below: no automated posting, no fake reviews/ratings/engagement, no link schemes, no traffic manipulation. Use the exact business details everywhere (NAP consistency): **Xender Secrets · Gurugram, Haryana, India · +91 98219 41814 · https://www.xendersecrets.com**. Do not publish a street address unless Sahil confirms one he wants public.
+
+### CQ-010 — Search Console clean-up + priority indexing (P0, after this PR deploys)
+- Channel: Google Search Console (needs write access — Sahil, or ChatGPT if the connector is upgraded).
+- Action: (1) Sitemaps → remove the erroneous sitemap entry `https://www.xendersecrets.com/` (the homepage submitted as a sitemap). (2) Resubmit `https://www.xendersecrets.com/sitemap.xml` (now 44 URLs; demo pages deliberately removed). (3) URL Inspection → "Request indexing" for the priority list in `docs/SEO_TRAFFIC_PLAN.md` §3, in order, ≤ 10/day. Do **not** inspect `/website-development-gurgaon.html` — it now 301s to `/website-development-gurugram`.
+- Expected: priority URLs move to "Discovered"/"Crawled" within days. MIS: record per-URL status on the Day-7 row of `docs/SEO_TRAFFIC_PLAN.md` §4.
+
+### CQ-011 — Bing Webmaster Tools + IndexNow (P0, ~10 min, free)
+- Channel: Bing Webmaster Tools (Sahil signs in with Google/Microsoft).
+- Action: "Import from Google Search Console" (verifies the site and imports the sitemap). Then in GitHub run Actions → **IndexNow submit** → Run workflow (leave "only" empty). Expect HTTP 200/202 in the log.
+- Expected: Bing/DuckDuckGo/Yahoo/ChatGPT-search coverage without waiting for a crawl. MIS: note Bing indexed count at each checkpoint.
+
+### CQ-012 — Google Business Profile (P0, highest local-intent lever)
+- Channel: Google Business Profile (Sahil is the owner; verification is his).
+- Action: create/verify "Xender Secrets" as a **service-area business** (hide address if run from home), primary category **Website designer**, secondary **Internet marketing service** only if accurate. Service areas: Gurugram, Delhi, Noida, Faridabad, Ghaziabad. Services list = the 3 packages + "Free website check" with "from ₹999 + GST". Website button → `https://www.xendersecrets.com/website-development-gurugram`. Add genuine photos only (founder, workspace, screenshots of our own demo builds labelled as demos).
+- Reviews: only ask real clients after delivery. Never seed, swap or buy reviews.
+- Expected: Maps/local-pack eligibility for "website designer Gurgaon". MIS fields: `source=google_business` on any lead that mentions Maps.
+
+### CQ-013 — Legitimate free profiles/directories (P1, 5 per day max, manual)
+- Channel: each site's own free listing flow, signed in by Sahil.
+- Targets (free tiers only; skip anything that requires payment to publish): Bing Places (import from GBP), Apple Business Connect, LinkedIn company page (complete "About" + website), Clutch (free profile), GoodFirms (free listing), DesignRush (free listing), Justdial (free listing), IndiaMART (free seller listing for "website development services").
+- Content: use the one-line description "Fixed-price, mobile-first business websites for small businesses in Gurugram, Delhi NCR and across India — from ₹999 + GST." Link the homepage (or the industry page if the directory is industry-specific). No UTM on directory links (keeps the link clean); attribution comes from the referrer and landing page that `/api/lead` already stores with every lead (visible in `/admin.html`).
+- Expected: brand citations + a few relevant referring domains. MIS: maintain a "Profiles" list (site, URL, status, date) in the issue thread.
+
+### CQ-014 — Industry-page outreach (P0, ties SEO pages to revenue)
+- Channel: Gmail / WhatsApp / LinkedIn (existing CQ-002 batches).
+- Action: in each first-touch message, link the **matching industry or city page** (e.g. dentists → `/clinic-website-development`, Gurgaon businesses → `/website-development-gurugram`) instead of the homepage, plus 2–3 verified findings from SiteCheck. Personal, one-to-one, ≤ 20/day.
+- Expected: real visits to the priority pages from qualified buyers (also a weak discovery signal). MIS: `landing` = page linked; `source` = channel.
+
+### CQ-015 — Apex → www and HTTP → HTTPS redirect (P1, Sahil, free)
+- Channel: Cloudflare dashboard → the `xendersecrets.com` zone.
+- Action: SSL/TLS → Edge Certificates → **Always Use HTTPS: On**. Rules → Redirect Rules → create "apex to www": when hostname equals `xendersecrets.com`, dynamic redirect to `concat("https://www.xendersecrets.com", http.request.uri.path)`, status **301**, preserve query string.
+- Verified 2026-10-06: `https://xendersecrets.com/services` currently serves the page (200) instead of redirecting. Canonicals already point to `www`, so this is consolidation, not an emergency.
+- Expected: one host in Google's index. Verify with PR #31's workflow.
+
+### CQ-016 — Useful content distribution (P2, max 3 per week)
+- Channel: LinkedIn (Sahil's profile + company page); genuine Q&A threads (Quora / relevant subreddits) only where the question is real and recent.
+- Action: turn each location page's "How customers in {city} find a local business" section into one LinkedIn post (4 tips, no hard sell, link at the end). In Q&A, answer the question fully in the reply itself; link the cost calculator or a guide only when it adds something; always disclose "I run Xender Secrets". No copy-paste answers, no multiple accounts.
+- Expected: qualified visits and occasional natural links. MIS: `source=linkedin_post` / `source=community`.
+
+### CQ-017 — Backlink opportunities (P2, relationship-based only)
+- Channel: email / LinkedIn, one-to-one.
+- Targets: Gurugram/NCR business associations or chambers with member directories; Sahil's college alumni / founder directories; complementary local vendors (photographers, printers, CA firms) who maintain a genuine "partners we recommend" page; small-business blogs accepting a genuinely useful guest guide (e.g. "What a ₹1,000 website should and shouldn't include").
+- Not allowed: paid links, link exchanges for their own sake, PBNs, comment/forum link drops.
+- Expected: 2–5 relevant referring domains over 28 days. MIS: log each in the issue thread (site, contact, status, link URL).
+
+### CQ-018 — Checkpoint readings (P0, scheduled)
+- Dates: 2026-10-13 (Day 7), 2026-10-20 (Day 14), 2026-11-03 (Day 28).
+- Action: pull the metrics in `docs/SEO_TRAFFIC_PLAN.md` §4 (GSC URL Inspection for the 12 priority URLs, Performance by page + query, Bing indexed count, MIS organic leads/quotes/revenue) and fill the "Actual" column via a PR or an issue comment. Apply the decision rules in §4.

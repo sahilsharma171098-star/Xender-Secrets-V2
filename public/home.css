@@ -71,7 +71,7 @@ p{margin:0 0 1em;color:var(--ink-2)}
 .who{padding:22px 0 8px}
 .who .kicker{text-align:center;color:var(--muted);letter-spacing:.06em}
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-.chips a{border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:var(--ink-2);text-decoration:none;font-weight:600;font-size:.92rem;background:var(--surface)}
+.chips a,.chips .chip{border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:var(--ink-2);text-decoration:none;font-weight:600;font-size:.92rem;background:var(--surface)}
 .chips a:hover{border-color:var(--accent);color:var(--accent)}
 
 /* sections */
@@ -177,6 +177,8 @@ p{margin:0 0 1em;color:var(--ink-2)}
 .contact p{margin:0;overflow-wrap:anywhere}
 .related{padding:28px 0 48px}
 .chips.left{justify-content:flex-start}
+.chips .chip{font-weight:500;background:transparent}
+.chips+p{margin-top:18px}
 .footer-industries{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:.86rem}
 .footer-industries span{color:var(--ink)}
 .footer-industries a{color:var(--muted);text-decoration:none}

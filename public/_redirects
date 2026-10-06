@@ -10,3 +10,12 @@
 
 # Issue #19: short links for client website previews.
 /p/:id /preview?id=:id 302
+
+# XEND-SEO-TRAFFIC-001: "Gurgaon" is still the more common search spelling. Any guessed or
+# shared Gurgaon URL lands on the one canonical Gurugram page (no duplicate page).
+/website-development-gurgaon.html /website-development-gurugram 301
+/website-development-gurgaon /website-development-gurugram 301
+/website-development-in-gurgaon /website-development-gurugram 301
+/website-development-in-gurugram /website-development-gurugram 301
+/website-development-ncr /website-development-delhi 301
+/website-development-delhi-ncr /website-development-delhi 301

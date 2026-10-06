@@ -20,7 +20,7 @@ try {
   const hero = (await page.locator('h1').first().innerText()).replace(/\s+/g, ' ');
   const serviceCards = await page.locator('#services .card').count();
   const waLinks = await page.locator('a[href*="wa.me/919821941814"]').count();
-  const catalogLink = await page.locator('a[href*="website-catalog.html"]').count();
+  const catalogLink = await page.locator('a[href*="website-catalog"]').count();
   const leadForm = await page.locator('form[data-lead-form]').count();
   record('homepage_lead_form', leadForm === 1, `leadForms=${leadForm}`);
   record('homepage', title.includes('Xender Secrets') && /websites?/i.test(hero) && serviceCards >= 3 && waLinks >= 1 && catalogLink >= 1,

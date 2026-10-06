@@ -54,6 +54,8 @@ async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = n
     }
     let file = path.join(PUBLIC, decodeURIComponent(url.pathname));
     if (url.pathname.endsWith('/')) file = path.join(file, 'index.html');
+    // Mirror Cloudflare html_handling (auto-trailing-slash): /page serves page.html.
+    else if (!path.extname(file) && fs.existsSync(file + '.html')) file += '.html';
     if (!file.startsWith(PUBLIC) || !fs.existsSync(file)) { log.missing.push(url.pathname); return route.fulfill({ status: 404, body: 'nf' }); }
     return route.fulfill({ status: 200, headers: { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' }, body: fs.readFileSync(file) });
   });
@@ -69,7 +71,7 @@ test('homepage answers the buyer questions and keeps the live-E2E contract', asy
   assert.match(h1, /websites?/i);
   assert.ok(await page.locator('#services .card').count() >= 3);
   assert.ok(await page.locator('a[href*="wa.me/919821941814"]').count() >= 1);
-  assert.ok(await page.locator('a[href*="website-catalog.html"]').count() >= 1);
+  assert.ok(await page.locator('a[href*="website-catalog"]').count() >= 1);
   const text = await page.locator('main').innerText();
   for (const must of ['₹999', '₹1,999', '₹3,499', '+ 18% GST', '₹1,178.82 incl. GST', '₹2,358.82 incl. GST', '₹4,128.82 incl. GST', 'Are prices inclusive of GST?', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
   assert.ok(await page.locator('form[data-lead-form]').count() === 1);
@@ -270,7 +272,7 @@ test('every generated commercial page: one lead form, valid metadata, no broken 
     for (const h of hrefs) {
       const p = h.split(/[?#]/)[0];
       const f = p === '/' ? 'index.html' : p.slice(1);
-      if (!fs.existsSync(path.join(PUBLIC, f))) broken.add(file + ' -> ' + h);
+      if (!fs.existsSync(path.join(PUBLIC, f)) && !fs.existsSync(path.join(PUBLIC, f + '.html'))) broken.add(file + ' -> ' + h);
     }
     const offers = await page.locator('[data-offer]').evaluateAll((els) => els.map((e) => e.dataset.offer));
     const options = await page.locator('form[data-lead-form] [name=offer] option').evaluateAll((os) => os.map((o) => o.value));

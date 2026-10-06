@@ -1,0 +1,40 @@
+name: IndexNow submit
+
+# XEND-SEO-TRAFFIC-001: after the sitemap changes on main (and Cloudflare has deployed it),
+# notify IndexNow engines (Bing, Yandex, Seznam, Naver). Free; no secrets; the public key file
+# lives at public/<key>.txt. Google is not an IndexNow engine — use Search Console for Google.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Optional comma-separated paths, e.g. /website-development-gurugram,/services (default: whole sitemap)"
+        required: false
+  push:
+    branches: [main]
+    paths:
+      - 'public/sitemap.xml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for the Cloudflare deploy
+        if: github.event_name == 'push'
+        run: sleep 90
+      - name: Submit sitemap URLs
+        env:
+          ONLY: ${{ github.event.inputs.only }}
+        run: |
+          if [ -n "$ONLY" ]; then node scripts/seo/indexnow.mjs --only "$ONLY"; else node scripts/seo/indexnow.mjs; fi
