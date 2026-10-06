@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home</title>
+  <!-- DEMO PAGE for SiteCheck store screenshots: a fictional business with typical, deliberate issues. -->
+  <style>
+    body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1f2937;background:#fff}
+    .bar{display:flex;align-items:center;gap:24px;padding:18px 48px;border-bottom:1px solid #eee}
+    .logo{font-weight:800;font-size:20px;color:#0f766e}
+    .bar nav{margin-left:auto;display:flex;gap:20px}
+    .bar nav a{color:#374151;text-decoration:none;font-weight:600}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;padding:56px 48px;background:#f0fdfa}
+    h1{font-size:46px;line-height:1.1;margin:0 0 14px;color:#0f172a}
+    .sub{color:#9ca3af;font-size:18px}
+    .btn{display:inline-block;background:#0f766e;color:#fff;padding:13px 20px;border-radius:10px;text-decoration:none;font-weight:700;margin-top:10px}
+    .photo{border-radius:18px;background:linear-gradient(135deg,#99f6e4,#5eead4);min-height:280px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:40px 48px}
+    .card{border:1px solid #e5e7eb;border-radius:14px;padding:18px}
+    .card img{width:100%;height:110px;border-radius:10px;background:#ccfbf1;display:block}
+    h4{margin:10px 0 4px}
+    form{display:grid;gap:10px;max-width:420px;padding:0 48px 48px}
+    input{padding:11px;border:1px solid #d1d5db;border-radius:8px;font:inherit}
+    .demo-label{position:fixed;left:12px;bottom:12px;background:#111827;color:#fff;font:600 12px system-ui;padding:6px 10px;border-radius:8px;opacity:.85}
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="logo">BrightSmile Dental</div>
+    <nav><a href="#">Home</a><a href="#treatments">Treatments</a><a href="#team">Our team</a><a href="javascript:void(0)">Gallery</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Healthy smiles for the whole family</h1>
+        <p class="sub">Modern dentistry with gentle care, flexible timings and transparent pricing.</p>
+        <a class="btn" href="#apointment">Book an appointment</a>
+      </div>
+      <div class="photo"></div>
+    </section>
+    <section class="cards" id="treatments">
+      <div class="card"><img src="/images/cleaning.svg"><h4>Cleaning &amp; check-up</h4><p>Twice-yearly visits.</p></div>
+      <div class="card"><img src="/images/braces.svg"><h4>Braces &amp; aligners</h4><p>For teens and adults.</p></div>
+      <div class="card"><img src="/images/implants.svg"><h4>Implants</h4><p>Natural-looking results.</p><a href="/implants">Read more</a></div>
+    </section>
+    <form>
+      <h3 id="team">Request a call back</h3>
+      <input name="name" placeholder="Your name">
+      <input name="phone" type="text" placeholder="Phone number">
+      <input type="submit" value="Submit">
+    </form>
+  </main>
+  <div class="demo-label">Demo page — fictional business</div>
+</body>
+</html>

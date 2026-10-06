@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Accessibility problems fixture page</title>
+  <style>body{background:#fff;color:#111;font:16px system-ui} .faint{color:#bbbbbb} .ok{color:#767676} .overlay{position:relative} .overlay span{color:#ccc}</style>
+</head>
+<body>
+  <h1>Accessibility fixture</h1>
+  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'/%3E" width="300" height="200">
+  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'/%3E" width="400" height="300" alt="">
+  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/%3E" width="1" height="1">
+  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'/%3E" width="50" height="50" alt="" role="presentation">
+  <a href="/instagram"><svg width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></a>
+  <a href="/twitter" aria-label="Twitter"><svg width="20" height="20"><circle cx="10" cy="10" r="8"/></svg></a>
+  <a href="/more">Read more</a>
+  <a href="/pricing">See our pricing</a>
+  <button type="button"><svg width="16" height="16"><rect width="16" height="16"/></svg></button>
+  <button type="button" aria-label="Close menu">×</button>
+  <button type="button">Open menu</button>
+  <p class="faint">This grey text is too light to read.</p>
+  <p class="ok">This grey text passes AA at 4.54:1.</p>
+  <div style="background:url(data:image/png;base64,iVBORw0KGgo=)"><p style="color:#ccc">Text over an image is not measured.</p></div>
+  <div role="buton">Bad role</div>
+  <div aria-labelledby="does-not-exist">Broken reference</div>
+  <div aria-hidden="true"><a href="/hidden-link">Focusable but hidden</a></div>
+  <h2></h2>
+  <h4>Skipped from H2 to H4</h4>
+</body>
+</html>

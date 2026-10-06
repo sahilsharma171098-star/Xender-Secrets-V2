@@ -1,6 +1,7 @@
 // Content for every generated commercial page. Copy rules (docs/REVENUE_ARCHITECTURE.md):
 // no fake clients/results, demos labelled as demos, no promised rankings or timelines.
-import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, breadcrumbJsonLd, esc, wa, EMAIL } from "./layout.mjs";
+import fs from "node:fs";
+import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, breadcrumbJsonLd, esc, wa, EMAIL, SITE } from "./layout.mjs";
 import { hero, offerCard, pricingBlock, processBlock, cardsBlock, buildListBlock, templatesBlock, includedAside, relatedBlock } from "./blocks.mjs";
 
 /** Bump when generated page content changes materially (used for sitemap lastmod). */
@@ -516,6 +517,187 @@ function contactPage() {
     body, jsonld: [ORG_JSONLD, breadcrumbJsonLd([["Home", "/"], ["Contact", "/contact.html"]])] });
 }
 
+// ---------------------------------------------------------------- SiteCheck extension (CLAUDE-EXT-001)
+/**
+ * Store availability. Set `url` only once the listing is LIVE — until then the page says "Coming soon".
+ * Chrome stays "Coming soon" until the US$5 registration is approved (₹0-spend rule).
+ */
+export const SITECHECK_STORES = [
+  { id: "edge", name: "Microsoft Edge", store: "Edge Add-ons", url: null },
+  { id: "firefox", name: "Firefox", store: "Firefox Add-ons", url: null },
+  { id: "chrome", name: "Chrome", store: "Chrome Web Store", url: null },
+];
+
+const SITECHECK_FAQ = [
+  ["Is Xender SiteCheck free?", "Yes. The extension is free, with no account and no paid tier. If you want a person to review your site, our website check is free too."],
+  ["Does it send my website or browsing data to Xender?", "No. The analysis runs inside your browser when you click the button, and the extension makes no network requests. Nothing is sent unless you choose to copy the report or contact us yourself. Read the <a href=\"/sitecheck-privacy.html\">SiteCheck privacy policy</a>."],
+  ["Is the score a Google or Lighthouse score?", "No. It is a Xender SiteCheck heuristic score with a published formula (below). It does not measure page speed or Core Web Vitals, and it isn't a full accessibility (WCAG) audit."],
+  ["Does it check broken links?", "It verifies same-page links (for example <code>#pricing</code>) and flags empty, javascript: or mistyped link addresses. It does not request external links over the network, so it never claims an external page is broken without testing it."],
+  ["Which browsers are supported?", "Microsoft Edge, Firefox and Google Chrome on desktop. Store listings are being prepared for submission; until a store link appears above, that store's listing isn't live yet."],
+];
+
+function sitecheckPage() {
+  const storeCards = SITECHECK_STORES.map((s) => s.url
+    ? `<a class="card contact" href="${esc(s.url)}" target="_blank" rel="noopener" data-cta="sitecheck-install-${s.id}"><span class="tag">Available</span><h3>Install on ${esc(s.name)}</h3><p>${esc(s.store)}</p></a>`
+    : `<div class="card contact" aria-disabled="true"><span class="tag">Coming soon</span><h3>Coming soon on ${esc(s.name)}</h3><p>${esc(s.store)} listing not live yet</p></div>`).join("\n          ");
+  const faq = SITECHECK_FAQ;
+  const body = [
+    `<section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">Free browser extension · by Xender Secrets</p>
+          <h1>Xender SiteCheck: <em>free website QA &amp; conversion checker.</em></h1>
+          <p class="lede">Check the current webpage for SEO basics, accessibility issues, usability problems and conversion friction — directly in your browser. One click gives you a score, a prioritised list of problems, why each one matters and how to fix it.</p>
+          <div class="actions">
+            <a class="btn primary lg" href="#install" data-cta="sitecheck-hero-install">See supported browsers</a>
+            <a class="btn ghost lg" href="#start" data-offer="free-website-check" data-cta="sitecheck-hero-human">Get a free human audit</a>
+          </div>
+          <ul class="trust" aria-label="Why SiteCheck">
+            <li>Runs locally — nothing sent anywhere</li>
+            <li>Only 2 permissions</li>
+            <li>No account, no tracking</li>
+            <li>Plain-language fixes</li>
+          </ul>
+        </div>
+        <aside class="hero-card" aria-labelledby="sc-what">
+          <p class="tag">What you get</p>
+          <h2 id="sc-what">A health score from 0–100</h2>
+          <ul class="checks"><li>Scores for SEO, Accessibility, Usability, Conversion and Technical</li><li>Critical issues, warnings and recommendations, in that order</li><li>Why it matters + recommended fix for every issue</li><li>Copy the report to share with your developer</li></ul>
+          <p class="fine">A Xender SiteCheck heuristic score — not a Lighthouse score. <a href="#scoring">How it's calculated</a>.</p>
+        </aside>
+      </div>
+    </section>`,
+    `<section class="section" id="install">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">Supported browsers</p>
+          <h2>Get SiteCheck <span>for your browser.</span></h2>
+          <p>Store listings are being prepared for submission. A store appears as installable here only once its listing is live.</p>
+        </div>
+        <div class="contact-grid">
+          ${storeCards}
+        </div>
+        <p class="fine center">Want to try it before the store listings go live? <a href="${esc(wa("Hi Xender Secrets, I'd like to try the SiteCheck browser extension beta."))}" target="_blank" rel="noopener" data-cta="sitecheck-beta-whatsapp">Ask us on WhatsApp</a> and we'll send the package with install steps.</p>
+      </div>
+    </section>`,
+    cardsBlock({ kicker: "What it checks", id: "checks", alt: true, heading: "49 checks across <span>five areas.</span>", intro: "Everything runs on the page as your browser shows it — including pages built with JavaScript.", items: [
+      ["SEO basics", "Page title, meta description, canonical URL, mobile viewport, Open Graph tags for link previews, accidental “noindex”, missing or multiple H1 headings."],
+      ["Accessibility", "Images without alt text, links and buttons with no name, unlabelled form fields, skipped or empty headings, invalid ARIA, disabled zoom, low text contrast (only where it can be measured reliably)."],
+      ["Usability", "Pages that scroll sideways at your window width, forms without a submit button, contact fields without autofill, email/phone fields that show the wrong mobile keyboard."],
+      ["Conversion (heuristics)", "Whether there's a clear call to action, generic “Submit” buttons, too many competing buttons, no visible phone/email/WhatsApp, no trust or policy links, long forms, crowded menus, placeholder text."],
+      ["Technical &amp; security", "HTTPS, password fields on insecure pages, insecure resources and forms, links that go nowhere, mistyped link addresses, broken same-page links, duplicate ids, missing doctype, oversized images, very large pages."],
+      ["What it doesn't do", "No page-speed or Core Web Vitals measurement, no full WCAG audit, no crawling of other pages, and no external link requests — so it never calls a link “broken” without proof."],
+    ] }),
+    `<section class="section" id="privacy">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">Privacy first</p>
+          <h2>Your pages stay <span>in your browser.</span></h2>
+          <p>SiteCheck runs only when you click its button, only on the tab you're looking at. The analysis happens locally; the extension makes no network requests and stores nothing.</p>
+          <ul class="checks"><li>No browsing history, cookies, passwords or form contents</li><li>No analytics, tracking or ads</li><li>No remote code — everything ships inside the extension</li><li>The “free audit” link never includes the page you checked</li></ul>
+          <p><a href="/sitecheck-privacy.html">Read the full SiteCheck privacy policy →</a></p>
+        </div>
+        <div class="card included">
+          <h3>Permissions, and why</h3>
+          <ul class="dash"><li><strong>activeTab</strong> — temporary access to the current tab, only after you click the button</li><li><strong>scripting</strong> — runs SiteCheck's own bundled audit script in that tab</li></ul>
+          <p class="fine">No “read and change all your data on all websites” permission.</p>
+        </div>
+      </div>
+    </section>`,
+    `<section class="section alt" id="scoring">
+      <div class="wrap narrow">
+        <div class="section-head">
+          <p class="kicker">How the score works</p>
+          <h2>A simple formula <span>you can check.</span></h2>
+          <p>This is a Xender SiteCheck heuristic score, not a Lighthouse score. The same page always gets the same score.</p>
+        </div>
+        <ol class="steps">
+          <li><h3>Every check is weighted</h3><p>Critical checks count 3, warnings 2, recommendations 1. Checks that don't apply (no forms, no images) are left out.</p></li>
+          <li><h3>Category score</h3><p>Weight of passed checks ÷ weight of applicable checks × 100, for SEO, Accessibility, Usability, Conversion and Technical.</p></li>
+          <li><h3>Overall score</h3><p>Weighted average: SEO 25%, Accessibility 25%, Conversion 20%, Usability 15%, Technical 15%.</p></li>
+          <li><h3>Bands</h3><p>90–100 Strong · 75–89 Good · 50–74 Needs work · below 50 Poor.</p></li>
+        </ol>
+      </div>
+    </section>`,
+    `<section class="section" id="custom-extensions">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">For businesses</p>
+          <h2>Need a custom browser extension <span>for your business?</span></h2>
+          <p>We built SiteCheck with the same care we'd bring to yours: minimal permissions, no tracking, tested on Chrome, Edge and Firefox. If your team repeats the same steps in the browser every day, an extension can do them for you.</p>
+          <ul class="checks"><li>Repetitive browser workflow automation</li><li>Internal tools for your team</li><li>CRM helpers — capture leads from pages into your CRM</li><li>Browser productivity extensions</li></ul>
+          <div class="actions"><a class="btn primary lg" href="#start" data-offer="custom-build" data-cta="sitecheck-custom-extension">Tell us what browser task you want automated</a></div>
+        </div>
+        <div class="card included">
+          <h3>How it works</h3>
+          <ul class="dash"><li>Describe the task — what you click, copy and paste today</li><li>We reply with a fixed-scope quote in writing</li><li>You test a private build before anything is published</li><li>You own the code; store publishing optional</li></ul>
+        </div>
+      </div>
+    </section>`,
+    faqBlock(faq),
+    leadForm({ cta: "sitecheck-start-form", heading: "Want a human review? <span>Get a free website audit.</span>", intro: "SiteCheck catches the obvious problems. A person catches the rest — your offer, your copy, your customers' questions. Send your site and we reply personally with specific fixes.", bullets: ["A person reviews your site, not a bot", "Specific fixes, in priority order", "No obligation"] }),
+  ].join("\n\n    ");
+  const app = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Xender SiteCheck", applicationCategory: "DeveloperApplication", operatingSystem: "Microsoft Edge, Firefox, Google Chrome",
+    description: "Browser extension that checks the current webpage for SEO basics, accessibility, usability and conversion issues, locally in the browser.", url: SITE + "/sitecheck",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "INR" }, publisher: { "@type": "Organization", name: "Xender Secrets", url: SITE + "/" } };
+  return page({ path: "/sitecheck.html", title: "Xender SiteCheck — Free Website QA & Conversion Checker Extension",
+    description: "Free browser extension for Edge, Firefox and Chrome: check any webpage for SEO basics, accessibility, usability and conversion issues. Runs locally, no tracking.",
+    ogTitle: "Xender SiteCheck — free website QA & conversion checker", body,
+    jsonld: [app, faqJsonLd(faq), breadcrumbJsonLd([["Home", "/"], ["SiteCheck", "/sitecheck.html"]])] });
+}
+
+/** Tiny Markdown → HTML for the extension privacy policy (headings, paragraphs, lists, tables, bold, code, links). */
+function mdToHtml(md) {
+  const inline = (t) => esc(t)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/(^|[\s(])(https:\/\/[^\s<)]+[^\s<).,])/g, '$1<a href="$2">$2</a>');
+  const out = [];
+  const lines = md.replace(/\r/g, "").split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim()) continue;
+    if (line.startsWith("# ")) continue; // page supplies its own H1
+    if (line.startsWith("## ")) { out.push(`<h2>${inline(line.slice(3))}</h2>`); continue; }
+    if (line.startsWith("- ")) {
+      const items = [];
+      while (i < lines.length && lines[i].startsWith("- ")) items.push(`<li>${inline(lines[i++].slice(2))}</li>`);
+      i--; out.push(`<ul class="dash">${items.join("")}</ul>`); continue;
+    }
+    if (line.startsWith("|")) {
+      const rows = [];
+      while (i < lines.length && lines[i].startsWith("|")) rows.push(lines[i++]);
+      i--;
+      const cells = (r) => r.split("|").slice(1, -1).map((c) => c.trim());
+      const [head, , ...rest] = rows;
+      out.push(`<div class="table-wrap"><table class="compare"><thead><tr>${cells(head).map((c) => `<th scope="col">${inline(c)}</th>`).join("")}</tr></thead><tbody>${rest.map((r) => `<tr>${cells(r).map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`);
+      continue;
+    }
+    const para = [line];
+    while (i + 1 < lines.length && lines[i + 1].trim() && !/^(#|- |\|)/.test(lines[i + 1])) para.push(lines[++i]);
+    out.push(`<p>${para.map(inline).join("<br>")}</p>`);
+  }
+  return out.join("\n        ");
+}
+
+function sitecheckPrivacyPage() {
+  const md = fs.readFileSync(new URL("../../extension/store/privacy-policy.md", import.meta.url), "utf8");
+  const body = `<section class="section">
+      <div class="wrap narrow">
+        <p class="eyebrow">Xender SiteCheck</p>
+        <h1>SiteCheck privacy policy</h1>
+        ${mdToHtml(md)}
+        <p><a class="btn ghost" href="/sitecheck.html">← Back to Xender SiteCheck</a></p>
+      </div>
+    </section>
+
+    ${leadForm({ cta: "sitecheck-privacy-form", heading: "Questions about SiteCheck <span>or your website?</span>", intro: "Ask us anything about the extension, or send your site for a free human review. We reply personally.", bullets: ["Privacy or permission questions", "Free website check", "Custom browser extensions"] })}`;
+  return page({ path: "/sitecheck-privacy.html", title: "Xender SiteCheck Privacy Policy | Xender Secrets",
+    description: "Privacy policy for the Xender SiteCheck browser extension: analysis runs locally, no data collected or transmitted, permissions activeTab and scripting only.",
+    body, jsonld: [breadcrumbJsonLd([["Home", "/"], ["SiteCheck", "/sitecheck.html"], ["Privacy", "/sitecheck-privacy.html"]])] });
+}
+
 // Served by Cloudflare (not_found_handling: "404-page") for any unknown URL, at any depth,
 // so every link and asset here is root-relative.
 function notFoundPage() {
@@ -546,5 +728,7 @@ export function allPages() {
     { file: "404.html", html: notFoundPage() },
     ...INDUSTRIES.map((i) => ({ file: i.file, html: industryPage(i) })),
     ...LOCATIONS.map((l) => ({ file: l.file, html: locationPage(l) })),
+    { file: "sitecheck.html", html: sitecheckPage() },
+    { file: "sitecheck-privacy.html", html: sitecheckPrivacyPage() },
   ];
 }
