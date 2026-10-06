@@ -35,6 +35,8 @@ on:
       - 'src/**'
   pull_request:
     paths:
+      - 'extension/**'
+      - 'scripts/extension/**'
       - 'public/preview/**'
       - 'scripts/commercial/**'
       - 'scripts/build-commercial-pages.mjs'
@@ -88,6 +90,10 @@ jobs:
         run: node --test tests/reader-sources.test.mjs
       - name: Commercial funnel in a real browser (lead/event API via src/growth.mjs + SQLite)
         run: node --test tests/commercial-funnel.test.mjs
+      - name: SiteCheck extension — lint (policy, manifests, store copy)
+        run: node scripts/extension/lint.mjs
+      - name: SiteCheck extension — unit, audit-rule and real-extension tests
+        run: node --test extension/tests/unit.test.mjs extension/tests/audit.test.mjs extension/tests/extension-e2e.test.mjs
 
   live-e2e:
     needs: checks

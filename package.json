@@ -10,7 +10,12 @@
     "build:novels": "node scripts/build-novel-data.mjs --all",
     "check:novels": "node scripts/build-novel-data.mjs --check",
     "build:pages": "node scripts/build-commercial-pages.mjs",
-    "check:pages": "node scripts/build-commercial-pages.mjs --check"
+    "check:pages": "node scripts/build-commercial-pages.mjs --check",
+    "extension:build": "node scripts/extension/build.mjs",
+    "extension:package": "node scripts/extension/build.mjs --package",
+    "extension:lint": "node scripts/extension/lint.mjs",
+    "extension:test": "node --test extension/tests/unit.test.mjs extension/tests/audit.test.mjs extension/tests/extension-e2e.test.mjs",
+    "extension:assets": "node scripts/extension/assets.mjs && node scripts/extension/icons.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

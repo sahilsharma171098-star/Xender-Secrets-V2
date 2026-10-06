@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Bad forms fixture page for SiteCheck</title></head>
+<body>
+  <h1>Get a quote</h1>
+  <form id="quote" action="/quote" method="post">
+    <input name="name" placeholder="Your name">
+    <input name="email" type="text" placeholder="Email">
+    <input name="phone" type="text">
+    <label for="company">Company</label><input id="company" name="company" autocomplete="organization">
+    <label>City <input name="city"></label>
+    <select name="budget"><option>Budget</option></select>
+    <textarea name="message" aria-label="Message"></textarea>
+    <input name="f8" aria-label="Field 8"><input name="f9" aria-label="Field 9"><input name="f10" aria-label="Field 10">
+    <input type="hidden" name="token" value="secret-value-must-not-leak">
+    <input type="submit" value="Submit">
+  </form>
+  <form id="nosubmit" action="/x">
+    <label for="a">Thing</label><input id="a" name="thing" autocomplete="off">
+    <button type="button">Do it</button>
+  </form>
+  <form role="search" action="/search"><input name="q" aria-label="Search"></form>
+  <form action="/login"><label for="pw">Password</label><input id="pw" type="password" name="pw" value="hunter2"><button>Log in</button></form>
+  <a href="/privacy">Privacy</a>
+</body>
+</html>

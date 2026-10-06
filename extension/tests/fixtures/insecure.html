@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Insecure links and resources fixture</title>
+  <link rel="stylesheet" href="http://cdn.example.com/style.css">
+</head>
+<body>
+  <h1>Insecure fixture</h1>
+  <img src="http://cdn.example.com/photo.jpg" alt="Photo">
+  <a href="http://old.example.com/page">Old partner site</a>
+  <a href="https://partner.example.com/" target="_blank">Partner (new tab, no rel)</a>
+  <a href="https://partner.example.com/safe" target="_blank" rel="noopener">Partner (safe)</a>
+  <a href="javascript:void(0)">Do something</a>
+  <a href="#">Top-ish</a>
+  <a href="">Empty href</a>
+  <a href="htp://typo.example.com">Typo link</a>
+  <a href="www.example.com">No scheme</a>
+  <a href="mailto:sales">Email sales</a>
+  <a href="mailto:sales@example.com">Email sales correctly</a>
+  <a href="tel:12">Call</a>
+  <a href="#missing-section">Jump to missing section</a>
+  <a href="#present">Jump to present section</a>
+  <a href="#top">Back to top</a>
+  <a href="#/route">SPA route</a>
+  <form action="http://forms.example.com/submit"><label for="e">Email</label><input id="e" type="email" name="email" autocomplete="email"><button>Send enquiry</button></form>
+  <section id="present"><p>Present.</p></section>
+  <div id="dup">a</div><div id="dup">b</div>
+</body>
+</html>

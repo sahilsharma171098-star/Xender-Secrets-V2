@@ -1,0 +1,6 @@
+{
+  "name": "xender-sitecheck",
+  "private": true,
+  "type": "module",
+  "description": "Source package marker so Node treats extension/*.js as ES modules (tests, lint). Build with `npm run extension:build` from the repo root."
+}

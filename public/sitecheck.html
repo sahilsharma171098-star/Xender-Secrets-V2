@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Xender SiteCheck — Free Website QA &amp; Conversion Checker Extension</title>
+  <meta name="description" content="Free browser extension for Edge, Firefox and Chrome: check any webpage for SEO basics, accessibility, usability and conversion issues. Runs locally, no tracking.">
+  <link rel="canonical" href="https://www.xendersecrets.com/sitecheck">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Xender Secrets">
+  <meta property="og:title" content="Xender SiteCheck — free website QA &amp; conversion checker">
+  <meta property="og:description" content="Free browser extension for Edge, Firefox and Chrome: check any webpage for SEO basics, accessibility, usability and conversion issues. Runs locally, no tracking.">
+  <meta property="og:url" content="https://www.xendersecrets.com/sitecheck">
+  <meta property="og:image" content="https://www.xendersecrets.com/og-xender.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(localStorage.getItem("xs-theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
+  <link rel="stylesheet" href="/home.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Xender SiteCheck","applicationCategory":"DeveloperApplication","operatingSystem":"Microsoft Edge, Firefox, Google Chrome","description":"Browser extension that checks the current webpage for SEO basics, accessibility, usability and conversion issues, locally in the browser.","url":"https://www.xendersecrets.com/sitecheck","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},"publisher":{"@type":"Organization","name":"Xender Secrets","url":"https://www.xendersecrets.com/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Xender SiteCheck free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The extension is free, with no account and no paid tier. If you want a person to review your site, our website check is free too."}},{"@type":"Question","name":"Does it send my website or browsing data to Xender?","acceptedAnswer":{"@type":"Answer","text":"No. The analysis runs inside your browser when you click the button, and the extension makes no network requests. Nothing is sent unless you choose to copy the report or contact us yourself. Read the SiteCheck privacy policy."}},{"@type":"Question","name":"Is the score a Google or Lighthouse score?","acceptedAnswer":{"@type":"Answer","text":"No. It is a Xender SiteCheck heuristic score with a published formula (below). It does not measure page speed or Core Web Vitals, and it isn't a full accessibility (WCAG) audit."}},{"@type":"Question","name":"Does it check broken links?","acceptedAnswer":{"@type":"Answer","text":"It verifies same-page links (for example #pricing) and flags empty, javascript: or mistyped link addresses. It does not request external links over the network, so it never claims an external page is broken without testing it."}},{"@type":"Question","name":"Which browsers are supported?","acceptedAnswer":{"@type":"Answer","text":"Microsoft Edge, Firefox and Google Chrome on desktop. Store listings are being prepared for submission; until a store link appears above, that store's listing isn't live yet."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.xendersecrets.com/"},{"@type":"ListItem","position":2,"name":"SiteCheck","item":"https://www.xendersecrets.com/sitecheck.html"}]}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
+      <nav class="nav" id="nav" aria-label="Main">
+        <a href="/services.html">Pricing</a>
+        <a href="/website-catalog.html">Work</a>
+        <a href="/services.html#industries">Industries</a>
+        <a href="/about.html">About</a>
+        <a href="/novels.html">Novels</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark mode">◐</button>
+        <a class="btn primary header-cta" href="#start" data-cta="header-free-check">Free website check</a>
+        <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">Free browser extension · by Xender Secrets</p>
+          <h1>Xender SiteCheck: <em>free website QA &amp; conversion checker.</em></h1>
+          <p class="lede">Check the current webpage for SEO basics, accessibility issues, usability problems and conversion friction — directly in your browser. One click gives you a score, a prioritised list of problems, why each one matters and how to fix it.</p>
+          <div class="actions">
+            <a class="btn primary lg" href="#install" data-cta="sitecheck-hero-install">See supported browsers</a>
+            <a class="btn ghost lg" href="#start" data-offer="free-website-check" data-cta="sitecheck-hero-human">Get a free human audit</a>
+          </div>
+          <ul class="trust" aria-label="Why SiteCheck">
+            <li>Runs locally — nothing sent anywhere</li>
+            <li>Only 2 permissions</li>
+            <li>No account, no tracking</li>
+            <li>Plain-language fixes</li>
+          </ul>
+        </div>
+        <aside class="hero-card" aria-labelledby="sc-what">
+          <p class="tag">What you get</p>
+          <h2 id="sc-what">A health score from 0–100</h2>
+          <ul class="checks"><li>Scores for SEO, Accessibility, Usability, Conversion and Technical</li><li>Critical issues, warnings and recommendations, in that order</li><li>Why it matters + recommended fix for every issue</li><li>Copy the report to share with your developer</li></ul>
+          <p class="fine">A Xender SiteCheck heuristic score — not a Lighthouse score. <a href="#scoring">How it's calculated</a>.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="install">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">Supported browsers</p>
+          <h2>Get SiteCheck <span>for your browser.</span></h2>
+          <p>Store listings are being prepared for submission. A store appears as installable here only once its listing is live.</p>
+        </div>
+        <div class="contact-grid">
+          <div class="card contact" aria-disabled="true"><span class="tag">Coming soon</span><h3>Coming soon on Microsoft Edge</h3><p>Edge Add-ons listing not live yet</p></div>
+          <div class="card contact" aria-disabled="true"><span class="tag">Coming soon</span><h3>Coming soon on Firefox</h3><p>Firefox Add-ons listing not live yet</p></div>
+          <div class="card contact" aria-disabled="true"><span class="tag">Coming soon</span><h3>Coming soon on Chrome</h3><p>Chrome Web Store listing not live yet</p></div>
+        </div>
+        <p class="fine center">Want to try it before the store listings go live? <a href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I&#39;d%20like%20to%20try%20the%20SiteCheck%20browser%20extension%20beta." target="_blank" rel="noopener" data-cta="sitecheck-beta-whatsapp">Ask us on WhatsApp</a> and we'll send the package with install steps.</p>
+      </div>
+    </section>
+
+    <section class="section alt" id="checks">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">What it checks</p>
+          <h2>49 checks across <span>five areas.</span></h2>
+          <p>Everything runs on the page as your browser shows it — including pages built with JavaScript.</p>
+        </div>
+        <div class="grid3 grid-auto">
+          <article class="card"><h3>SEO basics</h3><p>Page title, meta description, canonical URL, mobile viewport, Open Graph tags for link previews, accidental “noindex”, missing or multiple H1 headings.</p></article>
+          <article class="card"><h3>Accessibility</h3><p>Images without alt text, links and buttons with no name, unlabelled form fields, skipped or empty headings, invalid ARIA, disabled zoom, low text contrast (only where it can be measured reliably).</p></article>
+          <article class="card"><h3>Usability</h3><p>Pages that scroll sideways at your window width, forms without a submit button, contact fields without autofill, email/phone fields that show the wrong mobile keyboard.</p></article>
+          <article class="card"><h3>Conversion (heuristics)</h3><p>Whether there's a clear call to action, generic “Submit” buttons, too many competing buttons, no visible phone/email/WhatsApp, no trust or policy links, long forms, crowded menus, placeholder text.</p></article>
+          <article class="card"><h3>Technical &amp; security</h3><p>HTTPS, password fields on insecure pages, insecure resources and forms, links that go nowhere, mistyped link addresses, broken same-page links, duplicate ids, missing doctype, oversized images, very large pages.</p></article>
+          <article class="card"><h3>What it doesn't do</h3><p>No page-speed or Core Web Vitals measurement, no full WCAG audit, no crawling of other pages, and no external link requests — so it never calls a link “broken” without proof.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="privacy">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">Privacy first</p>
+          <h2>Your pages stay <span>in your browser.</span></h2>
+          <p>SiteCheck runs only when you click its button, only on the tab you're looking at. The analysis happens locally; the extension makes no network requests and stores nothing.</p>
+          <ul class="checks"><li>No browsing history, cookies, passwords or form contents</li><li>No analytics, tracking or ads</li><li>No remote code — everything ships inside the extension</li><li>The “free audit” link never includes the page you checked</li></ul>
+          <p><a href="/sitecheck-privacy.html">Read the full SiteCheck privacy policy →</a></p>
+        </div>
+        <div class="card included">
+          <h3>Permissions, and why</h3>
+          <ul class="dash"><li><strong>activeTab</strong> — temporary access to the current tab, only after you click the button</li><li><strong>scripting</strong> — runs SiteCheck's own bundled audit script in that tab</li></ul>
+          <p class="fine">No “read and change all your data on all websites” permission.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="scoring">
+      <div class="wrap narrow">
+        <div class="section-head">
+          <p class="kicker">How the score works</p>
+          <h2>A simple formula <span>you can check.</span></h2>
+          <p>This is a Xender SiteCheck heuristic score, not a Lighthouse score. The same page always gets the same score.</p>
+        </div>
+        <ol class="steps">
+          <li><h3>Every check is weighted</h3><p>Critical checks count 3, warnings 2, recommendations 1. Checks that don't apply (no forms, no images) are left out.</p></li>
+          <li><h3>Category score</h3><p>Weight of passed checks ÷ weight of applicable checks × 100, for SEO, Accessibility, Usability, Conversion and Technical.</p></li>
+          <li><h3>Overall score</h3><p>Weighted average: SEO 25%, Accessibility 25%, Conversion 20%, Usability 15%, Technical 15%.</p></li>
+          <li><h3>Bands</h3><p>90–100 Strong · 75–89 Good · 50–74 Needs work · below 50 Poor.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="custom-extensions">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">For businesses</p>
+          <h2>Need a custom browser extension <span>for your business?</span></h2>
+          <p>We built SiteCheck with the same care we'd bring to yours: minimal permissions, no tracking, tested on Chrome, Edge and Firefox. If your team repeats the same steps in the browser every day, an extension can do them for you.</p>
+          <ul class="checks"><li>Repetitive browser workflow automation</li><li>Internal tools for your team</li><li>CRM helpers — capture leads from pages into your CRM</li><li>Browser productivity extensions</li></ul>
+          <div class="actions"><a class="btn primary lg" href="#start" data-offer="custom-build" data-cta="sitecheck-custom-extension">Tell us what browser task you want automated</a></div>
+        </div>
+        <div class="card included">
+          <h3>How it works</h3>
+          <ul class="dash"><li>Describe the task — what you click, copy and paste today</li><li>We reply with a fixed-scope quote in writing</li><li>You test a private build before anything is published</li><li>You own the code; store publishing optional</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="wrap narrow">
+        <div class="section-head">
+          <p class="kicker">Questions</p>
+          <h2>Before you <span>decide.</span></h2>
+        </div>
+        <div class="faq">
+          <details><summary>Is Xender SiteCheck free?</summary><p>Yes. The extension is free, with no account and no paid tier. If you want a person to review your site, our website check is free too.</p></details>
+          <details><summary>Does it send my website or browsing data to Xender?</summary><p>No. The analysis runs inside your browser when you click the button, and the extension makes no network requests. Nothing is sent unless you choose to copy the report or contact us yourself. Read the <a href="/sitecheck-privacy.html">SiteCheck privacy policy</a>.</p></details>
+          <details><summary>Is the score a Google or Lighthouse score?</summary><p>No. It is a Xender SiteCheck heuristic score with a published formula (below). It does not measure page speed or Core Web Vitals, and it isn't a full accessibility (WCAG) audit.</p></details>
+          <details><summary>Does it check broken links?</summary><p>It verifies same-page links (for example <code>#pricing</code>) and flags empty, javascript: or mistyped link addresses. It does not request external links over the network, so it never claims an external page is broken without testing it.</p></details>
+          <details><summary>Which browsers are supported?</summary><p>Microsoft Edge, Firefox and Google Chrome on desktop. Store listings are being prepared for submission; until a store link appears above, that store's listing isn't live yet.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="start" class="section start">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">Start here</p>
+          <h2>Want a human review? <span>Get a free website audit.</span></h2>
+          <p>SiteCheck catches the obvious problems. A person catches the rest — your offer, your copy, your customers' questions. Send your site and we reply personally with specific fixes.</p>
+          <ul class="checks"><li>A person reviews your site, not a bot</li><li>Specific fixes, in priority order</li><li>No obligation</li></ul>
+          <p class="alt-contact">Prefer to talk? <a href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website." data-cta="start-whatsapp" target="_blank" rel="noopener">WhatsApp +91 98219 41814</a> · <a href="mailto:Sahilsharma171098@gmail.com" data-cta="start-email">Email us</a></p>
+        </div>
+        <form class="card lead-form" data-lead-form data-cta="sitecheck-start-form" novalidate>
+          <div class="field">
+            <label for="lf-name">Your name *</label>
+            <input id="lf-name" name="name" autocomplete="name" required maxlength="80">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="lf-phone">WhatsApp number</label>
+              <input id="lf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="98xxxxxxxx" maxlength="20">
+            </div>
+            <div class="field">
+              <label for="lf-email">Email</label>
+              <input id="lf-email" name="email" type="email" autocomplete="email" maxlength="254">
+            </div>
+          </div>
+          <p class="hint">WhatsApp number or email — at least one, so we can reply.</p>
+          <div class="field">
+            <label for="lf-business">Business name &amp; city</label>
+            <input id="lf-business" name="business" autocomplete="organization" maxlength="120" placeholder="e.g. Sharma Dental, Gurugram">
+          </div>
+          <div class="field">
+            <label for="lf-website">Current website or Instagram / Google page <span class="opt">(optional)</span></label>
+            <input id="lf-website" name="website" inputmode="url" maxlength="300" placeholder="yourbusiness.com">
+          </div>
+          <div class="field">
+            <label for="lf-offer">What do you need?</label>
+            <select id="lf-offer" name="offer">
+              <option value="free-website-check" selected>Free website check</option>
+              <option value="founding-website-999">₹999 + GST · Founding Website (1 page)</option>
+              <option value="business-starter-1999">₹1,999 + GST · Business Starter (3 pages)</option>
+              <option value="business-pro-3499">₹3,499 + GST · Business Pro (5 pages)</option>
+              <option value="redesign">Redesign my existing website</option>
+              <option value="custom-build">Custom build / automation</option>
+              <option value="not-sure">Not sure yet</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="lf-message">Anything we should know? <span class="opt">(optional)</span></label>
+            <textarea id="lf-message" name="message" rows="3" maxlength="1500" placeholder="What do you sell, and who are your customers?"></textarea>
+          </div>
+          <div class="hp" aria-hidden="true"><label for="lf-company-url">Leave this empty</label><input id="lf-company-url" name="company_url" tabindex="-1" autocomplete="off"></div>
+          <button class="btn primary block lg" type="submit">Send — we'll reply personally</button>
+          <p class="status" data-lead-status role="alert" aria-live="polite"></p>
+          <p class="fine">By sending, you agree we may contact you about this enquiry. See our <a href="/privacy.html">privacy policy</a>.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <strong>XENDER SECRETS</strong><br>
+        Founded by Sahil Kumar Sharma · Gurugram, Haryana, India<br>
+        GSTIN: 06IQFPS4456B1ZP
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="/services.html">Pricing</a>
+        <a href="/website-catalog.html">Work</a>
+        <a href="/business-templates.html">Templates</a>
+        <a href="/website-cost-calculator.html">Cost calculator</a>
+        <a href="/sitecheck.html">SiteCheck extension</a>
+        <a href="/articles.html">Articles</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/refund.html">Refunds</a>
+      </nav>
+    </div>
+    <div class="wrap footer-industries">
+      <span>Websites for:</span>
+      <a href="/accountant-website-development.html">CA firms</a>
+      <a href="/clinic-website-development.html">Clinics &amp; dentists</a>
+      <a href="/real-estate-website-development.html">Real estate</a>
+      <a href="/recruitment-agency-website-development.html">Recruitment</a>
+      <a href="/consultant-website-development.html">Consultants</a>
+      <a href="/coaching-website-development.html">Coaching</a>
+      <a href="/gym-website-development.html">Gyms</a>
+      <a href="/restaurant-website-development.html">Restaurants</a>
+      <a href="/website-development-gurugram.html">Gurugram</a>
+      <a href="/website-development-delhi.html">Delhi</a>
+      <a href="/website-development-noida.html">Noida</a>
+      <a href="/small-business-website-india.html">India</a>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20a%20website%20for%20my%20business." data-cta="float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
+
+  <script src="/home.js" defer></script>
+  <script src="/xs-growth.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Xender SiteCheck</title>
+  <link rel="stylesheet" href="popup.css">
+  <script type="module" src="popup.js"></script>
+</head>
+<body>
+  <header class="top">
+    <img class="mark" src="icons/icon-32.png" width="28" height="28" alt="">
+    <div class="brand">
+      <h1>Xender SiteCheck</h1>
+      <p class="domain" id="domain">Checking this page…</p>
+    </div>
+    <button class="icon-btn" id="rerun" type="button" title="Check again" aria-label="Check this page again" hidden>
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg>
+    </button>
+  </header>
+
+  <main id="main">
+    <section class="state" id="loading" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Analysing the page in your browser…</p>
+    </section>
+
+    <section class="state" id="blocked" hidden>
+      <div class="state-icon" aria-hidden="true">⦸</div>
+      <p class="state-msg" id="blockedMsg"></p>
+    </section>
+
+    <section id="report" hidden>
+      <div class="summary">
+        <div class="ring" id="ring" role="img" aria-label="">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52"/>
+          </svg>
+          <div class="ring-num"><strong id="scoreNum">–</strong><span>/100</span></div>
+        </div>
+        <div class="summary-text">
+          <p class="kicker">Website Health Score</p>
+          <p class="band" id="band"></p>
+          <ul class="counts" id="counts"></ul>
+        </div>
+      </div>
+      <ul class="cats" id="cats" aria-label="Category scores"></ul>
+      <p class="disclaimer">This is a Xender SiteCheck heuristic score, not a Lighthouse score. <a href="https://www.xendersecrets.com/sitecheck#scoring" target="_blank" rel="noopener">How it's calculated</a></p>
+
+      <div class="filters" role="group" aria-label="Filter by category" id="filters"></div>
+
+      <div id="groups"></div>
+
+      <details class="passed" id="passedBox">
+        <summary><span id="passedLabel">Passed checks</span></summary>
+        <ul id="passedList"></ul>
+      </details>
+
+      <div class="tools">
+        <button class="btn" id="copy" type="button">Copy report</button>
+        <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <aside class="cta" id="cta" hidden>
+      <p class="cta-title">Want a human review?</p>
+      <p class="cta-text">Get a free website audit from Xender Secrets — a person checks your site and sends specific fixes.</p>
+      <a class="btn primary" id="ctaLink" href="https://www.xendersecrets.com/sitecheck?utm_source=sitecheck_extension&amp;utm_medium=extension&amp;utm_campaign=human_audit#start" target="_blank" rel="noopener">Get a free website audit</a>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <span>Analysed locally in your browser. Nothing is sent anywhere.</span>
+    <a href="https://www.xendersecrets.com/sitecheck-privacy" target="_blank" rel="noopener">Privacy</a>
+  </footer>
+</body>
+</html>

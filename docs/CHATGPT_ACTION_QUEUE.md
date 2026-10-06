@@ -78,6 +78,7 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 4. **Approve payment terms** (recommendation in `docs/REVENUE_ARCHITECTURE.md` §5: ₹999 preview-first, 100% before go-live; larger packages 50/50).
 5. Optional free trust fix: Cloudflare Email Routing `hello@xendersecrets.com` → your Gmail, then Claude swaps the public email.
 6. Optional: set `CLAUDE_CODE_OAUTH_TOKEN` repo secret if you want `@claude` issue comments to work (Executor fails without it).
+7. **Publish Xender SiteCheck (CLAUDE-EXT-001)** after its PR merges: Edge Add-ons first, then Firefox AMO — both free; shortest steps and every field to paste are in `extension/store/release-checklist.md`. Do **not** pay the Chrome US$5 fee until first revenue and your explicit approval.
 
 ### CQ-006 — Re-submit sitemap after XEND-DEV-002 deploys (added 2026-10-06)
 - Priority: P2 · Channel: Google Search Console / Bing Webmaster (if connected)
@@ -98,3 +99,9 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 - All ₹ prices are **+ 18% GST** (approved). Quote as "₹999 + ₹179.82 GST = ₹1,178.82". Haryana clients: CGST 9% + SGST 9%; other states: IGST 18%. For US$ (international) quotes, don't add GST until the CA confirms LUT/export treatment.
 - Selling point for GST-registered clients: they can usually claim the GST as input tax credit (their CA confirms) — never promise it.
 - Record `quote_value` / `collected_value` in `/admin.html` **excluding GST**.
+
+### CQ-009 — Use Xender SiteCheck in outreach (added 2026-10-06)
+- Priority: P1 · Channel: Gmail / LinkedIn
+- Action: run SiteCheck on a prospect's homepage before first touch; quote 2–3 specific, verified findings (copy report → pick items) in the personalised message, and link `/sitecheck` for the free extension. Never paste the full report unsolicited, never claim the score is a Google/Lighthouse score.
+- Expected: more specific first messages and a reason to reply. MIS: note "SiteCheck used" on the lead.
+
