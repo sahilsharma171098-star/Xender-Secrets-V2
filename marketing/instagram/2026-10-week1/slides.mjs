@@ -7,7 +7,7 @@ const TAGS_BASE = "#Gurugram #Gurgaon #DelhiNCR #SmallBusinessIndia #WebsiteDesi
 export const POSTS = [
   {
     id: "d1-founding-offer",
-    date: "2026-10-07",
+    date: "2026-10-06",
     caption: `Gurugram small-business owners: a proper website shouldn't cost you a month's rent.
 
 Our Founding Website is ₹999 + 18% GST (₹1,178.82 total, one-time):
@@ -31,7 +31,7 @@ ${TAGS_BASE} #LocalBusiness #GurugramBusiness`,
   },
   {
     id: "d2-free-check",
-    date: "2026-10-08",
+    date: "2026-10-07",
     caption: `Not sure your website is helping? Get a free website check.
 
 Send us your website, or your Google Business / Instagram page if you don't have one. We reply personally with specific fixes for mobile, speed, trust and enquiries.
@@ -52,7 +52,7 @@ ${TAGS_BASE} #FreeWebsiteCheck #SmallBusinessTips`,
   },
   {
     id: "d3-ca-firms",
-    date: "2026-10-09",
+    date: "2026-10-08",
     caption: `CA & accounting firms: many new clients look you up before they call.
 
 If all they find is a directory listing, they move to the next firm. A simple site that lists your services (GST, ITR, audit, registrations), your office location and a one-tap call/WhatsApp button does a lot of quiet selling.
@@ -68,7 +68,7 @@ ${TAGS_BASE} #CharteredAccountant #CAFirm #GSTIndia`,
   },
   {
     id: "d4-clinics",
-    date: "2026-10-10",
+    date: "2026-10-09",
     caption: `Clinics & dentists: many patients pick a clinic on their phone.
 
 They want to see your treatments, timings, location and a way to book. If that takes more than a tap or two, they call the next clinic.
@@ -84,7 +84,7 @@ ${TAGS_BASE} #DentalClinic #GurugramDoctors #ClinicMarketing`,
   },
   {
     id: "d5-pricing",
-    date: "2026-10-11",
+    date: "2026-10-10",
     caption: `Website prices, out in the open. All prices + 18% GST, one-time.
 
 • Free website check: ₹0
@@ -110,7 +110,7 @@ ${TAGS_BASE} #WebsitePrice #AffordableWebsite`,
   },
   {
     id: "d6-real-estate",
-    date: "2026-10-12",
+    date: "2026-10-11",
     caption: `Real-estate agents in Gurugram: many buyers shortlist agents online before the first call.
 
 Your own site with your areas, property types and a "schedule a site visit" button makes you look established next to people who only have a portal listing.
@@ -126,7 +126,7 @@ ${TAGS_BASE} #GurugramRealEstate #RealEstateAgent #PropertyGurgaon`,
   },
   {
     id: "d7-gyms-cafes",
-    date: "2026-10-13",
+    date: "2026-10-12",
     caption: `Gyms and cafés: a directory listing isn't a website.
 
 Listings are crowded with competitors and ads. Your own page shows your programs or menu, your timings and location, and puts "Book a free trial" or "Reserve a table" one tap away.
