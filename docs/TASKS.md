@@ -119,6 +119,6 @@ Also delivered: gym + restaurant landing pages, `review:site --message` free-che
 ## CLAUDE-EXT-001 — Xender SiteCheck browser extension (Issue #25)
 Status: REVIEW · Owner: Claude · Branch: `claude/ext-001-sitecheck`
 Delivered: `extension/` (MV3 Chrome/Edge + Firefox build, 49 checks, scoring, popup), tests (unit, audit rules on 12 fixtures, real-extension E2E), reproducible packages, store kit (`extension/store/`), `/sitecheck` + `/sitecheck-privacy` pages.
-Open (Sahil): submit to Edge Add-ons, then Firefox AMO (`extension/store/release-checklist.md`); Chrome only after first revenue + approval of the US$5 fee. After each approval, set the store URL in `SITECHECK_STORES` and rebuild pages.
+Open (Sahil): submit to Edge Add-ons, then Firefox AMO (`extension/store/release-checklist.md`); Chrome registration fee (US$5 one-time) is approved by Sahil as of 6 October 2026; submit when the owner-side registration/payment step is completed. After each approval, set the store URL in `SITECHECK_STORES` and rebuild pages.
 Next version candidates: highlight-on-page for issues, optional same-origin link status checks (explicit opt-in permission), page weight from Resource Timing, export to PDF, Hindi UI.
 
