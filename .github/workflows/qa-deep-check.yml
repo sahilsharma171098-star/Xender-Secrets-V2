@@ -1,0 +1,69 @@
+name: QA deep check (production, read-only)
+
+on:
+  push:
+    branches: [claude/qa-deep-check]
+    paths: ['qa/**', '.github/workflows/qa-deep-check.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: qa-deep-check
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Install Playwright
+        working-directory: qa
+        run: |
+          npm init -y >/dev/null
+          npm i playwright@1.56.1 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+      - name: HTTP checks
+        working-directory: qa
+        run: |
+          mkdir -p results
+          B=https://www.xendersecrets.com
+          {
+            for u in / /services /contact /about /robots.txt /sitemap.xml /website-development-mumbai.html /website-development-mumbai /p/doesnotexist /this-page-does-not-exist-qa /index.html /services.html /api/health /api/auth/providers /api/locale /api/site-config /api/preview/doesnotexist; do
+              echo "=== $u"; curl -sS -o /dev/null -D - --max-time 20 "$B$u" | grep -iE '^(HTTP|location|content-type|cache-control|strict-transport|content-security|x-frame|x-content-type|referrer-policy|permissions-policy|x-robots)' || true
+            done
+            echo "=== apex"; curl -sS -o /dev/null -D - --max-time 20 https://xendersecrets.com/ | grep -iE '^(HTTP|location)' || true
+            echo "=== http"; curl -sS -o /dev/null -D - --max-time 20 http://www.xendersecrets.com/ | grep -iE '^(HTTP|location)' || true
+            echo "=== 404 body"; curl -sS --max-time 20 "$B/this-page-does-not-exist-qa" | head -c 400; echo
+            echo "=== providers"; curl -sS --max-time 20 "$B/api/auth/providers"; echo
+            echo "=== translate"; curl -sS --max-time 40 -X POST -H 'content-type: application/json' -d '{"texts":["Hello world"],"target":"hi"}' "$B/api/translate" | head -c 400; echo
+            echo "=== chat"; curl -sS --max-time 40 -X POST -H 'content-type: application/json' -d '{"message":"I need a website","page":"/qa"}' "$B/api/chat" | head -c 400; echo
+            echo "=== quote"; curl -sS --max-time 20 -X POST -H 'content-type: application/json' -d '{"subtotal":278}' "$B/api/quote"; echo
+            echo "=== admin report"; curl -sS --max-time 20 "$B/api/admin/report"; echo
+            echo "=== sitemap urls"; curl -sS --max-time 20 "$B/sitemap.xml" | grep -oE '<loc>[^<]+' | sed 's/<loc>//' > sitemap-urls.txt; wc -l < sitemap-urls.txt
+            while read -r u; do printf '%s %s\n' "$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$u")" "$u"; done < sitemap-urls.txt
+          } > results/http.txt 2>&1 || true
+        shell: bash
+        env: { TZ: UTC }
+        continue-on-error: true
+      - name: Crawl
+        working-directory: qa
+        env: { PW_PATH: playwright, MAX_PAGES: '400' }
+        run: |
+          mkdir -p results
+          node crawl.mjs https://www.xendersecrets.com results/prod-crawl.json seeds.txt 2> results/crawl.log || true
+      - name: Feature checks (read-only, no form submissions)
+        working-directory: qa
+        env: { PW_PATH: playwright }
+        run: |
+          node features.mjs https://www.xendersecrets.com results/prod-features.json 2> results/features.log || true
+          mkdir -p results/shots && cp -r shots/* results/shots/ 2>/dev/null || true
+      - name: Commit results to this branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898732+github-actions[bot]@users.noreply.github.com"
+          git add qa/results
+          git commit -m "QA results $(date -u +%FT%TZ) [skip ci]" || exit 0
+          git push origin HEAD:${GITHUB_REF_NAME}
