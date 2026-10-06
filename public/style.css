@@ -167,3 +167,14 @@ html:not([data-theme="dark"]) .xs-theme-toggle{background:#fff;color:#26323c;bor
 [data-lead-status]{min-height:1.2em;font-weight:600;margin:0}
 [data-lead-status][data-kind="error"]{color:#ef4444}
 html:not([data-theme="dark"]) .lead-form input,html:not([data-theme="dark"]) .lead-form select,html:not([data-theme="dark"]) .lead-form textarea{background:#fff;color:#17212b;border-color:#cfd8df}
+/* Legacy header: brand + 9 nav links + country picker + theme + Contact needs ~1400px.
+   Between tablet and wide desktop, collapse the links into the existing menu button
+   instead of letting the header overflow sideways (QA 2026-10-06). */
+@media(min-width:1441px){nav{gap:18px}}
+@media(min-width:801px) and (max-width:1440px){
+ header{gap:16px}
+ #menu{display:block;margin-left:auto}
+ nav{display:none;position:absolute;top:100%;left:0;right:0;margin-left:0;background:#0b0f14;padding:20px 28px;flex-direction:column;gap:14px}
+ nav.open{display:flex}
+ html:not([data-theme="dark"]) nav{background:#fff;border-top:1px solid #e2e8ed;box-shadow:0 8px 20px rgba(15,23,42,.08)}
+}
