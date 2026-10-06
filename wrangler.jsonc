@@ -65,5 +65,10 @@
         }
       ]
     }
+  },
+  "secrets": {
+    "required": [
+      "ADMIN_TOKEN"
+    ]
   }
 }
