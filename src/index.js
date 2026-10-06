@@ -649,7 +649,7 @@ export class AppState extends DurableObject {
 
     if(path==="/api/quote" && method==="POST"){
       const body=await request.json().catch(()=>({})),subtotal=Math.max(0,Number(body.subtotal||0)),shipping=subtotal===0?0:(subtotal>=499?0:49);
-      return json({ok:true,subtotal,shipping,total:subtotal+shipping,currency:"INR"});
+      return json({ok:true,subtotal,shipping,total:subtotal+shipping,currency:"INR",note:subtotal===0?"Cart is empty":shipping?"Free shipping from ₹499":"Free shipping applied"});
     }
 
     return json({ok:false,error:"API route not found."},404);

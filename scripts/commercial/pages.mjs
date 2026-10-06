@@ -698,6 +698,26 @@ function sitecheckPrivacyPage() {
     body, jsonld: [breadcrumbJsonLd([["Home", "/"], ["SiteCheck", "/sitecheck.html"], ["Privacy", "/sitecheck-privacy.html"]])] });
 }
 
+// Served by Cloudflare (not_found_handling: "404-page") for any unknown URL, at any depth,
+// so every link and asset here is root-relative.
+function notFoundPage() {
+  const body = `<section class="hero">
+      <div class="wrap narrow">
+        <p class="eyebrow">404 · Page not found</p>
+        <h1>This page <em>doesn't exist.</em></h1>
+        <p class="lead">The link may be old or mistyped. Here's where to go instead:</p>
+        <div class="actions">
+          <a class="btn primary lg" href="/" data-cta="404-home">Go to the homepage</a>
+          <a class="btn lg" href="/services.html" data-cta="404-pricing">See pricing</a>
+          <a class="btn lg" href="${esc(wa("Hi Xender Secrets, I followed a broken link on your site."))}" data-cta="404-whatsapp" target="_blank" rel="noopener">WhatsApp us</a>
+        </div>
+      </div>
+    </section>\n\n    ` + leadForm({ cta: "404-form" });
+  return page({ path: "/404.html", title: "Page not found | Xender Secrets",
+    description: "This page doesn't exist. Visit the Xender Secrets homepage, pricing or contact us on WhatsApp.",
+    body, robots: "noindex,follow" });
+}
+
 /** Every generated page: { file, html }. */
 export function allPages() {
   return [
@@ -705,6 +725,7 @@ export function allPages() {
     { file: "services.html", html: servicesPage() },
     { file: "about.html", html: aboutPage() },
     { file: "contact.html", html: contactPage() },
+    { file: "404.html", html: notFoundPage() },
     ...INDUSTRIES.map((i) => ({ file: i.file, html: industryPage(i) })),
     ...LOCATIONS.map((l) => ({ file: l.file, html: locationPage(l) })),
     { file: "sitecheck.html", html: sitecheckPage() },

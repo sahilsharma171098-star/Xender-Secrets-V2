@@ -81,6 +81,14 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Optional full proof: add the same value as GitHub Actions secret `XENDER_ADMIN_TOKEN`; live E2E then runs `lead_admin_readback` (submit test lead on production → read it back via admin API).
 - **GST approved:** all ₹ package prices are exclusive of 18% GST. Generated pages show "₹999 + 18% GST" with the incl.-GST total (₹1,178.82 / ₹2,358.82 / ₹4,128.82), an "Are prices inclusive of GST?" FAQ, and "+ GST" in titles, previews, free-check messages, builder pitch and quotes. MIS amounts are recorded excluding GST. US$ pricing unchanged (export of services; CA to confirm LUT).
 
+## QA sweep fixes (2026-10-06, Claude) — branch `claude/qa-fixes`
+- Full QA report: branch `claude/qa-deep-check` → `qa/QA_REPORT.md` (re-runnable read-only production crawl + feature checks via `.github/workflows/qa-deep-check.yml`).
+- Fixed: community/ideas posts showed "Cannot read properties of null (reading 'reset')" after a successful publish (`e.currentTarget` read after `await`).
+- Added generated `public/404.html` (was a blank page; `not_found_handling: "404-page"` had no file). Generated from `scripts/commercial/pages.mjs`, noindex, with lead form.
+- Legacy-page header (script.js pages) collapses into the menu button between 801–1440px instead of overflowing; Community link no longer injected twice.
+- `/api/quote` returns `note` (commerce demo showed "undefined"); demo-gym/local/pro back-links → `/website-catalog`; demo hero no longer overflows at 390px.
+- Still open (not code): `ADMIN_TOKEN` < 24 chars on production; HTTP→HTTPS + apex→www redirects in Cloudflare; chapter translation 502 on production; social/OTP sign-in providers not configured.
+
 ## CLAUDE-EXT-001 Xender SiteCheck browser extension (2026-10-06, Claude) — branch `claude/ext-001-sitecheck` (Issue #25)
 - New `extension/`: Manifest V3 extension for Chrome + Edge and Firefox 140+ from one source. 49 local checks (SEO, accessibility, usability, conversion heuristics, technical/security basics), deterministic 0–100 "Website Health Score" (`extension/docs/SCORING.md`, labelled "not a Lighthouse score"), Critical / Warnings / Recommendations with why + fix, copy report, free-audit CTA to `/sitecheck#start` (utm only, never the audited URL).
 - Privacy: permissions `activeTab` + `scripting` only; no network requests, storage, analytics or remote code (enforced by `npm run extension:lint`). Firefox declares `data_collection_permissions: none`.
