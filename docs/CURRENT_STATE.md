@@ -51,7 +51,7 @@ This document is a snapshot, not a replacement for inspecting current code. Upda
 - PR #16 XEND-READER-001: static/edge reader modernization, Render fallback, reader/E2E test fixes.
 
 ## XEND-WARROOM-001 revenue engine (2026-10-06, Claude) — branch `claude/xend-warroom-001-revenue-engine`
-State at handoff: **implemented and tested on the branch; PR #18 open; not yet merged/deployed.** Verify `main` before assuming it is live.
+State: **LIVE on production** — PR #18's content was squash-committed to `main` as `a400b29` (2026-10-06 04:01Z); Live E2E on production passed (incl. `homepage_lead_form`, `lead_api_smoke`). PR #18 closed as shipped.
 - Homepage rebuilt (light default, dark optional): ICP, ₹0 check / ₹999 / ₹1,999 / ₹3,499 / custom, labelled concept demos, process, FAQ, lead form `#start`.
 - `src/growth.mjs` (wired into `AppState` + main fetch): `POST /api/lead` (v2, writes `growth_leads`), `POST /api/event` (aggregate `growth_daily`), `GET/PATCH /api/admin/leads[...]`, `/api/admin/report`, `/api/admin/leads.csv` — admin requires Worker secret `ADMIN_TOKEN` (503 until set). Optional Telegram alert via `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID`. Additive tables only; legacy `leads` untouched.
 - `public/xs-growth.js` on every public page; `public/admin.html` private MIS (noindex, robots-disallowed, no-store).
@@ -60,7 +60,7 @@ State at handoff: **implemented and tested on the branch; PR #18 open; not yet m
 - Docs: CLAUDE_REPO_AUDIT, CLAUDE_WARROOM_PLAN, REVENUE_ARCHITECTURE, DATA_MEASUREMENT_PLAN, sales/SALES_PLAYBOOK, CHATGPT_ACTION_QUEUE (CQ-001…005 + Sahil actions).
 - Blocked on Sahil: set `ADMIN_TOKEN`, merge, GST-inclusive/exclusive decision, payment terms approval.
 
-## XEND-DEV-002 commercial pages (2026-10-06, Claude) — branch `claude/xend-dev-002-commercial-pages`, stacked on PR #18
+## XEND-DEV-002 commercial pages (2026-10-06, Claude) — branch `claude/xend-dev-002-commercial-pages`, PR #20 → `main` (rebased onto a400b29)
 - **Generated pages:** never hand-edit `public/index.html`, `services.html`, `about.html`, `contact.html`, the 6 `*-website-development.html` industry pages (CA, clinic, real estate, recruitment, consultant, coaching), `website-development-{gurugram,delhi,noida}.html` or `small-business-website-india.html`. Edit `scripts/commercial/{layout,blocks,pages}.mjs` then `npm run build:pages`. CI fails if output is stale.
 - One design system (`home.css`, light default), one header/footer, one lead form (`#start`) on every commercial page; every page has ProfessionalService + FAQPage + Breadcrumb JSON-LD and OG image `og-xender.png`.
 - SEO fixes: sitemap was invalid XML (literal `\n`) — now generated; canonical/og:url/sitemap use final extensionless URLs because Cloudflare `auto-trailing-slash` 307s `/x.html → /x`; Mumbai/Bangalore/Hyderabad/Pune pages removed with 301s in `public/_redirects`.

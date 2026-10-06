@@ -101,12 +101,12 @@ Deliverables:
 
 
 ## XEND-WARROOM-001 — 7-day zero-spend revenue sprint (Issues #8–#11)
-Status: REVIEW (Day 1 shipped as PR #18) · Owner: Claude · Branch: `claude/xend-warroom-001-revenue-engine`
+Status: DONE for Day 1 (PR #18 content live on `main` as a400b29) · Owner: Claude · Branch: `claude/xend-warroom-001-revenue-engine`
 Delivered: conversion homepage, lead capture v2, first-party events, private MIS, sales docs. See `docs/CLAUDE_WARROOM_PLAN.md`.
 Next (Claude): XEND-DEV-002. Next (ChatGPT): CQ-001…005 in `docs/CHATGPT_ACTION_QUEUE.md`. Next (Sahil): secrets, merge, GST + payment terms.
 
 ## XEND-DEV-002 — Carry the new design + lead form to inner commercial pages
-Status: REVIEW · Owner: Claude · Branch: `claude/xend-dev-002-commercial-pages` (stacked on PR #18)
+Status: REVIEW · Owner: Claude · Branch: `claude/xend-dev-002-commercial-pages` · PR #20 → `main`
 Delivered: generator `scripts/build-commercial-pages.mjs` + `scripts/commercial/*` now produces home, pricing, about, contact, 6 industry (new: clinic) and 4 location pages + sitemap; thin city pages 301 → India page; canonical/sitemap fixed to final URLs; OG image; CI freshness check; QA checklist `docs/RELEASE_CHECKLIST.md`.
 Scope: shared light header/footer, offer CTA and `data-lead-form` on `services.html`, 6 industry pages, 7 city pages; chat widget leads with free check.
 Acceptance: funnel browser test extended to these pages; no overflow at 375px; live E2E green.
