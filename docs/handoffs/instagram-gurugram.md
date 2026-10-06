@@ -71,6 +71,8 @@ Creatives: `marketing/instagram/2026-10-week1/` (`slides.mjs` = copy, `build.mjs
 
 25 Gurugram businesses (6 CA, 6 dental, 4 real estate, 3 recruitment, 3 gyms, 3 cafés; 13 have no working website), each with an observed issue, a first-touch angle and an Instagram DM template, are in a private Google Doc in Sahil's Drive: "Xender Instagram Prospects, Gurugram — 2026-10-06 (PRIVATE, XEND-IG-001)" (<https://docs.google.com/document/d/1g_inZfoGPSqW63qhc4RmayPO_n-TVOhO9QZFjIukOxY/edit>, owner-only access). It is deduplicated against the LinkedIn thread's doc (XEND-LI-001) and the 11 businesses already emailed on 2026-10-05/06.
 
+Also send by Instagram DM: Ququ Cafe (LI-05 in the LinkedIn doc). It has no LinkedIn contact, and that doc already has the message drafted.
+
 Rules for whoever sends (ChatGPT or Sahil):
 - Re-open the site on a phone before sending. Only send if the issue is still there.
 - Max 5 first touches a day, highest priority first. One channel per prospect per day.
