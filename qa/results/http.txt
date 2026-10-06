@@ -1,0 +1,133 @@
+=== /
+HTTP/2 200 
+content-type: text/html
+cache-control: public, max-age=0, must-revalidate
+=== /services
+HTTP/2 200 
+content-type: text/html
+cache-control: public, max-age=0, must-revalidate
+=== /contact
+HTTP/2 200 
+content-type: text/html
+cache-control: public, max-age=0, must-revalidate
+=== /about
+HTTP/2 200 
+content-type: text/html
+cache-control: public, max-age=0, must-revalidate
+=== /robots.txt
+HTTP/2 200 
+content-type: text/plain
+cache-control: public, max-age=0, must-revalidate
+=== /sitemap.xml
+HTTP/2 200 
+content-type: application/xml
+cache-control: public, max-age=0, must-revalidate
+=== /website-development-mumbai.html
+HTTP/2 301 
+location: /small-business-website-india
+cache-control: public, max-age=0, must-revalidate
+=== /website-development-mumbai
+HTTP/2 301 
+location: /small-business-website-india
+=== /p/doesnotexist
+HTTP/2 302 
+location: /preview?id=doesnotexist
+x-robots-tag: noindex, nofollow
+=== /this-page-does-not-exist-qa
+HTTP/2 404 
+=== /index.html
+HTTP/2 307 
+location: /
+cache-control: public, max-age=0, must-revalidate
+=== /services.html
+HTTP/2 307 
+location: /services
+cache-control: public, max-age=0, must-revalidate
+=== /api/health
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+cache-control: no-store
+=== /api/auth/providers
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+cache-control: no-store
+=== /api/locale
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+cache-control: no-store
+=== /api/site-config
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+cache-control: no-store
+=== /api/preview/doesnotexist
+HTTP/2 404 
+content-type: application/json; charset=utf-8
+cache-control: no-store
+=== apex
+HTTP/2 200 
+=== http
+HTTP/1.1 200 OK
+=== 404 body
+
+=== providers
+{"ok":true,"providers":{"otp":false,"google":false,"github":false,"facebook":false,"x":false}}
+=== translate
+{"ok":true,"target":"hi","source":"en","translated":["हैलो दुनिया"],"provider":"Cloudflare Workers AI with fallback"}
+=== chat
+{"ok":true,"reply":"Website Development catalog mein Frontend, Backend/API aur Full-Stack builds hain. Backend flows Cloudflare Workers aur persistent SQLite storage ke saath connected hain.","actions":[{"label":"Website Catalog","href":"/website-catalog.html"},{"label":"Discuss Project","href":"https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website%20proj
+=== quote
+{"ok":true,"subtotal":278,"shipping":49,"total":327,"currency":"INR"}
+=== admin report
+{"ok":false,"error":"Admin access is disabled: ADMIN_TOKEN is shorter than 24 characters. Replace it with a longer random value (32+ characters recommended).","code":"admin_token_too_short"}
+=== sitemap urls
+50
+200 https://www.xendersecrets.com/
+200 https://www.xendersecrets.com/about
+200 https://www.xendersecrets.com/accountant-website-development
+200 https://www.xendersecrets.com/clinic-website-development
+200 https://www.xendersecrets.com/coaching-website-development
+200 https://www.xendersecrets.com/consultant-website-development
+200 https://www.xendersecrets.com/contact
+200 https://www.xendersecrets.com/gym-website-development
+200 https://www.xendersecrets.com/real-estate-website-development
+200 https://www.xendersecrets.com/recruitment-agency-website-development
+200 https://www.xendersecrets.com/restaurant-website-development
+200 https://www.xendersecrets.com/services
+200 https://www.xendersecrets.com/small-business-website-india
+200 https://www.xendersecrets.com/website-development-delhi
+200 https://www.xendersecrets.com/website-development-gurugram
+200 https://www.xendersecrets.com/website-development-noida
+200 https://www.xendersecrets.com/article-ai-content-engine
+200 https://www.xendersecrets.com/article-ai-workflows-business
+200 https://www.xendersecrets.com/article-backend-api-guide
+200 https://www.xendersecrets.com/article-chinese-classic-novels-guide
+200 https://www.xendersecrets.com/article-chinese-web-novels-vs-classics
+200 https://www.xendersecrets.com/article-community-led-growth
+200 https://www.xendersecrets.com/article-customer-retention-after-first-sale
+200 https://www.xendersecrets.com/article-digital-products-guide
+200 https://www.xendersecrets.com/article-frontend-development-guide
+200 https://www.xendersecrets.com/article-full-stack-development-guide
+200 https://www.xendersecrets.com/article-lead-generation-guide
+200 https://www.xendersecrets.com/article-sales-customer-experience-guide
+200 https://www.xendersecrets.com/article-small-business-website-features
+200 https://www.xendersecrets.com/article-website-project-planning
+200 https://www.xendersecrets.com/articles
+200 https://www.xendersecrets.com/business-templates
+200 https://www.xendersecrets.com/community
+200 https://www.xendersecrets.com/demo-backend-api
+200 https://www.xendersecrets.com/demo-backend-auth
+200 https://www.xendersecrets.com/demo-backend-crm
+200 https://www.xendersecrets.com/demo-frontend-dashboard
+200 https://www.xendersecrets.com/demo-frontend-saas
+200 https://www.xendersecrets.com/demo-frontend-store
+200 https://www.xendersecrets.com/demo-fullstack-booking
+200 https://www.xendersecrets.com/demo-fullstack-commerce
+200 https://www.xendersecrets.com/demo-fullstack-saas
+200 https://www.xendersecrets.com/faq
+200 https://www.xendersecrets.com/ideas
+200 https://www.xendersecrets.com/novels
+200 https://www.xendersecrets.com/privacy
+200 https://www.xendersecrets.com/refund
+200 https://www.xendersecrets.com/resources
+200 https://www.xendersecrets.com/terms
+200 https://www.xendersecrets.com/website-catalog
