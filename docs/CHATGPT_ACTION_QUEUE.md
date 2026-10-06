@@ -78,7 +78,7 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 4. **Approve payment terms** (recommendation in `docs/REVENUE_ARCHITECTURE.md` §5: ₹999 preview-first, 100% before go-live; larger packages 50/50).
 5. Optional free trust fix: Cloudflare Email Routing `hello@xendersecrets.com` → your Gmail, then Claude swaps the public email.
 6. Optional: set `CLAUDE_CODE_OAUTH_TOKEN` repo secret if you want `@claude` issue comments to work (Executor fails without it).
-7. **Publish Xender SiteCheck (CLAUDE-EXT-001)** after its PR merges: Edge Add-ons first, then Firefox AMO — both free; shortest steps and every field to paste are in `extension/store/release-checklist.md`. Do **not** pay the Chrome US$5 fee until first revenue and your explicit approval.
+7. **Publish Xender SiteCheck (CLAUDE-EXT-001)** after its PR merges: Edge Add-ons first, then Firefox AMO — both free; shortest steps and every field to paste are in `extension/store/release-checklist.md`. The one-time Chrome US$5 developer registration fee is explicitly approved by Sahil as of 6 October 2026; no other paid extension spend is approved.
 
 ### CQ-006 — Re-submit sitemap after XEND-DEV-002 deploys (added 2026-10-06)
 - Priority: P2 · Channel: Google Search Console / Bing Webmaster (if connected)
