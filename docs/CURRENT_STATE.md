@@ -80,3 +80,7 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Leads submitted meanwhile are stored safely in `growth_leads`; they become readable in `/admin.html` as soon as the secret is fixed. Nothing is lost.
 - Optional full proof: add the same value as GitHub Actions secret `XENDER_ADMIN_TOKEN`; live E2E then runs `lead_admin_readback` (submit test lead on production → read it back via admin API).
 - **GST approved:** all ₹ package prices are exclusive of 18% GST. Generated pages show "₹999 + 18% GST" with the incl.-GST total (₹1,178.82 / ₹2,358.82 / ₹4,128.82), an "Are prices inclusive of GST?" FAQ, and "+ GST" in titles, previews, free-check messages, builder pitch and quotes. MIS amounts are recorded excluding GST. US$ pricing unchanged (export of services; CA to confirm LUT).
+
+## Instagram (XEND-IG-001, 2026-10-06)
+- Account `@xande_r5955` (rename to `@xendersecrets` pending, see `docs/handoffs/instagram-gurugram.md` §2) is readable and publishable via the Windsor connector; Metricool has no Instagram linked yet.
+- Week-1 series (7 posts) lives in `marketing/instagram/2026-10-week1/`; post 1 published 2026-10-06, the rest publish daily via a routine.
