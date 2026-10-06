@@ -134,7 +134,18 @@ $("save").onclick = async () => {
   if (status === 401 || status === 503) { sessionStorage.removeItem(TOKEN_KEY); $("saveStatus").textContent = body.error || "Unauthorized"; $("saveStatus").className = "bad"; return; }
   if (!body.ok) { $("saveStatus").textContent = body.error || "Failed"; $("saveStatus").className = "bad"; return; }
   const link = "https://www.xendersecrets.com" + body.path;
-  const first = (cfg.name || "").replace(/\s*\(fictional\)/, "");\n  const observed = $("observedIssue").value.trim();\n  const opener = observed ? `I noticed ${observed}. So I made a quick concept redesign specifically for ${first}:` : `I made a quick concept redesign specifically for ${first}:`;\n  $("link").textContent = link;\n  $("pitch").textContent = `Hi! ${opener}\n${link}\n\nI used your public business details and branding so you can judge the idea in your own brand, not from a generic template. It is only a private concept preview, not your official website.\n\nIf you like the direction, we can finish it with your approved photos/content and make it production-ready. Happy to change anything.\n\n— Sahil, Xender Secrets`;
+  const first = (cfg.name || "").replace(/\s*\(fictional\)/, "");
+  const observed = $("observedIssue").value.trim();
+  const opener = observed ? `I noticed ${observed}. So I made a quick concept redesign specifically for ${first}:` : `I made a quick concept redesign specifically for ${first}:`;
+  $("link").textContent = link;
+  $("pitch").textContent = `Hi! ${opener}
+${link}
+
+I used your public business details and branding so you can judge the idea in your own brand, not from a generic template. It is only a private concept preview, not your official website.
+
+If you like the direction, we can finish it with your approved photos/content and make it production-ready. Happy to change anything.
+
+— Sahil, Xender Secrets`;
   $("shareOut").hidden = false;
   $("saveStatus").textContent = "Saved · expires " + body.expires_at.slice(0, 10); $("saveStatus").className = "ok";
   loadList();
