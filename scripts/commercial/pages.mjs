@@ -1,7 +1,7 @@
 // Content for every generated commercial page. Copy rules (docs/REVENUE_ARCHITECTURE.md):
 // no fake clients/results, demos labelled as demos, no promised rankings or timelines.
 import fs from "node:fs";
-import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, breadcrumbJsonLd, esc, wa, EMAIL, SITE } from "./layout.mjs";
+import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, breadcrumbJsonLd, serviceJsonLd, esc, wa, EMAIL, SITE } from "./layout.mjs";
 import { hero, offerCard, pricingBlock, processBlock, cardsBlock, buildListBlock, templatesBlock, includedAside, relatedBlock } from "./blocks.mjs";
 
 /** Bump when generated page content changes materially (used for sitemap lastmod). */
@@ -223,57 +223,84 @@ function industryPage(ind) {
     processBlock(),
     faqBlock([...ind.faq, ...COMMON_FAQ]),
     leadForm({ cta: `${ctaPrefix}-start-form`, waText: ind.wa }),
-    relatedBlock([["/services.html", "All packages"], ["/website-development-gurugram.html", "Websites in Gurugram"], ["/small-business-website-india.html", "Small business websites in India"], [`/business-templates.html?business=${ind.business}`, `${ind.label} templates`]]),
+    relatedBlock([["/services.html", "All packages"], [`/business-templates.html?business=${ind.business}`, `${ind.label} templates`], ["/website-development-gurugram.html", "Websites in Gurgaon (Gurugram)"], ["/website-development-delhi.html", "Websites in Delhi NCR"], ["/website-development-noida.html", "Websites in Noida"], ["/small-business-website-india.html", "Small business websites in India"], ["/website-cost-calculator.html", "Website cost calculator"]]),
   ].join("\n\n    ");
+  const service = serviceJsonLd({ path: "/" + ind.file, name: `${ind.label} website development`, serviceType: "Website development",
+    description: ind.description, areaServed: [{ "@type": "Country", name: "India" }], audience: ind.eyebrow.replace(/^Websites for /, "").replace(/&amp;/g, "&") });
   return page({
     path: "/" + ind.file, title: ind.title, description: ind.description, body,
-    jsonld: [ORG_JSONLD, faqJsonLd([...ind.faq, ...COMMON_FAQ]), breadcrumbJsonLd([["Home", "/"], ["Pricing", "/services.html"], [ind.label + " websites", "/" + ind.file]])],
+    jsonld: [ORG_JSONLD, service, faqJsonLd([...ind.faq, ...COMMON_FAQ]), breadcrumbJsonLd([["Home", "/"], ["Pricing", "/services.html"], [ind.label + " websites", "/" + ind.file]])],
   });
 }
 
 // ---------------------------------------------------------------- locations
 export const LOCATIONS = [
   {
-    file: "website-development-gurugram.html", slug: "gurugram", city: "Gurugram",
-    title: "Website Development in Gurugram from ₹999 + GST | Xender Secrets",
-    description: "Gurugram-based website development for local businesses — mobile-first sites with WhatsApp and call buttons, fixed prices from ₹999 + GST, meet in person or on WhatsApp.",
-    h1: "Website development in Gurugram, <em>from a Gurugram studio.</em>",
-    lede: "Xender Secrets is based in Gurugram. We build fast, mobile-first websites for local clinics, CA firms, agents, coaching centres, gyms and shops — and we can meet you in person or work entirely over WhatsApp.",
+    file: "website-development-gurugram.html", slug: "gurugram", city: "Gurugram", searchName: "Gurgaon (Gurugram)",
+    title: "Website Development in Gurgaon (Gurugram) from ₹999 + GST | Xender Secrets",
+    description: "Website development in Gurgaon (Gurugram) by a local studio — mobile-first business websites with WhatsApp and call buttons, fixed prices from ₹999 + GST.",
+    h1: "Website development in Gurgaon, <em>from a Gurugram studio.</em>",
+    lede: "Xender Secrets is based in Gurugram (still Gurgaon to most of our customers). We build fast, mobile-first websites for local clinics, CA firms, real-estate agents, coaching centres, gyms, restaurants and shops — and we can meet you in person or work entirely over WhatsApp.",
+    areaServed: { "@type": "City", name: "Gurugram", alternateName: "Gurgaon", containedInPlace: { "@type": "State", name: "Haryana" } },
     local: [
       ["Local, not outsourced", "You deal directly with the founder in Gurugram — not a call centre or a reseller."],
-      ["Built for local search", "Pages that mention your area and services the way Gurugram customers search for them, plus a link to your Google Business profile."],
+      ["Built for local search", "Pages that mention your sector, area and services the way Gurgaon customers search for them, plus a link to your Google Business profile."],
       ["Meet when it helps", "A short in-person meeting in Gurugram can be arranged when it makes the brief easier; most projects run smoothly on WhatsApp."],
     ],
-    faq: [["Can we meet in person?", "Yes, in Gurugram, by appointment. Many clients prefer WhatsApp and a quick video call — both work."], ["Do you only work with Gurugram businesses?", "No — we work across India and abroad. Being local simply makes meetings easy for Gurugram and Delhi NCR businesses."]],
+    areas: ["Cyber City &amp; DLF Phases 1–5", "Golf Course Road &amp; Golf Course Extension Road", "Sohna Road", "MG Road &amp; Sikanderpur", "Udyog Vihar", "Old Gurgaon (Sectors 4–17, 29)", "New Gurgaon (Sectors 80–95)", "Manesar"],
+    guide: [
+      ["Use both names", "Customers still type \"Gurgaon\" more often than \"Gurugram\". Your site should say both, naturally — e.g. \"dental clinic in Sector 56, Gurgaon (Gurugram)\"."],
+      ["Name the sector and a landmark", "Gurgaon is searched sector by sector. Put your sector, society or market and a nearby landmark on the page and in your Google Business profile, written the same way in both places."],
+      ["Make WhatsApp the first button", "Most local enquiries start on a phone. A visible WhatsApp button that pre-fills your service name usually beats a long contact form."],
+      ["Show timings and parking", "For clinics, gyms, salons and restaurants, opening hours and parking or metro access answer the questions people ask before visiting."],
+    ],
+    faq: [["Can we meet in person?", "Yes, in Gurugram, by appointment. Many clients prefer WhatsApp and a quick video call — both work."], ["Is Gurgaon the same as Gurugram?", "Yes. The city was officially renamed Gurugram in 2016, but most people still search for \"Gurgaon\". We write your site so it can be found under both names."], ["Do you only work with Gurugram businesses?", "No — we work across India and abroad. Being local simply makes meetings easy for Gurugram and Delhi NCR businesses."]],
   },
   {
-    file: "website-development-delhi.html", slug: "delhi", city: "Delhi",
-    title: "Website Development for Delhi Businesses from ₹999 + GST | Xender Secrets",
-    description: "Mobile-first websites for Delhi businesses from a Delhi NCR studio — WhatsApp enquiry buttons, fixed prices from ₹999 + GST, full handover.",
-    h1: "Business websites for <em>Delhi</em> — fixed prices, NCR-based.",
-    lede: "We're a Delhi NCR studio based in Gurugram, building fast websites for Delhi's clinics, CA firms, agents, institutes and shops. Most projects run over WhatsApp and video calls; meeting in person in NCR can be arranged.",
+    file: "website-development-delhi.html", slug: "delhi", city: "Delhi", searchName: "Delhi NCR",
+    title: "Website Development in Delhi & Delhi NCR from ₹999 + GST | Xender Secrets",
+    description: "Website development for Delhi and Delhi NCR businesses from an NCR studio — mobile-first sites, WhatsApp enquiry buttons, fixed prices from ₹999 + GST, full handover.",
+    h1: "Website development for <em>Delhi &amp; Delhi NCR</em> businesses.",
+    lede: "We're a Delhi NCR studio based in Gurugram, building fast websites for Delhi's clinics, CA firms, agents, institutes, restaurants and shops. Most projects run over WhatsApp and video calls; meeting in person in NCR can be arranged.",
+    areaServed: [{ "@type": "City", name: "New Delhi" }, { "@type": "AdministrativeArea", name: "Delhi NCR" }],
     local: [
       ["NCR-based", "Same region, same working hours, easy to reach — no time-zone or language gap."],
-      ["Built for local search", "Service and area wording that matches how Delhi customers search, linked to your Google Business profile."],
+      ["Built for local search", "Service and neighbourhood wording that matches how Delhi customers search, linked to your Google Business profile."],
       ["Simple communication", "English or Hindi, on WhatsApp — whichever is easier for you."],
     ],
-    faq: [["Do you have an office in Delhi?", "We are based in Gurugram, Delhi NCR. We work with Delhi businesses over WhatsApp/video and can meet in NCR by appointment."]],
+    areas: ["South Delhi — Saket, Hauz Khas, Greater Kailash", "Lajpat Nagar &amp; South Extension", "Connaught Place &amp; Karol Bagh", "Dwarka &amp; Janakpuri", "Rohini &amp; Pitampura", "Laxmi Nagar &amp; Preet Vihar"],
+    guide: [
+      ["Search is by neighbourhood", "People rarely search just \"Delhi\" — they search \"physiotherapist in Dwarka\" or \"CA near Lajpat Nagar\". Name the neighbourhoods you actually serve."],
+      ["One page per real service", "If you offer distinct services (e.g. GST filing and company registration), a short page for each helps both customers and Google understand you."],
+      ["Hindi where your customers use it", "A Hindi line or button can help when many of your customers search or message in Hindi. We only add it where you want it."],
+      ["Match your Google profile", "Business name, address and phone number should read exactly the same on your website and your Google Business profile."],
+    ],
+    faq: [["Do you have an office in Delhi?", "We are based in Gurugram, Delhi NCR. We work with Delhi businesses over WhatsApp/video and can meet in NCR by appointment."], ["Do you cover the whole of Delhi NCR?", "Yes — Delhi, Gurugram, Noida, Greater Noida, Ghaziabad and Faridabad. The process and prices are the same everywhere."]],
   },
   {
-    file: "website-development-noida.html", slug: "noida", city: "Noida",
-    title: "Website Development for Noida Businesses from ₹999 + GST | Xender Secrets",
+    file: "website-development-noida.html", slug: "noida", city: "Noida", searchName: "Noida",
+    title: "Website Development in Noida & Greater Noida from ₹999 + GST | Xender Secrets",
     description: "Mobile-first websites for Noida and Greater Noida businesses from a Delhi NCR studio — WhatsApp enquiries, fixed prices from ₹999 + GST, full handover.",
     h1: "Websites for <em>Noida</em> businesses that bring enquiries.",
-    lede: "From our Delhi NCR base in Gurugram, we build mobile-first websites for Noida and Greater Noida businesses — coaching centres, clinics, real-estate agents, consultants and shops — with fixed prices and full handover.",
+    lede: "From our Delhi NCR base in Gurugram, we build mobile-first websites for Noida and Greater Noida businesses — coaching centres, clinics, real-estate agents, consultants, restaurants and shops — with fixed prices and full handover.",
+    areaServed: [{ "@type": "City", name: "Noida" }, { "@type": "City", name: "Greater Noida" }],
     local: [
       ["NCR-based", "Same region and working hours; we understand how local customers search and enquire."],
       ["Enquiries first", "Every page is designed to end in a WhatsApp message, call or form — not just to look nice."],
       ["Remote-friendly", "Brief, preview and feedback all work over WhatsApp; meet in NCR by appointment if useful."],
     ],
+    areas: ["Sector 18 &amp; Atta Market", "Sectors 62 &amp; 63", "Noida Expressway sectors", "Sectors 50–76", "Greater Noida", "Greater Noida West (Noida Extension)"],
+    guide: [
+      ["Sector numbers are the address", "Noida customers search and navigate by sector. Put your sector number in your page title, address and Google Business profile."],
+      ["Cover both names your area has", "Greater Noida West is also called Noida Extension. Mention both where it applies so you're found under either."],
+      ["Coaching and clinics: show batches and timings", "Parents and patients compare several options at once — timings, batches and fees (or \"ask for fees\") decide who they message first."],
+      ["Keep it fast on mobile data", "A light page with compressed photos loads quickly on a phone, which matters more than visual effects."],
+    ],
     faq: [["Do you work with Greater Noida businesses too?", "Yes. The process is the same: free check or brief, written quote, preview, launch."]],
   },
   {
-    file: "small-business-website-india.html", slug: "india", city: "India",
+    file: "small-business-website-india.html", slug: "india", city: "India", searchName: "India",
+    areaServed: { "@type": "Country", name: "India" },
     title: "Small Business Website in India from ₹999 + GST | Xender Secrets",
     description: "Affordable, professional small business websites for Indian businesses — mobile-first, WhatsApp and call buttons, basic SEO, full handover. From ₹999 + GST, no monthly fees.",
     h1: "A professional small-business website <em>from ₹999 + GST.</em>",
@@ -283,18 +310,41 @@ export const LOCATIONS = [
       ["Made for phones", "Most of your customers will see your site on a phone; we design for that first."],
       ["Fixed, upfront prices", "₹999, ₹1,999 or ₹3,499 (+ 18% GST) — you know the full price before we start."],
     ],
+    guide: [
+      ["City + service in the title", "\"Physiotherapy clinic in Indore\" tells customers and Google exactly what you do and where — far more than a slogan does."],
+      ["A Google Business profile is free", "Verify it yourself as the owner, then link it to your website. Most local customers see that profile before they see your site."],
+      ["One clear next step", "Pick the action you want — WhatsApp, call or visit — and make it the most visible button on every screen."],
+      ["Write the way customers ask", "Use the words customers actually use (\"teeth cleaning\", \"ITR filing\") rather than internal jargon."],
+    ],
     faq: [["Do you build sites for businesses outside Delhi NCR?", "Yes — anywhere in India, entirely over WhatsApp and video calls."], ["Can you set up my Google Business profile?", "We can guide you and link your website to it. The profile itself must be verified by you as the owner."]],
   },
+];
+
+const LOCATION_LINKS = [
+  ["/website-development-gurugram.html", "Gurgaon (Gurugram)"],
+  ["/website-development-delhi.html", "Delhi NCR"],
+  ["/website-development-noida.html", "Noida"],
+  ["/small-business-website-india.html", "All of India"],
 ];
 
 function locationPage(loc) {
   const ctaPrefix = loc.slug;
   const waText = `Hi Xender Secrets, I want a website for my business in ${loc.city}.`;
+  const place = loc.searchName || loc.city;
   const body = [
-    hero({ eyebrow: loc.city === "India" ? "Small business websites · all over India" : `Website development · ${loc.city}`, h1: loc.h1, lede: loc.lede, waText, ctaPrefix,
+    hero({ eyebrow: loc.city === "India" ? "Small business websites · all over India" : `Website development · ${esc(place)}`, h1: loc.h1, lede: loc.lede, waText, ctaPrefix,
       card: offerCard({ offer: "founding-website-999", title: "Founding offer · first 10 businesses", bullets: ["Mobile-first design with your branding", "WhatsApp, call and enquiry buttons", "Services, location and contact sections", "Basic on-page SEO setup", "Live preview before you approve", "Complete handover"], cta: "Claim a ₹999 website", ctaPrefix }) }),
-    cardsBlock({ kicker: `Why Xender for ${esc(loc.city)}`, heading: `Practical websites, <span>clear terms.</span>`, items: loc.local }),
-    cardsBlock({ kicker: "Industries", id: "industries", alt: true, heading: `Built for the businesses <span>${loc.city === "India" ? "we know best" : "in " + esc(loc.city)}.</span>`, items: [
+    cardsBlock({ kicker: `Why Xender for ${esc(place)}`, heading: `Practical websites, <span>clear terms.</span>`, items: loc.local }),
+    loc.guide ? cardsBlock({ kicker: "Free advice", id: "local-search", heading: `How customers in ${esc(place)} <span>find a local business.</span>`, intro: "Whether or not you hire us, these four things decide whether a local search turns into a call.", items: loc.guide }) : "",
+    loc.areas ? `<section class="section" id="areas">
+      <div class="wrap">
+        <p class="kicker">Areas we work with</p>
+        <h2>Businesses across ${esc(loc.city)} — <span>including:</span></h2>
+        <div class="chips left">${loc.areas.map((a) => `<span class="chip">${a}</span>`).join("")}</div>
+        <p>Not on the list? We work with businesses anywhere in ${loc.city === "Gurugram" ? "Gurugram and Delhi NCR" : esc(loc.city)} — and across India over WhatsApp.</p>
+      </div>
+    </section>` : "",
+    cardsBlock({ kicker: "Industries", id: "industries", alt: true, heading: `Built for the businesses <span>${loc.city === "India" ? "we know best" : "in " + esc(place)}.</span>`, items: [
       ['<a href="/accountant-website-development.html">CA firms &amp; accountants</a>', "Service pages for GST, ITR and audit, with consultation buttons."],
       ['<a href="/clinic-website-development.html">Clinics &amp; dentists</a>', "Treatments, doctor profiles, timings and appointment requests."],
       ['<a href="/real-estate-website-development.html">Real-estate agents</a>', "Listings, localities and property-specific WhatsApp enquiries."],
@@ -308,9 +358,12 @@ function locationPage(loc) {
     processBlock(),
     faqBlock([...loc.faq, ...COMMON_FAQ]),
     leadForm({ cta: `${ctaPrefix}-start-form`, waText }),
-  ].join("\n\n    ");
+    relatedBlock([["/services.html", "All packages &amp; prices"], ...LOCATION_LINKS.filter(([href]) => href !== "/" + loc.file), ["/website-cost-calculator.html", "Website cost calculator"]]),
+  ].filter(Boolean).join("\n\n    ");
+  const service = serviceJsonLd({ path: "/" + loc.file, name: `Website development in ${place}`, serviceType: "Website development",
+    description: loc.description, areaServed: loc.areaServed, audience: "Small and local businesses" });
   return page({ path: "/" + loc.file, title: loc.title, description: loc.description, body,
-    jsonld: [ORG_JSONLD, faqJsonLd([...loc.faq, ...COMMON_FAQ]), breadcrumbJsonLd([["Home", "/"], ["Pricing", "/services.html"], [`Websites in ${loc.city}`, "/" + loc.file]])] });
+    jsonld: [ORG_JSONLD, service, faqJsonLd([...loc.faq, ...COMMON_FAQ]), breadcrumbJsonLd([["Home", "/"], ["Pricing", "/services.html"], [`Websites in ${place}`, "/" + loc.file]])] });
 }
 
 // ---------------------------------------------------------------- core pages
@@ -379,6 +432,19 @@ function homePage() {
       </div>
     </section>`,
     processBlock(),
+    `<section class="section" id="areas" aria-labelledby="areas-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">Where we work</p>
+          <h2 id="areas-h">Based in Gurugram. <span>Working across India.</span></h2>
+          <p>Meet in person anywhere in Delhi NCR, or run the whole project over WhatsApp from anywhere in India — or the UK, US and Canada.</p>
+        </div>
+        <div class="chips">
+          ${LOCATION_LINKS.map(([href, label]) => `<a href="${href}" data-cta="home-area-${href.slice(1, -5)}">${label === "All of India" ? "Small business websites across India" : "Website development in " + label}</a>`).join("\n          ")}
+        </div>
+        <p class="center">Not sure what a website should cost? Try the free <a href="/website-cost-calculator.html" data-cta="home-calculator">website cost calculator</a>.</p>
+      </div>
+    </section>`,
     FOUNDER,
     faqBlock(HOME_FAQ),
     leadForm({ cta: "home-start-form" }),
@@ -389,7 +455,7 @@ function homePage() {
       </div>
     </section>`,
   ].join("\n\n    ");
-  return page({ path: "/index.html", home: true, title: "Business Websites from ₹999 + GST | Xender Secrets",
+  return page({ path: "/index.html", home: true, title: "Website Development for Small Businesses from ₹999 + GST | Xender Secrets",
     ogTitle: "Business websites from ₹999 + GST — Xender Secrets",
     description: "Fast, mobile-first business websites and landing pages for Indian small businesses — from ₹999 + GST. Fixed prices, clear scope, full handover, no compulsory maintenance. Free website check.",
     body, jsonld: [ORG_JSONLD, faqJsonLd(HOME_FAQ)] });
@@ -449,6 +515,7 @@ function servicesPage() {
       ['<a href="/gym-website-development.html">Gyms &amp; fitness studios</a>', "Programs, trainers and free-trial bookings."],
       ['<a href="/restaurant-website-development.html">Restaurants &amp; cafés</a>', "Menu, reservations and WhatsApp orders."],
     ] }),
+    relatedBlock([["/website-development-gurugram.html", "Website development in Gurgaon (Gurugram)"], ["/website-development-delhi.html", "Website development in Delhi NCR"], ["/website-development-noida.html", "Website development in Noida"], ["/small-business-website-india.html", "Small business websites across India"], ["/website-cost-calculator.html", "Website cost calculator"]]),
     processBlock(),
     faqBlock(faq),
     leadForm({ cta: "services-start-form", heading: "Tell us what you need <span>— get a fixed quote.</span>" }),

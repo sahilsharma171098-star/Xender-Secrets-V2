@@ -84,10 +84,13 @@ export function footer() {
       <a href="/coaching-website-development.html">Coaching</a>
       <a href="/gym-website-development.html">Gyms</a>
       <a href="/restaurant-website-development.html">Restaurants</a>
-      <a href="/website-development-gurugram.html">Gurugram</a>
-      <a href="/website-development-delhi.html">Delhi</a>
+    </div>
+    <div class="wrap footer-industries">
+      <span>Website development in:</span>
+      <a href="/website-development-gurugram.html">Gurgaon (Gurugram)</a>
+      <a href="/website-development-delhi.html">Delhi NCR</a>
       <a href="/website-development-noida.html">Noida</a>
-      <a href="/small-business-website-india.html">India</a>
+      <a href="/small-business-website-india.html">All of India</a>
     </div>
   </footer>`;
 }
@@ -167,8 +170,10 @@ export function faqJsonLd(items) {
   return { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: strip(a) } })) };
 }
 
+export const ORG_ID = SITE + "/#business";
 export const ORG_JSONLD = {
-  "@context": "https://schema.org", "@type": "ProfessionalService", name: "Xender Secrets", url: SITE + "/",
+  "@context": "https://schema.org", "@type": "ProfessionalService", "@id": ORG_ID, name: "Xender Secrets", url: SITE + "/",
+  image: SITE + "/og-xender.png", email: EMAIL,
   description: "Business websites, landing pages and website redesigns for small businesses.",
   founder: { "@type": "Person", name: "Sahil Kumar Sharma" }, areaServed: ["IN", "GB", "US", "CA"],
   telephone: "+91-9821941814", address: { "@type": "PostalAddress", addressLocality: "Gurugram", addressRegion: "Haryana", addressCountry: "IN" },
@@ -176,16 +181,48 @@ export const ORG_JSONLD = {
 };
 
 export function breadcrumbJsonLd(trail) {
-  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: trail.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: SITE + path })) };
+  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: trail.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: canonicalUrl(path) })) };
+}
+
+/**
+ * Service schema for an industry or location page. Only facts we can stand behind: the
+ * provider, where we work and the published package prices (exclusive of GST). No ratings,
+ * reviews or client claims (docs/REVENUE_ARCHITECTURE.md copy rules).
+ */
+export function serviceJsonLd({ path, name, serviceType, description, areaServed, audience }) {
+  return {
+    "@context": "https://schema.org", "@type": "Service", name, serviceType, description,
+    url: canonicalUrl(path), provider: { "@id": ORG_ID }, areaServed,
+    ...(audience ? { audience: { "@type": "BusinessAudience", audienceType: audience } } : {}),
+    offers: { "@type": "AggregateOffer", priceCurrency: "INR", lowPrice: "999", highPrice: "3499", offerCount: "3",
+      description: "Fixed-price website packages; prices exclude 18% GST." },
+  };
+}
+
+/** /page.html → https://www.xendersecrets.com/page (the URL Cloudflare serves with 200). */
+export function canonicalUrl(path) {
+  const p = path.split(/[?#]/)[0];
+  return SITE + (p === "/" || p === "/index.html" ? "/" : p.replace(/\.html$/, ""));
+}
+
+/**
+ * Cloudflare assets (html_handling: auto-trailing-slash) answer /page.html with a 307 to /page.
+ * Internal links therefore point at the final URL so crawlers never spend a hop on a redirect
+ * and every link agrees with the page's canonical. Applies to root-relative hrefs only.
+ */
+export function cleanLinks(html) {
+  return html
+    .replace(/href="\/index\.html(?=[?#"])/g, 'href="/')
+    .replace(/href="\/([a-z0-9][a-z0-9-]*)\.html(?=[?#"])/g, 'href="/$1');
 }
 
 /** Full HTML document. */
 export function page({ path, title, description, ogTitle, body, jsonld = [], home = false, robots = "index,follow" }) {
   // Cloudflare assets (html_handling: auto-trailing-slash) 307-redirect /page.html → /page, so
   // canonical URLs use the final extensionless form.
-  const canonical = SITE + (path === "/index.html" ? "/" : path.replace(/\.html$/, ""));
+  const canonical = canonicalUrl(path);
   const ld = jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join("\n  ");
-  return `<!doctype html>
+  return cleanLinks(`<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -221,5 +258,5 @@ export function page({ path, title, description, ogTitle, body, jsonld = [], hom
   <script src="/xs-growth.js" defer></script>
 </body>
 </html>
-`;
+`);
 }
