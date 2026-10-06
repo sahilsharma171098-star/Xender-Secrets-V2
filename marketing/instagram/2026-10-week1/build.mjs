@@ -86,8 +86,9 @@ for (const post of POSTS) {
   for (const [i, sl] of post.slides.entries()) {
     await page.setContent(slideHtml(sl, i + 1, post.slides.length), { waitUntil: "load" });
     await page.waitForTimeout(sl.type === "mock" ? 600 : 100);
-    const file = join(out, `${post.id}-${i + 1}.png`);
-    await page.screenshot({ path: file });
+    const file = join(out, `${post.id}-${i + 1}.jpg`);
+    // Instagram publishing APIs require JPEG.
+    await page.screenshot({ path: file, type: "jpeg", quality: 90 });
     console.log(file);
   }
 }

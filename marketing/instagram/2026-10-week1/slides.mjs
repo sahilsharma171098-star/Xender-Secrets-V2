@@ -19,14 +19,14 @@ Our Founding Website is ₹999 + 18% GST (₹1,178.82 total, one-time):
 
 Domain and any paid hosting are billed at cost, separately. Scope is confirmed in writing first.
 
-Open to our first 10 businesses only. DM us "WEBSITE" or tap the link in bio.
+Open to our first 10 businesses only. DM us "WEBSITE" or WhatsApp +91 98219 41814. More at xendersecrets.com
 
 ${TAGS_BASE} #LocalBusiness #GurugramBusiness`,
     slides: [
       { type: "cover", kicker: "Gurugram & Delhi NCR businesses", title: "A proper website for **₹999** + GST.", sub: "One page. Mobile-first. WhatsApp, call & map buttons. Yours to keep." },
       { type: "list", theme: "light", kicker: "Founding Website", title: "What you get", items: ["1 page, up to **6 sections**||Services, location, contact — built for phones", "**WhatsApp, call & map** buttons||One tap from visitor to enquiry", "Basic on-page **SEO** setup||Google-ready from day one", "**Live preview** before you approve||See it on your own phone first", "**Full handover**||No compulsory maintenance or lock-in"] },
       { type: "list", kicker: "How it works", title: "Four steps. **No surprises.**", items: ["Tell us about your business||Short form or WhatsApp", "Get a **fixed quote** in writing||Pages, features, price and date agreed first", "Review a **live preview**||Revisions as agreed", "Launch & handover||Domain connected, enquiries tested"] },
-      { type: "cta", theme: "blue", kicker: "First 10 businesses only", title: "₹999 + 18% GST.\n**₹1,178.82** total, one-time.", sub: "Domain and paid hosting, if needed, are billed at cost. DM **WEBSITE** or tap the link in bio.", button: "DM “WEBSITE”" },
+      { type: "cta", theme: "blue", kicker: "First 10 businesses only", title: "₹999 + 18% GST.\n**₹1,178.82** total, one-time.", sub: "Domain and paid hosting, if needed, are billed at cost. DM **WEBSITE** or WhatsApp 98219 41814.", button: "DM “WEBSITE”" },
     ],
   },
   {
@@ -40,7 +40,7 @@ Send us your website, or your Google Business / Instagram page if you don't have
 • A clear list of what to fix first
 • No obligation to buy
 
-DM us "CHECK" with your link, or use the form via the link in bio.
+DM us "CHECK" with your link, or WhatsApp +91 98219 41814. Form at xendersecrets.com
 
 ${TAGS_BASE} #FreeWebsiteCheck #SmallBusinessTips`,
     slides: [
@@ -57,13 +57,13 @@ ${TAGS_BASE} #FreeWebsiteCheck #SmallBusinessTips`,
 
 If all they find is a directory listing, they move to the next firm. A simple site that lists your services (GST, ITR, audit, registrations), your office location and a one-tap call/WhatsApp button does a lot of quiet selling.
 
-This is a concept demo we built to show the format. It is not a client site. Want one for your firm? Start with a free website check. DM "CHECK" or tap the link in bio.
+This is a concept demo we built to show the format. It is not a client site. Want one for your firm? Start with a free website check. DM "CHECK" or WhatsApp +91 98219 41814. More at xendersecrets.com
 
 ${TAGS_BASE} #CharteredAccountant #CAFirm #GSTIndia`,
     slides: [
       { type: "cover", kicker: "For CA & accounting firms", title: "Clients **Google you** before they call.", sub: "What do they find: a directory listing, or your firm?" },
       { type: "mock", theme: "light", kicker: "Concept demo · not a client site", title: "A CA site that **gets calls**", items: ["Services clients search for", "One-tap call & WhatsApp", "Office address & map", "About the partners"], config: { vertical: "pro", name: "Example CA & Co.", tagline: "GST, income tax and audit support for Gurugram businesses.", city: "Gurugram", area: "Sector 44" } },
-      { type: "cta", theme: "blue", kicker: "Gurugram CA firms", title: "Start with a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or tap the link in bio.", button: "DM “CHECK”" },
+      { type: "cta", theme: "blue", kicker: "Gurugram CA firms", title: "Start with a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or WhatsApp 98219 41814.", button: "DM “CHECK”" },
     ],
   },
   {
@@ -73,13 +73,13 @@ ${TAGS_BASE} #CharteredAccountant #CAFirm #GSTIndia`,
 
 They want to see your treatments, timings, location and a way to book. If that takes more than a tap or two, they call the next clinic.
 
-Concept demo below, built by us to show the format (not a client site). Want one for your clinic? Free website check first. DM "CHECK" or tap the link in bio.
+Concept demo below, built by us to show the format (not a client site). Want one for your clinic? Free website check first. DM "CHECK" or WhatsApp +91 98219 41814. More at xendersecrets.com
 
 ${TAGS_BASE} #DentalClinic #GurugramDoctors #ClinicMarketing`,
     slides: [
       { type: "cover", kicker: "For clinics & dentists", title: "Patients choose you **on their phone.**", sub: "Treatments, timings, location and booking, in a tap or two." },
       { type: "mock", theme: "light", kicker: "Concept demo · not a client site", title: "A clinic site that **books visits**", items: ["Treatments, clearly listed", "Book on WhatsApp in one tap", "Timings & Google Maps", "Meet-the-doctor section"], config: { vertical: "dental", name: "Example Dental Clinic", tagline: "Gentle, modern dental care in Gurugram.", city: "Gurugram", area: "DLF Phase 4" } },
-      { type: "cta", theme: "blue", kicker: "Gurugram clinics", title: "Get a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or tap the link in bio.", button: "DM “CHECK”" },
+      { type: "cta", theme: "blue", kicker: "Gurugram clinics", title: "Get a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or WhatsApp 98219 41814.", button: "DM “CHECK”" },
     ],
   },
   {
@@ -95,7 +95,7 @@ ${TAGS_BASE} #DentalClinic #GurugramDoctors #ClinicMarketing`,
 
 Domain and paid hosting, if needed, are billed at cost. No compulsory maintenance.
 
-DM "PRICE" or tap the link in bio.
+DM "PRICE" or WhatsApp +91 98219 41814. More at xendersecrets.com
 
 ${TAGS_BASE} #WebsitePrice #AffordableWebsite`,
     slides: [
@@ -115,13 +115,13 @@ ${TAGS_BASE} #WebsitePrice #AffordableWebsite`,
 
 Your own site with your areas, property types and a "schedule a site visit" button makes you look established next to people who only have a portal listing.
 
-Concept demo below, built by us to show the format (not a client site). Free website check first. DM "CHECK" or tap the link in bio.
+Concept demo below, built by us to show the format (not a client site). Free website check first. DM "CHECK" or WhatsApp +91 98219 41814. More at xendersecrets.com
 
 ${TAGS_BASE} #GurugramRealEstate #RealEstateAgent #PropertyGurgaon`,
     slides: [
       { type: "cover", kicker: "For real-estate agents", title: "Look established, **not just listed.**", sub: "Your areas, your properties, one tap to book a site visit." },
       { type: "mock", theme: "light", kicker: "Concept demo · not a client site", title: "An agent site that **books visits**", items: ["Buy, rent, sell & commercial", "Site visit on WhatsApp", "Areas you cover", "Your story & experience"], config: { vertical: "realestate", name: "Example Homes Gurugram", tagline: "Apartments and builder floors across Golf Course Road and Sohna Road.", city: "Gurugram", area: "Golf Course Road" } },
-      { type: "cta", theme: "blue", kicker: "Gurugram agents", title: "Get a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or tap the link in bio.", button: "DM “CHECK”" },
+      { type: "cta", theme: "blue", kicker: "Gurugram agents", title: "Get a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or WhatsApp 98219 41814.", button: "DM “CHECK”" },
     ],
   },
   {
@@ -131,14 +131,14 @@ ${TAGS_BASE} #GurugramRealEstate #RealEstateAgent #PropertyGurgaon`,
 
 Listings are crowded with competitors and ads. Your own page shows your programs or menu, your timings and location, and puts "Book a free trial" or "Reserve a table" one tap away.
 
-Concept demos below, built by us to show the format (not client sites). Free website check first. DM "CHECK" or tap the link in bio.
+Concept demos below, built by us to show the format (not client sites). Free website check first. DM "CHECK" or WhatsApp +91 98219 41814. More at xendersecrets.com
 
 ${TAGS_BASE} #GurugramGym #GurugramCafe #RestaurantMarketing`,
     slides: [
       { type: "cover", kicker: "For gyms & cafés", title: "A listing **isn't a website.**", sub: "Your own page, your menu or programs, one tap to book." },
       { type: "mock", theme: "light", kicker: "Concept demo · not a client site", title: "Gyms: **book a free trial**", items: ["Programs & trainers", "Trial booking on WhatsApp", "Timings & location"], config: { vertical: "fitness", name: "Example Fitness Studio", tagline: "Strength, weight-loss and group classes in Gurugram.", city: "Gurugram", area: "Sector 56" } },
       { type: "mock", theme: "light", kicker: "Concept demo · not a client site", title: "Cafés: **reserve a table**", items: ["Menu highlights", "Reservations on WhatsApp", "Timings & map"], config: { vertical: "restaurant", name: "Example Café", tagline: "All-day breakfast and coffee in Gurugram.", city: "Gurugram", area: "Cyber Hub" } },
-      { type: "cta", theme: "blue", kicker: "Gurugram gyms & cafés", title: "Get a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or tap the link in bio.", button: "DM “CHECK”" },
+      { type: "cta", theme: "blue", kicker: "Gurugram gyms & cafés", title: "Get a **free website check**.", sub: "Founding Website from ₹999 + GST. DM **CHECK** or WhatsApp 98219 41814.", button: "DM “CHECK”" },
     ],
   },
 ];
