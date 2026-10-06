@@ -80,3 +80,8 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Leads submitted meanwhile are stored safely in `growth_leads`; they become readable in `/admin.html` as soon as the secret is fixed. Nothing is lost.
 - Optional full proof: add the same value as GitHub Actions secret `XENDER_ADMIN_TOKEN`; live E2E then runs `lead_admin_readback` (submit test lead on production → read it back via admin API).
 - **GST approved:** all ₹ package prices are exclusive of 18% GST. Generated pages show "₹999 + 18% GST" with the incl.-GST total (₹1,178.82 / ₹2,358.82 / ₹4,128.82), an "Are prices inclusive of GST?" FAQ, and "+ GST" in titles, previews, free-check messages, builder pitch and quotes. MIS amounts are recorded excluding GST. US$ pricing unchanged (export of services; CA to confirm LUT).
+
+## XEND-LI-001 LinkedIn channel (2026-10-06, Claude) — branch `claude/linkedin-execution-v7fe75`
+- The LinkedIn company page (org 145265420) is reachable through the Windsor.ai `linkedin_organic` connector: analytics read plus `create_post` / `create_image_post`. It **cannot** edit page details, send DMs or search members. Metricool brand 7266070 has no networks connected.
+- Day 1 post is live (`urn:li:share:7513149415629664256`). Routine "XEND-LI-001 daily LinkedIn post" publishes Days 2–7 from `docs/LINKEDIN_EXECUTION.md` §4 at 09:52 IST, 7–12 Oct.
+- Prospect detail is kept in a private Drive doc (public-repo rule). Queue items: CQ-LI-01…05.

@@ -98,3 +98,42 @@ The site now has a real offer ladder, a lead form with `XS-YYMMDD-XXXX` referenc
 - All ₹ prices are **+ 18% GST** (approved). Quote as "₹999 + ₹179.82 GST = ₹1,178.82". Haryana clients: CGST 9% + SGST 9%; other states: IGST 18%. For US$ (international) quotes, don't add GST until the CA confirms LUT/export treatment.
 - Selling point for GST-registered clients: they can usually claim the GST as input tax credit (their CA confirms) — never promise it.
 - Record `quote_value` / `collected_value` in `/admin.html` **excluding GST**.
+
+---
+
+## XEND-LI-001 — LinkedIn channel (added by Claude 2026-10-06, Issue #19 LinkedIn handoff)
+
+Plan, audit and public prospect summary: `docs/LINKEDIN_EXECUTION.md`. **Prospect names, LinkedIn URLs and ready-to-send messages are in the private Google Doc "Xender LinkedIn Prospects — 2026-10-06 (PRIVATE, XEND-LI-001)"** in Sahil's Drive (https://docs.google.com/document/d/12VM3yauiSekdMXFbPFhtwIKoWs6KeV8JMW7HhcKXlJY/edit). Per `docs/ACQUISITION_ENGINE.md`, they are not in this public repo.
+
+Already done by Claude: audited the company page (1 follower, 0 posts, generic About), published Day 1 to the company page, and scheduled Days 2–7 via a daily routine (09:52 IST, 7–12 Oct). Also sourced 10 verified Gurugram prospects (LI-01…LI-10).
+
+### CQ-LI-01 — Update LinkedIn positioning
+- Priority: P0 · Owner: Sahil (needs a logged-in admin; the connector can't edit page details)
+- Action: paste the tagline, About text and button URL from `docs/LINKEDIN_EXECUTION.md` §3 into the company page. Update Sahil's headline and Featured section the same way.
+- Expected: profile visitors see the offer, price and CTA. MIS: none.
+
+### CQ-LI-02 — First touches to the P0 prospects (LI-01…LI-05)
+- Priority: P0 · Owner: Sahil (LinkedIn connection notes and DMs) / ChatGPT (email variant, LI-05 via Instagram/Facebook)
+- Action: re-check each site on a phone, then send that prospect's message from the private doc. One channel per prospect. Max 5 first touches/day; the P1s (LI-06…08) go on 2026-10-07. No InMail, Premium or automation.
+- UTM: already in each message (`utm_source=linkedin&utm_medium=dm&utm_campaign=20261006-<segment>-<id>`).
+- Expected: 1–2 replies from 5. MIS: a row per prospect in the Command Center Leads sheet, stage `contacted`, next action "accept → DM" or "day-3 follow-up".
+
+### CQ-LI-03 — Reshare and engage daily
+- Priority: P1 · Owner: Sahil
+- Action: reshare each day's company post to his profile with one personal line. Reply to every comment the same day. Comment thoughtfully on 3 posts a day from Gurugram CA, clinic or real-estate owners (no pitch in comments).
+- Expected: page followers > 25 by 2026-10-12.
+
+### CQ-LI-04 — Live intent search (needs a member login)
+- Priority: P1 · Owner: Sahil / ChatGPT if a LinkedIn connector becomes available
+- Action: LinkedIn post search, sorted by Latest and filtered to the past 24h: "need a website", "looking for web developer", "website redesign", "recommend website developer", "new clinic" + Gurugram/Delhi/NCR. Reply in the comments or DM within hours. Log each signal in the private doc as LI-11+.
+- Why: public web search doesn't index these posts, so this can't be done from Claude's side.
+
+### CQ-LI-05 — Connect LinkedIn to Metricool (optional)
+- Priority: P2 · Owner: Sahil
+- Action: connect the LinkedIn page at https://app.metricool.com/brands/connections?blogId=7266070. Then Claude can schedule posts there with best-time data, and Metricool analytics will cover LinkedIn. Not required for this week's plan.
+
+### CQ-IG — Instagram channel handoff (link, owned by the Instagram thread)
+- Handoff: `docs/handoffs/instagram-gurugram.md` in PR #24 (branch `claude/instagram-execution-bqkq8g`).
+- Private prospect doc (25 Gurugram businesses, already deduped against the LinkedIn doc and the Oct 5–6 emails): https://docs.google.com/document/d/1g_inZfoGPSqW63qhc4RmayPO_n-TVOhO9QZFjIukOxY/edit
+- Instagram posts publish via Windsor (@xande_r5955) daily Oct 7–12 at 18:52 IST. LinkedIn publishes at 09:52 IST.
+- Recommendation (Claude): treat the 5/day first-touch cap as shared across LinkedIn, Instagram and email until reply rates justify more. Sahil can override.

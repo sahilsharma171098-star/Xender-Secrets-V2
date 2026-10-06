@@ -115,3 +115,9 @@ Acceptance: funnel browser test extended to these pages; no overflow at 375px; l
 Status: REVIEW · Owner: Claude · Branch: `claude/xend-sales-002-preview-system` (stacked on PR #20)
 Delivered: 5 vertical previews (dental/clinic, real estate, professional services, fitness, restaurant), builder, admin-only short links `/p/<id>`, view tracking in MIS, expiry, draft banner. SOP: `docs/REVENUE_SPRINT.md`.
 Also delivered: gym + restaurant landing pages, `review:site --message` free-check generator, MIS daily scorecard (MIS-001).
+
+
+## XEND-LI-001 — LinkedIn as second organic acquisition channel (Issue #19 LinkedIn handoff)
+Status: IN_PROGRESS · Owner: Claude (content, prospecting) + Sahil/ChatGPT (member-account actions) · Branch: `claude/linkedin-execution-v7fe75`
+Delivered: page audit, positioning copy, 7-day content plan (Day 1 published 2026-10-06; Days 2–7 published by a daily routine through 2026-10-12), 10 verified Gurugram prospects (private Drive doc), queue items CQ-LI-01…05. See `docs/LINKEDIN_EXECUTION.md`.
+Next: Sahil pastes the positioning copy and sends the P0 first touches; Claude reviews LinkedIn analytics on 2026-10-12 and keeps the post types that drive clicks.
