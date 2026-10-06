@@ -93,7 +93,9 @@ async function loadMeta(){
   try{
    const d=await readerApi("gutenberg","novel");
    title.textContent=d.title;finalChapter=Number(d.finalChapter||1);meta.textContent=Number(finalChapter).toLocaleString()+" chapters • "+(d.genres||[]).join(" • ")+" • Completed";jumpInput.max=finalChapter;
-   sourceLanguage=d.language||"en";readerNote.textContent="Public-domain edition sourced from Project Gutenberg. Reading is free; your last chapter is saved on this device.";
+   sourceLanguage=d.language||"en";
+   if(!savedLang&&/^zh(?:-|$)/i.test(sourceLanguage)){languageSelect.value="en";sessionAutoTranslate=true;translateStatus.textContent="English opens by default for this Chinese source edition."}
+   readerNote.textContent="Public-domain edition sourced from Project Gutenberg. Chinese-source classics open in English by default; choose Original to read the source text. Reading is free; your last chapter is saved on this device.";
    return true;
   }catch(e){status.className="status error";status.textContent="Could not load this classic right now.";return false;}
  }
@@ -136,7 +138,7 @@ async function loadChapter(n){
    originalChapter={title:d.chapterTitle||("Chapter "+chapter),paragraphs:Array.isArray(d.paragraphs)?d.paragraphs:[]};
   }
   renderChapter(originalChapter.title,originalChapter.paragraphs,originalChapter.language||sourceLanguage||"en");translateStatus.textContent="";status.hidden=true;document.body.dataset.readerSource=readerSource;localStorage.setItem(storageKey(),String(chapter));document.title=title.textContent+" — Chapter "+chapter+" | Xender";window.scrollTo({top:0,behavior:"smooth"});
-  const preferred=languageSelect.value;if(preferred!=="original"&&sessionAutoTranslate)translateCurrent(preferred);
+  const preferred=languageSelect.value;if(preferred!=="original"&&sessionAutoTranslate){const ok=await translateCurrent(preferred);if(ok)localStorage.setItem("xsReaderAutoTranslate","1");}
  }catch(e){status.hidden=false;status.className="status error";status.textContent="Chapter "+chapter+" could not be loaded. Xender did not skip it. Try again or choose another chapter.";}
 }
 function renderChapter(chapterHeading,paragraphs,lang){ct.textContent=chapterHeading;content.innerHTML=(paragraphs||[]).map(x=>"<p>"+esc(x)+"</p>").join("");const rtl=["ar","ur"].includes(lang);content.dir=rtl?"rtl":"ltr";content.lang=lang||"en";}
@@ -232,6 +234,7 @@ async function translateCurrent(target){
 }
 const supported=[...languageSelect.options].map(o=>o.value),savedLang=localStorage.getItem("xsReaderLanguage");
 languageSelect.value=supported.includes(savedLang)?savedLang:"original";
+sessionAutoTranslate=localStorage.getItem("xsReaderAutoTranslate")==="1"&&languageSelect.value!=="original";
 translateBtn.onclick=async()=>{
  const target=languageSelect.value;
  if(target==="original"){sessionAutoTranslate=false;localStorage.setItem("xsReaderAutoTranslate","0")}
