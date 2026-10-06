@@ -127,6 +127,8 @@ jobs:
       - name: Run live Xender E2E
         env:
           XENDER_BASE_URL: https://www.xendersecrets.com
+          # Optional: same value as the Worker's ADMIN_TOKEN, enables the lead -> admin read-back check.
+          XENDER_ADMIN_TOKEN: ${{ secrets.XENDER_ADMIN_TOKEN }}
         run: node tests/xender-live-e2e.mjs
       - name: Upload E2E report
         if: always()
