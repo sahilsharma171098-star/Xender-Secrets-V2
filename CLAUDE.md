@@ -23,7 +23,8 @@ Before working, read:
 2. `docs/XENDER_ARCHITECTURE.md`
 3. `docs/CURRENT_STATE.md`
 4. `docs/TASKS.md`
-5. GitHub issue `XEND-WARROOM-001` / Issue #8
+5. `docs/XENDER_PROJECT_CONTEXT.md`
+6. GitHub issue `XEND-WARROOM-001` / Issue #8
 
 ## Operating authority
 
