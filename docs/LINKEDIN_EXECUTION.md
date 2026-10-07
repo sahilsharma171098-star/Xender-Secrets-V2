@@ -68,7 +68,7 @@ Founding offer: the first 10 businesses get a one-page website for ₹999 + GST.
 Ask for your free website check: https://www.xendersecrets.com/?utm_source=linkedin&utm_medium=organic&utm_campaign=20261006-founding-offer
 ```
 
-### Day 2 · Wed 7 Oct · Practical checklist
+### Day 2 · Wed 7 Oct · Practical checklist (PUBLISHED 2026-10-07, `urn:li:share:7513453769800568832`)
 ```
 A 2-minute website check you can do on your phone today:
 
