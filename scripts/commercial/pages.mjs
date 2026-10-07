@@ -572,7 +572,7 @@ function aboutPage() {
         <div class="card included">
           <h3>Business details</h3>
           <ul class="dash"><li>Xender Secrets — proprietorship of Sahil Kumar Sharma</li><li>Gurugram, Haryana, India</li><li>GSTIN: 06IQFPS4456B1ZP</li><li>WhatsApp: +91 98219 41814</li><li>Email: ${EMAIL}</li></ul>
-          <p class="fine"><a href="https://www.linkedin.com/in/sahilkumarsharma-operations" target="_blank" rel="noopener">LinkedIn profile →</a></p>
+          <p class="fine"><a href="https://www.startupindia.gov.in/bhaskar/profile?bhaskarid=IN-1026-9552QE" target="_blank" rel="noopener">Startup India BHASKAR profile →</a> · <a href="https://www.linkedin.com/in/sahilkumarsharma-operations" target="_blank" rel="noopener">LinkedIn profile →</a></p>
         </div>
       </div>
     </section>`,
