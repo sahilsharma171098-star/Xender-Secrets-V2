@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Baseline run marker: 2026-10-07.
 // XEND-GSC-INDEXING-001 — live indexing audit of production (read-only GET/HEAD requests).
 //
 // For every sitemap URL, every URL Google Search Console flagged, and the common duplicate
