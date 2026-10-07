@@ -6,6 +6,9 @@ name: SEO live audit
 on:
   workflow_dispatch:
     inputs:
+      comment_on:
+        description: "Optional issue/PR number to post the report on (sticky comment)"
+        required: false
       strict:
         description: "Fail the run on any indexing problem"
         type: boolean
@@ -21,6 +24,8 @@ on:
 
 permissions:
   contents: read
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: seo-live-audit-${{ github.ref }}
@@ -43,7 +48,27 @@ jobs:
           STRICT=""
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.strict }}" = "true" ]; then STRICT="--strict"; fi
           if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ github.event_name }}" = "push" ]; then STRICT="--strict"; fi
-          node scripts/seo/audit-live.mjs --json seo-audit.json $STRICT
+          set +e
+          node scripts/seo/audit-live.mjs --json seo-audit.json $STRICT > seo-audit.md
+          code=$?
+          cat seo-audit.md
+          echo "code=$code" >> "$GITHUB_ENV"
+          exit 0
+      - name: Post report as a sticky comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ inputs.comment_on }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ -z "$TARGET" ] && [ "$BRANCH" != "main" ]; then
+            TARGET=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          fi
+          [ -z "$TARGET" ] && { echo "no PR/issue to comment on"; exit 0; }
+          { echo "<!-- xender-seo-live-audit -->"; echo "**SEO live audit** · run [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) · commit ${GITHUB_SHA::7}"; echo; echo "<details><summary>Full table</summary>"; echo; head -c 60000 seo-audit.md; echo; echo "</details>"; echo; sed -n '/^### Problems/,$p' seo-audit.md | head -c 4000; } > body.md
+          ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" --paginate --jq '.[] | select(.body | startswith("<!-- xender-seo-live-audit -->")) | .id' | tail -1)
+          if [ -n "$ID" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@body.md >/dev/null; else gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" -F body=@body.md >/dev/null; fi
+      - name: Result
+        run: exit ${code:-0}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
