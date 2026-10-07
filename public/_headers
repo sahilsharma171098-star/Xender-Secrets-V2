@@ -10,6 +10,29 @@ https://:version.:subdomain.workers.dev/*
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# Private / utility pages. Served extensionless (/admin); .html variants 301 there first.
+/admin
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+  Referrer-Policy: no-referrer
+  X-Frame-Options: DENY
+
+/account
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/catalog
+  X-Robots-Tag: noindex, follow
+
+/reader
+  X-Robots-Tag: noindex, follow
+
+/sample-preview
+  X-Robots-Tag: noindex, follow
+
+/template-preview
+  X-Robots-Tag: noindex, follow
+
 /admin.html
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store

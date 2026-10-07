@@ -107,3 +107,13 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - IndexNow: key file `public/cdf3c21dd3122dca7cc50b92e6c6cfea.txt` (public by design), `scripts/seo/indexnow.mjs`, workflow `.github/workflows/indexnow.yml` (runs after sitemap changes on `main`, verifies the live key first).
 - Tests: `tests/unit/seo.test.mjs` (10 crawl/index invariants). Local test server now mirrors Cloudflare's extensionless serving.
 - Still open (not code): apex `xendersecrets.com` serves 200 instead of 301 → www (verified 2026-10-06) — CQ-015; GSC write actions — CQ-010; Bing — CQ-011; Google Business Profile — CQ-012.
+
+## XEND-GSC-INDEXING-001 indexing architecture (2026-10-07, Claude) — PR #36 `claude/xend-gsc-indexing-001`
+- **Canonical standard:** `https://www.xendersecrets.com` + extensionless path. Details, redirect matrix, exclusions, GSC order: `docs/SEO_INDEXING.md`.
+- Pre-change production audit (run 37613729633): `.html` and trailing slash returned **307**, the apex host served **200** duplicates, `http://apex/x.html` was a 301→307 chain to the wrong host.
+- `src/canonical.mjs` + `run_worker_first: ["/*", "!/novel-data/*"]`: one **301** to the final URL for host/.html/slash/index variants (follows `_redirects` in the same hop; `/p/:id` stays 302; `/api/*` untouched). `http://` still gets Cloudflare's edge HTTPS upgrade first (2 hops) unless "Always Use HTTPS" is turned off.
+- All internal links in legacy HTML/JS rewritten to canonical paths (`scripts/seo/normalize-links.mjs`, CI `--check`); worker chat links too.
+- Sitemap 44 → **32**: thin legacy articles (12), `/community`, `/ideas`, `/reader`, all `/demo-*` are `noindex,follow`; `_headers` adds `X-Robots-Tag` for extensionless private/utility paths (`/admin` previously had none).
+- Content: 4 buyer guides rewritten and generated (BlogPosting schema, ≥ 600 words); `/faq` rebuilt from current offers (22 Q&A, FAQPage); `/website-catalog`, `/business-templates`, `/articles` get server-rendered sections + CollectionPage/Breadcrumb (`scripts/seo/hubs.mjs`); homepage nav and a guides section link Services/Catalog/Guides/About/FAQ.
+- PR #35's Udyam/MSME credential was committed to the root `index.html`, which is **not deployed** (assets = `public/`). It's now in the generated footer and founder section.
+- Tests: `tests/unit/canonical.test.mjs`, `tests/worker/canonical-worker.test.mjs` (real workerd), 7 new checks in `tests/unit/seo.test.mjs`. Live audit: `scripts/seo/audit-live.mjs` + `.github/workflows/seo-live-audit.yml` (preview on branch pushes, strict production check after deploy).

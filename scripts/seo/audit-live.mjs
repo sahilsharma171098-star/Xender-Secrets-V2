@@ -89,7 +89,7 @@ export async function audit({ urls } = {}) {
   const results = [];
   for (let i = 0; i < list.length; i += 8) results.push(...await Promise.all(list.slice(i, i + 8).map(probe)));
 
-  const problems = [];
+  const problems = [], warnings = [];
   for (const r of results) {
     const inSitemap = sitemap.includes(r.start);
     const expected = canonicalOf(r.start);
@@ -104,7 +104,11 @@ export async function audit({ urls } = {}) {
       // A duplicate variant: one permanent hop straight to the canonical URL.
       if (!r.hops.length) { if (!noindex(r)) problems.push(`${r.start}: duplicate served ${r.status} without redirect`); }
       else {
-        if (r.hops.length > 1) problems.push(`${r.start}: redirect chain ${r.hops.map((h) => h.status).join("→")}`);
+        // Cloudflare "Always Use HTTPS" upgrades http:// at the edge before any rule or Worker runs,
+        // so http://apex/… is necessarily 2 hops while that toggle is on (docs/SEO_INDEXING.md).
+        const edgeUpgrade = r.start.startsWith("http://") && r.hops.length === 2 && r.hops[0].location === r.start.replace(/^http:/, "https:");
+        if (edgeUpgrade) warnings.push(`${r.start}: 2 hops (edge HTTPS upgrade, then canonical)`);
+        else if (r.hops.length > 1) problems.push(`${r.start}: redirect chain ${r.hops.map((h) => h.status).join("→")}`);
         if (r.hops[0].status !== 301) problems.push(`${r.start}: first hop is ${r.hops[0].status}, not 301`);
         if (r.final !== expected && r.status === 200 && !noindex(r)) problems.push(`${r.start}: lands on ${r.final}, expected ${expected}`);
       }
@@ -120,10 +124,51 @@ export async function audit({ urls } = {}) {
   };
   if (!robotsChecks.sitemapLine) problems.push("robots.txt does not reference https://www.xendersecrets.com/sitemap.xml");
   if (!robotsChecks.noGlobalDisallow) problems.push("robots.txt disallows the whole site");
-  return { when: new Date().toISOString(), sitemapCount: sitemap.length, robotsChecks, results, problems };
+  return { when: new Date().toISOString(), sitemapCount: sitemap.length, robotsChecks, results, problems, warnings };
 }
 
-export function toMarkdown({ when, sitemapCount, results, problems }, { only } = {}) {
+/**
+ * Preview mode: run the path rules against a non-production deployment (e.g. the workers.dev
+ * preview Cloudflare builds for every branch). Host rules can't be tested there, but the real
+ * asset layer + Worker can: every sitemap path must be 200 with a production canonical, and
+ * .html / trailing-slash / index variants must be ONE 301 to the clean path on the same host.
+ */
+export async function auditPreview(origin) {
+  const paths = [...(await fetch(SITE + "/sitemap.xml").then((r) => r.text()).catch(() => "")).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  const local = [...fs.readFileSync(new URL("../../public/sitemap.xml", import.meta.url), "utf8").matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  const list = [...new Set([...local, ...paths])];
+  const results = [], problems = [];
+  const one = async (start, expectPath) => {
+    const r = await probe(origin + start);
+    r.inSitemap = local.includes(start);
+    results.push(r);
+    if (r.error) return problems.push(`${start}: ${r.error}`);
+    if (expectPath === null) {
+      if (r.hops.length) problems.push(`${start}: redirects (${r.hops.map((h) => h.status).join("→")})`);
+      if (r.status !== 200) problems.push(`${start}: status ${r.status}`);
+      if (r.canonical !== SITE + start) problems.push(`${start}: canonical ${r.canonical}`);
+      if (/noindex/i.test(r.metaRobots || "")) problems.push(`${start}: meta noindex`);
+    } else {
+      if (r.hops.length !== 1) problems.push(`${start}: ${r.hops.length} hops`);
+      else if (r.hops[0].status !== 301) problems.push(`${start}: ${r.hops[0].status} not 301`);
+      if (r.final !== origin + expectPath) problems.push(`${start}: lands on ${r.final}`);
+    }
+  };
+  for (const p of local) await one(p, null);
+  for (const p of list) {
+    if (p === "/") { await one("/index.html", "/"); continue; }
+    await one(p + ".html", p);
+    await one(p + "/", p);
+  }
+  for (const p of ["/api/health", "/p/abc123"]) {
+    const r = await probe(origin + p); results.push(r);
+    if (p === "/api/health" && (r.hops.length || r.status !== 200)) problems.push(`${p}: ${r.status}`);
+    if (p === "/p/abc123" && r.hops[0]?.status !== 302) problems.push(`${p}: expected 302`);
+  }
+  return { when: new Date().toISOString(), sitemapCount: local.length, results, problems, warnings: [] };
+}
+
+export function toMarkdown({ when, sitemapCount, results, problems, warnings = [] }, { only } = {}) {
   const rows = (only ? results.filter(only) : results).map((r) => {
     const chain = r.hops.map((h) => `${h.status}→${h.location.replace(SITE, "")}`).join(" ");
     const robots = r.error ? "" : [r.metaRobots && "meta " + r.metaRobots, r.xRobots && "X-Robots " + r.xRobots].filter(Boolean).join("; ") || "(none)";
@@ -131,12 +176,14 @@ export function toMarkdown({ when, sitemapCount, results, problems }, { only } =
   });
   return [`Live audit ${when} · sitemap URLs: ${sitemapCount} · problems: ${problems.length}`, "",
     "| URL | HTTP (chain → final) | canonical | robots | sitemap |", "|---|---|---|---|---|", ...rows, "",
-    problems.length ? "### Problems\n" + problems.map((p) => "- " + p).join("\n") : "### Problems\nNone."].join("\n");
+    problems.length ? "### Problems\n" + problems.map((p) => "- " + p).join("\n") : "### Problems\nNone.",
+    "", warnings.length ? `### Warnings (${warnings.length})\n` + warnings.map((p) => "- " + p).join("\n") : "### Warnings\nNone."].join("\n");
 }
 
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split("/").pop())) {
   const args = process.argv.slice(2);
-  const report = await audit();
+  const pi = args.indexOf("--preview");
+  const report = pi >= 0 ? await auditPreview(args[pi + 1].replace(/\/$/, "")) : await audit();
   const md = toMarkdown(report);
   console.log(md);
   if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + "\n");

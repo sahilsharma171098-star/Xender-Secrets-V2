@@ -1,3 +1,4 @@
+import { canonicalRedirect } from "./canonical.mjs";
 import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
@@ -822,22 +823,22 @@ export class ContentThread extends DurableObject{
 function chatReply(raw){
   const q=raw.toLowerCase();
   let reply="Main Xender Secrets ke shop, website development, community, articles, novels, digital products, account aur contact options ke baare mein help kar sakta hoon.";
-  let actions=[{label:"Explore categories",href:"/#explore"},{label:"Contact us",href:"/contact.html"}];
+  let actions=[{label:"Explore categories",href:"/#explore"},{label:"Contact us",href:"/contact"}];
   if(/community|discussion|post|comment|forum|member/.test(q)){
     reply="Community mein members Web Development, Ecommerce, AI, Business, Books aur General topics par posts, comments aur likes ke through discuss kar sakte hain. Posting ke liye account login required hai.";
-    actions=[{label:"Open Community",href:"/community.html"},{label:"Login",href:"/account.html"}];
+    actions=[{label:"Open Community",href:"/community"},{label:"Login",href:"/account"}];
   }else if(/shop|product|buy|cart|ecommerce|e-commerce|price|shopping|order/.test(q)){
     reply="Ecommerce Shop mein products, search, filters, persistent order requests aur account-linked order history available hai.";
-    actions=[{label:"Open Shop",href:"/catalog.html"},{label:"My Account",href:"/account.html"}];
+    actions=[{label:"Open Shop",href:"/catalog"},{label:"My Account",href:"/account"}];
   }else if(/idea|ideas|build board|idea catalog|what.*build|want.*built|deploy/.test(q)){
     reply="Idea Catalog / Build Board mein members jo website, app, automation ya AI workflow chahte hain woh publish kar sakte hain. Xender un ideas ko scope karke build aur deploy kar sakta hai.";
-    actions=[{label:"Open Idea Catalog",href:"/ideas.html"},{label:"Share an Idea",href:"/ideas.html#share-idea"}];
+    actions=[{label:"Open Idea Catalog",href:"/ideas"},{label:"Share an Idea",href:"/ideas#share-idea"}];
   }else if(/website|web site|frontend|front end|backend|back end|full.?stack|developer|development|landing page|api/.test(q)){
     reply="Website Development catalog mein Frontend, Backend/API aur Full-Stack builds hain. Backend flows Cloudflare Workers aur persistent SQLite storage ke saath connected hain.";
-    actions=[{label:"Website Catalog",href:"/website-catalog.html"},{label:"Discuss Project",href:"https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website%20project."}];
+    actions=[{label:"Website Catalog",href:"/website-catalog"},{label:"Discuss Project",href:"https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website%20project."}];
   }else if(/novel|book|read|chinese|china|story|stories/.test(q)){
     reply="Completed Novels library mein world classics aur Chinese classics dono hain. Reading links original Project Gutenberg sources par open hote hain.";
-    actions=[{label:"Browse Novels",href:"/novels.html"}];
+    actions=[{label:"Browse Novels",href:"/novels"}];
   }else if(/prompt|tracker|digital product|workflow|template|ai tool/.test(q)){
     reply="Digital Products section mein Sales Trackers, Prompt Packs aur Workflow Templates hain. Custom versions business use-case ke hisaab se ban sakte hain.";
     actions=[{label:"Digital Products",href:"/#products"},{label:"Ask on WhatsApp",href:"https://wa.me/919821941814"}];
@@ -846,19 +847,22 @@ function chatReply(raw){
     actions=[{label:"View Services",href:"/#services"},{label:"Start Enquiry",href:"https://wa.me/919821941814"}];
   }else if(/account|register|registration|login|log in|sign in|sign up|profile/.test(q)){
     reply="Xender Account supports server-side registration, login, secure sessions and account-linked order history.";
-    actions=[{label:"Login / Register",href:"/account.html"}];
+    actions=[{label:"Login / Register",href:"/account"}];
   }else if(/contact|whatsapp|email|call|talk|human|person|support/.test(q)){
     reply="Aap Xender Secrets ko WhatsApp, email ya Contact page se reach kar sakte ho.";
-    actions=[{label:"WhatsApp",href:"https://wa.me/919821941814"},{label:"Contact Page",href:"/contact.html"},{label:"Email",href:"mailto:Sahilsharma171098@gmail.com"}];
+    actions=[{label:"WhatsApp",href:"https://wa.me/919821941814"},{label:"Contact Page",href:"/contact"},{label:"Email",href:"mailto:Sahilsharma171098@gmail.com"}];
   }else if(/refund|return|policy|privacy|terms/.test(q)){
     reply="Privacy, Terms aur Refund pages website footer mein available hain.";
-    actions=[{label:"Refunds",href:"/refund.html"},{label:"Privacy",href:"/privacy.html"},{label:"Terms",href:"/terms.html"}];
+    actions=[{label:"Refunds",href:"/refund"},{label:"Privacy",href:"/privacy"},{label:"Terms",href:"/terms"}];
   }
   return {reply,actions};
 }
 
 export default {
   async fetch(request,env,ctx){
+    // XEND-GSC-INDEXING-001: one canonical URL per page (single 301 for host/.html/slash variants).
+    const canonical=await canonicalRedirect(request,env.ASSETS);
+    if(canonical)return canonical;
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
 

@@ -25,7 +25,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:6px;borde
 </style>
 </head>
 <body>
-<header><h1>XENDER · PREVIEW BUILDER</h1><span class="muted">Fill from the prospect's <b>public</b> info only · never invent reviews, results or credentials</span><a href="/admin.html">MIS →</a></header>
+<header><h1>XENDER · PREVIEW BUILDER</h1><span class="muted">Fill from the prospect's <b>public</b> info only · never invent reviews, results or credentials</span><a href="/admin">MIS →</a></header>
 <div class="layout">
   <div>
     <section class="card">
@@ -67,7 +67,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:6px;borde
   </div>
   <div>
     <div class="devices"><button class="ghost" data-w="390" type="button">Phone</button><button class="ghost" data-w="820" type="button">Tablet</button><button class="ghost" data-w="" type="button">Desktop</button></div>
-    <iframe id="frame" src="/preview.html?builder=1" title="Live preview"></iframe>
+    <iframe id="frame" src="/preview?builder=1" title="Live preview"></iframe>
   </div>
 </div>
 <script type="module">
@@ -151,7 +151,7 @@ async function loadList() {
   if (status !== 200) return;
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   $("list").innerHTML = body.previews.length ? "<table><tr><th>Link</th><th>Business</th><th>Views</th><th>Last view</th><th>Expires</th></tr>" + body.previews.map((p) =>
-    `<tr><td><a href="/preview.html?id=${p.id}&nocount=1" target="_blank">/p/${p.id}</a></td><td>${esc(p.business)}</td><td>${p.views}</td><td>${esc((p.last_view_at || "—").slice(0, 16).replace("T", " "))}</td><td>${esc(p.expires_at.slice(0, 10))}</td></tr>`).join("") + "</table>" : "No previews yet.";
+    `<tr><td><a href="/preview?id=${p.id}&nocount=1" target="_blank">/p/${p.id}</a></td><td>${esc(p.business)}</td><td>${p.views}</td><td>${esc((p.last_view_at || "—").slice(0, 16).replace("T", " "))}</td><td>${esc(p.expires_at.slice(0, 10))}</td></tr>`).join("") + "</table>" : "No previews yet.";
 }
 loadList();
 </script>

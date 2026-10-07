@@ -161,7 +161,7 @@ test('novels page uses the static catalog; links go to real reader slugs', async
   await page.goto(ORIGIN + '/novels.html');
   await page.waitForFunction(() => [...document.querySelectorAll('a')].some((a) => a.href.includes('gutenberg=journey-to-the-west-zh')), null, { timeout: 15000 });
   assert.deepEqual(log.render, [], 'no Render calls when static catalog exists');
-  const hrefs = await page.evaluate(() => [...document.querySelectorAll('a[href*="reader.html"]')].map((a) => a.getAttribute('href')));
+  const hrefs = await page.evaluate(() => [...document.querySelectorAll('a[href*="/reader?"], a[href*="reader.html"]')].map((a) => a.getAttribute('href')));
   assert.ok(hrefs.some((h) => h.includes('xh=take-my-breath-away')));
   assert.ok(!hrefs.some((h) => /gutenberg=(dream-red-chamber|romance-three-kingdoms-vol-1)&/.test(h)), 'no broken legacy slugs');
   await page.close();
