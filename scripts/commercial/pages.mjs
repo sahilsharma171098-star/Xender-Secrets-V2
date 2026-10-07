@@ -726,7 +726,7 @@ function sitecheckPage() {
   ].join("\n\n    ");
   const app = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Xender SiteCheck", applicationCategory: "DeveloperApplication", operatingSystem: "Microsoft Edge, Firefox, Google Chrome",
     description: "Browser extension that checks the current webpage for SEO basics, accessibility, usability and conversion issues, locally in the browser.", url: SITE + "/sitecheck",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "INR" }, publisher: { "@type": "Organization", name: "Xender Secrets", url: SITE + "/" } };
+    offers: { "@type": "Offer", price: "0", priceCurrency: "INR" }, publisher: { "@type": "Organization", name: "Xender Secrets", url: SITE + "/", logo: { "@type": "ImageObject", url: SITE + "/og-xender.png" } } };
   return page({ path: "/sitecheck.html", title: "Xender SiteCheck — Free Website QA & Conversion Checker Extension",
     description: "Free browser extension for Edge, Firefox and Chrome: check any webpage for SEO basics, accessibility, usability and conversion issues. Runs locally, no tracking.",
     ogTitle: "Xender SiteCheck — free website QA & conversion checker", body,
@@ -889,7 +889,7 @@ function articlePage(a) {
   const ld = {
     "@context": "https://schema.org", "@type": "BlogPosting", headline: a.h1, description: a.description,
     image: SITE + "/og-xender.png", datePublished: a.published, dateModified: a.modified, inLanguage: "en-IN",
-    author: { "@type": "Organization", "@id": ORG_ID, name: "Xender Secrets", url: SITE + "/" },
+    author: { "@type": "Organization", "@id": ORG_ID, name: "Xender Secrets", url: SITE + "/", logo: { "@type": "ImageObject", url: SITE + "/og-xender.png" } },
     publisher: { "@type": "Organization", "@id": ORG_ID, name: "Xender Secrets", logo: { "@type": "ImageObject", url: SITE + "/og-xender.png" } },
     mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl(path) }, wordCount: articleWordCount(a),
   };
