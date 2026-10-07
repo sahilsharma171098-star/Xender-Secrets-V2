@@ -1,0 +1,51 @@
+name: SEO live audit
+
+# XEND-GSC-INDEXING-001: read-only audit of production indexing signals (redirect chains,
+# status, canonical, meta robots, X-Robots-Tag, sitemap membership). Runs after each deploy to
+# main, on demand, and on pushes to the indexing branch (to capture the pre-change baseline).
+on:
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Fail the run on any indexing problem"
+        type: boolean
+        default: true
+  push:
+    branches: [main, 'claude/xend-gsc-indexing-*']
+    paths:
+      - 'public/**'
+      - 'src/**'
+      - 'wrangler.jsonc'
+      - 'scripts/seo/**'
+      - '.github/workflows/seo-live-audit.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-live-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for the Cloudflare deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: sleep 120
+      - name: Audit production
+        run: |
+          STRICT=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.strict }}" = "true" ]; then STRICT="--strict"; fi
+          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ github.event_name }}" = "push" ]; then STRICT="--strict"; fi
+          node scripts/seo/audit-live.mjs --json seo-audit.json $STRICT
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seo-live-audit
+          path: seo-audit.json
