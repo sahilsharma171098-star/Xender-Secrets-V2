@@ -70,8 +70,7 @@ jobs:
           set +e
           node scripts/seo/audit-live.mjs --preview "$ORIGIN" > seo-preview.md
           echo "preview_code=$?" >> "$GITHUB_ENV"
-          { echo; echo "## Preview deployment ($ORIGIN)"; sed -n '/^### Problems/,$p' seo-preview.md; } >> seo-audit.md
-          sed -n '1p' seo-preview.md >> seo-audit.md
+          { echo "## Preview deployment ($ORIGIN)"; sed -n '1p' seo-preview.md; echo; sed -n '/^### Problems/,$p' seo-preview.md | head -c 8000; echo; echo "<details><summary>Preview table</summary>"; echo; sed -n '/^| URL/,/^$/p' seo-preview.md | head -c 25000; echo "</details>"; } > preview-section.md
           exit 0
       - name: Post report as a sticky comment
         env:
@@ -83,7 +82,10 @@ jobs:
             TARGET=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
           fi
           [ -z "$TARGET" ] && { echo "no PR/issue to comment on"; exit 0; }
-          { echo "<!-- xender-seo-live-audit -->"; echo "**SEO live audit** · run [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) · commit ${GITHUB_SHA::7}"; echo; echo "<details><summary>Full table</summary>"; echo; head -c 60000 seo-audit.md; echo; echo "</details>"; echo; sed -n '/^### Problems/,$p' seo-audit.md | head -c 6000; } > body.md
+          { echo "<!-- xender-seo-live-audit -->"; echo "**SEO live audit** · run [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) · commit ${GITHUB_SHA::7}"; echo;
+            [ -f preview-section.md ] && { cat preview-section.md; echo; }
+            echo "## Production (www.xendersecrets.com)"; sed -n '1p' seo-audit.md; echo; sed -n '/^### Problems/,$p' seo-audit.md | head -c 6000; echo;
+            echo "<details><summary>Production table</summary>"; echo; sed -n '/^| URL/,/^$/p' seo-audit.md | head -c 24000; echo "</details>"; } > body.md
           ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" --paginate --jq '.[] | select(.body | startswith("<!-- xender-seo-live-audit -->")) | .id' | tail -1)
           if [ -n "$ID" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@body.md >/dev/null; else gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" -F body=@body.md >/dev/null; fi
       - name: Result
