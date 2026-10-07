@@ -44,6 +44,8 @@ Verified unchanged and correct: `robots.txt` allows everything except admin/API/
 
 ## 3. Priority URLs (request indexing in this order, ≤ 10/day)
 
+> **Superseded 2026-10-07 by `docs/SEO_INDEXING.md` §8** (XEND-GSC-INDEXING-001). The sitemap is now 32 URLs; commercial hubs (`/services`, `/website-catalog`, `/articles`) come first. The list below is kept for history.
+
 1. https://www.xendersecrets.com/website-development-gurugram
 2. https://www.xendersecrets.com/website-development-delhi
 3. https://www.xendersecrets.com/clinic-website-development

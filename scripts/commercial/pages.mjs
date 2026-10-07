@@ -1,11 +1,12 @@
 // Content for every generated commercial page. Copy rules (docs/REVENUE_ARCHITECTURE.md):
 // no fake clients/results, demos labelled as demos, no promised rankings or timelines.
 import fs from "node:fs";
-import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, breadcrumbJsonLd, serviceJsonLd, esc, wa, EMAIL, SITE } from "./layout.mjs";
+import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, ORG_ID, breadcrumbJsonLd, serviceJsonLd, canonicalUrl, esc, wa, EMAIL, SITE } from "./layout.mjs";
+import { ARTICLES } from "./articles.mjs";
 import { hero, offerCard, pricingBlock, processBlock, cardsBlock, buildListBlock, templatesBlock, includedAside, relatedBlock } from "./blocks.mjs";
 
 /** Bump when generated page content changes materially (used for sitemap lastmod). */
-export const CONTENT_DATE = "2026-10-06";
+export const CONTENT_DATE = "2026-10-07";
 
 const COMMON_FAQ = [
   ["How long does it take?", "It depends on the package and how quickly we receive your logo, photos and text. We agree a delivery date in writing with your quote, before any payment."],
@@ -22,6 +23,7 @@ const FOUNDER = `<section class="section alt">
           <h2>A small studio that <span>sells for a living.</span></h2>
           <p>Xender Secrets is a GST-registered business in Gurugram, founded by Sahil Kumar Sharma, who has spent years in sales and customer operations. That's why every site we build is designed around one question: <strong>how does a visitor become a customer you can call back?</strong></p>
           <p>You talk directly to the person responsible for your project — no account managers, no hand-offs.</p>
+          <p class="credential">Registered Micro Enterprise under the Government of India Udyam (MSME) scheme — Udyam No. <strong>UDYAM-HR-05-0152992</strong> (<a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">verify on the official portal</a>) · GSTIN 06IQFPS4456B1ZP.</p>
         </div>
         ${includedAside()}
       </div>
@@ -446,6 +448,24 @@ function homePage() {
       </div>
     </section>`,
     FOUNDER,
+    `<section class="section alt" id="guides" aria-labelledby="guides-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">Free guides</p>
+          <h2 id="guides-h">Planning a website? <span>Start here.</span></h2>
+          <p>Practical, no-jargon guides for small-business owners — useful whether or not you hire us.</p>
+        </div>
+        <div class="grid3 grid-auto">
+          ${ARTICLES.map((a) => `<a class="card work" href="/${a.file}" data-cta="home-guide-${a.file.replace(/^article-|\.html$/g, "")}">
+            <span class="tag">${esc(a.kicker)}</span>
+            <h3>${esc(a.h1.split(":")[0])}</h3>
+            <p>${esc(a.deck)}</p>
+            <span class="more">Read the guide →</span>
+          </a>`).join("\n          ")}
+        </div>
+        <p class="center"><a class="btn ghost" href="/articles.html" data-cta="home-all-guides">All guides</a> <a class="btn ghost" href="/faq.html" data-cta="home-faq-page">Full FAQ</a> <a class="btn ghost" href="/about.html" data-cta="home-about">About Xender</a></p>
+      </div>
+    </section>`,
     faqBlock(HOME_FAQ),
     leadForm({ cta: "home-start-form" }),
     `<section class="novel-strip">
@@ -786,6 +806,97 @@ function notFoundPage() {
 }
 
 /** Every generated page: { file, html }. */
+// ---------------------------------------------------------------- FAQ page
+// Replaces the legacy shop-era FAQ (2026-10-07): one current reference for buyers, grouped by
+// topic, consistent with the published prices. Novels/shop answers kept short at the end.
+const FAQ_GROUPS = [
+  ["Prices &amp; payment", [
+    HOME_FAQ[0],
+    ...COMMON_FAQ,
+    ["What's not included in the packages?", "Domain names, paid hosting, paid plugins, stock photos and third-party subscriptions are billed at cost if you need them. Anything outside the agreed scope is quoted in writing before we do it."],
+    ["Can I start with ₹999 and upgrade later?", "Yes. Many businesses start with one page and add pages once enquiries come in; you pay only the difference in scope, quoted in writing."],
+  ]],
+  ["Websites &amp; custom builds", [
+    ["What's the difference between frontend, backend and full stack?", "Frontend is what visitors see and use in the browser. Backend is the server logic and data behind it — saving an enquiry, checking a booking slot. Full stack means both, connected. Most small-business sites need a good frontend plus a reliable enquiry path; bookings, portals and quote tools need a backend too. Our <a href=\"/article-full-stack-development-guide.html\">full-stack guide</a> explains when that's worth it."],
+    ["Are the templates and demos real client projects?", "No. Everything in the <a href=\"/website-catalog.html\">catalog</a> is a concept demo built by Xender Secrets to show what we can deliver, and it is labelled that way. We customise a direction you like with your name, services, photos and contact details."],
+    ["Do the full-stack demos use a real backend?", "Yes. They run on Cloudflare Workers with persistent SQLite-backed storage, the same platform as this website, so you can try bookings, enquiries and records yourself."],
+    ["Can you add a login, database or online payments?", "Yes, as custom work from ₹4,999 + GST, scoped after a short discussion. Online payments need a payment-provider account in your business's name; the provider charges its own fees."],
+    HOME_FAQ.find(([q]) => q.startsWith("Can you redesign")),
+    HOME_FAQ.find(([q]) => q.startsWith("Do you work with businesses outside India")),
+  ]],
+  ["Working with Xender Secrets", [
+    ["What do I get from the free website check?", "A personal review of your current website, Google Business Profile or Instagram page, with the specific fixes we'd make first for mobile, speed, trust and enquiries. It's not an automated PDF, and there's no obligation to buy."],
+    ["Can we meet in person?", "Yes, in Gurugram and Delhi NCR by appointment. Most projects run entirely over WhatsApp and video calls, which works anywhere in India or abroad."],
+    ["How do I contact you?", "Use the form on this page, WhatsApp <a href=\"https://wa.me/919821941814\">+91 98219 41814</a>, or the <a href=\"/contact.html\">contact page</a>. We reply personally."],
+    ["What is Xender SiteCheck?", "A free browser extension that checks the page you're on for common SEO, accessibility, usability and conversion issues. It runs locally and doesn't send your data anywhere. <a href=\"/sitecheck.html\">Learn more</a>."],
+  ]],
+  ["Novels, shop &amp; policies", [
+    ["Are the novels hosted by Xender Secrets?", "The classics library links to public-domain source editions (mainly Project Gutenberg) rather than copying or reselling modern translations. Xender Originals are the brand's own web fiction, published separately."],
+    ["Why are some Chinese novels in Chinese only?", "Availability varies by title and edition. We link to public-domain editions where available and avoid copyrighted modern translations."],
+    ["How do shop orders and payments work?", "Orders are confirmed with you before fulfilment; Cash on Delivery or payment after confirmation is available. A direct online payment gateway is not enabled yet."],
+    ["Where are your privacy, terms and refund policies?", "See the <a href=\"/privacy.html\">privacy policy</a>, <a href=\"/terms.html\">terms</a> and <a href=\"/refund.html\">refund &amp; cancellation policy</a>. Project-specific terms are confirmed in your written quote."],
+  ]],
+];
+
+function faqPage() {
+  const all = FAQ_GROUPS.flatMap(([, items]) => items);
+  const body = [
+    `<section class="hero">
+      <div class="wrap narrow">
+        <p class="eyebrow">FAQ</p>
+        <h1>Questions about websites, <em>prices and process.</em></h1>
+        <p class="lede">Straight answers about what we build, what it costs (+ 18% GST), how a project runs and what you own at the end. Can't find yours? Ask us on WhatsApp.</p>
+      </div>
+    </section>`,
+    ...FAQ_GROUPS.map(([heading, items], i) => `<section class="section${i % 2 ? " alt" : ""}" id="faq-${i + 1}">
+      <div class="wrap narrow">
+        <h2>${heading}</h2>
+        <div class="faq">
+          ${items.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${a}</p></details>`).join("\n          ")}
+        </div>
+      </div>
+    </section>`),
+    relatedBlock([["/services.html", "Packages &amp; prices"], ["/website-catalog.html", "Templates &amp; demos"], ["/articles.html", "Guides"], ["/about.html", "About Xender"]]),
+    leadForm({ cta: "faq-start-form", heading: "Still have a question? <span>Ask us directly.</span>" }),
+  ].join("\n\n    ");
+  return page({ path: "/faq.html", title: "FAQ: Website Prices, GST, Process & Ownership | Xender Secrets",
+    description: "Answers about Xender Secrets websites: package prices + 18% GST, payment, timelines, ownership, demos, custom builds, working remotely, and our novels library.",
+    body, jsonld: [ORG_JSONLD, faqJsonLd(all), breadcrumbJsonLd([["Home", "/"], ["FAQ", "/faq.html"]])] });
+}
+
+// ---------------------------------------------------------------- guides (articles)
+const longDate = (d) => new Date(d + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const plainText = (html) => String(html).replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/g, " ").replace(/\s+/g, " ").trim();
+export const articleWordCount = (a) => plainText(a.body).split(" ").length;
+
+function articlePage(a) {
+  const path = "/" + a.file;
+  const body = `<article class="section guide">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/articles.html">Guides</a> / <span>${esc(a.kicker)}</span></nav>
+        <p class="eyebrow">${esc(a.kicker)}</p>
+        <h1>${esc(a.h1)}</h1>
+        <p class="lede">${esc(a.deck)}</p>
+        <p class="byline">Xender Secrets · Published ${longDate(a.published)} · Updated ${longDate(a.modified)}</p>
+        <div class="prose">${a.body}
+        </div>
+      </div>
+    </article>
+
+    ${relatedBlock([...a.related, ["/articles.html", "All guides"]])}
+
+    ${leadForm({ cta: "guide-" + a.file.replace(/^article-|\.html$/g, "") + "-form", heading: "Want a second opinion <span>on your website?</span>", intro: "Send your current site (or Google / Instagram page). We reply personally with the specific fixes we'd make first — no obligation." })}`;
+  const ld = {
+    "@context": "https://schema.org", "@type": "BlogPosting", headline: a.h1, description: a.description,
+    image: SITE + "/og-xender.png", datePublished: a.published, dateModified: a.modified, inLanguage: "en-IN",
+    author: { "@type": "Organization", "@id": ORG_ID, name: "Xender Secrets", url: SITE + "/" },
+    publisher: { "@type": "Organization", "@id": ORG_ID, name: "Xender Secrets", logo: { "@type": "ImageObject", url: SITE + "/og-xender.png" } },
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl(path) }, wordCount: articleWordCount(a),
+  };
+  return page({ path, title: a.title, description: a.description, body, ogType: "article",
+    jsonld: [ORG_JSONLD, ld, breadcrumbJsonLd([["Home", "/"], ["Guides", "/articles.html"], [a.h1, path]])] });
+}
+
 export function allPages() {
   return [
     { file: "index.html", html: homePage() },
@@ -793,9 +904,11 @@ export function allPages() {
     { file: "about.html", html: aboutPage() },
     { file: "contact.html", html: contactPage() },
     { file: "404.html", html: notFoundPage() },
+    { file: "faq.html", html: faqPage() },
     ...INDUSTRIES.map((i) => ({ file: i.file, html: industryPage(i) })),
     ...LOCATIONS.map((l) => ({ file: l.file, html: locationPage(l) })),
     { file: "sitecheck.html", html: sitecheckPage() },
     { file: "sitecheck-privacy.html", html: sitecheckPrivacyPage() },
+    ...ARTICLES.map((a) => ({ file: a.file, html: articlePage(a) })),
   ];
 }

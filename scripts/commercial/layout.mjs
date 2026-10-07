@@ -28,13 +28,14 @@ const NAV = [
   ["/services.html", "Pricing"],
   ["/website-catalog.html", "Work"],
   ["/services.html#industries", "Industries"],
+  ["/articles.html", "Guides"],
   ["/about.html", "About"],
   ["/novels.html", "Novels"],
 ];
 
 export function header({ home = false } = {}) {
   const nav = home
-    ? [["#services", "Pricing"], ["#work", "Work"], ["#process", "How it works"], ["#faq", "FAQ"], ["/novels.html", "Novels"]]
+    ? [["/services.html", "Pricing"], ["/website-catalog.html", "Work"], ["#process", "How it works"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"]]
     : NAV;
   return `<a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
@@ -58,7 +59,7 @@ export function footer() {
       <div>
         <strong>XENDER SECRETS</strong><br>
         Founded by Sahil Kumar Sharma · Gurugram, Haryana, India<br>
-        GSTIN: 06IQFPS4456B1ZP
+        GSTIN: 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a>
       </div>
       <nav class="footer-links" aria-label="Footer">
         <a href="/services.html">Pricing</a>
@@ -217,7 +218,7 @@ export function cleanLinks(html) {
 }
 
 /** Full HTML document. */
-export function page({ path, title, description, ogTitle, body, jsonld = [], home = false, robots = "index,follow" }) {
+export function page({ path, title, description, ogTitle, body, jsonld = [], home = false, robots = "index,follow", ogType = "website" }) {
   // Cloudflare assets (html_handling: auto-trailing-slash) 307-redirect /page.html → /page, so
   // canonical URLs use the final extensionless form.
   const canonical = canonicalUrl(path);
@@ -232,7 +233,7 @@ export function page({ path, title, description, ogTitle, body, jsonld = [], hom
   <link rel="canonical" href="${canonical}">
   <meta name="robots" content="${robots}">
   <meta name="theme-color" content="#ffffff">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="${ogType}">
   <meta property="og:site_name" content="Xender Secrets">
   <meta property="og:title" content="${esc(ogTitle || title)}">
   <meta property="og:description" content="${esc(description)}">

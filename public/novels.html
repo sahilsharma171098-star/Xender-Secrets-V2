@@ -85,17 +85,17 @@ body.novel-light footer,body.novel-dark footer{background:var(--nv-card);border-
 </head>
 <body class="novel-light">
 <header>
-<a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
+<a class="logo" href="/">XENDER <span>SECRETS</span></a>
 <button id="menu" aria-label="Menu">☰</button>
 <nav>
-<a href="community.html">Community</a><a href="ideas.html">Ideas</a><a href="articles.html">Articles</a>
-<a href="website-catalog.html">Websites</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a>
+<a href="/community">Community</a><a href="/ideas">Ideas</a><a href="/articles">Articles</a>
+<a href="/website-catalog">Websites</a><a href="/services">Services</a><a href="/novels">Novels</a><a href="/about">About</a>
 </nav>
-<a class="pill desktop" href="novels.html">Read Now</a>
+<a class="pill desktop" href="/novels">Read Now</a>
 </header>
 
 <main class="novels-shell">
-<div class="crumbs"><a href="index.html">Home</a> / Novels</div>
+<div class="crumbs"><a href="/">Home</a> / Novels</div>
 
 <div class="novels-title">
   <div>
@@ -161,7 +161,7 @@ body.novel-light footer,body.novel-dark footer{background:var(--nv-card);border-
 
 <footer>
 <div><b>XENDER SECRETS</b><p>Completed web fiction + digital projects</p></div>
-<div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div>
+<div class="footer-links"><a href="/">Home</a><a href="/community">Community</a><a href="/contact">Contact</a><a href="/terms">Terms</a></div>
 <small>© 2026 Xender Secrets.</small>
 </footer>
 
@@ -212,10 +212,10 @@ function storageKey(s){
  return "xs-"+t+"-reading-"+s.slug;
 }
 function hrefFor(s,n=1){
- if(s.sourceSite==="Licensed Fiction") return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;
- if(s.sourceSite==="Project Gutenberg") return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;
- if(isImported(s)) return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;
- return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(s.sourceSite==="Licensed Fiction") return "/reader?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(s.sourceSite==="Project Gutenberg") return "/reader?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(isImported(s)) return "/reader?imported="+encodeURIComponent(s.slug)+"&chapter="+n;
+ return "/reader?xh="+encodeURIComponent(s.slug)+"&chapter="+n;
 }
 function filtered(){
  const q=search.value.trim().toLowerCase();

@@ -156,3 +156,12 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 ### CQ-018 — Checkpoint readings (P0, scheduled)
 - Dates: 2026-10-13 (Day 7), 2026-10-20 (Day 14), 2026-11-03 (Day 28).
 - Action: pull the metrics in `docs/SEO_TRAFFIC_PLAN.md` §4 (GSC URL Inspection for the 12 priority URLs, Performance by page + query, Bing indexed count, MIS organic leads/quotes/revenue) and fill the "Actual" column via a PR or an issue comment. Apply the decision rules in §4.
+
+## Added by Claude — 2026-10-07 (XEND-GSC-INDEXING-001, PR #36)
+### CQ-019 — Search Console after the indexing fix (P0, strictly in this order)
+- Channel: Google Search Console (write access needed; Sahil if the connector is read-only).
+- Pre-condition: PR #36 merged AND the "SEO live audit" workflow run on `main` shows **0 problems** (sticky comment on PR #36 / Actions tab). Do **not** press "Validate fix" before that.
+- Action: (1) Sitemaps → resubmit `https://www.xendersecrets.com/sitemap.xml` (expect 32 URLs; it previously had 44–52 because demo pages and thin articles were in it — that's intentional). Remove the old homepage-as-sitemap entry if still present. (2) URL Inspection → Request indexing in the commercial order in `docs/SEO_INDEXING.md` §8 (≤ 10/day): `/`, `/services`, `/website-catalog`, `/articles`, then the Gurugram/clinic pages and the two buying guides. (3) After the priority URLs show "URL is on Google" or at least a fresh crawl date, open "Crawled – currently not indexed" → Validate fix.
+- Expected: `.html`, apex and `http://` entries move to "Page with redirect"; `/demo-backend-api` to "Excluded by noindex"; commercial pages get recrawled. Indexing itself isn't guaranteed on a new domain.
+- MIS: record per-URL inspection status (indexed / crawled-not-indexed / discovered) on the Day-7 row of `docs/SEO_TRAFFIC_PLAN.md` §4.
+- Optional decision for Sahil (Cloudflare → SSL/TLS → Edge Certificates): turning **Always Use HTTPS off** makes `http://xendersecrets.com/x` one 301 instead of two, because the Worker already upgrades the scheme. Leaving it on is also fine.

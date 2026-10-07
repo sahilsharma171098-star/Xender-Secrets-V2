@@ -190,3 +190,18 @@ p{margin:0 0 1em;color:var(--ink-2)}
 .gst-total{font-size:.85rem;color:var(--muted);margin:-6px 0 12px}
 h2 small.gst{font-size:.6em;font-weight:600;color:var(--muted)}
 .narrow code{overflow-wrap:anywhere}
+/* XEND-GSC-INDEXING-001: long-form guides */
+.guide .crumbs{font-size:.88rem;color:var(--ink-2);margin:0 0 18px}
+.guide .crumbs a{color:inherit}
+.guide h1{font-size:clamp(1.9rem,4.4vw,2.7rem);line-height:1.15;margin:.2em 0 .4em}
+.guide .byline{color:var(--ink-2);font-size:.9rem;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:8px}
+.prose{font-size:1.04rem;line-height:1.72}
+.prose h2{font-size:1.4rem;margin:1.9em 0 .5em;line-height:1.25}
+.prose p,.prose li{color:var(--ink)}
+.prose ul,.prose ol{padding-left:1.25em}
+.prose li{margin:.35em 0}
+.prose ul.checks{padding-left:0}
+.prose table{width:100%;border-collapse:collapse;margin:1.2em 0;font-size:.95rem;display:block;overflow-x:auto}
+.prose th,.prose td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+.prose thead th{background:var(--surface)}
+.prose code{font-size:.9em;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1px 6px;overflow-wrap:anywhere}
