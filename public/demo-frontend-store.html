@@ -1,4 +1,211 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>North Store — Frontend Build</title><meta name="description" content="Interactive ecommerce frontend build."><meta name="robots" content="noindex,follow"><link rel="stylesheet" href="demo-suite.css"></head><body><header class="top"><a class="brand" href="/">XENDER <span>SECRETS</span></a><nav><a href="/website-catalog">Website Catalog</a><a href="/contact">Contact</a></nav><a class="back" href="/website-catalog">← Catalog</a></header><main class="wrap"><section class="hero"><div><div class="eyebrow">FRONTEND · BUSINESS BUILD</div><h1>Minimal gear for <span class="accent">everyday carry.</span></h1><p class="lead">A complete storefront UI build with filtering and an interactive cart.</p></div><div class="panel"><div class="metric" id="cartCount">0</div><p class="muted">Items in cart</p><button class="btn" id="clearCart">Clear cart</button></div></section><section class="section"><div class="toolbar"><button class="chip active" data-c="all">All</button><button class="chip" data-c="desk">Desk</button><button class="chip" data-c="travel">Travel</button><button class="chip" data-c="mobile">Mobile</button></div><div class="product-list">
-<div class="product" data-cat="desk"><div class="visual">⌨️</div><span class="badge">DESK</span><h3>Arc Keyboard Pad</h3><p class="muted">Clean workspace accessory concept.</p><b>₹899</b><button class="btn add" data-name="Arc Keyboard Pad">Add</button></div>
-<div class="product" data-cat="travel"><div class="visual">🎒</div><span class="badge">TRAVEL</span><h3>Transit Pouch</h3><p class="muted">Compact organizer concept.</p><b>₹649</b><button class="btn add" data-name="Transit Pouch">Add</button></div>
-<div class="product" data-cat="mobile"><div class="visual">📱</div><span class="badge">MOBILE</span><h3>Stand Mini</h3><p class="muted">Foldable phone stand concept.</p><b>₹399</b><button class="btn add" data-name="Stand Mini">Add</button></div></div></section><section class="section"><div class="notice">Frontend storefront interface. For connected server-side checkout, use the Xender Secrets Shop.</div></section></main><script>let cart=[];const draw=()=>cartCount.textContent=cart.length;document.querySelectorAll('.add').forEach(b=>b.onclick=()=>{cart.push(b.dataset.name);draw()});clearCart.onclick=()=>{cart=[];draw()};document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-c]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.product').forEach(p=>p.classList.toggle('hide',b.dataset.c!=='all'&&p.dataset.cat!==b.dataset.c))});</script><footer class="demo-footer">Interactive portfolio build by Xender Secrets · Customizable for client requirements.</footer><script src="/xs-growth.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <title>North Store — E-commerce Concept Demo | Xender Secrets</title>
+  <meta name="description" content="Concept demo by Xender Secrets: a premium storefront with search, filters, sorting, a cart drawer with quantities and a free-shipping meter.">
+  <style>
+    :root{--bg:#faf6f0;--panel:#fffdf9;--ink:#2b2118;--muted:#7a6a5b;--line:#eadfce;--brand:#2b2118;--accent:#b6895b;--ok:#3f7d4e}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+    :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+    .wrap{width:min(1180px,calc(100% - 32px));margin-inline:auto}
+    header{position:sticky;top:0;z-index:20;background:#faf6f0ee;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .hd{display:flex;align-items:center;gap:18px;min-height:64px}
+    .logo{font-family:Georgia,"Times New Roman",serif;font-size:1.5rem;letter-spacing:.12em;font-weight:700;text-decoration:none;color:inherit}
+    .hd nav{display:flex;gap:18px;margin-left:24px;color:var(--muted);font-size:.93rem}.hd nav a{color:inherit;text-decoration:none}
+    .cart-btn{margin-left:auto;font:inherit;font-weight:700;display:inline-flex;gap:8px;align-items:center;padding:9px 14px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+    .cart-btn b{display:grid;place-items:center;min-width:22px;height:22px;border-radius:99px;background:#fff;color:var(--ink);font-size:.8rem}
+    .cart-btn.bump{animation:bump .35s ease}@keyframes bump{50%{transform:scale(1.08)}}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:56px 0 36px}
+    .kick{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:800}
+    h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.02em;margin:12px 0 16px}
+    .lede{color:var(--muted);font-size:1.1rem;max-width:520px}
+    .hero-art{aspect-ratio:5/4;border-radius:28px;background:radial-gradient(circle at 70% 30%,#fff 0,transparent 45%),linear-gradient(150deg,#e9d8c1,#c4a17c);position:relative;overflow:hidden}
+    .hero-art span{position:absolute;border-radius:20px;box-shadow:12px 20px 30px #5a412a40}
+    .hero-art span:nth-child(1){left:12%;top:22%;width:30%;height:52%;background:linear-gradient(160deg,#fffaf2,#d9c2a3)}
+    .hero-art span:nth-child(2){left:38%;top:14%;width:26%;height:64%;background:linear-gradient(160deg,#5a4433,#2b2118)}
+    .hero-art span:nth-child(3){left:60%;top:32%;width:28%;height:44%;background:linear-gradient(160deg,#f3e6d4,#b6895b)}
+    .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:16px 0;border-block:1px solid var(--line);margin-bottom:24px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chips button{font:inherit;font-size:.9rem;padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+    .chips button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .bar input,.bar select{font:inherit;font-size:.92rem;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+    .bar input{margin-left:auto;min-width:200px}
+    .count{width:100%;color:var(--muted);font-size:.88rem;margin:0}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding-bottom:70px}
+    .p{display:flex;flex-direction:column;gap:8px}
+    .p .img{aspect-ratio:4/5;border-radius:18px;position:relative;overflow:hidden;background:var(--g);transition:transform .3s ease}
+    .p:hover .img{transform:translateY(-4px)}
+    .p .img i{position:absolute;inset:18% 22%;border-radius:16px;background:var(--o);box-shadow:10px 18px 26px #4a35233a}
+    .p .tag{position:absolute;left:12px;top:12px;font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:4px 9px;border-radius:99px;background:#fffdf9e6}
+    .p h3{margin:4px 0 0;font-size:1rem}.p .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem}
+    .p .price{color:var(--ink);font-weight:800}
+    .p button{font:inherit;font-weight:700;padding:10px;border-radius:12px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+    .p button:hover,.p button.added{background:var(--ink);color:#fff}
+    .empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--muted)}
+    .drawer{position:fixed;inset:0;z-index:50;display:grid;grid-template-columns:1fr min(420px,100%);visibility:hidden}
+    .drawer.open{visibility:visible}
+    .scrim{background:#2b211866;opacity:0;transition:opacity .25s ease}.drawer.open .scrim{opacity:1}
+    .panel{background:var(--panel);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease;box-shadow:-20px 0 40px #2b21182a}
+    .drawer.open .panel{transform:none}
+    .panel-hd{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--line)}
+    .panel-hd h2{margin:0;font-size:1.2rem}
+    .x{font:inherit;font-size:1.4rem;border:0;background:none;cursor:pointer;color:var(--ink)}
+    .ship{padding:14px 20px;border-bottom:1px solid var(--line);font-size:.9rem}
+    .ship .track{height:7px;border-radius:9px;background:var(--line);margin-top:8px;overflow:hidden}.ship .track i{display:block;height:100%;background:var(--ok);transition:width .3s ease}
+    .lines{flex:1;overflow:auto;padding:8px 20px;list-style:none;margin:0}
+    .lines li{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+    .lines .sw{width:56px;height:56px;border-radius:12px;background:var(--g)}
+    .lines small{color:var(--muted)}
+    .qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;margin-top:6px}
+    .qty button{font:inherit;width:30px;height:30px;border:0;background:none;cursor:pointer;color:var(--ink)}.qty span{min-width:22px;text-align:center;font-weight:700}
+    .rm{font:inherit;font-size:.8rem;color:var(--muted);background:none;border:0;cursor:pointer;text-decoration:underline}
+    .panel-ft{padding:20px;border-top:1px solid var(--line);display:grid;gap:10px}
+    .row{display:flex;justify-content:space-between}.row.total{font-size:1.15rem;font-weight:800}
+    .checkout{font:inherit;font-weight:800;padding:14px;border-radius:14px;border:0;background:var(--ink);color:#fff;cursor:pointer}
+    .note{font-size:.84rem;color:var(--muted);margin:0}
+    .toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;opacity:0;transition:.25s;z-index:60;pointer-events:none}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
+    @media(max-width:960px){.grid{grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr}.hero-art{aspect-ratio:16/9}}
+    @media(max-width:700px){.grid{grid-template-columns:1fr 1fr;gap:14px}.hd nav{display:none}.bar input{margin-left:0;flex:1;min-width:0}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <header><div class="wrap hd"><a class="logo" href="#top">NORTH</a><nav aria-label="Shop"><a href="#shop">Shop</a><a href="#shop">New in</a><a href="#about">About</a></nav><button class="cart-btn" id="cartBtn" type="button" aria-haspopup="dialog" aria-controls="drawer">Cart <b id="cartCount">0</b></button></div></header>
+  <main id="top">
+    <section class="wrap hero">
+      <div>
+        <p class="kick">Autumn edit · free shipping over ₹2,000</p>
+        <h1>Quiet objects for everyday carry.</h1>
+        <p class="lede">Minimal desk, travel and phone essentials in natural materials. Designed to last, priced fairly.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true"><span></span><span></span><span></span></div>
+    </section>
+    <section class="wrap" id="shop" aria-labelledby="shop-h">
+      <h2 id="shop-h" class="sr" style="position:absolute;left:-999px">Products</h2>
+      <div class="bar">
+        <div class="chips" role="group" aria-label="Category">
+          <button type="button" data-cat="all" aria-pressed="true">All</button>
+          <button type="button" data-cat="desk" aria-pressed="false">Desk</button>
+          <button type="button" data-cat="travel" aria-pressed="false">Travel</button>
+          <button type="button" data-cat="mobile" aria-pressed="false">Mobile</button>
+        </div>
+        <input id="q" type="search" placeholder="Search products" aria-label="Search products">
+        <select id="sort" aria-label="Sort"><option value="featured">Featured</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option><option value="name">Name A–Z</option></select>
+        <p class="count" id="count" role="status" aria-live="polite"></p>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+  <footer id="about"><div class="wrap">North is a fictional brand with sample products. Concept storefront designed and built by <a href="/portfolio#p-north-store">Xender Secrets</a>. For a store with a real server-side checkout, see the <a href="/demo-fullstack-commerce">Market Commerce demo</a>.</div></footer>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="cart-h" hidden>
+    <div class="scrim" data-close></div>
+    <div class="panel">
+      <div class="panel-hd"><h2 id="cart-h">Your cart</h2><button class="x" type="button" data-close aria-label="Close cart">×</button></div>
+      <div class="ship" id="ship"></div>
+      <ul class="lines" id="lines"></ul>
+      <div class="panel-ft">
+        <div class="row"><span>Subtotal</span><span id="sub">₹0</span></div>
+        <div class="row"><span>Shipping</span><span id="shipCost">₹0</span></div>
+        <div class="row total"><span>Total</span><span id="total">₹0</span></div>
+        <button class="checkout" type="button" id="checkout">Checkout</button>
+        <p class="note" id="checkoutNote">Demo store: checkout is disabled and no payment is taken.</p>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (() => {
+    const P = [
+      { id: "arc", name: "Arc Keyboard Pad", cat: "desk", price: 899, g: "linear-gradient(150deg,#efe3d2,#d8c3a5)", o: "linear-gradient(160deg,#5a4433,#2b2118)", tag: "Bestseller" },
+      { id: "tray", name: "Oak Desk Tray", cat: "desk", price: 1299, g: "linear-gradient(150deg,#f3eadc,#e0cdb0)", o: "linear-gradient(160deg,#d7b48a,#9b6f45)" },
+      { id: "lamp", name: "Halo Desk Lamp", cat: "desk", price: 2499, g: "linear-gradient(150deg,#ebe4dc,#cfc2b2)", o: "radial-gradient(circle at 50% 30%,#fff7da,#e9c46a 60%,#b98b2f)", tag: "New" },
+      { id: "pouch", name: "Transit Pouch", cat: "travel", price: 649, g: "linear-gradient(150deg,#e6ece6,#c7d3c6)", o: "linear-gradient(160deg,#6c7f69,#3d4d3b)" },
+      { id: "sling", name: "Canvas Sling", cat: "travel", price: 1899, g: "linear-gradient(150deg,#ece6dd,#d3c4ae)", o: "linear-gradient(160deg,#c2a27c,#7c5c3b)" },
+      { id: "tag", name: "Leather Luggage Tag", cat: "travel", price: 449, g: "linear-gradient(150deg,#f1e4d8,#dcc1a6)", o: "linear-gradient(160deg,#a9673c,#6b3a1d)" },
+      { id: "stand", name: "Stand Mini", cat: "mobile", price: 399, g: "linear-gradient(150deg,#e4e8ef,#c4ccd9)", o: "linear-gradient(160deg,#59657a,#2c3444)" },
+      { id: "case", name: "Cork Phone Case", cat: "mobile", price: 799, g: "linear-gradient(150deg,#f2e9dc,#e1cba9)", o: "linear-gradient(160deg,#c89d6b,#8a6239)", tag: "New" },
+    ];
+    const inr = (n) => "₹" + n.toLocaleString("en-IN");
+    const FREE = 2000, SHIP = 99;
+    let cat = "all", cart = {};
+    try { cart = JSON.parse(localStorage.getItem("north-cart") || "{}") || {}; } catch { cart = {}; }
+    const save = () => { try { localStorage.setItem("north-cart", JSON.stringify(cart)); } catch {} };
+    const grid = document.getElementById("grid");
+
+    function renderGrid() {
+      const q = document.getElementById("q").value.trim().toLowerCase(), s = document.getElementById("sort").value;
+      let list = P.filter((p) => (cat === "all" || p.cat === cat) && (!q || p.name.toLowerCase().includes(q)));
+      if (s === "low") list.sort((a, b) => a.price - b.price); else if (s === "high") list.sort((a, b) => b.price - a.price); else if (s === "name") list.sort((a, b) => a.name.localeCompare(b.name));
+      grid.innerHTML = list.length ? "" : '<p class="empty">No products match. Try another search.</p>';
+      for (const p of list) {
+        const el = document.createElement("article");
+        el.className = "p";
+        el.innerHTML = '<div class="img" style="--g:' + p.g + ";--o:" + p.o + '"><i></i>' + (p.tag ? '<span class="tag">' + p.tag + "</span>" : "") + '</div><h3></h3><div class="meta"><span>' + p.cat[0].toUpperCase() + p.cat.slice(1) + '</span><span class="price">' + inr(p.price) + '</span></div><button type="button">Add to cart</button>';
+        el.querySelector("h3").textContent = p.name;
+        el.querySelector("button").setAttribute("aria-label", "Add " + p.name + " to cart");
+        el.querySelector("button").addEventListener("click", (e) => { add(p.id); e.currentTarget.classList.add("added"); e.currentTarget.textContent = "Added ✓"; const b = e.currentTarget; setTimeout(() => { b.classList.remove("added"); b.textContent = "Add to cart"; }, 1200); });
+        grid.appendChild(el);
+      }
+      document.getElementById("count").textContent = list.length + " of " + P.length + " products";
+    }
+    function add(id) {
+      cart[id] = Math.min(10, (cart[id] || 0) + 1); save(); renderCart();
+      const btn = document.getElementById("cartBtn"); btn.classList.remove("bump"); void btn.offsetWidth; btn.classList.add("bump");
+      toast(P.find((p) => p.id === id).name + " added to cart");
+    }
+    function setQty(id, n) { if (n <= 0) delete cart[id]; else cart[id] = Math.min(10, n); save(); renderCart(); }
+    function renderCart() {
+      const ids = Object.keys(cart).filter((id) => P.some((p) => p.id === id));
+      const count = ids.reduce((a, id) => a + cart[id], 0), sub = ids.reduce((a, id) => a + cart[id] * P.find((p) => p.id === id).price, 0);
+      const ship = sub === 0 || sub >= FREE ? 0 : SHIP;
+      document.getElementById("cartCount").textContent = count;
+      document.getElementById("sub").textContent = inr(sub);
+      document.getElementById("shipCost").textContent = sub === 0 ? "—" : ship ? inr(ship) : "Free";
+      document.getElementById("total").textContent = inr(sub + ship);
+      document.getElementById("ship").innerHTML = (sub >= FREE ? "You've unlocked <b>free shipping</b>." : "Add <b>" + inr(FREE - sub) + "</b> more for free shipping.") + '<div class="track"><i style="width:' + Math.min(100, sub / FREE * 100) + '%"></i></div>';
+      const ul = document.getElementById("lines");
+      ul.innerHTML = ids.length ? "" : '<li style="display:block;color:var(--muted)">Your cart is empty.</li>';
+      for (const id of ids) {
+        const p = P.find((x) => x.id === id), li = document.createElement("li");
+        li.innerHTML = '<span class="sw" style="--g:' + p.o + '"></span><div><b></b><br><small>' + inr(p.price) + ' each</small><br><span class="qty"><button type="button" aria-label="Decrease">−</button><span>' + cart[id] + '</span><button type="button" aria-label="Increase">+</button></span></div><div style="text-align:right"><b>' + inr(p.price * cart[id]) + '</b><br><button type="button" class="rm">Remove</button></div>';
+        li.querySelector("b").textContent = p.name;
+        const [dec, inc] = li.querySelectorAll(".qty button");
+        dec.onclick = () => setQty(id, cart[id] - 1); inc.onclick = () => setQty(id, cart[id] + 1);
+        li.querySelector(".rm").onclick = () => setQty(id, 0);
+        ul.appendChild(li);
+      }
+    }
+    let toastT;
+    function toast(t) { const el = document.getElementById("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 1600); }
+
+    const drawer = document.getElementById("drawer");
+    let lastFocus = null;
+    const open = () => { lastFocus = document.activeElement; drawer.hidden = false; requestAnimationFrame(() => drawer.classList.add("open")); drawer.querySelector(".x").focus(); };
+    const close = () => { drawer.classList.remove("open"); setTimeout(() => { drawer.hidden = true; }, 300); lastFocus && lastFocus.focus(); };
+    document.getElementById("cartBtn").addEventListener("click", open);
+    drawer.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", close));
+    document.addEventListener("keydown", (e) => {
+      if (drawer.hidden) return;
+      if (e.key === "Escape") close();
+      if (e.key === "Tab") { const f = [...drawer.querySelectorAll("button")].filter((b) => b.offsetParent); if (!f.length) return; const first = f[0], last = f[f.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } }
+    });
+    document.getElementById("checkout").addEventListener("click", () => { document.getElementById("checkoutNote").innerHTML = 'This is a front-end demo, so checkout stops here. A client build connects a payment gateway with server-side verification — <a href="/portfolio#p-north-store">ask about a store like this</a>.'; });
+
+    document.querySelectorAll("[data-cat]").forEach((b) => b.addEventListener("click", () => { cat = b.dataset.cat; document.querySelectorAll("[data-cat]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); renderGrid(); }));
+    document.getElementById("q").addEventListener("input", renderGrid);
+    document.getElementById("sort").addEventListener("change", renderGrid);
+    renderGrid(); renderCart();
+  })();
+  </script>
+  <script src="/demo-ribbon.js" data-slug="north-store" data-kind="Concept demo" defer></script>
+  <script src="/xs-growth.js" defer></script>
+</body>
+</html>

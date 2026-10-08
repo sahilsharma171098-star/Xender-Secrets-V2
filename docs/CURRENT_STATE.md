@@ -1,6 +1,12 @@
 # Xender Secrets V2 — Current State
 
-## XEND-PORTFOLIO-MOTION-001 (2026-10-08, feature branch)
+## XEND-PORTFOLIO-002 (2026-10-08, Claude, branch `claude/project-thread-5ar4i7`)
+- `/portfolio` moved into the commercial generator: edit `scripts/commercial/portfolio.mjs` (PROJECTS) then `npm run build:pages`; never hand-edit `public/portfolio.html`.
+- Scroll scenes: add `data-scroll-scene="exit|pass|pin"` (+ `data-steps`) and style with `var(--p)` / `var(--k)`; pinned heights only under `html.scroll-fx`. Sticky stages must not have an `overflow:hidden` ancestor.
+- Demo pages: include `/demo-ribbon.js` with `data-slug` (portfolio slug) and `data-kind`.
+- Production verification pending merge + Cloudflare deploy.
+
+## XEND-PORTFOLIO-MOTION-001 (2026-10-08, merged PR #39)
 - New `public/portfolio.html` is a truthful prospect-facing showcase with six existing Xender demo/product destinations, project filters, share URL, and WhatsApp enquiry links.
 - `public/portfolio.css` and `public/portfolio.js` add responsive illustrative graphics, scroll storytelling and graceful interaction.
 - `public/home.js` and `public/home.css` add dependency-free commercial-page scroll reveal and progress, respecting `prefers-reduced-motion`.

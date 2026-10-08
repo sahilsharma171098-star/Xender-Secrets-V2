@@ -3,10 +3,11 @@
 import fs from "node:fs";
 import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, ORG_ID, breadcrumbJsonLd, serviceJsonLd, canonicalUrl, esc, wa, EMAIL, SITE } from "./layout.mjs";
 import { ARTICLES } from "./articles.mjs";
+import { portfolioBody, workRail, portfolioJsonLd } from "./portfolio.mjs";
 import { hero, offerCard, pricingBlock, processBlock, cardsBlock, buildListBlock, templatesBlock, includedAside, relatedBlock } from "./blocks.mjs";
 
 /** Bump when generated page content changes materially (used for sitemap lastmod). */
-export const CONTENT_DATE = "2026-10-07";
+export const CONTENT_DATE = "2026-10-08";
 
 const COMMON_FAQ = [
   ["How long does it take?", "It depends on the package and how quickly we receive your logo, photos and text. We agree a delivery date in writing with your quote, before any payment."],
@@ -377,36 +378,78 @@ const HOME_FAQ = [
   ["Do you work with businesses outside India?", "Yes — we work with businesses in the UK, US and Canada too. Conversion-focused landing pages start from US$299."],
 ];
 
-function homePage() {
-  const body = [
-    hero({
-      eyebrow: "Websites for small businesses · from ₹999 + GST",
-      h1: "Business websites that turn visitors into <em>enquiries.</em>",
-      lede: "Xender Secrets designs and builds fast, mobile-first websites and landing pages for clinics, CA firms, real-estate agents, recruiters and local services. Fixed prices, clear scope, full handover — no compulsory maintenance.",
-      waText: "Hi Xender Secrets, I want a website for my business.", ctaPrefix: "home",
-      card: offerCard({ offer: "founding-website-999", title: "Founding offer · first 10 businesses", bullets: ["Mobile-first design with your branding", "WhatsApp, call and enquiry buttons", "Services, location and contact sections", "Basic on-page SEO and Google-ready setup", "Live preview link before you approve", "Complete handover of files and access"], cta: "Claim a ₹999 website", ctaPrefix: "home" }),
-    }),
-    `<section class="section motion-demo" id="experience" aria-labelledby="motion-title">
-      <div class="wrap motion-layout">
-        <div class="motion-copy motion-reveal">
-          <p class="kicker">Designed to move people</p>
-          <h2 id="motion-title">Scroll through a story. <span>Stay for the experience.</span></h2>
-          <p>We build layouts that respond as customers explore: depth, motion, interactive graphics and focused calls to action. Fast on mobile, accessible by default — no autoplay video or heavy animation library required.</p>
-          <div class="motion-cta-row">
-            <a class="btn primary" href="/portfolio.html" data-cta="home-motion-portfolio">See our portfolio ↗</a>
-            <a class="btn ghost" href="/demo-frontend-saas.html" data-cta="home-motion-demo">Try a live concept</a>
+function homeHero() {
+  return `<section class="hx" data-scroll-scene="exit" aria-labelledby="hx-title">
+      <div class="wrap hx-grid">
+        <div class="hx-copy">
+          <p class="eyebrow">Web design &amp; development studio · India → worldwide</p>
+          <h1 id="hx-title">Websites and web apps that turn visitors into <em>customers.</em></h1>
+          <p class="lede">Xender Secrets designs and builds fast business websites, landing pages, online stores, dashboards and full-stack web apps — for small businesses in India and growing companies in the US, UK, Canada, Australia and the UAE. Written scope, fixed quote, full handover.</p>
+          <div class="actions">
+            <a class="btn primary lg" href="#start" data-offer="custom-build" data-cta="home-hero-primary">Get a quote</a>
+            <a class="btn ghost lg" href="/portfolio.html" data-cta="home-hero-portfolio">See our work <span aria-hidden="true">↗</span></a>
           </div>
+          <p class="hx-alt">Prefer to chat? <a href="${esc(wa("Hi Xender Secrets, I want to discuss a website or web app."))}" data-cta="home-hero-whatsapp" target="_blank" rel="noopener">WhatsApp +91 98219 41814</a> · India packages from ₹999 + GST · international landing pages from US$299</p>
+          <ul class="trust" aria-label="Why work with Xender">
+            <li>GST &amp; MSME-registered business</li>
+            <li>Price fixed before work starts</li>
+            <li>You own the code &amp; content</li>
+            <li>Live demos you can test today</li>
+          </ul>
         </div>
-        <div class="motion-showcase" data-motion-scene aria-hidden="true">
-          <div class="motion-light"></div><div class="motion-ring"></div><div class="motion-ring two"></div>
-          <div class="motion-device"><div class="motion-device-bar"><i></i><i></i><i></i><span>XENDER / INTERACTIVE</span></div>
-            <div class="motion-device-body"><div><div class="scene-label">DESIGN FOR ACTION</div><div class="motion-device-headline"></div><div class="motion-device-line"></div><i class="motion-device-cta"></i></div>
-              <div class="motion-device-visual"><i></i><i></i><i></i><i></i></div></div>
+        <div class="hx-stage" aria-hidden="true">
+          <div class="hx-glow"></div>
+          <div class="hx-browser">
+            <div class="hx-bar"><i></i><i></i><i></i><span>your-business.com</span></div>
+            <div class="hx-page">
+              <div class="hx-nav"><b></b><span></span><span></span><span></span><i></i></div>
+              <div class="hx-head"><small>BOOK · BUY · ENQUIRE</small><b></b><b></b><i>Get started →</i></div>
+              <div class="hx-tiles"><span></span><span></span><span></span></div>
+            </div>
           </div>
-          <div class="motion-floating one"><span>✦</span> Responsive experience</div><div class="motion-floating two"><span>✓</span> Conversion-ready flow</div>
+          <div class="hx-phone"><div class="hx-notch"></div><div class="hx-phone-ui"><b></b><span></span><span></span><i>WhatsApp us</i></div></div>
+          <div class="hx-card hx-chart"><small>Enquiries</small><svg viewBox="0 0 160 56" preserveAspectRatio="none"><path class="hx-line" pathLength="1" d="M2 50 C24 44 34 30 56 34 S90 14 110 20 S146 6 158 4"/></svg></div>
+          <div class="hx-card hx-api"><code>POST /api/lead</code><b>201 · saved</b></div>
+          <div class="hx-card hx-ok">✓ Mobile · Fast · Accessible</div>
         </div>
       </div>
-    </section>`,
+    </section>`;
+}
+
+/** Pinned scroll story: the four layers Xender builds, separating as the reader scrolls. */
+const STACK = [
+  ["Interface", "Websites &amp; landing pages", "Distinctive, mobile-first pages that explain your offer in seconds and make the next step obvious.", "/demo-frontend-saas.html", "Open a landing page demo"],
+  ["Experience", "Stores, dashboards &amp; apps", "Carts, filters, bookings and dashboards that respond instantly — the interactive layer customers actually use.", "/demo-frontend-store.html", "Try the storefront"],
+  ["Backend", "APIs &amp; data", "Edge APIs, validation and persistent storage so forms, orders and bookings are saved, not emailed into the void.", "/demo-fullstack-booking.html", "Book a live slot"],
+  ["Automation", "Leads &amp; workflows", "Enquiries captured with a reference, routed to WhatsApp or a dashboard, and measured with privacy-friendly analytics.", "/demo-backend-crm.html", "Send a test lead"],
+];
+function stackStory() {
+  return `<section class="stack" id="build" data-scroll-scene="pin" data-steps="4" aria-labelledby="stack-title">
+      <div class="stack-sticky">
+        <div class="wrap stack-grid">
+          <div class="stack-copy">
+            <p class="kicker">What we build</p>
+            <h2 id="stack-title">One studio for the whole stack. <span>Scroll to take it apart.</span></h2>
+            <ol class="stack-steps">
+              ${STACK.map(([layer, h, p, href, cta], i) => `<li class="stack-step" data-i="${i}"><button type="button" class="stack-n" data-scene-go="${i}">0${i + 1} · ${layer}</button><h3>${h}</h3><p>${p}</p><a href="${href}" data-cta="home-stack-${i + 1}">${cta} →</a></li>`).join("\n              ")}
+            </ol>
+          </div>
+          <div class="stack-stage" aria-hidden="true">
+            <div class="stack-3d">
+              ${STACK.map(([layer], i) => `<div class="stack-layer stack-layer-${i}" data-i="${i}" style="--i:${i}"><span>${layer}</span><div class="stack-ui stack-ui-${i}"><i></i><i></i><i></i><i></i></div></div>`).join("\n              ")}
+            </div>
+            <div class="stack-meter"><span></span></div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+}
+
+function homePage() {
+  const body = [
+    homeHero(),
+    stackStory(),
+    workRail(),
     `<section class="who" aria-label="Who we build for">
       <div class="wrap">
         <p class="kicker">Built for businesses where one new enquiry pays for the website</p>
@@ -423,37 +466,18 @@ function homePage() {
         </div>
       </div>
     </section>`,
-    pricingBlock({ ctaPrefix: "home" }),
-    `<section id="work" class="section alt">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="kicker">Work you can inspect</p>
-          <h2>See real builds <span>before you pay.</span></h2>
-          <p>Every item in the catalog is a working concept demo built by Xender Secrets to show what we can deliver. They are clearly labelled demos, not client projects — and you can open any of them now.</p>
+    `<section class="section alt launch-offer" aria-labelledby="rec-title">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">India launch offer</p>
+          <h2>A complete one-page business website <span>for ₹999 + GST.</span></h2>
+          <p>For our first 10 Indian businesses: a fast, mobile-first page with your branding, WhatsApp and call buttons, and a live preview link before you approve. Need more? Every package below is a fixed price, and custom builds are quoted in writing.</p>
+          <p><a href="/portfolio.html" data-cta="home-offer-portfolio">See the quality first in our portfolio →</a></p>
         </div>
-        <div class="grid3">
-          <a class="card work" href="/business-templates.html" data-cta="work-business-templates">
-            <span class="tag">Business websites</span>
-            <h3>Industry website templates</h3>
-            <p>Clinics, real estate, restaurants, gyms, salons, CA firms and more — pick a starting point and we customise it.</p>
-            <span class="more">Browse templates →</span>
-          </a>
-          <a class="card work" href="/website-catalog.html#frontend" data-cta="work-frontend">
-            <span class="tag">Landing pages &amp; UI</span>
-            <h3>Frontend samples</h3>
-            <p>Landing pages, dashboards and storefront interfaces that work on any phone.</p>
-            <span class="more">Explore samples →</span>
-          </a>
-          <a class="card work" href="/website-catalog.html#fullstack" data-cta="work-fullstack">
-            <span class="tag">Forms, bookings &amp; data</span>
-            <h3>Full-stack builds</h3>
-            <p>Booking, quote, CRM and enquiry systems with a real backend you can try.</p>
-            <span class="more">Try a live demo →</span>
-          </a>
-        </div>
-        <p class="center portfolio-home-link"><a class="btn primary" href="/portfolio.html" data-cta="home-portfolio-primary">View our client-ready portfolio ↗</a> <a class="btn ghost" href="/website-catalog.html" data-cta="work-full-catalog">Browse all demos</a></p>
+        ${offerCard({ offer: "founding-website-999", title: "Founding offer · first 10 businesses", bullets: ["Mobile-first design with your branding", "WhatsApp, call and enquiry buttons", "Services, location and contact sections", "Basic on-page SEO and Google-ready setup", "Live preview link before you approve", "Complete handover of files and access"], cta: "Claim a ₹999 website", ctaPrefix: "home" })}
       </div>
     </section>`,
+    pricingBlock({ ctaPrefix: "home" }),
     processBlock(),
     `<section class="section" id="areas" aria-labelledby="areas-h">
       <div class="wrap">
@@ -498,8 +522,22 @@ function homePage() {
   ].join("\n\n    ");
   return page({ path: "/index.html", home: true, title: "Website Development for Small Businesses from ₹999 + GST | Xender Secrets",
     ogTitle: "Business websites from ₹999 + GST — Xender Secrets",
-    description: "Fast, mobile-first business websites and landing pages for Indian small businesses — from ₹999 + GST. Fixed prices, clear scope, full handover, no compulsory maintenance. Free website check.",
+    description: "Fast, mobile-first business websites, landing pages and web apps — from ₹999 + GST in India, US$299 internationally. Live demos you can test, fixed prices, full handover. Free website check.",
     body, jsonld: [ORG_JSONLD, faqJsonLd(HOME_FAQ)] });
+}
+
+function portfolioPage() {
+  const form = leadForm({ cta: "portfolio-quote", offer: "custom-build",
+    heading: "Tell us what you want to build. <span>We'll quote it in writing.</span>",
+    intro: "Mention a project from this page if one is close to what you need. You'll get a scope, a fixed quote and a delivery date before any payment — we reply personally, usually on WhatsApp.",
+    bullets: ["Websites, stores, dashboards, APIs and full-stack apps", "International projects welcome — landing pages from US$299", "Written scope and fixed price first, no obligation"],
+    waText: "Hi Xender Secrets, I looked at your portfolio and want a quote." });
+  return page({ path: "/portfolio.html", title: "Portfolio: Websites, Web Apps, Dashboards & Extensions | Xender Secrets",
+    ogTitle: "Xender Secrets portfolio — live websites, apps and tools you can test",
+    description: "Open and test 11 live builds by Xender Secrets: business websites, landing pages, e-commerce, SaaS dashboards, backend APIs, full-stack apps and a browser extension. Then request a quote.",
+    body: portfolioBody({ leadForm: form }), css: ["/portfolio.css"], scripts: ["/portfolio.js"],
+    waText: "Hi Xender Secrets, I liked your portfolio and want to discuss a project.",
+    jsonld: [ORG_JSONLD, portfolioJsonLd(SITE, ORG_ID), breadcrumbJsonLd([["Home", "/"], ["Portfolio", "/portfolio.html"]])] });
 }
 
 function servicesPage() {
@@ -932,6 +970,7 @@ function articlePage(a) {
 export function allPages() {
   return [
     { file: "index.html", html: homePage() },
+    { file: "portfolio.html", html: portfolioPage() },
     { file: "services.html", html: servicesPage() },
     { file: "about.html", html: aboutPage() },
     { file: "contact.html", html: contactPage() },
