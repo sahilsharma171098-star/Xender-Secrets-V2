@@ -205,3 +205,52 @@ h2 small.gst{font-size:.6em;font-weight:600;color:var(--muted)}
 .prose th,.prose td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
 .prose thead th{background:var(--surface)}
 .prose code{font-size:.9em;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1px 6px;overflow-wrap:anywhere}
+
+
+/* XEND-MOTION-001: intentional, performance-conscious visual storytelling */
+.xs-scroll-progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:100;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:scaleX(0);transform-origin:left center;pointer-events:none}
+html.motion-enabled .motion-reveal{opacity:0;transform:translate3d(0,24px,0);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+html.motion-enabled .motion-reveal.is-visible{opacity:1;transform:translate3d(0,0,0)}
+.motion-demo{overflow:hidden;background:var(--bg-alt);border-block:1px solid var(--line)}
+.motion-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(32px,6vw,90px);align-items:center}
+.motion-copy h2{font-size:clamp(2.2rem,4.4vw,4.15rem);line-height:1.09;letter-spacing:-.05em;max-width:610px}
+.motion-copy p:not(.kicker){max-width:520px}
+.motion-showcase{min-height:380px;position:relative;display:grid;place-items:center;perspective:850px;isolation:isolate}
+.motion-ring{position:absolute;width:80%;aspect-ratio:1;border:1px solid color-mix(in srgb,var(--accent) 26%,transparent);border-radius:50%;transform:rotate(28deg) scaleY(.68)}
+.motion-ring.two{width:110%;transform:rotate(-37deg) scaleY(.48)}
+.motion-light{position:absolute;inset:12%;background:radial-gradient(circle,var(--accent-soft),transparent 67%);filter:blur(25px)}
+.motion-device{position:relative;z-index:2;width:min(100%,430px);min-height:270px;background:var(--surface);border:1px solid var(--line);border-radius:19px;overflow:hidden;box-shadow:0 34px 70px #12375d31;transform:rotateY(-10deg) rotateX(6deg) translateY(var(--motion-y,0px));will-change:transform}
+.motion-device-bar{display:flex;align-items:center;gap:5px;padding:12px;background:var(--bg-alt);border-bottom:1px solid var(--line)}
+.motion-device-bar i{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.motion-device-bar span{margin-left:auto;color:var(--muted);font-weight:800;letter-spacing:.1em;font-size:.65rem}
+.motion-device-body{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;padding:24px}
+.motion-device-headline{border-radius:6px;width:88%;height:30px;background:var(--ink);margin:22px 0 9px}
+.motion-device-line{border-radius:6px;width:64%;height:15px;background:var(--line);margin-bottom:17px}
+.motion-device-cta{display:block;border-radius:7px;width:105px;height:28px;background:var(--accent)}
+.motion-device-visual{display:flex;align-items:end;justify-content:center;gap:6px;padding:14px;background:linear-gradient(145deg,#0b2667,#2a91d6);border-radius:12px;min-height:175px}
+.motion-device-visual i{width:18%;height:var(--column);background:#fff9;border-radius:5px 5px 0 0}
+.motion-device-visual i:nth-child(1){--column:34%}.motion-device-visual i:nth-child(2){--column:55%}.motion-device-visual i:nth-child(3){--column:72%}.motion-device-visual i:nth-child(4){--column:95%}
+.motion-floating{position:absolute;z-index:3;background:var(--surface);border:1px solid var(--line);box-shadow:0 14px 28px #12375d24;border-radius:12px;padding:10px 15px;color:var(--ink);font-size:.77rem;font-weight:850}
+.motion-floating.one{left:0;top:16%;transform:translateY(var(--float-y,0px)) rotate(-7deg)}
+.motion-floating.two{right:0;bottom:15%;transform:translateY(var(--float-y,0px)) rotate(5deg)}
+.motion-floating span{color:var(--ok)}
+.motion-cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.motion-cta-row .btn{min-width:166px}
+@media(max-width:860px){
+  .motion-layout{grid-template-columns:1fr}
+  .motion-showcase{min-height:330px}
+}
+@media(max-width:560px){
+  .motion-showcase{min-height:300px}
+  .motion-device{width:88%;min-height:230px}
+  .motion-device-body{padding:17px;gap:8px}
+  .motion-device-visual{min-height:155px}
+  .motion-floating{font-size:.65rem;padding:8px}
+  .motion-cta-row .btn{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  html.motion-enabled .motion-reveal{opacity:1;transform:none;transition:none}
+  .motion-device{transform:none;will-change:auto}
+  .motion-floating{transform:none!important}
+  .xs-scroll-progress{display:none}
+}
