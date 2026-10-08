@@ -8,6 +8,7 @@
 // Writes screenshots, the generated files and summary.json to BUILDER_OUT (default builder-live-out/).
 import fs from "node:fs";
 import path from "node:path";
+import { BUILDER_API_VERSION } from "../src/builder/store.mjs";
 
 const BASE = (process.env.BUILDER_BASE || "https://www.xendersecrets.com").replace(/\/$/, "");
 const OUT = process.env.BUILDER_OUT || "builder-live-out";
@@ -61,7 +62,8 @@ async function waitForDeployment() {
   for (;;) {
     try {
       const r = await fetch(BASE + "/api/builder/status");
-      if (r.ok && (await r.json()).ok) return true;
+      // Wait for THIS checkout's builder code, not an older deployment still serving the URL.
+      if (r.ok) { const j = await r.json(); if (j.ok && (j.api || 1) >= BUILDER_API_VERSION) return true; }
     } catch {}
     if (Date.now() > until) return false;
     await new Promise((res) => setTimeout(res, 15000));
@@ -69,7 +71,7 @@ async function waitForDeployment() {
 }
 
 async function main() {
-  check("deployment serves the builder API", await waitForDeployment(), BASE);
+  check(`deployment serves builder API v${BUILDER_API_VERSION}`, await waitForDeployment(), BASE);
   const st = await (await call("GET", "/api/builder/status")).json();
   summary.providers = st.providers;
   check("an AI provider is configured", st.providers?.length > 0 && st.providers[0].id !== "mock", JSON.stringify(st.providers));

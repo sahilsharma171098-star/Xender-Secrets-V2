@@ -36,6 +36,10 @@ export function builderConfig(env = {}) {
   };
 }
 
+// Bump when generation/edit behaviour changes: the live check waits until a deployment reports it,
+// so it never tests a stale Cloudflare preview.
+export const BUILDER_API_VERSION = 2;
+
 const json = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), {
   status,
   headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", ...headers },
@@ -365,7 +369,7 @@ export async function handleBuilderStore(request, { sql, env = {}, user = null, 
     const host = url.hostname;
     const q = who.owner ? quotaFor(sql, who.owner, nowMs, env) : { ...quotaFor(sql, "g:none", nowMs, env), used: 0, remaining: cfg.guestDaily, limit: cfg.guestDaily };
     return json({ ok: true, enabled: cfg.enabled, signedIn: who.kind === "user", user: who.user ? { name: who.user.name } : null,
-      providers: describeProviders(env, { host }), quota: q, limits: { guestDaily: cfg.guestDaily, userDaily: cfg.userDaily, guestProjects: cfg.guestProjects, userProjects: cfg.userProjects, maxPromptChars: LIMITS.maxPromptChars },
+      api: BUILDER_API_VERSION, providers: describeProviders(env, { host }), quota: q, limits: { guestDaily: cfg.guestDaily, userDaily: cfg.userDaily, guestProjects: cfg.guestProjects, userProjects: cfg.userProjects, maxPromptChars: LIMITS.maxPromptChars },
       output: "static HTML, CSS and JavaScript" });
   }
 
