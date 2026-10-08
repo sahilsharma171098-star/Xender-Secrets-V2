@@ -1,0 +1,19 @@
+name: Apex redirect check (temporary)
+on:
+  push:
+    branches: [claude/issue-19-latest-handoff-m2xltv]
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check apex and www responses
+        run: |
+          for u in "http://xendersecrets.com/" "https://xendersecrets.com/" \
+                   "http://xendersecrets.com/pricing?utm_source=test&x=1" \
+                   "https://xendersecrets.com/clinic-website-development?utm_source=test" \
+                   "http://www.xendersecrets.com/" "https://www.xendersecrets.com/"; do
+            echo "== $u"
+            curl -sS -o /dev/null -D - --max-time 20 "$u" | grep -iE '^(HTTP|location|server)' || true
+            curl -sS -o /dev/null -L --max-time 30 -w 'final: %{http_code} %{url_effective} hops=%{num_redirects}\n' "$u" || true
+          done
