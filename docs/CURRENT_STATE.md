@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Current State
 
+## XEND-PORTFOLIO-MOTION-001 (2026-10-08, feature branch)
+- New `public/portfolio.html` is a truthful prospect-facing showcase with six existing Xender demo/product destinations, project filters, share URL, and WhatsApp enquiry links.
+- `public/portfolio.css` and `public/portfolio.js` add responsive illustrative graphics, scroll storytelling and graceful interaction.
+- `public/home.js` and `public/home.css` add dependency-free commercial-page scroll reveal and progress, respecting `prefers-reduced-motion`.
+- Generated homepage changes originate in `scripts/commercial/pages.mjs` and are mirrored to `public/index.html`; sitemap and marketplace navigation include `/portfolio`.
+- No paid client case studies/results are claimed; existing demo destinations used, not invented clients.
+- Production live verification and CI must be confirmed after PR merge.
+
+
 Snapshot date: 2026-10-06
 
 ## Source of truth
