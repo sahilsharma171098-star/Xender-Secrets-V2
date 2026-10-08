@@ -4,6 +4,10 @@
   "name": "xender-secrets-v2-test",
   "main": "../../src/index.js",
   "compatibility_date": "2026-10-03",
+  // XEND-BUILDER-001: deterministic mock AI provider for tests (refuses to run on production hosts).
+  "vars": {
+    "BUILDER_AI_MOCK": "1"
+  },
   "assets": {
     "directory": "../../public",
     "binding": "ASSETS",

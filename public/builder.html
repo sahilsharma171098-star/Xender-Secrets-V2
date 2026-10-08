@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Xender Builder — AI website builder: describe it, preview it, download the code</title>
+<meta name="description" content="Describe your business and Xender Builder's AI writes a real HTML, CSS and JavaScript website you can preview on desktop, tablet and mobile, refine by chat, edit as code and download. Free to try.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.xendersecrets.com/builder">
+<meta name="theme-color" content="#fbfbfe">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Xender Builder — describe a website, get real code">
+<meta property="og:description" content="AI website builder for small businesses: prompt → live preview → chat edits → download the source. Free to try, professional launch on request.">
+<meta property="og:url" content="https://www.xendersecrets.com/builder">
+<meta property="og:image" content="https://www.xendersecrets.com/og-xender.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/builder/builder.css">
+<script src="/builder/theme.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Xender Builder","applicationCategory":"WebApplication","operatingSystem":"Any (web browser)","url":"https://www.xendersecrets.com/builder","description":"AI website builder that generates static HTML, CSS and JavaScript websites from a text description, with live device previews, chat-based edits, a code editor and ZIP export.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Free tier with a limited number of AI generations per day"},"publisher":{"@type":"Organization","name":"Xender Secrets","url":"https://www.xendersecrets.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What does Xender Builder generate?","acceptedAnswer":{"@type":"Answer","text":"Static websites made of HTML, CSS and vanilla JavaScript: landing pages, small business sites, portfolios and multi-page brochure sites. It does not generate server-side apps, databases or payments."}},
+{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Guests get a few AI generations per day and free accounts get more. Generation runs on free AI capacity that is shared by everyone, so when today's capacity is used up it resumes at 00:00 UTC."}},
+{"@type":"Question","name":"Do I own the code?","acceptedAnswer":{"@type":"Answer","text":"Yes. Download the ZIP and host it anywhere. You are responsible for checking the content, images and claims before publishing."}},
+{"@type":"Question","name":"Can you put it live on my domain?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Xender Secrets team can polish, launch and connect your generated site to your domain, real contact forms and WhatsApp. Request a quote from the pricing page."}}
+]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="wrap bar-inner">
+    <a class="logo" href="/builder" aria-label="Xender Builder home"><span class="logo-mark" aria-hidden="true"></span>XENDER <small>Builder</small></a>
+    <nav aria-label="Builder">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="/builder/pricing">Pricing</a>
+      <a href="/builder/projects">My projects</a>
+      <a href="/">Xender Secrets</a>
+    </nav>
+    <div class="bar-actions">
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch to dark mode">☾</button>
+      <span data-account></span>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span><span id="capacity">Free to try · no card needed</span></p>
+      <h1>Describe your website.<br><span class="grad">Watch AI build it.</span></h1>
+      <p class="lede">Xender Builder turns a few sentences into a real, responsive website — HTML, CSS and JavaScript you can preview on any device, refine by chat, edit line by line and download.</p>
+      <form class="prompt" id="promptForm" action="/builder/studio" method="get">
+        <div class="prompt-inner">
+          <label class="sr" for="prompt">Describe the website you want</label>
+          <textarea id="prompt" name="prompt" maxlength="2000" required placeholder="e.g. A modern website for a family-run Italian restaurant in Toronto with a menu, opening hours, reservation form and a warm, rustic look"></textarea>
+          <div class="prompt-foot">
+            <span class="prompt-meta" id="promptMeta">Static HTML · CSS · JS · you own the code</span>
+            <button class="btn primary" type="submit" data-cta="builder-hero-generate">Generate website ✦</button>
+          </div>
+        </div>
+      </form>
+      <div class="chips" aria-label="Example prompts">
+        <button class="chip" type="button" data-example="A clean landing page for a physiotherapy clinic in Manchester with services, prices, testimonials marked as samples and an appointment request form">🩺 Clinic</button>
+        <button class="chip" type="button" data-example="A bold portfolio site for a freelance product designer in Austin with case studies, an about section and a contact form, dark theme">🎨 Portfolio</button>
+        <button class="chip" type="button" data-example="A website for a boutique gym in Sydney with class timetable, membership plans, trainer bios and a free trial sign-up form">🏋️ Gym</button>
+        <button class="chip" type="button" data-example="A professional site for a small accounting firm in London: services, fixed-fee packages, team, FAQ and a callback request form">📊 Accountant</button>
+        <button class="chip" type="button" data-example="A landing page for a SaaS app that helps restaurants manage table bookings, with hero, features, pricing tiers, FAQ and waitlist form">🚀 SaaS launch</button>
+        <button class="chip" type="button" data-example="A cosy website for a specialty coffee roastery in Melbourne with origin stories, a product grid, wholesale enquiries and an Instagram-style gallery">☕ Coffee shop</button>
+      </div>
+      <p class="hero-note">Free generations are limited each day because they run on shared free AI capacity. Want it done for you? <a href="/builder/pricing" data-cta="builder-hero-pro">Our team can build and launch it.</a></p>
+
+      <div class="showcase reveal" id="showcase" aria-hidden="true">
+        <div class="showcase-top"><i></i><i></i><i></i></div>
+        <div class="showcase-body">
+          <div class="showcase-chat">
+            <div class="bubble me">A site for my dental clinic in Leeds, calm teal colours</div>
+            <div class="bubble ai">Built a 3-section site with services, hours and a booking form.</div>
+            <div class="bubble me">Add a pricing table and make the button yellow</div>
+            <div class="bubble ai">Updated styles.css and index.html — everything else kept.</div>
+          </div>
+          <div class="showcase-site"><span>Leeds · Since 2012</span><b>Gentle dentistry for the whole family</b><span>Check-ups · Hygiene · Whitening · Emergency care</span><span class="fake-btn">Book a visit</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <div class="wrap">
+      <p class="kicker">How it works</p>
+      <h2>From idea to a working website in three steps</h2>
+      <div class="grid g3" style="margin-top:28px">
+        <div class="card reveal"><span class="step-n">1</span><h3>Describe it</h3><p>Tell the AI what the business is, who it's for and the feel you want. Plain English is perfect.</p></div>
+        <div class="card reveal"><span class="step-n">2</span><h3>Preview and refine</h3><p>See the real site render instantly. Switch between desktop, tablet and mobile, then ask for changes in chat — only what you mention is touched.</p></div>
+        <div class="card reveal"><span class="step-n">3</span><h3>Own the code</h3><p>Edit HTML, CSS and JavaScript directly, roll back any version and download a ZIP you can host anywhere.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block alt" id="features">
+    <div class="wrap">
+      <p class="kicker">Built for real businesses</p>
+      <h2>Everything you need to get a credible first version</h2>
+      <div class="grid g3" style="margin-top:28px">
+        <div class="card reveal"><div class="feature-ico">⚡</div><h3>Real code, not a locked template</h3><p>Clean, readable HTML, CSS and vanilla JS. No proprietary runtime, no lock-in.</p></div>
+        <div class="card reveal"><div class="feature-ico">📱</div><h3>Live device previews</h3><p>Check the design on desktop, tablet and phone widths before anyone else sees it.</p></div>
+        <div class="card reveal"><div class="feature-ico">💬</div><h3>Chat edits that keep your work</h3><p>Follow-up prompts change only the files they need to, so manual tweaks survive.</p></div>
+        <div class="card reveal"><div class="feature-ico">🧑‍💻</div><h3>Built-in code editor</h3><p>Syntax-highlighted editor for every file with instant preview on save.</p></div>
+        <div class="card reveal"><div class="feature-ico">🕘</div><h3>Version history</h3><p>Every generation, edit and save is a version you can restore in one click.</p></div>
+        <div class="card reveal"><div class="feature-ico">📦</div><h3>One-click ZIP export</h3><p>Download the full source with a README and deploy to any static host.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap grid g2" style="align-items:start">
+      <div>
+        <p class="kicker">Straight answers</p>
+        <h2>What it does — and what it doesn't</h2>
+        <p class="sub">We'd rather you know the limits up front.</p>
+      </div>
+      <div class="honest reveal">
+        <ul class="ticks">
+          <li>Generates static websites: landing pages, brochure sites, portfolios, menus, simple multi-page sites.</li>
+          <li>Runs previews in an isolated sandbox with no access to your account.</li>
+          <li>Free tier runs on limited, shared free AI capacity — it can pause until 00:00 UTC on busy days.</li>
+          <li class="no">No backends, databases, logins or payments are generated. Forms show a confirmation only, until connected.</li>
+          <li class="no">No hosting on our side yet — you download the code, or ask us to launch it for you.</li>
+          <li class="no">AI can make mistakes. Check text, images and claims before you publish.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block alt">
+    <div class="wrap grid g2" style="align-items:center">
+      <div>
+        <p class="kicker">Done-for-you</p>
+        <h2>Like the draft? Let our team launch it properly.</h2>
+        <p class="sub">We turn your AI draft into a production site: real copy and images, working enquiry forms and WhatsApp, your domain, SEO basics and fast hosting. Fixed quote, no surprises.</p>
+        <div class="row"><a class="btn primary lg" href="/builder/pricing#quote" data-cta="builder-launch-cta">Get a launch quote</a><a class="btn lg" href="/portfolio" data-cta="builder-portfolio">See our work</a></div>
+      </div>
+      <div class="card reveal">
+        <ul class="ticks">
+          <li>Custom domain + SSL connected</li>
+          <li>Contact forms delivered to your inbox / WhatsApp</li>
+          <li>On-page SEO, speed and accessibility pass</li>
+          <li>Google Business Profile &amp; analytics set-up</li>
+          <li>Changes and extra pages on request</li>
+        </ul>
+        <p style="margin:0;font-size:.9rem">Serving the USA, UK, Canada, Australia, India and beyond.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="faq">
+    <div class="wrap" style="max-width:860px">
+      <p class="kicker">FAQ</p>
+      <h2>Questions people ask</h2>
+      <div class="grid" style="margin-top:20px">
+        <details class="card"><summary><strong>What does Xender Builder generate?</strong></summary><p style="margin-top:10px">Static websites made of HTML, CSS and vanilla JavaScript: landing pages, small business sites, portfolios and multi-page brochure sites. It does not generate server-side apps, databases or payments.</p></details>
+        <details class="card"><summary><strong>Is it free?</strong></summary><p style="margin-top:10px">Yes. Guests get a few AI generations per day and free accounts get more. Generation runs on free AI capacity that is shared by everyone, so when today's capacity is used up it resumes at 00:00 UTC.</p></details>
+        <details class="card"><summary><strong>Do I own the code?</strong></summary><p style="margin-top:10px">Yes. Download the ZIP and host it anywhere. You are responsible for checking the content, images and claims before publishing.</p></details>
+        <details class="card"><summary><strong>Can you put it live on my domain?</strong></summary><p style="margin-top:10px">Yes. The Xender Secrets team can polish, launch and connect your generated site to your domain, real contact forms and WhatsApp. <a href="/builder/pricing#quote">Request a quote</a>.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <span>© Xender Secrets · Gurugram, India · Building for clients worldwide</span>
+    <nav aria-label="Footer"><a href="/builder/pricing">Pricing</a><a href="/builder/projects">My projects</a><a href="/services">Website services</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/contact">Contact</a></nav>
+  </div>
+</footer>
+<script src="/xs-growth.js" defer></script>
+<script src="/builder/common.js"></script>
+<script src="/builder/landing.js"></script>
+</body>
+</html>

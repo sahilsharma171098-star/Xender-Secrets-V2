@@ -3,6 +3,8 @@ import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 import { handlePayments } from "./payments.mjs";
+import { ensureBuilderSchema, handleBuilderStore } from "./builder/store.mjs";
+import { handleBuilderGenerate, withBuilderHeaders } from "./builder/routes.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
 const enc=new TextEncoder();
@@ -329,6 +331,7 @@ export class AppState extends DurableObject {
         CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date,slot);
       `);
       ensureGrowthSchema(this.sql);
+      ensureBuilderSchema(this.sql);
       const now=new Date().toISOString();
       for(const p of CATALOG_PRODUCTS){
         this.sql.exec("INSERT OR IGNORE INTO products (id,name,category,category_label,price,rating,active,updated_at) VALUES (?,?,?,?,?,?,1,?)",p.id,p.name,p.category,p.categoryLabel,p.price,p.rating,now);
@@ -374,6 +377,12 @@ export class AppState extends DurableObject {
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
     if(method!=="GET" && !this.sameOrigin(request)) return json({ok:false,error:"Invalid request origin."},403);
+
+    // XEND-BUILDER-001: AI website builder projects, quotas and spend guard (src/builder/store.mjs).
+    if(path.startsWith("/api/builder/")||path.startsWith("/__builder/")||path==="/api/admin/builder"){
+      const builder=await handleBuilderStore(request,{sql:this.sql,env:this.env,user:await this.sessionUser(request)});
+      if(builder)return builder;
+    }
 
     // XEND-WARROOM-001: lead capture v2, funnel events and private admin MIS (src/growth.mjs).
     const growth=await handleGrowth(request,{sql:this.sql,env:this.env});
@@ -986,12 +995,19 @@ export default {
       return new Response(res.body,{status:res.status,headers});
     }
 
+    if(path.startsWith("/api/builder/")){
+      const stub=env.APP_STATE.get(env.APP_STATE.idFromName("xender-secrets"));
+      const generated=await handleBuilderGenerate(request,env,ctx,stub);
+      if(generated)return generated;
+      return stub.fetch(request);
+    }
+
     if(path.startsWith("/api/")){
       const id=env.APP_STATE.idFromName("xender-secrets");
       const stub=env.APP_STATE.get(id);
       return stub.fetch(request);
     }
 
-    return env.ASSETS.fetch(request);
+    return withBuilderHeaders(path,await env.ASSETS.fetch(request));
   }
 };

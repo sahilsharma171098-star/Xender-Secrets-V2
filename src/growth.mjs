@@ -24,6 +24,9 @@ export const OFFERS = [
   "redesign",
   "custom-build",
   "not-sure",
+  // XEND-BUILDER-001: AI website builder funnel.
+  "ai-builder-launch",
+  "ai-builder-pro-waitlist",
 ];
 export const EVENTS = new Set([
   "page_view", "cta_click", "whatsapp_click", "email_click", "phone_click",

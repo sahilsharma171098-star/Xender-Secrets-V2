@@ -41,6 +41,7 @@ on:
       - 'scripts/commercial/**'
       - 'scripts/build-commercial-pages.mjs'
       - 'public/*.html'
+      - 'public/builder/**'
       - 'public/_redirects'
       - 'public/_headers'
       - 'public/sitemap.xml'
@@ -89,12 +90,18 @@ jobs:
         run: node scripts/seo/normalize-links.mjs --check
       - name: Canonical 301s through the real Worker + asset layer (local workerd)
         run: node --test tests/worker/canonical-worker.test.mjs
+      - name: AI builder through the real Worker + Durable Object (local workerd, mock AI)
+        run: node --test tests/worker/builder-worker.test.mjs
+      - name: Cloudflare deploy dry-run (bundles the Worker, validates wrangler.jsonc)
+        run: npx wrangler deploy --dry-run --outdir .wrangler/dry-run
       - name: Committed novel data is consistent
         run: node scripts/build-novel-data.mjs --check
       - name: Reader sources in a real browser (network mocked)
         run: node --test tests/reader-sources.test.mjs
       - name: Commercial funnel in a real browser (lead/event API via src/growth.mjs + SQLite)
         run: node --test tests/commercial-funnel.test.mjs
+      - name: AI builder studio in a real browser (CSP enforced, mock AI, real store/routes)
+        run: node --test tests/builder-studio.test.mjs
       - name: SiteCheck extension — lint (policy, manifests, store copy)
         run: node scripts/extension/lint.mjs
       - name: SiteCheck extension — unit, audit-rule and real-extension tests

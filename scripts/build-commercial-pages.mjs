@@ -41,6 +41,8 @@ const files = fs.readdirSync(PUBLIC).filter((f) => f.endsWith(".html") && !EXCLU
   const robots = (fs.readFileSync(path.join(PUBLIC, f), "utf8").match(/<meta name="robots" content="([^"]*)"/) || [])[1];
   return robots !== undefined && !/noindex/.test(robots);
 }).sort((a, b) => (generated.has(b) - generated.has(a)) || (a === "index.html" ? -1 : b === "index.html" ? 1 : a.localeCompare(b)));
+// XEND-BUILDER-001: indexable pages that live in a sub-folder of public/.
+for (const f of ["builder/pricing.html"]) if (fs.existsSync(path.join(PUBLIC, f))) files.splice(files.indexOf("builder.html") + 1 || files.length, 0, f);
 const urls = files.map((f) => {
   const loc = SITE + (f === "index.html" ? "/" : "/" + f.replace(/\.html$/, ""));
   const lastmod = generated.has(f) ? CONTENT_DATE : (oldLastmod[loc] || CONTENT_DATE);

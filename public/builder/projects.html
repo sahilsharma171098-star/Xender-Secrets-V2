@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My projects · Xender Builder</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#fbfbfe">
+<link rel="stylesheet" href="/builder/builder.css">
+<script src="/builder/theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="wrap bar-inner">
+    <a class="logo" href="/builder" aria-label="Xender Builder home"><span class="logo-mark" aria-hidden="true"></span>XENDER <small>Builder</small></a>
+    <nav aria-label="Builder"><a href="/builder">Home</a><a href="/builder/projects" aria-current="page">My projects</a><a href="/builder/pricing">Pricing</a></nav>
+    <div class="bar-actions">
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch to dark mode">☾</button>
+      <span data-account></span>
+    </div>
+  </div>
+</header>
+<main id="main" class="wrap" style="padding:36px 0 60px">
+  <div class="row" style="justify-content:space-between;margin-bottom:22px">
+    <div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.2rem);margin:0">My projects</h1>
+      <p id="who" style="margin:6px 0 0">Projects saved on this device.</p>
+    </div>
+    <div class="row"><span class="quota" id="quota"></span><a class="btn primary" href="/builder/studio" data-cta="builder-new-project">+ New website</a></div>
+  </div>
+  <div id="guestNote" class="honest" style="margin-bottom:20px" hidden>You're using the builder as a guest, so projects live on this browser only. <button class="btn sm" type="button" data-open-auth="register">Create a free account</button> to keep them safe and get more daily generations.</div>
+  <div class="proj-grid" id="grid" aria-live="polite"></div>
+  <div class="empty" id="empty" hidden><p style="font-size:2rem;margin:0">✦</p><h2 style="font-size:1.2rem">No websites yet</h2><p>Describe one and the AI will build it in about a minute.</p><a class="btn primary" href="/builder">Start building</a></div>
+</main>
+<script src="/xs-growth.js" defer></script>
+<script src="/builder/common.js"></script>
+<script src="/builder/projects.js"></script>
+</body>
+</html>

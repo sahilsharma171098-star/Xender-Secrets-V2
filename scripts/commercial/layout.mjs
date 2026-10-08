@@ -27,6 +27,7 @@ export const offerById = (id) => OFFERS.find((o) => o.id === id);
 const NAV = [
   ["/services.html", "Pricing"],
   ["/website-catalog.html", "Work"],
+  ["/builder", "AI Builder"],
   ["/services.html#industries", "Industries"],
   ["/articles.html", "Guides"],
   ["/about.html", "About"],
@@ -35,7 +36,7 @@ const NAV = [
 
 export function header({ home = false } = {}) {
   const nav = home
-    ? [["/services.html", "Pricing"], ["/website-catalog.html", "Work"], ["#process", "How it works"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"]]
+    ? [["/services.html", "Pricing"], ["/website-catalog.html", "Work"], ["/builder", "AI Builder"], ["#process", "How it works"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"]]
     : NAV;
   return `<a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
@@ -65,6 +66,7 @@ export function footer() {
         <a href="/services.html">Pricing</a>
         <a href="/website-catalog.html">Work</a>
         <a href="/business-templates.html">Templates</a>
+        <a href="/builder">AI website builder</a>
         <a href="/website-cost-calculator.html">Cost calculator</a>
         <a href="/sitecheck.html">SiteCheck extension</a>
         <a href="/articles.html">Articles</a>

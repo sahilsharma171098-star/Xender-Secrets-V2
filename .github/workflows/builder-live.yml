@@ -1,0 +1,65 @@
+name: AI Builder live check
+
+# XEND-BUILDER-001: real end-to-end generation with the configured AI provider against the
+# Cloudflare PR preview (pull requests) or a given URL (manual run, e.g. production).
+# Spends real free-tier Workers AI neurons (~600-1,200 per run), so it only runs when builder
+# code changes or on demand.
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Deployment to test (default: production)"
+        required: false
+        default: "https://www.xendersecrets.com"
+  pull_request:
+    paths:
+      - 'src/builder/**'
+      - 'public/builder/**'
+      - 'public/builder.html'
+      - 'tests/builder-live.mjs'
+      - '.github/workflows/builder-live.yml'
+
+concurrency:
+  group: builder-live-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Resolve deployment URL
+        id: url
+        env:
+          INPUT_URL: ${{ inputs.base_url }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ -n "$INPUT_URL" ]; then echo "base=$INPUT_URL" >> "$GITHUB_OUTPUT"; echo "wait=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          # Cloudflare Workers Builds preview alias: branch name lower-cased, non-alphanumerics → "-".
+          alias=$(echo "$HEAD_REF" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g' | cut -c1-50)
+          echo "base=https://${alias}-xender-secrets-v2.fragrant-morning-6341.workers.dev" >> "$GITHUB_OUTPUT"
+          echo "wait=600000" >> "$GITHUB_OUTPUT"
+      - name: Live generation, preview, edit and export
+        env:
+          BUILDER_BASE: ${{ steps.url.outputs.base }}
+          BUILDER_WAIT_MS: ${{ steps.url.outputs.wait }}
+          BUILDER_OUT: builder-live-out
+        run: node tests/builder-live.mjs
+      - name: Upload evidence (screenshots, generated files, summary)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: builder-live-evidence
+          path: builder-live-out/
+          retention-days: 14
