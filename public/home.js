@@ -34,3 +34,59 @@
       .catch(() => {});
   }
 })();
+
+
+/* XEND-MOTION-001 — low-cost scroll motion, no trackers or animation dependencies.
+ * Animation is progressive, pauses for reduced motion, and never blocks navigation or forms. */
+(() => {
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (prefersReduced.matches) return;
+  const reveal = document.querySelectorAll(".motion-reveal, .section-head, .offers .offer, .grid3 .work, .steps > li");
+  if ("IntersectionObserver" in window && reveal.length) {
+    // Mark only observed content; rendering without JavaScript remains fully visible.
+    document.documentElement.classList.add("motion-enabled");
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    }, { rootMargin: "0px 0px -30px 0px", threshold: 0.06 });
+    reveal.forEach((el) => { el.classList.add("motion-reveal"); observer.observe(el); });
+  }
+  const scenes = [...document.querySelectorAll("[data-motion-scene]")];
+  const story = document.querySelector(".journey-visual");
+  const steps = [...document.querySelectorAll("[data-motion-step]")];
+  const progress = document.createElement("div");
+  progress.className = "xs-scroll-progress";
+  progress.setAttribute("aria-hidden", "true");
+  document.body.appendChild(progress);
+
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    progress.style.transform = "scaleX(" + Math.max(0, Math.min(1, window.scrollY / max)).toFixed(4) + ")";
+    for (const scene of scenes) {
+      const rect = scene.getBoundingClientRect();
+      if (rect.bottom < -100 || rect.top > window.innerHeight + 100) continue;
+      const centre = (rect.top + rect.height / 2) / window.innerHeight;
+      const offset = Math.max(-1, Math.min(1, 0.5 - centre));
+      scene.style.setProperty("--motion-y", Math.round(offset * 33) + "px");
+      scene.style.setProperty("--float-y", Math.round(offset * -48) + "px");
+    }
+    if (story && steps.length) {
+      const midpoint = window.innerHeight * 0.52;
+      let phase = "design";
+      for (const step of steps) {
+        if (step.getBoundingClientRect().top <= midpoint) phase = step.dataset.motionStep;
+      }
+      if (story.dataset.phase !== phase) story.dataset.phase = phase;
+    }
+  };
+  const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule, { passive: true });
+  prefersReduced.addEventListener?.("change", () => window.location.reload(), { once: true });
+  schedule();
+})();
