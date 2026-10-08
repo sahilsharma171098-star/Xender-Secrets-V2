@@ -39,7 +39,7 @@ const setDesc = (html, d) => html.replace(/<meta name="description" content="[^"
 const ldScripts = (items) => items.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join("");
 const beforeHeadEnd = (html, block) => html.replace("</head>", block + "</head>");
 const crumbs = (trail) => ({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: trail.map(([name, p], i) => ({ "@type": "ListItem", position: i + 1, name, item: SITE + p })) });
-const ORG_REF = { "@type": "Organization", "@id": SITE + "/#business", name: "Xender Secrets", url: SITE + "/" };
+const ORG_REF = { "@type": "Organization", "@id": SITE + "/#business", name: "Xender Secrets", url: SITE + "/", logo: { "@type": "ImageObject", url: SITE + "/og-xender.png" } };
 const fillDiv = (id) => (html, block) => html.replace(new RegExp(`(<div id="${id}"[^>]*>)(</div>)`), `$1${block}$2`);
 
 // Industry landing pages, keyed by the catalog's business-type id.

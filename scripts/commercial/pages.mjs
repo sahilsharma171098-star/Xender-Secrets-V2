@@ -506,6 +506,17 @@ function servicesPage() {
       waText: "Hi Xender Secrets, I want to know which website package fits my business.",
       card: offerCard({ offer: "founding-website-999", title: "Founding offer · first 10 businesses", bullets: ["One-page business website", "WhatsApp, call and map", "Basic SEO setup", "Live preview before you approve", "Complete handover"], cta: "Claim a ₹999 website", ctaPrefix: "services" }) }),
     pricingBlock({ ctaPrefix: "services", id: "pricing", heading: "Choose a package. <span>Upgrade any time.</span>" }),
+    `<section class="section alt" id="pay-online">
+      <div class="wrap narrow">
+        <div class="card">
+          <p class="kicker">Secure online payment</p>
+          <h2>Already have a confirmed quote?</h2>
+          <p>Once your scope and delivery terms are confirmed in writing, you can pay a standard package securely through Razorpay.</p>
+          <div class="actions"><a class="btn primary" href="/pay" data-cta="services-pay-online">Pay securely online</a></div>
+          <p class="fine">For custom work or a different amount, contact us first so we can send the correct payment request.</p>
+        </div>
+      </div>
+    </section>`,
     `<section class="section alt" id="compare">
       <div class="wrap">
         <div class="section-head"><p class="kicker">Compare</p><h2>What each package <span>includes.</span></h2></div>
