@@ -109,11 +109,16 @@ test("zipFiles writes a valid archive (checked with Python's zipfile)", (t) => {
   const zip = zipFiles([{ name: "index.html", data: "<h1>Hi ✓</h1>" }, { name: "css/styles.css", data: "body{}" }]);
   const file = path.join(os.tmpdir(), "xb-test-" + process.pid + ".zip");
   fs.writeFileSync(file, zip);
+  // Windows usually has `python` or the `py` launcher instead of `python3` (whose Store stub exits 9009).
+  const env = { ...process.env, PYTHONIOENCODING: "utf-8", PYTHONUTF8: "1" };
+  const python = [["python3"], ["python"], ["py", "-3"]].find(([cmd, ...pre]) => {
+    try { return /^Python 3/.test(execFileSync(cmd, [...pre, "--version"], { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] }).trim()); } catch { return false; }
+  });
   try {
-    const out = execFileSync("python3", ["-I", "-c", "import sys,zipfile;z=zipfile.ZipFile(sys.argv[1]);assert z.testzip() is None;print('|'.join(n+'='+z.read(n).decode() for n in z.namelist()))", file], { encoding: "utf8" });
+    if (!python) { t.skip("Python 3 not available"); return; }
+    const [cmd, ...pre] = python;
+    const out = execFileSync(cmd, [...pre, "-I", "-c", "import sys,zipfile;z=zipfile.ZipFile(sys.argv[1]);assert z.testzip() is None;print('|'.join(n+'='+z.read(n).decode() for n in z.namelist()))", file], { encoding: "utf8", env });
     assert.equal(out.trim(), "index.html=<h1>Hi ✓</h1>|css/styles.css=body{}");
-  } catch (e) {
-    if (e.code === "ENOENT") t.skip("python3 not available"); else throw e;
   } finally { fs.rmSync(file, { force: true }); }
 });
 

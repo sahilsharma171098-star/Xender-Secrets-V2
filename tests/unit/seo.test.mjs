@@ -10,7 +10,7 @@ import { allPages, INDUSTRIES, LOCATIONS } from "../../scripts/commercial/pages.
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PUBLIC = path.join(ROOT, "public");
 const SITE = "https://www.xendersecrets.com";
-const read = (f) => fs.readFileSync(path.join(PUBLIC, f), "utf8");
+const read = (f) => fs.readFileSync(path.join(PUBLIC, f), "utf8").replace(/\r\n/g, "\n");
 const fileForUrl = (u) => { const p = new URL(u).pathname; return p === "/" ? "index.html" : p.slice(1) + ".html"; };
 const meta = (html, re) => (html.match(re) || [])[1];
 const robotsOf = (html) => meta(html, /<meta name="robots" content="([^"]*)"/);

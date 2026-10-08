@@ -6,7 +6,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
 import http from "node:http";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -26,7 +26,13 @@ test.before(async () => {
   }
   throw new Error("wrangler dev did not start:\n" + log.slice(-2000));
 });
-test.after(() => { try { process.kill(-proc.pid, "SIGTERM"); } catch {} });
+// wrangler dev spawns workerd: stop the whole process tree (negative pid is POSIX-only).
+test.after(() => {
+  try {
+    if (process.platform === "win32") spawnSync("taskkill", ["/pid", String(proc.pid), "/T", "/F"], { stdio: "ignore" });
+    else process.kill(-proc.pid, "SIGTERM");
+  } catch {}
+});
 
 const req = (method, p, { body, headers = {} } = {}) => new Promise((resolve, reject) => {
   const data = body === undefined ? null : Buffer.from(typeof body === "string" ? body : JSON.stringify(body));

@@ -1,0 +1,14 @@
+# Generated pages and tests compare text byte-for-byte; keep LF on every platform (Windows autocrlf breaks them).
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary
+*.mp4 binary
