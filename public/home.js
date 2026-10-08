@@ -36,57 +36,79 @@
 })();
 
 
-/* XEND-MOTION-001 — low-cost scroll motion, no trackers or animation dependencies.
- * Animation is progressive, pauses for reduced motion, and never blocks navigation or forms. */
+/* XEND-MOTION-002 — scroll-driven storytelling without animation libraries or trackers.
+ * Every [data-scroll-scene] gets a continuous --p (0→1) from its scroll position, so motion scrubs
+ * forwards and backwards with the reader. [data-steps="n"] scenes also get --k (0→n) and a
+ * data-step index for captions. Content is complete without JS; html.scroll-fx (added only when
+ * motion is allowed and the device is not low-powered) switches on pinned layouts and transforms. */
 (() => {
-  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (prefersReduced.matches) return;
+  const root = document.documentElement;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const conn = navigator.connection || {};
+  const lowPower = conn.saveData === true || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+  if (reduced.matches) { reduced.addEventListener?.("change", () => location.reload(), { once: true }); return; }
+
   const reveal = document.querySelectorAll(".motion-reveal, .section-head, .offers .offer, .grid3 .work, .steps > li");
   if ("IntersectionObserver" in window && reveal.length) {
-    // Mark only observed content; rendering without JavaScript remains fully visible.
-    document.documentElement.classList.add("motion-enabled");
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      }
+    root.classList.add("motion-enabled");
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add("is-visible"); io.unobserve(e.target); }
     }, { rootMargin: "0px 0px -30px 0px", threshold: 0.06 });
-    reveal.forEach((el) => { el.classList.add("motion-reveal"); observer.observe(el); });
+    reveal.forEach((el) => { el.classList.add("motion-reveal"); io.observe(el); });
   }
-  const scenes = [...document.querySelectorAll("[data-motion-scene]")];
-  const story = document.querySelector(".journey-visual");
-  const steps = [...document.querySelectorAll("[data-motion-step]")];
+
   const progress = document.createElement("div");
   progress.className = "xs-scroll-progress";
   progress.setAttribute("aria-hidden", "true");
   document.body.appendChild(progress);
 
+  const scenes = lowPower ? [] : [...document.querySelectorAll("[data-scroll-scene]")];
+  if (scenes.length) root.classList.add("scroll-fx");
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+
   let raf = 0;
   const update = () => {
     raf = 0;
-    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    progress.style.transform = "scaleX(" + Math.max(0, Math.min(1, window.scrollY / max)).toFixed(4) + ")";
-    for (const scene of scenes) {
-      const rect = scene.getBoundingClientRect();
-      if (rect.bottom < -100 || rect.top > window.innerHeight + 100) continue;
-      const centre = (rect.top + rect.height / 2) / window.innerHeight;
-      const offset = Math.max(-1, Math.min(1, 0.5 - centre));
-      scene.style.setProperty("--motion-y", Math.round(offset * 33) + "px");
-      scene.style.setProperty("--float-y", Math.round(offset * -48) + "px");
-    }
-    if (story && steps.length) {
-      const midpoint = window.innerHeight * 0.52;
-      let phase = "design";
-      for (const step of steps) {
-        if (step.getBoundingClientRect().top <= midpoint) phase = step.dataset.motionStep;
+    const vh = window.innerHeight;
+    const max = Math.max(1, root.scrollHeight - vh);
+    progress.style.transform = "scaleX(" + clamp(window.scrollY / max).toFixed(4) + ")";
+    for (const el of scenes) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) continue;
+      // "pin": tall container with a sticky stage — 0 when it reaches the top, 1 when it leaves.
+      // "pass": ordinary block — 0 as it enters at the bottom, 1 as it exits at the top.
+      // "exit": a hero — 0 at rest, 1 once it has scrolled fully out of view.
+      const mode = el.dataset.scrollScene;
+      const p = mode === "pin" ? clamp(-r.top / Math.max(1, r.height - vh))
+        : mode === "exit" ? clamp(-r.top / Math.max(1, r.height))
+        : clamp((vh - r.top) / (vh + r.height));
+      el.style.setProperty("--p", p.toFixed(4));
+      const n = Number(el.dataset.steps || 0);
+      if (n) {
+        el.style.setProperty("--k", (p * n).toFixed(4));
+        const step = String(Math.min(n - 1, Math.floor(p * n)));
+        if (el.dataset.step !== step) {
+          el.dataset.step = step;
+          el.querySelectorAll("[data-i]").forEach((c) => c.classList.toggle("is-active", c.dataset.i === step));
+        }
       }
-      if (story.dataset.phase !== phase) story.dataset.phase = phase;
     }
   };
   const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
-  window.addEventListener("scroll", schedule, { passive: true });
-  window.addEventListener("resize", schedule, { passive: true });
-  prefersReduced.addEventListener?.("change", () => window.location.reload(), { once: true });
-  schedule();
+  addEventListener("scroll", schedule, { passive: true });
+  addEventListener("resize", schedule, { passive: true });
+  reduced.addEventListener?.("change", () => location.reload(), { once: true });
+  update();
+
+  // Step buttons inside a pinned scene jump the page to that point of the story.
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest && e.target.closest("[data-scene-go]");
+    if (!b) return;
+    const el = b.closest("[data-scroll-scene]");
+    if (!el || !root.classList.contains("scroll-fx")) return;
+    const n = Number(el.dataset.steps || 1), i = Number(b.dataset.sceneGo);
+    const top = el.getBoundingClientRect().top + scrollY + (el.offsetHeight - innerHeight) * ((i + 0.5) / n);
+    e.preventDefault();
+    scrollTo({ top, behavior: "smooth" });
+  });
 })();

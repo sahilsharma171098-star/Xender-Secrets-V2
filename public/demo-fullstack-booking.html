@@ -1,1 +1,179 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Slotly — Full Stack Build</title><meta name="description" content="Appointment booking full-stack build."><meta name="robots" content="noindex,follow"><link rel="stylesheet" href="demo-suite.css"></head><body><header class="top"><a class="brand" href="/">XENDER <span>SECRETS</span></a><nav><a href="/website-catalog">Website Catalog</a><a href="/contact">Contact</a></nav><a class="back" href="/website-catalog">← Catalog</a></header><main class="wrap"><section class="hero"><div><div class="eyebrow">FULL STACK · STARTER BUILD</div><h1>Book a slot in <span class="accent">seconds.</span></h1><p class="lead">Frontend date selection connects to a live slots API, then submits a server-confirmed persistent booking.</p></div><div class="panel"><form class="form" id="booking"><input name="name" placeholder="Your name" required><input id="date" name="date" type="date" value="2026-10-05" required><select id="slot" name="slot"><option>Load a date first</option></select><button class="btn" type="button" id="loadSlots">Load slots</button><button class="btn alt" type="submit">Confirm booking</button></form><div class="status" id="bookingStatus">Choose a date and load available slots.</div></div></section><section class="section"><div class="grid3"><div class="card"><h3>1. Fetch availability</h3><p class="muted">GET /api/slots</p></div><div class="card"><h3>2. Choose time</h3><p class="muted">Interactive frontend state.</p></div><div class="card"><h3>3. Confirm</h3><p class="muted">POST /api/bookings returns booking ID.</p></div></div></section></main><script>async function slots(){const r=await fetch('/api/slots?date='+date.value);const j=await r.json();slot.innerHTML=j.slots.map(x=>'<option>'+x+'</option>').join('');bookingStatus.textContent='Loaded '+j.slots.length+' slots for '+j.date}loadSlots.onclick=slots;booking.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(booking));const r=await fetch('/api/bookings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(d)});const j=await r.json();bookingStatus.textContent=j.ok?'Confirmed · '+j.bookingId+' · '+j.message:j.error};slots();</script><footer class="demo-footer">Interactive full-stack booking build by Xender Secrets · Persistent server storage.</footer><script src="/xs-growth.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <title>Slotly — Appointment Booking Working Demo | Xender Secrets</title>
+  <meta name="description" content="Working demo by Xender Secrets: pick a date, see live free slots from the server and confirm a booking that is saved and removed from availability for everyone.">
+  <style>
+    :root{--bg:#f3f8f7;--panel:#fff;--ink:#0d2a2a;--muted:#5b7372;--line:#d9e8e6;--brand:#0f9d8a;--brand-2:#0b7a6c;--soft:#e2f5f1;--err:#b42318}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+    :focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+    .wrap{width:min(1100px,calc(100% - 32px));margin-inline:auto}
+    header{background:var(--panel);border-bottom:1px solid var(--line)}
+    .hd{display:flex;align-items:center;gap:14px;min-height:64px}
+    .logo{display:flex;align-items:center;gap:9px;font-weight:900;font-size:1.15rem;text-decoration:none;color:inherit}
+    .logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#5fd3c2)}
+    .hd span{margin-left:auto;font-size:.85rem;color:var(--muted)}
+    .hero{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:start;padding:48px 0 70px}
+    .kick{font-size:.78rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brand)}
+    h1{font-size:clamp(2.2rem,4.6vw,3.4rem);line-height:1.05;letter-spacing:-.03em;margin:10px 0 14px}
+    .lede{color:var(--muted);font-size:1.08rem}
+    .how{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:12px}
+    .how li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+    .how b{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--soft);color:var(--brand-2)}
+    .how code{font-size:.82rem;background:var(--panel);border:1px solid var(--line);padding:1px 6px;border-radius:6px}
+    .book{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 30px 60px -36px #0d2a2a55}
+    .book h2{font-size:1.1rem;margin:0 0 14px;display:flex;justify-content:space-between;align-items:center}
+    .nav-btns button{font:inherit;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink)}
+    .nav-btns button:disabled{opacity:.35;cursor:default}
+    .dates{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+    .dates button{font:inherit;display:grid;gap:2px;place-items:center;padding:10px 0;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+    .dates button small{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    .dates button b{font-size:1.1rem}
+    .dates button:hover{border-color:var(--brand)}
+    .dates button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}.dates button[aria-pressed="true"] small{color:#d5f5ef}
+    .slots-h{margin:20px 0 10px;font-size:.92rem;color:var(--muted)}
+    .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;min-height:46px}
+    .slots button{font:inherit;font-weight:800;padding:11px 0;border-radius:11px;border:1px solid var(--line);background:var(--soft);color:var(--brand-2);cursor:pointer}
+    .slots button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .skel{border-radius:11px;background:linear-gradient(90deg,#e8f1ef,#f6fbfa,#e8f1ef);background-size:200% 100%;animation:sh 1.2s infinite linear;height:46px}
+    @keyframes sh{to{background-position:-200% 0}}
+    .none{grid-column:1/-1;color:var(--muted);font-size:.92rem;padding:10px 0}
+    form{display:grid;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
+    label{font-size:.85rem;font-weight:700;color:var(--muted)}
+    input{width:100%;font:inherit;padding:12px 13px;border-radius:11px;border:1px solid var(--line);margin-top:4px;color:var(--ink);background:#fbfefe}
+    .confirm{font:inherit;font-weight:800;padding:14px;border-radius:13px;border:0;background:var(--brand);color:#fff;cursor:pointer}
+    .confirm:disabled{opacity:.5;cursor:not-allowed}
+    .msg{margin:0;min-height:1.3em;font-weight:700;font-size:.92rem}.msg.err{color:var(--err)}
+    .done{text-align:center;padding:24px 8px}
+    .done .tick{width:66px;height:66px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--brand);font-size:2rem;font-weight:900}
+    .done code{font-size:1.1rem;font-weight:800;background:var(--soft);padding:4px 10px;border-radius:8px}
+    .done button{margin-top:14px;font:inherit;font-weight:700;padding:10px 14px;border-radius:11px;border:1px solid var(--line);background:var(--panel);cursor:pointer}
+    .api-log{margin-top:18px;font:12px/1.5 ui-monospace,Menlo,monospace;background:#0d2a2a;color:#9ff0dd;border-radius:12px;padding:12px 14px;max-height:130px;overflow:auto;white-space:pre-wrap}
+    footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.9rem;background:var(--panel)}
+    @media(max-width:860px){.hero{grid-template-columns:1fr}}
+    @media(max-width:480px){.dates{grid-template-columns:repeat(3,1fr)}.slots{grid-template-columns:repeat(2,1fr)}.book{padding:18px}}
+    @media(prefers-reduced-motion:reduce){.skel{animation:none}}
+  </style>
+</head>
+<body>
+  <header><div class="wrap hd"><a class="logo" href="#top"><i aria-hidden="true"></i>Slotly</a><span>Sample clinic · Mon–Sat</span></div></header>
+  <main class="wrap hero" id="top">
+    <div>
+      <p class="kick">Book an appointment</p>
+      <h1>Pick a time that suits you. Confirmed in seconds.</h1>
+      <p class="lede">No phone tag, no double bookings. Availability comes straight from the server, and a slot disappears for everyone the moment it's booked.</p>
+      <ol class="how">
+        <li><b>1</b><div><strong>Choose a date</strong><br><small>Slots load from <code>GET /api/slots</code></small></div></li>
+        <li><b>2</b><div><strong>Pick a free time</strong><br><small>Only genuinely free slots are shown</small></div></li>
+        <li><b>3</b><div><strong>Confirm</strong><br><small>Saved by <code>POST /api/bookings</code> with a booking reference</small></div></li>
+      </ol>
+    </div>
+    <section class="book" aria-labelledby="book-h" id="bookBox">
+      <h2 id="book-h"><span id="monthLabel">Select a date</span><span class="nav-btns"><button type="button" id="prev" aria-label="Previous week">‹</button> <button type="button" id="next" aria-label="Next week">›</button></span></h2>
+      <div class="dates" id="dates" role="group" aria-label="Dates"></div>
+      <p class="slots-h" id="slotsLabel">Available times</p>
+      <div class="slots" id="slots" role="group" aria-labelledby="slotsLabel" aria-live="polite"></div>
+      <form id="form" novalidate>
+        <div><label for="name">Your name</label><input id="name" name="name" autocomplete="name" maxlength="80" required></div>
+        <button class="confirm" id="confirm" type="submit" disabled>Choose a time first</button>
+        <p class="msg" id="msg" role="status" aria-live="polite"></p>
+      </form>
+      <div class="api-log" id="log" aria-label="API log">// live API calls appear here</div>
+    </section>
+  </main>
+  <footer><div class="wrap">Slotly is a fictional brand. Working demo by <a href="/portfolio#p-slotly-booking">Xender Secrets</a>, running on Cloudflare Workers with SQLite storage. Demo bookings are real records on our demo database — please don't enter personal data beyond a first name.</div></footer>
+  <script>
+  (() => {
+    const pad = (n) => String(n).padStart(2, "0");
+    const iso = (d) => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+    const start = new Date(); start.setHours(0, 0, 0, 0);
+    const days = Array.from({ length: 14 }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return d; }).filter((d) => d.getDay() !== 0);
+    let week = 0, date = iso(days[0]), slot = "", busy = false;
+    const $ = (id) => document.getElementById(id);
+    const log = (line) => { const el = $("log"); el.textContent = (el.textContent.startsWith("//") ? "" : el.textContent + "\n") + line; el.scrollTop = el.scrollHeight; };
+
+    function drawDates() {
+      const list = days.slice(week * 6, week * 6 + 6);
+      $("dates").innerHTML = "";
+      for (const d of list) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-pressed", String(iso(d) === date));
+        b.setAttribute("aria-label", d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }));
+        b.innerHTML = "<small>" + d.toLocaleDateString("en-GB", { weekday: "short" }) + "</small><b>" + d.getDate() + "</b>";
+        b.addEventListener("click", () => { date = iso(d); drawDates(); loadSlots(); });
+        $("dates").appendChild(b);
+      }
+      $("monthLabel").textContent = list[0].toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+      $("prev").disabled = week === 0; $("next").disabled = (week + 1) * 6 >= days.length;
+    }
+    $("prev").onclick = () => { week = Math.max(0, week - 1); drawDates(); };
+    $("next").onclick = () => { week++; drawDates(); };
+
+    async function loadSlots() {
+      slot = ""; updateConfirm();
+      const box = $("slots");
+      box.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+      $("slotsLabel").textContent = "Available times · " + new Date(date + "T00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" });
+      try {
+        const r = await fetch("/api/slots?date=" + date);
+        const j = await r.json();
+        log("GET /api/slots?date=" + date + " → " + r.status + " " + JSON.stringify(j.slots));
+        if (!r.ok || !j.ok) throw new Error(j.error || "Could not load slots");
+        box.innerHTML = j.slots.length ? "" : '<p class="none">Fully booked — try another date.</p>';
+        for (const t of j.slots) {
+          const b = document.createElement("button");
+          b.type = "button"; b.textContent = t; b.setAttribute("aria-pressed", "false");
+          b.addEventListener("click", () => { slot = t; box.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); updateConfirm(); });
+          box.appendChild(b);
+        }
+      } catch (e) {
+        box.innerHTML = '<p class="none">Couldn\'t reach the booking server. Please try again in a moment.</p>';
+        log("GET /api/slots failed: " + e.message);
+      }
+    }
+    function updateConfirm() {
+      const b = $("confirm");
+      if (!b) return;
+      b.disabled = !slot || busy;
+      b.textContent = slot ? "Confirm " + slot + " on " + new Date(date + "T00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "Choose a time first";
+    }
+
+    $("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = $("name").value.trim();
+      if (!name) { $("msg").className = "msg err"; $("msg").textContent = "Please add your name."; $("name").focus(); return; }
+      if (!slot) return;
+      busy = true; updateConfirm(); $("msg").className = "msg"; $("msg").textContent = "Confirming…";
+      try {
+        const body = { name, date, slot };
+        const r = await fetch("/api/bookings", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+        const j = await r.json();
+        log("POST /api/bookings → " + r.status + " " + JSON.stringify(j));
+        if (!r.ok || !j.ok) { $("msg").className = "msg err"; $("msg").textContent = j.error || "That didn't work. Please try again."; busy = false; loadSlots(); return; }
+        const when = new Date(date + "T00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+        const box = $("bookBox");
+        const logHtml = $("log").outerHTML;
+        box.innerHTML = '<div class="done" role="status" tabindex="-1"><div class="tick">✓</div><h2>You\'re booked, <span></span>.</h2><p>' + when + " at " + slot + '</p><p>Reference <code></code></p><button type="button" id="again">Make another booking</button></div>' + logHtml;
+        box.querySelector("h2 span").textContent = name.split(" ")[0];
+        box.querySelector("code").textContent = j.bookingId;
+        box.querySelector(".done").focus();
+        box.querySelector("#again").onclick = () => location.reload();
+        return;
+      } catch (err) {
+        $("msg").className = "msg err"; $("msg").textContent = "Network problem. Please try again.";
+        log("POST /api/bookings failed: " + err.message);
+      }
+      busy = false; updateConfirm();
+    });
+    drawDates(); loadSlots();
+  })();
+  </script>
+  <script src="/demo-ribbon.js" data-slug="slotly-booking" data-kind="Working demo" defer></script>
+  <script src="/xs-growth.js" defer></script>
+</body>
+</html>
