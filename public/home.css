@@ -322,7 +322,9 @@ html.scroll-fx .rail-track{transform:translate3d(min(0px,calc(var(--p,0) * (100v
 @media(max-width:900px){
   .hx-grid,.stack-grid{grid-template-columns:1fr}
   .hx-stage{min-height:380px;max-width:560px;width:100%;margin:8px auto 0}
-  .stack-stage{min-height:300px;order:-1}
+  /* Static (no scroll-fx: reduced motion, Save-Data or <=2 cores) must not overflow narrow screens either. */
+  .stack-stage{min-height:300px;order:-1;overflow-x:clip}
+  .stack-3d{width:min(66%,260px)}
   html.scroll-fx .stack-sticky{padding:72px 0 16px}
   html.scroll-fx .stack-stage{min-height:34vh}
   html.scroll-fx .stack-3d{width:min(62%,250px)}

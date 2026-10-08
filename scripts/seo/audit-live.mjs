@@ -12,6 +12,7 @@
 //   node scripts/seo/audit-live.mjs --strict        # also exit 1 on any violation
 //   node scripts/seo/audit-live.mjs --json out.json # also write raw results
 import fs from "node:fs";
+import { isMain } from "../lib/is-main.mjs";
 
 const SITE = "https://www.xendersecrets.com";
 const APEX = "xendersecrets.com";
@@ -180,7 +181,7 @@ export function toMarkdown({ when, sitemapCount, results, problems, warnings = [
     "", warnings.length ? `### Warnings (${warnings.length})\n` + warnings.map((p) => "- " + p).join("\n") : "### Warnings\nNone."].join("\n");
 }
 
-if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split("/").pop())) {
+if (isMain(import.meta.url)) {
   const args = process.argv.slice(2);
   const pi = args.indexOf("--preview");
   const report = pi >= 0 ? await auditPreview(args[pi + 1].replace(/\/$/, "")) : await audit();
