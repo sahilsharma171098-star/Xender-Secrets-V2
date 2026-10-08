@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Secure Payment | Xender Secrets</title>
+  <meta name="description" content="Securely pay Xender Secrets for an agreed website package using Razorpay checkout.">
+  <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://www.xendersecrets.com/pay">
+  <link rel="stylesheet" href="/home.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="/services">Pricing</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap narrow">
+        <p class="eyebrow">Secure payment</p>
+        <h1>Pay for your <em>confirmed Xender project.</em></h1>
+        <p class="lede">Use this page only after your scope, package and delivery terms have been confirmed in writing by Xender Secrets. Payments are processed through Razorpay.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap narrow">
+        <form class="card lead-form" data-payment-form>
+          <div class="field">
+            <label for="pay-offer">Package *</label>
+            <select id="pay-offer" name="offer" required>
+              <option value="founding-website-999">Founding Website — ₹1,178.82 incl. GST</option>
+              <option value="business-starter-1999">Business Starter — ₹2,358.82 incl. GST</option>
+              <option value="business-pro-3499">Business Pro — ₹4,128.82 incl. GST</option>
+            </select>
+            <p class="hint" data-payment-total>₹1,178.82 incl. GST</p>
+          </div>
+
+          <div class="field">
+            <label for="pay-name">Your name *</label>
+            <input id="pay-name" name="name" autocomplete="name" required maxlength="80">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="pay-email">Email</label>
+              <input id="pay-email" name="email" type="email" autocomplete="email" maxlength="254">
+            </div>
+            <div class="field">
+              <label for="pay-phone">Phone / WhatsApp</label>
+              <input id="pay-phone" name="phone" type="tel" autocomplete="tel" maxlength="24">
+            </div>
+          </div>
+          <p class="hint">Enter at least one: email or phone number.</p>
+
+          <div class="field">
+            <label for="pay-reference">Quote / project reference <span class="opt">(optional)</span></label>
+            <input id="pay-reference" name="reference" maxlength="80" placeholder="e.g. XS-2026-001">
+          </div>
+
+          <button class="btn primary block lg" type="submit" data-pay-button disabled>Pay securely with Razorpay</button>
+          <p class="status" data-payment-status role="status" aria-live="polite">Checking payment availability…</p>
+          <p class="fine">Payment does not change the written project scope. A GST-compliant invoice is issued for accepted project payments. For custom work or a different amount, contact us first.</p>
+        </form>
+
+        <div class="card" style="margin-top:1rem">
+          <h2>Before you pay</h2>
+          <p>Review the agreed scope and amount. For help, use our <a href="/contact">contact page</a> or WhatsApp. Read our <a href="/terms">terms</a>, <a href="/privacy">privacy policy</a> and <a href="/refund">refund & cancellation policy</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div><strong>XENDER SECRETS</strong><br>Gurugram, Haryana, India · GST-registered proprietorship</div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="/services">Pricing</a><a href="/contact">Contact</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refund">Refunds</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/payments.js" defer></script>
+</body>
+</html>
