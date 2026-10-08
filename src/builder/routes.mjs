@@ -74,6 +74,7 @@ export async function handleBuilderGenerate(request, env, ctx, stub, deps = {}) 
         messages,
         maxTokens,
         timeoutMs: Number(env.BUILDER_TIMEOUT_MS) || 150000,
+        deadlineMs: Number(env.BUILDER_DEADLINE_MS) || 270000,
         validate: (text) => validateGenerated(text, { mode, current }),
         // Stop before an attempt that could push this request past its reserved allowance.
         budgetLeft: (spent) => (spent.length ? neuronAllowance - spent.reduce((n, s) => n + s.neurons, 0) - worstAttempt : 1),
@@ -85,6 +86,7 @@ export async function handleBuilderGenerate(request, env, ctx, stub, deps = {}) 
           send({ type: "progress", ...p, ms: now - started });
         },
       });
+      send({ type: "progress", stage: "saving", ms: Date.now() - started });
       const saved = await callDo(stub, "/__builder/commit", request, {
         reservation, files: result.value.files, summary: result.value.summary, provider: result.provider, model: result.model, spent: result.spent, ms: Date.now() - started,
       });

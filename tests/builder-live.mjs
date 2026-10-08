@@ -27,7 +27,7 @@ async function call(method, p, body) {
   return r;
 }
 
-async function stream(p, body, timeoutMs = 300000) {
+async function stream(p, body, timeoutMs = 330000) {
   const ctl = new AbortController();
   const t = setTimeout(() => ctl.abort(), timeoutMs);
   const started = Date.now();
@@ -51,7 +51,9 @@ async function stream(p, body, timeoutMs = 300000) {
     }
   }
   clearTimeout(t);
-  return { status: r.status, events, done: events.find((e) => e.type === "done"), error: events.find((e) => e.type === "error"), ms: Date.now() - started };
+  // Compact trail for diagnosis: every non-delta event, plus the last delta seen.
+  const trail = events.filter((e, i) => e.type !== "progress" || e.stage !== "delta" || i === events.length - 1).filter((e) => e.stage !== "waiting").map((e) => ({ ...e, project: undefined }));
+  return { status: r.status, events, trail, done: events.find((e) => e.type === "done"), error: events.find((e) => e.type === "error"), ms: Date.now() - started };
 }
 
 async function waitForDeployment() {
@@ -75,8 +77,8 @@ async function main() {
 
   const prompt = "A one-page website for 'Harbourside Physio', a physiotherapy clinic in Brighton, UK: hero with booking button, services with prices in GBP, about the team, opening hours, FAQ and an appointment request form. Calm teal and sand colours.";
   const gen = await stream("/api/builder/generate", { prompt });
-  summary.generation = { status: gen.status, ms: gen.ms, provider: gen.done?.provider, model: gen.done?.model, summary: gen.done?.summary, error: gen.error?.error || gen.error };
-  if (!check("real AI generated a website", gen.done, gen.done ? `${gen.done.provider} ${gen.done.model} in ${Math.round(gen.ms / 1000)}s` : JSON.stringify(gen.error || gen).slice(0, 300))) return;
+  summary.generation = { status: gen.status, ms: gen.ms, trail: gen.trail, provider: gen.done?.provider, model: gen.done?.model, summary: gen.done?.summary, error: gen.error?.error || gen.error };
+  if (!check("real AI generated a website", gen.done, gen.done ? `${gen.done.provider} ${gen.done.model} in ${Math.round(gen.ms / 1000)}s` : JSON.stringify(gen.error || gen.trail || gen).slice(0, 500))) return;
   const project = gen.done.project;
   const idx = project.files["index.html"] || "";
   for (const [name, body] of Object.entries(project.files)) fs.writeFileSync(path.join(OUT, "v1-" + name.replace(/\//g, "_")), body);
@@ -106,8 +108,9 @@ async function main() {
     check("studio has no console errors", errors.length === 0, errors.join(" | "));
 
     const edit = await stream(`/api/builder/projects/${project.id}/edit`, { prompt: "Make the primary colour a deep forest green and add a short 'What to expect on your first visit' section before the FAQ." });
-    summary.edit = { status: edit.status, ms: edit.ms, changed: edit.done?.changed, summary: edit.done?.summary, error: edit.error?.error || edit.error };
-    if (check("follow-up edit applied", edit.done, edit.done ? `changed ${edit.done.changed.join(", ")} in ${Math.round(edit.ms / 1000)}s` : JSON.stringify(edit.error || edit).slice(0, 300))) {
+    console.log("edit trail:", JSON.stringify(edit.trail));
+    summary.edit = { status: edit.status, ms: edit.ms, trail: edit.trail, changed: edit.done?.changed, summary: edit.done?.summary, error: edit.error?.error || edit.error };
+    if (check("follow-up edit applied", edit.done, edit.done ? `changed ${edit.done.changed.join(", ")} in ${Math.round(edit.ms / 1000)}s` : (edit.error ? "error event: " : "stream ended without done/error: ") + JSON.stringify(edit.error || edit.trail || edit).slice(0, 480))) {
       const files2 = edit.done.project.files;
       for (const [n, b] of Object.entries(files2)) fs.writeFileSync(path.join(OUT, "v2-" + n.replace(/\//g, "_")), b);
       check("edit kept the original content", /harbourside/i.test(files2["index.html"] || ""));

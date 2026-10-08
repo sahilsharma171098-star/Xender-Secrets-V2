@@ -89,8 +89,10 @@ test("prompt → streamed generation → saved project → follow-up edit → ex
 
   const edit = await req("POST", `/api/builder/projects/${id}/edit`, { body: { prompt: "use a purple brand colour" }, headers: { cookie, origin: ORIGIN } });
   const e = ndjson(edit.text).find((x) => x.type === "done");
-  assert.deepEqual(e.changed, ["styles.css"]);
-  assert.equal(e.project.files["index.html"], done.project.files["index.html"]);
+  assert.deepEqual(e.changed.sort(), ["index.html", "styles.css"]);
+  assert.match(e.project.files["index.html"], /<p id="edited">Edited: use a purple brand colour<\/p>/, "SEARCH/REPLACE edit applied");
+  assert.equal(e.project.files["index.html"].replace(/<p id="edited">[^<]*<\/p>/, ""), done.project.files["index.html"], "rest of the page preserved");
+  assert.equal(e.project.files["about.html"], done.project.files["about.html"]);
 
   const zip = await req("GET", `/api/builder/projects/${id}/export`, { headers: { cookie } });
   assert.equal(zip.status, 200);

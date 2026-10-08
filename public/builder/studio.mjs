@@ -247,7 +247,8 @@ async function generate(prompt) {
         if (ev.type === "start" || (ev.type === "progress" && ev.stage === "provider")) pr.set("write");
         if (ev.type === "progress" && ev.stage === "delta") { pr.set("write"); pr.detail.textContent = `${ev.kind === "reasoning" ? "Planning" : "Writing code"} · ${(ev.chars / 1000).toFixed(1)} KB · ${Math.round(ev.ms / 1000)} s`; }
         if (ev.type === "progress" && ev.stage === "waiting") pr.detail.textContent = `Waiting for the model · ${Math.round(ev.ms / 1000)} s`;
-        if (ev.type === "progress" && ev.stage === "retry") pr.detail.textContent = "The first answer wasn't usable — retrying…";
+        if (ev.type === "progress" && ev.stage === "retry") pr.detail.textContent = ev.reason === "timeout" ? "That model was too slow — switching to a faster one…" : "The first answer wasn't usable — retrying…";
+        if (ev.type === "progress" && ev.stage === "saving") { pr.set("save"); pr.detail.textContent = "Checking & saving…"; }
         if (ev.type === "done") result = ev;
         if (ev.type === "error") failure = ev;
       }

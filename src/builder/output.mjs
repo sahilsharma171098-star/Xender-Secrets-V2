@@ -53,14 +53,70 @@ export function newSiteMessages(prompt) {
   ];
 }
 
+export const EDIT_RULES = `You are editing an EXISTING website. Preserve everything the user did not ask to change: content, structure, class names and any manual edits.
+
+Return ONLY what changes. For changes to an existing file, return EDIT blocks (much faster than resending the file):
+=== EDIT: index.html ===
+<<<<<<< SEARCH
+(a few lines copied EXACTLY from the current file)
+=======
+(the replacement lines)
+>>>>>>> REPLACE
+=== END EDIT ===
+- One EDIT block per file; it may hold several SEARCH/REPLACE pairs, applied in order.
+- Each SEARCH must match the current file exactly and only once: copy 2-6 complete, distinctive lines.
+- To insert something, SEARCH for the line just before where it goes and REPLACE with that same line followed by the new content.
+- Use a full === FILE: name === block only for a NEW file or when rewriting most of a file. To delete a file, return a FILE block whose only content is DELETE.
+- Finish with the === SUMMARY === block.`;
+
 export function editMessages(prompt, files) {
   const listing = Object.entries(files)
     .map(([name, body]) => `=== FILE: ${name} ===\n${body}\n=== END FILE ===`)
     .join("\n");
   return [
-    { role: "system", content: SYSTEM_PROMPT + `\n\nYou are editing an EXISTING website. Return ONLY the files you change, each in full. Do not return unchanged files. Preserve everything the user did not ask to change: content, structure, class names and any manual edits. To delete a file, return it with the single line DELETE as its content.` },
+    { role: "system", content: SYSTEM_PROMPT + "\n\n" + EDIT_RULES },
     { role: "user", content: `CURRENT FILES:\n${listing}\n\nREQUEST: ${prompt}\n\nApply this change with the smallest set of edits that fully satisfies it.` },
   ];
+}
+
+/** Pull `=== EDIT: name ===` SEARCH/REPLACE blocks out of a model answer; returns the rest untouched. */
+export function parseEdits(text) {
+  const src = String(text || "").replace(/\r\n/g, "\n");
+  const edits = {};
+  const re = /^===\s*EDIT:\s*([^\n=]+?)\s*===\s*\n([\s\S]*?)(?:^===\s*END EDIT\s*===\s*$|(?=^===\s*(?:FILE:|EDIT:|SUMMARY\s*===))|(?![\s\S]))/gm;
+  const rest = src.replace(re, (all, rawName, body) => {
+    const name = rawName.trim().replace(/^\.?\//, "").toLowerCase();
+    const hunks = edits[name] || (edits[name] = []);
+    const h = /<{5,9} ?SEARCH[^\n]*\n([\s\S]*?)\n?={5,9}[^\n]*\n([\s\S]*?)\n?>{5,9} ?REPLACE[^\n]*/g;
+    let m;
+    while ((m = h.exec(body))) hunks.push({ search: m[1], replace: m[2] });
+    return "";
+  });
+  return { edits, rest };
+}
+
+/** Apply SEARCH/REPLACE hunks: exact match first, then a line match that ignores indentation. */
+export function applyHunks(body, hunks) {
+  let out = String(body);
+  for (const { search, replace } of hunks) {
+    if (!search.trim()) return { ok: false, error: "empty SEARCH" };
+    const i = out.indexOf(search);
+    if (i >= 0) { out = out.slice(0, i) + replace + out.slice(i + search.length); continue; }
+    const lines = out.split("\n");
+    const want = search.split("\n").map((l) => l.trim());
+    while (want.length && !want[0]) want.shift();
+    while (want.length && !want[want.length - 1]) want.pop();
+    let at = -1;
+    for (let s = 0; s + want.length <= lines.length && at < 0; s++) {
+      let j = 0;
+      while (j < want.length && lines[s + j].trim() === want[j]) j++;
+      if (j === want.length) at = s;
+    }
+    if (at < 0) return { ok: false, error: `SEARCH text not found: ${want[0]?.slice(0, 60) || ""}` };
+    lines.splice(at, want.length, ...replace.split("\n"));
+    out = lines.join("\n");
+  }
+  return { ok: true, body: out };
 }
 
 /** Parse the model's file protocol. Tolerates ``` fences and a missing END FILE on the last file. */
@@ -147,9 +203,19 @@ export function sanitizeHtml(html) {
 
 /** Validator for runWithFallback: new sites need index.html with real markup. */
 export function validateGenerated(text, { mode = "new", current = {} } = {}) {
-  const { files, summary } = parseFiles(text);
+  const { edits, rest } = mode === "edit" ? parseEdits(text) : { edits: {}, rest: text };
+  const { files, summary } = parseFiles(rest);
   const deletes = Object.keys(files).filter((k) => files[k].trim() === "DELETE");
   for (const k of deletes) delete files[k];
+  const failed = [];
+  for (const [name, hunks] of Object.entries(edits)) {
+    if (!hunks.length) continue;
+    const base = files[name] ?? current[name];
+    if (base == null) { failed.push(`${name}: file does not exist`); continue; }
+    const r = applyHunks(base, hunks);
+    if (r.ok) files[name] = r.body; else failed.push(`${name}: ${r.error}`);
+  }
+  if (failed.length) return { ok: false, error: "The AI edit did not match the current files (" + failed.join("; ").slice(0, 200) + ")." };
   const { files: clean, errors } = cleanFileMap(files);
   if (mode === "new") {
     const idx = clean["index.html"] || "";
@@ -157,6 +223,7 @@ export function validateGenerated(text, { mode = "new", current = {} } = {}) {
     if (idx.length < 200) return { ok: false, error: "The generated index.html was too short." };
     return { ok: true, value: { files: clean, summary: summary || "Generated a new website.", warnings: errors } };
   }
+  for (const k of Object.keys(clean)) if (clean[k] === current[k]) delete clean[k];
   if (!Object.keys(clean).length && !deletes.length) return { ok: false, error: "The AI answer did not change any files." };
   const merged = { ...current, ...clean };
   for (const k of deletes) if (k !== "index.html") delete merged[k];

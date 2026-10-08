@@ -8,7 +8,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { DatabaseSync } from "node:sqlite";
 import { runWithFallback, workersAiProvider, mockProvider, configuredProviders, chunkParts, neuronsFor, ProviderError, zaiProvider } from "../../src/builder/ai.mjs";
-import { parseFiles, validateGenerated, sanitizeHtml, cleanFileMap, checkPrompt, editMessages, projectNameFrom } from "../../src/builder/output.mjs";
+import { parseFiles, parseEdits, applyHunks, validateGenerated, sanitizeHtml, cleanFileMap, checkPrompt, editMessages, projectNameFrom } from "../../src/builder/output.mjs";
 import { zipFiles, crc32 } from "../../src/builder/zip.mjs";
 import { ensureBuilderSchema, handleBuilderStore, GUEST_COOKIE } from "../../src/builder/store.mjs";
 import { handleBuilderGenerate, withBuilderHeaders } from "../../src/builder/routes.mjs";
@@ -99,7 +99,7 @@ test("checkPrompt rejects phishing/malware asks and bounds length", () => {
 test("editMessages sends current files and asks for changed files only", () => {
   const m = editMessages("make it blue", { "index.html": "<body></body>" });
   assert.equal(m[0].role, "system");
-  assert.match(m[0].content, /Return ONLY the files you change/);
+  assert.match(m[0].content, /Return ONLY what changes/);
   assert.match(m[1].content, /CURRENT FILES:[\s\S]*index\.html[\s\S]*REQUEST: make it blue/);
 });
 
@@ -167,6 +167,69 @@ test("runWithFallback stops before exceeding the per-request allowance and times
   await assert.rejects(runWithFallback([pricey], { messages: [], validate: () => ({ ok: false, error: "x" }), budgetLeft: (spent) => (spent.length ? 1200 - spent.reduce((a, s) => a + s.neurons, 0) - 500 : 1), sleepImpl: async () => {} }), (e) => e.code === "budget" && e.spent.length === 1);
   const slow = { id: "s", model: "m", generate: ({ signal }) => new Promise((_, rej) => signal.addEventListener("abort", () => rej(new Error("The operation was aborted")))) };
   await assert.rejects(runWithFallback([slow], { messages: [], validate: () => ({ ok: true }), timeoutMs: 20, retries: 0 }), (e) => e.errors[0].code === "timeout");
+});
+
+test("runWithFallback: a timed-out model is not retried, is charged, and the deadline stops further attempts", async () => {
+  let calls = 0;
+  const slow = { id: "s", model: "@cf/zai-org/glm-4.7-flash", generate: ({ signal, onDelta }) => { calls++; onDelta(3200, "content"); return new Promise((_, rej) => signal.addEventListener("abort", () => rej(new Error("The operation was aborted")))); } };
+  const good = { id: "g", model: "@cf/qwen/qwen3-30b-a3b-fp8", generate: async () => ({ text: SITE(), usage: { input: 10, output: 10 }, provider: "g", model: "@cf/qwen/qwen3-30b-a3b-fp8" }) };
+  const r = await runWithFallback([slow, good], { messages: [], validate: (t) => validateGenerated(t), timeoutMs: 20, retries: 1, sleepImpl: async () => {} });
+  assert.equal(calls, 1, "no second attempt on the model that timed out");
+  assert.equal(r.provider, "g");
+  assert.equal(r.spent[0].usage.output, 1000, "timed-out stream charged for what it produced");
+  let t = 0;
+  await assert.rejects(runWithFallback([good], { messages: [], validate: () => ({ ok: true }), deadlineMs: 1000, minAttemptMs: 500, now: () => (t += 600) }), (e) => e.errors[0].code === "deadline");
+});
+
+test("SEARCH/REPLACE edits: parsed, applied exactly or indentation-insensitively, and rejected when they don't match", () => {
+  const current = { "index.html": "<!doctype html><html><body>\n  <main>\n    <h1>Harbourside</h1>\n    <section id=\"faq\">FAQ</section>\n  </main>\n</body></html>", "styles.css": ":root{--c:teal}" };
+  const answer = [
+    "=== EDIT: index.html ===",
+    "<<<<<<< SEARCH",
+    "<section id=\"faq\">FAQ</section>",
+    "=======",
+    "<section id=\"first-visit\">What to expect on your first visit</section>",
+    "<section id=\"faq\">FAQ</section>",
+    ">>>>>>> REPLACE",
+    "<<<<<<< SEARCH",
+    "<main>",
+    "<h1>Harbourside</h1>",
+    "=======",
+    "  <main>",
+    "    <h1>Harbourside Physio</h1>",
+    ">>>>>>> REPLACE",
+    "=== END EDIT ===",
+    "=== EDIT: styles.css ===",
+    "<<<<<<< SEARCH",
+    ":root{--c:teal}",
+    "=======",
+    ":root{--c:#1f5132}",
+    ">>>>>>> REPLACE",
+    "=== SUMMARY ===",
+    "Added a first-visit section and made the brand green.",
+    "=== END SUMMARY ===",
+  ].join("\n");
+  const { edits, rest } = parseEdits(answer);
+  assert.equal(edits["index.html"].length, 2);
+  assert.equal(edits["styles.css"].length, 1, "a missing END EDIT before SUMMARY still parses");
+  assert.match(rest, /SUMMARY/);
+  const v = validateGenerated(answer, { mode: "edit", current });
+  assert.ok(v.ok, v.error);
+  assert.deepEqual(v.value.changed.sort(), ["index.html", "styles.css"]);
+  assert.match(v.value.files["index.html"], /first visit<\/section>\n<section id="faq">/);
+  assert.match(v.value.files["index.html"], /<h1>Harbourside Physio<\/h1>/, "line match ignoring indentation");
+  assert.equal(v.value.files["styles.css"], ":root{--c:#1f5132}");
+  assert.equal(v.value.summary, "Added a first-visit section and made the brand green.");
+  assert.equal(applyHunks("a\nb", [{ search: "zzz", replace: "y" }]).ok, false);
+  const miss = validateGenerated("=== EDIT: index.html ===\n<<<<<<< SEARCH\n<p>not there</p>\n=======\n<p>x</p>\n>>>>>>> REPLACE\n=== END EDIT ===", { mode: "edit", current });
+  assert.equal(miss.ok, false);
+  assert.match(miss.error, /did not match/);
+  const ghost = validateGenerated("=== EDIT: about.html ===\n<<<<<<< SEARCH\na\n=======\nb\n>>>>>>> REPLACE\n=== END EDIT ===", { mode: "edit", current });
+  assert.equal(ghost.ok, false, "edit of a file that does not exist");
+  const mixed = validateGenerated("=== FILE: about.html ===\n<h1>About</h1>\n=== END FILE ===\n=== EDIT: index.html ===\n<<<<<<< SEARCH\n<h1>Harbourside</h1>\n=======\n<h1>Harbourside</h1><a href=\"about.html\">About</a>\n>>>>>>> REPLACE\n=== END EDIT ===", { mode: "edit", current });
+  assert.ok(mixed.ok, mixed.error);
+  assert.deepEqual(mixed.value.changed.sort(), ["about.html", "index.html"]);
+  assert.match(editMessages("x", current)[0].content, /<<<<<<< SEARCH/);
 });
 
 test("provider selection: Workers AI first, Z.ai only with a key, mock never on production hosts", () => {
@@ -371,9 +434,11 @@ test("handleBuilderGenerate streams progress then the saved project (mock provid
   const id = done.project.id;
   const res2 = await handleBuilderGenerate(new Request(`http://localhost/api/builder/projects/${id}/edit`, { method: "POST", headers: { cookie, "content-type": "application/json" }, body: JSON.stringify({ prompt: "make the brand colour purple" }) }), env, null, stub);
   const done2 = (await readNdjson(res2)).find((e) => e.type === "done");
-  assert.deepEqual(done2.changed, ["styles.css"]);
+  assert.deepEqual(done2.changed.sort(), ["index.html", "styles.css"]);
   assert.match(done2.project.files["styles.css"], /#7c3aed/);
-  assert.equal(done2.project.files["index.html"], done.project.files["index.html"], "unchanged file preserved");
+  assert.match(done2.project.files["index.html"], /<p id="edited">Edited: make the brand colour purple<\/p>/, "SEARCH/REPLACE edit applied");
+  assert.equal(done2.project.files["index.html"].replace(/<p id="edited">[^<]*<\/p>/, ""), done.project.files["index.html"], "rest of index.html preserved");
+  assert.equal(done2.project.files["about.html"], done.project.files["about.html"], "unchanged file preserved");
   assert.equal(done2.project.version, 2);
 });
 

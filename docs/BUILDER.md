@@ -11,7 +11,7 @@ chat edits that only touch the files they need → code editor → version histo
 | Piece | File | Notes |
 |---|---|---|
 | AI adapter | `src/builder/ai.mjs` | Provider list + fallback, retry with backoff, per-attempt timeout, response validation, token/neuron accounting. Mock provider for tests only (refuses production hosts). |
-| Prompts / output protocol / sanitiser | `src/builder/output.mjs` | `=== FILE: name ===` protocol; edits return changed files only and are merged. Prompt policy blocks phishing/malware/brand-login asks. |
+| Prompts / output protocol / sanitiser | `src/builder/output.mjs` | `=== FILE: name ===` protocol. Edits return `=== EDIT: name ===` SEARCH/REPLACE blocks (or a full FILE for new/rewritten files), applied exactly or indentation-insensitively; an edit that doesn't match counts as invalid output and is retried. The first live check showed full-file edits of a 16 KB page took over 150 s on GLM-4.7-Flash, so patches are the default. Prompt policy blocks phishing/malware/brand-login asks. |
 | Generation route (Worker) | `src/builder/routes.mjs` | `POST /api/builder/generate`, `POST /api/builder/projects/:id/edit`. Streams NDJSON progress. AI runs in the stateless Worker, never in the DO. Also sets CSP/isolation headers for `/builder*` pages. |
 | Storage, ownership, quotas, spend guard | `src/builder/store.mjs` | Runs in the existing `AppState` Durable Object (SQLite). Additive `builder_*` tables only. |
 | ZIP | `src/builder/zip.mjs` | Dependency-free STORE zip. |
@@ -37,7 +37,7 @@ Rates verified against Cloudflare's pricing page on 2026-10-08. Workers AI inclu
 
 Spend guard (`store.mjs`):
 - Each AI request first **reserves** its worst case (`BUILDER_REQUEST_NEURON_CAP`, default 1,200) against today's builder budget (`BUILDER_DAILY_NEURON_BUDGET`, default 8,000 = 80% of the free 10,000, leaving room for the reader's translation fallback). If the budget can't cover another worst-case request, generation pauses until 00:00 UTC and the UI offers the done-for-you service instead.
-- The Worker stops retrying/falling back before an attempt could exceed the reservation; output is capped at 12,000 tokens; AI edits are refused for projects > 140 KB (bounds the input).
+- The Worker stops retrying/falling back before an attempt could exceed the reservation; a model that times out (150 s) is not retried but falls through to the next one, a request has a 270 s overall deadline, and a timed-out stream is charged an estimate for what it produced; output is capped at 12,000 tokens; AI edits are refused for projects > 140 KB (bounds the input).
 - After the call the reservation is settled with the real token usage (or a conservative estimate if the provider reports none). Abandoned reservations expire after 5 minutes and are charged at the cap.
 - Per-visitor limits: guests 3/day, accounts 12/day, 15/day per IP, 1 concurrent generation, 3 guest / 25 account projects. Failed generations are refunded to the visitor (the budget still pays).
 - Kill switch: Worker variable `BUILDER_ENABLED=false`.
