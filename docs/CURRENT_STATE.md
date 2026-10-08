@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Current State
 
+## Local execution review (2026-10-08, Codex; not merged or deployed)
+- GitHub main remains `46e1ccb`; several historical REVIEW entries now map to merged PRs.
+- `docs/PENDING_EXECUTION.md` reconciles all 15 open issues and 9 open PRs.
+- Isolated Builder review fixes Python executable/UTF-8 output, CRLF checks and Windows Worker cleanup;
+  payment and preview PRs were independently tested with mock providers/local data.
+- Local execution branch adds normalized text comparisons, fixes extension screenshot IDs on Windows,
+  updates vulnerable development dependencies, and includes local browser QA + Instagram dry-run scaffold.
+- Read-only live check: commercial pages/health 200, protected admin 401, payments unavailable,
+  Builder API 404. No production records, secrets or account settings changed.
+
 ## XEND-PORTFOLIO-002 (2026-10-08, Claude, branch `claude/project-thread-5ar4i7`)
 - `/portfolio` moved into the commercial generator: edit `scripts/commercial/portfolio.mjs` (PROJECTS) then `npm run build:pages`; never hand-edit `public/portfolio.html`.
 - Scroll scenes: add `data-scroll-scene="exit|pass|pin"` (+ `data-steps`) and style with `var(--p)` / `var(--k)`; pinned heights only under `html.scroll-fx`. Sticky stages must not have an `overflow:hidden` ancestor.

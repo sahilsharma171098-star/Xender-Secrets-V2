@@ -1,5 +1,24 @@
 # Claude Repo + Funnel Audit — XEND-AUDIT-001 / XEND-WARROOM-001
 
+## Independent follow-up — 2026-10-08
+
+Current main is `46e1ccb`, substantially newer than this historical audit. The P0
+homepage/forms/MIS/demo-isolation findings and P1 measurement/lead-protection work
+are implemented in merged PR #18 and independently covered by unit/browser tests.
+Inner-page design, focused service offers, removal of the commercial chat widget,
+OG assets and SEO improvements shipped through PRs #20/#21/#33/#36/#37/#40.
+Read-only live commercial-page checks returned 200 and unauthenticated MIS returned
+401; a missing ADMIN_TOKEN is therefore no longer an observed live blocker.
+
+Domain-email setup and Claude executor authorization remain account-dependent
+items; no secrets were inspected or created. Root legacy files and possible future
+Durable Object sharding are low-priority maintenance, not observed release blockers.
+Current release work is the payment persistence PR #44, Builder PR #41, prospect
+branding PR #32 and Windows/test infrastructure fixes. Older extension PR #27 is
+superseded by merged PR #28. See `PENDING_EXECUTION.md` for the current execution list.
+
+The original dated findings below are preserved as historical evidence.
+
 Date: 2026-10-06 · Auditor: Claude · Base: `main` @ `e0b2e68`
 Scope: the revenue path (homepage → offer → enquiry → follow-up → payment), lead/backend handling, measurement, CI. Reader/novel/translation were **not** re-audited (covered by PR #16).
 

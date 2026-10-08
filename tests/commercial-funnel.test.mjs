@@ -336,7 +336,7 @@ test('preview builder: live draft, admin-only share link, prospect view is count
   await page.waitForSelector('#shareOut:not([hidden])');
   const link = await page.locator('#link').innerText();
   assert.match(link, /^https:\/\/www\.xendersecrets\.com\/p\/[a-z2-9]{6}$/);
-  assert.match(await page.locator('#pitch').innerText(), /from ₹999/);
+  assert.match(await page.locator('#pitch').innerText(), /concept redesign specifically for Riya/);
   const id = link.slice(-6);
 
   const prospect = await context.newPage();

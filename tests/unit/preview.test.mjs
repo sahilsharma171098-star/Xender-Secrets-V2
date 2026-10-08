@@ -33,12 +33,13 @@ test('sanitizer rejects bad input and neutralises injection', () => {
   assert.equal(sanitizeConfig({ vertical: 'dental' }).ok, false);
   const { config } = sanitizeConfig({
     vertical: 'pro', name: '<img src=x onerror=alert(1)>Acme', tagline: '"><script>alert(1)</script>',
-    googleUrl: 'javascript:alert(1)', instagram: 'data:text/html,x', heroImage: 'https://ok.example/a.jpg', accent: 'red;background:url(x)',
+    googleUrl: 'javascript:alert(1)', instagram: 'data:text/html,x', heroImage: 'https://ok.example/a.jpg', logoImage: 'https://ok.example/logo.png', accent: 'red;background:url(x)',
     services: 'Audit | <b>bold</b> | ₹5,000\n\n | no name', hours: 'Mon | 9-5\nbad', email: 'not-an-email', phone: '12',
   });
   assert.equal(config.googleUrl, '');
   assert.equal(config.instagram, '');
   assert.equal(config.heroImage, 'https://ok.example/a.jpg');
+  assert.equal(config.logoImage, 'https://ok.example/logo.png');
   assert.equal(config.accent, VERTICALS.pro.accent);
   assert.equal(config.services.length, 1);
   assert.deepEqual(config.hours, [['Mon', '9-5']]);
@@ -47,6 +48,8 @@ test('sanitizer rejects bad input and neutralises injection', () => {
   const html = renderPreview(config);
   assert.ok(!/<script>alert|<img src=x|<b>bold/.test(html), 'markup escaped');
   assert.ok(html.includes('&lt;img src=x onerror=alert(1)&gt;Acme'));
+  assert.match(html, /class="xp-logo-img"/);
+  assert.ok(html.includes('https://ok.example/logo.png'));
 });
 
 test('stored previews: admin-only create, public read with view counts, expiry', async () => {

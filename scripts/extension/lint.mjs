@@ -13,6 +13,7 @@ import vm from "node:vm";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { manifestFor, sourceFiles } from "./build.mjs";
+import { readText } from "../lib/text.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "extension");
 const SRC = path.join(ROOT, "src");
@@ -79,7 +80,7 @@ if (!ff?.id || JSON.stringify(ff.data_collection_permissions) !== JSON.stringify
 // 4. Store copy limits. Each listing marks fields as <!-- field:NAME max:N --> … <!-- /field -->.
 const STORE = path.join(ROOT, "store");
 for (const f of fs.readdirSync(STORE).filter((f) => f.endsWith("-listing.md"))) {
-  const text = fs.readFileSync(path.join(STORE, f), "utf8");
+  const text = readText(path.join(STORE, f));
   const fields = [...text.matchAll(/<!-- field:([\w-]+) max:(\d+) -->\n([\s\S]*?)\n<!-- \/field -->/g)];
   if (!fields.length) fail(f, "no length-checked fields found");
   for (const [, name, max, body] of fields) {
@@ -90,10 +91,10 @@ for (const f of fs.readdirSync(STORE).filter((f) => f.endsWith("-listing.md"))) 
 }
 
 // 4b. Every listing's long description matches the single source, and "N checks" claims are true.
-const LONG = fs.readFileSync(path.join(STORE, "long-description.txt"), "utf8").trim();
+const LONG = readText(path.join(STORE, "long-description.txt")).trim();
 const { CHECKS } = await import("../../extension/src/lib/checks.js");
 for (const f of fs.readdirSync(STORE).filter((f) => f.endsWith("-listing.md"))) {
-  const m = /<!-- field:description max:\d+ -->\n([\s\S]*?)\n<!-- \/field -->/.exec(fs.readFileSync(path.join(STORE, f), "utf8"));
+  const m = /<!-- field:description max:\d+ -->\n([\s\S]*?)\n<!-- \/field -->/.exec(readText(path.join(STORE, f)));
   if (!m || m[1].trim() !== LONG) fail(f, "description differs from store/long-description.txt — regenerate the listing");
 }
 for (const f of [path.join(STORE, "long-description.txt"), path.join(ROOT, "store", "changelog.md"), path.join(ROOT, "docs", "SCORING.md"), path.join(ROOT, "..", "scripts", "commercial", "pages.mjs")]) {

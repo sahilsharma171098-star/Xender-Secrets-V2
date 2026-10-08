@@ -8,13 +8,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { allPages, CONTENT_DATE } from "./commercial/pages.mjs";
 import { HUBS } from "./seo/hubs.mjs";
+import { readText } from "./lib/text.mjs";
 
 const PUBLIC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "public");
 const check = process.argv.includes("--check");
 const stale = [];
 for (const { file, html } of allPages()) {
   const target = path.join(PUBLIC, file);
-  const current = fs.existsSync(target) ? fs.readFileSync(target, "utf8") : null;
+  const current = fs.existsSync(target) ? readText(target) : null;
   if (current === html) continue;
   if (check) stale.push(file);
   else { fs.writeFileSync(target, html); console.log("wrote public/" + file); }
@@ -22,7 +23,7 @@ for (const { file, html } of allPages()) {
 // Hand-written hub pages get server-rendered sections + schema (scripts/seo/hubs.mjs).
 for (const [file, transform] of Object.entries(HUBS)) {
   const target = path.join(PUBLIC, file);
-  const current = fs.readFileSync(target, "utf8");
+  const current = readText(target);
   const html = transform(current);
   if (html === current) continue;
   if (check) stale.push(file);
@@ -33,7 +34,7 @@ for (const [file, transform] of Object.entries(HUBS)) {
 const SITE = "https://www.xendersecrets.com";
 const EXCLUDE = new Set(["reader.html", "demo-gym.html", "demo-local.html", "demo-pro.html"]);
 const sitemapPath = path.join(PUBLIC, "sitemap.xml");
-const oldSitemap = fs.existsSync(sitemapPath) ? fs.readFileSync(sitemapPath, "utf8") : "";
+const oldSitemap = fs.existsSync(sitemapPath) ? readText(sitemapPath) : "";
 const oldLastmod = Object.fromEntries([...oldSitemap.matchAll(/<loc>([^<]+)<\/loc><lastmod>([^<]+)<\/lastmod>/g)].map((m) => [m[1].replace(/\.html$/, ""), m[2]]));
 const generated = new Set([...allPages().map((p) => p.file), ...Object.keys(HUBS)]);
 const priority = (f) => f === "index.html" ? "1.0" : ["services.html", "contact.html"].includes(f) ? "0.9" : generated.has(f) ? "0.8" : null;

@@ -49,11 +49,11 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:6px;borde
       <label>About <small>(from their own public description)</small><textarea name="about" rows="3" maxlength="900"></textarea></label>
       <div class="row"><label>Google profile URL<input name="googleUrl"></label><label>Instagram URL<input name="instagram"></label></div>
       <div class="row"><label>Accent colour<input name="accent" type="color" value="#1d4ed8"></label><label>CTA text<input name="cta" maxlength="40" placeholder="(vertical default)"></label></div>
-      <label>Hero image URL <small>(only an image they publish themselves)</small><input name="heroImage"></label>
+      <div class="row"><label>Brand logo image URL <small>(public asset only)</small><input name="logoImage"></label><label>Hero image URL <small>(only an image they publish themselves)</small><input name="heroImage"></label></div>
     </form>
     <section class="card">
       <h2>3 · Share</h2>
-      <div class="row"><label>Link to lead <small>(XS-… optional)</small><input id="leadId" placeholder="XS-261006-ABCD"></label><label>Expires in days<input id="days" type="number" min="1" max="90" value="30"></label></div>
+      <div class="row"><label>Link to lead <small>(XS-… optional)</small><input id="leadId" placeholder="XS-261006-ABCD"></label><label>Expires in days<input id="days" type="number" min="1" max="90" value="30"></label></div><label>Observed issue / opportunity <small>(used only in the outreach message; state only what you verified)</small><textarea id="observedIssue" rows="2" maxlength="240" placeholder="your current mobile homepage makes the booking action hard to find"></textarea></label>
       <p><button id="save" type="button">Create share link</button> <span id="saveStatus"></span></p>
       <div id="shareOut" hidden>
         <p class="out" id="link"></p>
@@ -135,8 +135,17 @@ $("save").onclick = async () => {
   if (!body.ok) { $("saveStatus").textContent = body.error || "Failed"; $("saveStatus").className = "bad"; return; }
   const link = "https://www.xendersecrets.com" + body.path;
   const first = (cfg.name || "").replace(/\s*\(fictional\)/, "");
+  const observed = $("observedIssue").value.trim();
+  const opener = observed ? `I noticed ${observed}. So I made a quick concept redesign specifically for ${first}:` : `I made a quick concept redesign specifically for ${first}:`;
   $("link").textContent = link;
-  $("pitch").textContent = `Hi! I made a quick draft of what a website for ${first} could look like — no cost, no obligation:\n${link}\n\nIt works on mobile and the WhatsApp/call buttons go straight to you. If you like it, we can finish it with your real photos and details from ₹999 + GST (one page). Happy to change anything.\n\n— Sahil, Xender Secrets`;
+  $("pitch").textContent = `Hi! ${opener}
+${link}
+
+I used your public business details and branding so you can judge the idea in your own brand, not from a generic template. It is only a private concept preview, not your official website.
+
+If you like the direction, we can finish it with your approved photos/content and make it production-ready. Happy to change anything.
+
+— Sahil, Xender Secrets`;
   $("shareOut").hidden = false;
   $("saveStatus").textContent = "Saved · expires " + body.expires_at.slice(0, 10); $("saveStatus").className = "ok";
   loadList();

@@ -1,7 +1,23 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-PENDING-EXEC-001 — Backlog reconciliation and local execution (2026-10-08)
+Status: IN_PROGRESS / local changes prepared · Owner: ChatGPT · Branch: `codex/pending-task-execution`
+
+- Current issue/PR inventory and external blockers: `docs/PENDING_EXECUTION.md`.
+- Independent review/testing of payment #44, Builder #41, preview #32 and legacy QA/extension PRs.
+- Existing CRLF checkout compatibility, Windows extension asset capture, dev dependency security update.
+- First-party Instagram dry-run scaffold and local-only mobile/desktop release QA.
+- No code push, merge, deployment, paid call or customer/public communication.
+
+## CLAUDE-SOCIAL-001 — First-party Instagram scaffold (Issue #15)
+Status: REVIEW for local scaffold; account verification pending · Owner: ChatGPT
+
+- `scripts/social/instagram.mjs`: offline plans, read-only account check and guarded library publication.
+- Live CLI publication disabled; credential-safe requests and mocked tests.
+- Configuration/limits: `docs/INSTAGRAM_INTEGRATION.md`. No actual account integration or post verified.
+
 ## XEND-PORTFOLIO-002 — Sales portfolio, live demos and scroll-scrubbed site (2026-10-08)
-Status: REVIEW (branch `claude/project-thread-5ar4i7`)
+Status: DONE (merged PR #40, verified against GitHub main on 2026-10-08)
 Owner: Claude
 
 - `/portfolio` is now generated (`scripts/commercial/portfolio.mjs`, one data source with the homepage rail): 11 live builds across all 8 requested categories, honest labels (Xender product / Working demo / Concept demo), problem, features, tech, live iframe previews of the real demo pages, per-project share deep links (`#p-slug`), shareable filters (`?type=`), "Build something like this" pre-filling the quote form (`cta=portfolio-quote`, offer `custom-build`).
@@ -55,7 +71,7 @@ Deliverable:
 - Add `docs/CLAUDE_REPO_AUDIT.md` on a dedicated branch and open a PR.
 
 ## XEND-REVIEW-001 — Review Claude repository audit
-Status: READY
+Status: DONE for current repository review (2026-10-08); remaining owner actions in pending inventory
 Owner: ChatGPT
 
 Scope:
@@ -128,19 +144,18 @@ Delivered: conversion homepage, lead capture v2, first-party events, private MIS
 Next (Claude): XEND-DEV-002. Next (ChatGPT): CQ-001…005 in `docs/CHATGPT_ACTION_QUEUE.md`. Next (Sahil): secrets, merge, GST + payment terms.
 
 ## XEND-DEV-002 — Carry the new design + lead form to inner commercial pages
-Status: REVIEW · Owner: Claude · Branch: `claude/xend-dev-002-commercial-pages` · PR #20 → `main`
+Status: DONE · Owner: Claude · PR #20 merged to `main` (verified 2026-10-08)
 Delivered: generator `scripts/build-commercial-pages.mjs` + `scripts/commercial/*` now produces home, pricing, about, contact, 6 industry (new: clinic) and 4 location pages + sitemap; thin city pages 301 → India page; canonical/sitemap fixed to final URLs; OG image; CI freshness check; QA checklist `docs/RELEASE_CHECKLIST.md`.
 Scope: shared light header/footer, offer CTA and `data-lead-form` on `services.html`, 6 industry pages, 7 city pages; chat widget leads with free check.
 Acceptance: funnel browser test extended to these pages; no overflow at 375px; live E2E green.
 
 ## XEND-SALES-002 — Client preview system (Issue #19)
-Status: REVIEW · Owner: Claude · Branch: `claude/xend-sales-002-preview-system` (stacked on PR #20)
+Status: DONE · Owner: Claude · PR #21 merged to `main` (verified 2026-10-08)
 Delivered: 5 vertical previews (dental/clinic, real estate, professional services, fitness, restaurant), builder, admin-only short links `/p/<id>`, view tracking in MIS, expiry, draft banner. SOP: `docs/REVENUE_SPRINT.md`.
 Also delivered: gym + restaurant landing pages, `review:site --message` free-check generator, MIS daily scorecard (MIS-001).
 
 ## CLAUDE-EXT-001 — Xender SiteCheck browser extension (Issue #25)
-Status: REVIEW · Owner: Claude · Branch: `claude/ext-001-sitecheck`
+Status: DONE for implementation (merged PR #28); store submissions remain pending · Owner: Claude
 Delivered: `extension/` (MV3 Chrome/Edge + Firefox build, 49 checks, scoring, popup), tests (unit, audit rules on 12 fixtures, real-extension E2E), reproducible packages, store kit (`extension/store/`), `/sitecheck` + `/sitecheck-privacy` pages.
 Open (Sahil): submit to Edge Add-ons, then Firefox AMO (`extension/store/release-checklist.md`); Chrome registration fee (US$5 one-time) is approved by Sahil as of 6 October 2026; submit when the owner-side registration/payment step is completed. After each approval, set the store URL in `SITECHECK_STORES` and rebuild pages.
 Next version candidates: highlight-on-page for issues, optional same-origin link status checks (explicit opt-in permission), page weight from Resource Timing, export to PDF, Hindi UI.
-

@@ -6,11 +6,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { allPages, INDUSTRIES, LOCATIONS } from "../../scripts/commercial/pages.mjs";
+import { readText } from "../../scripts/lib/text.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PUBLIC = path.join(ROOT, "public");
 const SITE = "https://www.xendersecrets.com";
-const read = (f) => fs.readFileSync(path.join(PUBLIC, f), "utf8");
+const read = (f) => readText(path.join(PUBLIC, f));
 const fileForUrl = (u) => { const p = new URL(u).pathname; return p === "/" ? "index.html" : p.slice(1) + ".html"; };
 const meta = (html, re) => (html.match(re) || [])[1];
 const robotsOf = (html) => meta(html, /<meta name="robots" content="([^"]*)"/);

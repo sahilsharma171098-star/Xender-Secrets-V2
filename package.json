@@ -18,7 +18,10 @@
     "extension:assets": "node scripts/extension/assets.mjs && node scripts/extension/icons.mjs",
     "test:worker": "node --test tests/worker/canonical-worker.test.mjs",
     "seo:links": "node scripts/seo/normalize-links.mjs",
-    "seo:audit": "node scripts/seo/audit-live.mjs"
+    "seo:audit": "node scripts/seo/audit-live.mjs",
+    "qa:local": "node scripts/qa/local-smoke.mjs",
+    "instagram:plan": "node scripts/social/instagram.mjs plan",
+    "instagram:check": "node scripts/social/instagram.mjs check"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
