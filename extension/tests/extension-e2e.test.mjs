@@ -16,9 +16,15 @@ import { serveFixtures } from "./helpers.mjs";
 let context, extId, extDir;
 const consoleErrors = [];
 
-/** Chromium derives an unpacked extension's id from its absolute path. */
+/**
+ * Chromium derives an unpacked extension's id from its absolute path. On Windows it hashes the
+ * UTF-16LE path with an upper-cased drive letter (extensions/common/id_util.cc); elsewhere UTF-8.
+ */
 function unpackedId(dir) {
-  const hex = crypto.createHash("sha256").update(path.resolve(dir)).digest("hex").slice(0, 32);
+  let abs = path.resolve(dir);
+  if (process.platform === "win32" && /^[a-z]:/.test(abs)) abs = abs[0].toUpperCase() + abs.slice(1);
+  const bytes = Buffer.from(abs, process.platform === "win32" ? "utf16le" : "utf8");
+  const hex = crypto.createHash("sha256").update(bytes).digest("hex").slice(0, 32);
   return [...hex].map((ch) => String.fromCharCode(97 + parseInt(ch, 16))).join("");
 }
 

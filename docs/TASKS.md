@@ -22,6 +22,18 @@ Owner: ChatGPT
 - Acceptance: passing offline CI, production deployment confirmed, mobile/desktop smoke checks where possible.
 
 
+
+## XEND-BUILDER-001 — AI Website Builder MVP (2026-10-08)
+Status: REVIEW (branch `claude/project-thread-n0p6fk`; merge + production verification pending Sahil's approval)
+Owner: Claude
+
+- `/builder` landing, `/builder/studio`, `/builder/projects`, `/builder/pricing`; docs in `docs/BUILDER.md`.
+- Free-first AI adapter (Workers AI GLM-4.7-Flash primary, Qwen3-30B fallback, optional Z.ai) with fallback, retry, timeout, validation, usage tracking and a daily neuron budget kept under the free allocation.
+- User/guest-owned projects in the AppState DO (additive tables), versions, duplicate, delete, ZIP export, claim on sign-in.
+- Sandboxed opaque-origin preview with strict CSP; prompt policy; per-user/IP limits.
+- Funnel: launch-quote dialog, pricing with regional prices (config file), Pro waitlist, admin usage report. No payments taken.
+- Acceptance: CI green, live generation verified on the PR preview and on production after merge.
+
 Statuses: `READY`, `IN_PROGRESS`, `REVIEW`, `BLOCKED`, `DONE`
 
 ## XEND-AI-001 — Establish shared ChatGPT + Claude workflow

@@ -6,7 +6,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import http from "node:http";
 import { fileURLToPath } from "node:url";
 
@@ -30,7 +30,13 @@ test.before(async () => {
   throw new Error("wrangler dev did not start:\n" + log.slice(-2000));
 });
 // Kill the whole process group (wrangler + its workerd children).
-test.after(() => { try { process.kill(-proc.pid, "SIGTERM"); } catch {} });
+// wrangler dev spawns workerd: stop the whole process tree (negative pid is POSIX-only).
+test.after(() => {
+  try {
+    if (process.platform === "win32") spawnSync("taskkill", ["/pid", String(proc.pid), "/T", "/F"], { stdio: "ignore" });
+    else process.kill(-proc.pid, "SIGTERM");
+  } catch {}
+});
 
 // node:http (not fetch) so the Host header can be set to the apex/www production hostnames.
 const get = (p, host) => new Promise((resolve, reject) => {

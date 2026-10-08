@@ -1,5 +1,12 @@
 # Xender Secrets V2 — Current State
 
+## XEND-BUILDER-001 AI website builder (2026-10-08, Claude, branch `claude/project-thread-n0p6fk`)
+- New `/builder` product (see `docs/BUILDER.md`): prompt → streamed AI generation → sandboxed preview → chat edits → code editor → versions → ZIP; projects owned by account or guest cookie; launch-quote funnel and pricing page.
+- Worker: `src/builder/*`; generation runs in the Worker, storage/quotas/spend guard in the existing `AppState` DO (new `builder_*` tables only). `/builder*` pages get CSP/isolation headers from the Worker.
+- AI: Workers AI `@cf/zai-org/glm-4.7-flash` → `@cf/qwen/qwen3-30b-a3b-fp8`; builder capped at 8,000 of the 10,000 free neurons/day. No new paid services.
+- Main site header/footer link to the builder (generated pages rebuilt); sitemap adds `/builder` and `/builder/pricing`; growth offers add `ai-builder-launch`, `ai-builder-pro-waitlist`.
+
+## XEND-PORTFOLIO-MOTION-001 (2026-10-08, feature branch)
 ## XEND-PORTFOLIO-002 (2026-10-08, Claude, branch `claude/project-thread-5ar4i7`)
 - `/portfolio` moved into the commercial generator: edit `scripts/commercial/portfolio.mjs` (PROJECTS) then `npm run build:pages`; never hand-edit `public/portfolio.html`.
 - Scroll scenes: add `data-scroll-scene="exit|pass|pin"` (+ `data-steps`) and style with `var(--p)` / `var(--k)`; pinned heights only under `html.scroll-fx`. Sticky stages must not have an `overflow:hidden` ancestor.

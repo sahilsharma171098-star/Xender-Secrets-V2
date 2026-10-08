@@ -39,6 +39,7 @@ a{color:var(--accent)}
   <section class="card"><h2>Follow-ups due</h2><div id="due" class="muted">—</div></section>
   <section class="card"><h2>Client previews <a href="/preview-builder" style="font-size:12px;font-weight:600">+ build one</a></h2><p class="muted">A view means the prospect (or someone they shared it with) opened the link — a good moment to follow up.</p><div id="previews" class="muted">—</div></section>
   <section class="card"><h2>Leads &amp; pipeline</h2><p class="muted">Stages: new → contacted → qualified → proposal → won / lost. Quote = agreed price <b>excluding GST</b> (booked when won). Collected = cash actually received <b>excluding the 18% GST</b> (GST collected is a liability, not revenue).</p><div id="leads">Loading…</div></section>
+  <section class="card"><h2>AI Builder usage <a href="/builder" style="font-size:12px;font-weight:600">open builder</a></h2><p class="muted">Free-tier spend guard: builder requests are capped at the daily neuron budget below (Workers AI gives 10,000 free neurons/day, reset 00:00 UTC). Builder leads appear in the pipeline with offer <code>ai-builder-launch</code> / <code>ai-builder-pro-waitlist</code>.</p><div id="builder" class="muted">—</div></section>
   <div class="grid2">
     <section class="card"><h2>Sources</h2><div id="sources"></div></section>
     <section class="card"><h2>Top pages</h2><div id="pages"></div></section>
@@ -63,6 +64,21 @@ a{color:var(--accent)}
   function lock(msg) { sessionStorage.removeItem(KEY); $("app").hidden = true; $("login").hidden = false; $("loginMsg").textContent = msg || ""; }
   const table = (rows, cols) => rows.length ? "<table><tr>" + cols.map((c) => "<th>" + esc(c[0]) + "</th>").join("") + "</tr>" + rows.map((r) => "<tr>" + cols.map((c) => "<td>" + esc(typeof c[1] === "function" ? c[1](r) : r[c[1]]) + "</td>").join("") + "</tr>").join("") + "</table>" : '<p class="muted">No data yet.</p>';
 
+  // XEND-BUILDER-001: AI builder usage, budget and recent generations.
+  async function loadBuilder(days) {
+    const b = await api("/api/admin/builder?days=" + days).then((r) => r.json());
+    const today = b.budget[0] || { used: 0, reserved: 0, requests: 0, ok: 0, failed: 0 };
+    const sum = (k) => b.budget.reduce((n, r) => n + Number(r[k] || 0), 0);
+    $("builder").innerHTML = '<div class="kpis">' + [
+      ["Projects", b.totals.projects], ["In accounts", b.totals.userProjects], ["Owners", b.totals.owners],
+      ["Generations ok (" + b.days + "d)", sum("ok")], ["Failed", sum("failed")],
+      ["Neurons today", Math.round(today.used) + " / " + b.config.dailyNeuronBudget], ["Enabled", b.config.enabled ? "yes" : "PAUSED"],
+    ].map((k) => '<div class="kpi"><b>' + esc(k[1]) + "</b><span>" + esc(k[0]) + "</span></div>").join("") + "</div>" +
+      "<h2 style='margin-top:14px'>By model</h2>" + table(b.byModel, [["Provider", "provider"], ["Model", "model"], ["Calls", "calls"], ["OK", "ok"], ["Neurons", "neurons"], ["Avg ms", "avg_ms"]]) +
+      "<h2 style='margin-top:14px'>Daily budget</h2>" + table(b.budget, [["Day", "day"], ["Requests", "requests"], ["OK", "ok"], ["Failed", "failed"], ["Neurons used", (r) => Math.round(r.used)], ["In tokens", "input_tokens"], ["Out tokens", "output_tokens"]]) +
+      "<h2 style='margin-top:14px'>Recent</h2>" + table(b.recent, [["At", "at"], ["Who", (r) => (r.owner_kind === "u" ? "user" : "guest")], ["Mode", "mode"], ["OK", (r) => (r.ok ? "✓" : "✗")], ["Model", "model"], ["Neurons", "neurons"], ["ms", "ms"], ["Error", "error"]]);
+  }
+
   async function load() {
     const days = $("days").value;
     const [rep, leads] = await Promise.all([
@@ -70,6 +86,7 @@ a{color:var(--accent)}
       api("/api/admin/leads" + ($("showTest").checked ? "?test=1" : "")).then((r) => r.json()),
     ]);
     stages = leads.stages || stages;
+    loadBuilder(days).catch(() => { $("builder").textContent = "Builder report unavailable."; });
     const f = rep.funnel, v = rep.revenue;
     const kpis = [
       ["Visits (" + days + "d)", f.page_views], ["Form starts", f.lead_starts], ["Leads", f.lead_submits],

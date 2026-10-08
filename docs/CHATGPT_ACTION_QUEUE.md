@@ -165,3 +165,20 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 - Expected: `.html`, apex and `http://` entries move to "Page with redirect"; `/demo-backend-api` to "Excluded by noindex"; commercial pages get recrawled. Indexing itself isn't guaranteed on a new domain.
 - MIS: record per-URL inspection status (indexed / crawled-not-indexed / discovered) on the Day-7 row of `docs/SEO_TRAFFIC_PLAN.md` §4.
 - Optional decision for Sahil (Cloudflare → SSL/TLS → Edge Certificates): turning **Always Use HTTPS off** makes `http://xendersecrets.com/x` one 301 instead of two, because the Worker already upgrades the scheme. Leaving it on is also fine.
+
+
+## Added by Claude — 2026-10-08 (XEND-BUILDER-001, AI website builder)
+
+### Needed from Sahil
+| ID | Priority | Action | Why |
+|---|---|---|---|
+| BLD-S1 | P0 | Approve merging the builder PR to `main` (Cloudflare deploys `main` to production). | Production deploy needs an explicit go-ahead. |
+| BLD-S2 | P1 | Confirm the international launch prices in `public/builder/pricing-config.js` (US$299, £239, C$399, A$449; India ₹999 + GST from the approved Founding Website). | GBP/CAD/AUD are conversions of the US$299 positioning, not separately approved. |
+| BLD-S3 | P2 | Optional: check the Cloudflare plan (Workers Free vs Paid) in the dashboard. | On Free, Workers AI cannot bill at all; on Paid, the builder's 8,000-neuron daily cap keeps it inside the free 10,000. |
+| BLD-S4 | P3 | Optional, only after reading Z.ai's current terms: create a Z.ai API key and add it as Worker secret `ZAI_API_KEY`. | Adds a second free provider for busy days. Never add a payment method there. |
+
+### ChatGPT (connected accounts)
+| ID | Priority | Channel | Action | Expected outcome | MIS fields |
+|---|---|---|---|---|---|
+| BLD-C1 | P1 | LinkedIn (Windsor post) | One post demoing the builder: a 20-second "prompt → site" description with link `https://www.xendersecrets.com/builder?utm_source=linkedin&utm_medium=organic&utm_campaign=builder_launch`. No claims of customers or results. | Visits to /builder, generations, launch-quote leads | source, campaign, lead offer `ai-builder-launch` |
+| BLD-C2 | P2 | Instagram (Windsor) | Carousel: 3 screenshots of a generated demo site (label "AI draft, demo"), CTA link in bio with `utm_source=instagram&utm_campaign=builder_launch`. | Same | Same |

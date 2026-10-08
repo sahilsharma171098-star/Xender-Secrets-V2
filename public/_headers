@@ -48,3 +48,8 @@ https://:version.:subdomain.workers.dev/*
 
 /preview/*.mjs
   Content-Type: text/javascript; charset=utf-8
+
+# XEND-BUILDER-001: ES modules for the AI builder studio. CSP/isolation headers for /builder
+# pages are set by the Worker (src/builder/routes.mjs) so they are covered by tests.
+/builder/*.mjs
+  Content-Type: text/javascript; charset=utf-8

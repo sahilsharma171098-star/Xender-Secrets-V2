@@ -28,6 +28,7 @@ const NAV = [
   ["/portfolio.html", "Portfolio"],
   ["/services.html", "Services"],
   ["/website-catalog.html", "Demos"],
+  ["/builder", "AI Builder"],
   ["/articles.html", "Guides"],
   ["/about.html", "About"],
   ["/contact.html", "Contact"],
@@ -35,7 +36,7 @@ const NAV = [
 
 export function header({ home = false, current = "" } = {}) {
   const nav = home
-    ? [["/portfolio.html", "Portfolio"], ["/services.html", "Services"], ["/website-catalog.html", "Demos"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"], ["/contact.html", "Contact"]]
+    ? [["/portfolio.html", "Portfolio"], ["/services.html", "Services"], ["/website-catalog.html", "Demos"], ["/builder", "AI Builder"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"], ["/contact.html", "Contact"]]
     : NAV;
   return `<a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
@@ -66,6 +67,7 @@ export function footer() {
         <a href="/services.html">Pricing</a>
         <a href="/website-catalog.html">All demos</a>
         <a href="/business-templates.html">Templates</a>
+        <a href="/builder">AI website builder</a>
         <a href="/website-cost-calculator.html">Cost calculator</a>
         <a href="/sitecheck.html">SiteCheck extension</a>
         <a href="/articles.html">Articles</a>
