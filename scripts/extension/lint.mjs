@@ -26,7 +26,8 @@ for (const f of sourceFiles().filter((f) => f.endsWith(".js"))) {
     try { new vm.Script(code, { filename: f }); } catch (e) { fail(f, "syntax error: " + e.message); }
   } else {
     const r = spawnSync(process.execPath, ["--check", path.join(SRC, f)], { encoding: "utf8" });
-    if (r.status !== 0) fail(f, "syntax error: " + (r.stderr || "").split("\n").slice(0, 4).join(" "));
+    if (r.error) fail(f, "could not run node --check: " + r.error.message);
+    else if (r.status !== 0) fail(f, "syntax error: " + (r.stderr || "").split("\n").slice(0, 4).join(" "));
   }
 }
 
