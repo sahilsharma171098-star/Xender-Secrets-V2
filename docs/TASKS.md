@@ -1,7 +1,17 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-PORTFOLIO-002 — Sales portfolio, live demos and scroll-scrubbed site (2026-10-08)
+Status: REVIEW (branch `claude/project-thread-5ar4i7`)
+Owner: Claude
+
+- `/portfolio` is now generated (`scripts/commercial/portfolio.mjs`, one data source with the homepage rail): 11 live builds across all 8 requested categories, honest labels (Xender product / Working demo / Concept demo), problem, features, tech, live iframe previews of the real demo pages, per-project share deep links (`#p-slug`), shareable filters (`?type=`), "Build something like this" pre-filling the quote form (`cta=portfolio-quote`, offer `custom-build`).
+- Homepage: international-first hero with scroll-scrubbed device composition, pinned "what we build" layer stack (4 steps), horizontal work rail driven by vertical scroll. Header nav on every generated page: Portfolio, Services, Demos, Guides, About, Contact + "Get a quote".
+- `home.js` scroll engine (XEND-MOTION-002): continuous `--p`/`--k` per `[data-scroll-scene]` (exit / pass / pin), off for reduced motion, Save-Data and ≤2-core devices; no-JS renders complete static content.
+- Demos rebuilt: Forge Fitness gym site, Pulse Analytics dashboard, North Store cart, Slotly booking. `demo-ribbon.js` labels every demo and links back to a quote; hidden inside portfolio previews. `xs-growth.js` ignores framed page views.
+- Tests: unit `tests/unit/portfolio-motion.test.mjs`; browser tests appended to `tests/commercial-funnel.test.mjs` (scroll scrub forward/reverse + sticky pinning, reduced motion, no-JS, filters/share/deep link/quote, mobile overflow, demo flows); live E2E `portfolio` check.
+
 ## XEND-PORTFOLIO-MOTION-001 — Client portfolio + scroll-led visuals (2026-10-08)
-Status: REVIEW (implemented on feature branch; CI/live deploy pending)
+Status: DONE (merged as PR #39; superseded by XEND-PORTFOLIO-002)
 Owner: ChatGPT
 
 - Add indexable, shareable `/portfolio` with six truthfully labelled demos/product examples and direct demo links.

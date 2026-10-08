@@ -1,1 +1,258 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pulse Analytics — Frontend Build</title><meta name="description" content="Responsive analytics dashboard frontend build."><meta name="robots" content="noindex,follow"><link rel="stylesheet" href="demo-suite.css"></head><body><header class="top"><a class="brand" href="/">XENDER <span>SECRETS</span></a><nav><a href="/website-catalog">Website Catalog</a><a href="/contact">Contact</a></nav><a class="back" href="/website-catalog">← Catalog</a></header><main class="wrap"><section class="section"><div class="eyebrow">FRONTEND · PRO BUILD</div><h1 style="font-size:58px;margin:12px 0">Pulse <span class="accent">Analytics</span></h1><p class="lead">A high-density responsive dashboard build for operations, sales or marketing teams.</p></section><section class="section"><div class="kpi"><div class="card"><small class="muted">Revenue</small><div class="metric">₹8.4L</div><span class="accent">+18.2%</span></div><div class="card"><small class="muted">Conversion</small><div class="metric">7.8%</div><span class="accent">+1.1%</span></div><div class="card"><small class="muted">Leads</small><div class="metric">1,284</div><span class="accent">+94</span></div><div class="card"><small class="muted">SLA</small><div class="metric">93%</div><span class="accent">Healthy</span></div></div></section><section class="grid2 section"><div class="card"><h3>Pipeline performance</h3><p class="muted">Qualified</p><div class="bar"><i style="width:82%"></i></div><p class="muted">Proposal</p><div class="bar"><i style="width:61%"></i></div><p class="muted">Won</p><div class="bar"><i style="width:44%"></i></div></div><div class="card"><h3>Activity</h3><div class="timeline"><div><b>Campaign launched</b><p class="muted">32 minutes ago</p></div><div><b>14 leads qualified</b><p class="muted">Today</p></div><div><b>Weekly report exported</b><p class="muted">Yesterday</p></div></div></div></section><section class="section"><div class="card"><h3>Team table</h3><table class="table"><tr><th>Owner</th><th>Leads</th><th>Won</th><th>Conversion</th></tr><tr><td>Aarav</td><td>142</td><td>18</td><td>12.7%</td></tr><tr><td>Mira</td><td>119</td><td>15</td><td>12.6%</td></tr><tr><td>Kabir</td><td>98</td><td>11</td><td>11.2%</td></tr></table></div></section></main><footer class="demo-footer">Interactive portfolio build by Xender Secrets · Customizable for client requirements.</footer><script src="/xs-growth.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <title>Pulse Analytics — Dashboard Concept Demo | Xender Secrets</title>
+  <meta name="description" content="Concept demo by Xender Secrets: an interactive analytics dashboard with date ranges, an SVG trend chart, sortable table and CSV export.">
+  <style>
+    :root{--bg:#f4f6fb;--panel:#fff;--ink:#0f172a;--ink-2:#334155;--muted:#64748b;--line:#e4e9f2;--blue:#2f7cf6;--teal:#14b8a6;--violet:#8b5cf6;--amber:#f59e0b;--up:#059669;--down:#dc2626}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+    :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+    .app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+    aside{background:#0f172a;color:#cbd5e1;padding:22px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+    .logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:900;font-size:1.1rem;margin:0 8px 22px}
+    .logo i{width:28px;height:28px;border-radius:8px;background:conic-gradient(from 200deg,var(--blue),var(--teal),var(--violet),var(--blue))}
+    aside a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:inherit;text-decoration:none;font-weight:600}
+    aside a[aria-current]{background:#1e293b;color:#fff}
+    aside a span{width:18px;text-align:center;opacity:.8}
+    .side-foot{margin-top:auto;font-size:.8rem;color:#94a3b8;padding:12px;border-radius:12px;background:#1e293b}
+    main{padding:24px clamp(16px,3vw,36px) 40px;min-width:0}
+    .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+    .top h1{font-size:1.6rem;margin:0;letter-spacing:-.02em}
+    .top p{margin:0;color:var(--muted);font-size:.9rem}
+    .seg{margin-left:auto;display:inline-flex;padding:4px;border-radius:12px;background:var(--panel);border:1px solid var(--line)}
+    .seg button{font:inherit;font-weight:700;font-size:.88rem;border:0;background:transparent;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
+    .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+    .btn{font:inherit;font-weight:700;font-size:.88rem;padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+    .btn:hover{border-color:var(--blue);color:var(--blue)}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 1px 2px #0f172a0a}
+    .kpi small{color:var(--muted);font-weight:700;font-size:.8rem}
+    .kpi b{display:block;font-size:1.75rem;letter-spacing:-.02em;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+    .delta{font-size:.82rem;font-weight:800}.delta.up{color:var(--up)}.delta.down{color:var(--down)}
+    .spark{display:block;width:100%;height:34px;margin-top:8px}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:16px}
+    .card h2{font-size:1rem;margin:0 0 4px}.card .hint{color:var(--muted);font-size:.84rem;margin:0 0 12px}
+    .chart-wrap{position:relative}
+    #chart{display:block;width:100%;height:260px}
+    .tip{position:absolute;pointer-events:none;background:#0f172a;color:#fff;font-size:.8rem;padding:8px 10px;border-radius:9px;white-space:nowrap;transform:translate(-50%,-115%);opacity:0;transition:opacity .12s}
+    .tip b{display:block}
+    .legend{display:flex;gap:16px;font-size:.82rem;color:var(--muted);margin-top:6px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+    .channels{display:grid;gap:12px}
+    .ch-row{display:grid;grid-template-columns:90px 1fr 54px;gap:10px;align-items:center;font-size:.88rem}
+    .ch-bar{height:10px;border-radius:99px;background:var(--bg);overflow:hidden}.ch-bar i{display:block;height:100%;border-radius:99px;transition:width .5s ease}
+    .ch-row b{text-align:right;font-variant-numeric:tabular-nums}
+    .funnel{margin-top:18px;display:grid;gap:8px}
+    .funnel div{display:flex;justify-content:space-between;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:.88rem}
+    .table-card{margin-top:16px}
+    .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+    .tools input{font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);min-width:220px;flex:1;max-width:320px}
+    .table-scroll{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+    th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+    th button{all:unset;cursor:pointer;font-weight:800;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+    th button::after{content:" ↕";opacity:.4}
+    th[aria-sort="ascending"] button::after{content:" ↑";opacity:1}th[aria-sort="descending"] button::after{content:" ↓";opacity:1}
+    td .who{display:flex;align-items:center;gap:10px}td .av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.72rem;font-weight:800}
+    .pill{display:inline-block;padding:3px 9px;border-radius:99px;font-size:.76rem;font-weight:800}
+    .pill.ok{background:#dcfce7;color:#166534}.pill.warn{background:#fef3c7;color:#92400e}
+    .empty{color:var(--muted);padding:18px 12px}
+    .menu{display:none}
+    @media(max-width:1000px){.kpis{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}
+    @media(max-width:760px){.app{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;padding:12px}aside a{padding:8px 10px;font-size:.9rem}.logo{margin:0 auto 0 4px}.side-foot{display:none}.seg{margin-left:0}}
+    @media(max-width:460px){.kpis{grid-template-columns:1fr}.tools input{min-width:0;max-width:none}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside aria-label="Pulse navigation">
+      <div class="logo"><i aria-hidden="true"></i>Pulse</div>
+      <a href="#overview" aria-current="page"><span>▦</span>Overview</a>
+      <a href="#channels"><span>◔</span>Channels</a>
+      <a href="#team"><span>☰</span>Team</a>
+      <a href="/portfolio#p-pulse-analytics"><span>↗</span>Xender portfolio</a>
+      <div class="side-foot">Sample data, generated in the browser. Pulse is a fictional product.</div>
+    </aside>
+    <main id="overview">
+      <div class="top">
+        <div><h1>Revenue overview</h1><p id="rangeLabel">Last 30 days · sample data</p></div>
+        <div class="seg" role="group" aria-label="Date range">
+          <button type="button" data-range="7" aria-pressed="false">7D</button>
+          <button type="button" data-range="30" aria-pressed="true">30D</button>
+          <button type="button" data-range="90" aria-pressed="false">90D</button>
+        </div>
+        <button class="btn" type="button" id="exportCsv">Export CSV</button>
+      </div>
+      <section class="kpis" aria-label="Key metrics" id="kpis"></section>
+      <div class="grid">
+        <section class="card" aria-labelledby="trend-h">
+          <h2 id="trend-h">Revenue vs. target</h2>
+          <p class="hint">Hover or tap the chart to read a day. Use ← → on the chart to step through days.</p>
+          <div class="chart-wrap">
+            <svg id="chart" viewBox="0 0 640 260" preserveAspectRatio="none" role="img" aria-label="Revenue trend" tabindex="0"></svg>
+            <div class="tip" id="tip"></div>
+          </div>
+          <div class="legend"><span><i style="background:var(--blue)"></i>Revenue</span><span><i style="background:#94a3b8"></i>Target</span></div>
+        </section>
+        <section class="card" id="channels" aria-labelledby="ch-h">
+          <h2 id="ch-h">Leads by channel</h2>
+          <p class="hint">Share of qualified leads in the selected range.</p>
+          <div class="channels" id="channelList"></div>
+          <div class="funnel" id="funnel" aria-label="Conversion funnel"></div>
+        </section>
+      </div>
+      <section class="card table-card" id="team" aria-labelledby="team-h">
+        <h2 id="team-h">Team performance</h2>
+        <div class="tools"><input id="search" type="search" placeholder="Search owner or region…" aria-label="Search team"><span class="hint" id="rowCount" role="status" aria-live="polite"></span></div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr>
+              <th aria-sort="none"><button type="button" data-key="name">Owner</button></th>
+              <th aria-sort="none"><button type="button" data-key="region">Region</button></th>
+              <th aria-sort="descending"><button type="button" data-key="leads">Leads</button></th>
+              <th aria-sort="none"><button type="button" data-key="won">Won</button></th>
+              <th aria-sort="none"><button type="button" data-key="rate">Win rate</button></th>
+              <th aria-sort="none"><button type="button" data-key="revenue">Revenue</button></th>
+              <th>Status</th>
+            </tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+  (() => {
+    // Seeded pseudo-random numbers: the sample data is stable on every visit and for every range.
+    const rng = (seed) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    const fmt = (n) => "$" + (n >= 1000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1) + "k" : Math.round(n));
+    const COLORS = ["#2f7cf6", "#14b8a6", "#8b5cf6", "#f59e0b", "#ec4899"];
+    const PEOPLE = [["Aarav S.","APAC"],["Mira K.","EMEA"],["Kabir N.","APAC"],["Lena O.","EMEA"],["Diego R.","Americas"],["Hana T.","APAC"],["Noah P.","Americas"],["Zara M.","EMEA"]];
+    let range = 30, sort = { key: "leads", dir: -1 }, team = [], series = [];
+
+    function build(days) {
+      const r = rng(days * 97 + 13);
+      series = Array.from({ length: days }, (_, i) => {
+        const t = i / Math.max(1, days - 1);
+        const v = 3200 + t * 1800 + Math.sin(i / 2.7) * 520 + r() * 700;
+        return { day: i, revenue: Math.round(v), target: Math.round(3600 + t * 1300) };
+      });
+      team = PEOPLE.map(([name, region], i) => {
+        const leads = Math.round((40 + r() * 140) * days / 30);
+        const won = Math.round(leads * (0.08 + r() * 0.14));
+        return { name, region, leads, won, rate: leads ? won / leads : 0, revenue: won * Math.round(900 + r() * 1600), color: COLORS[i % COLORS.length] };
+      });
+    }
+
+    function kpis() {
+      const sum = (k) => series.reduce((a, b) => a + b[k], 0);
+      const half = Math.floor(series.length / 2);
+      const prev = series.slice(0, half).reduce((a, b) => a + b.revenue, 0), cur = series.slice(half).reduce((a, b) => a + b.revenue, 0);
+      const leads = team.reduce((a, b) => a + b.leads, 0), won = team.reduce((a, b) => a + b.won, 0);
+      const items = [
+        ["Revenue", fmt(sum("revenue")), (cur - prev) / prev, series.map((s) => s.revenue)],
+        ["Qualified leads", leads.toLocaleString(), 0.06 + range / 1000, series.map((s, i) => s.revenue % 97 + i)],
+        ["Win rate", (won / leads * 100).toFixed(1) + "%", 0.011, series.map((s, i) => Math.sin(i / 3) * 5 + i / 4)],
+        ["Revenue vs. target", Math.round(sum("revenue") / sum("target") * 100) + "%", sum("revenue") >= sum("target") ? 0.02 : -0.03, series.map((s) => s.revenue - s.target)],
+      ];
+      document.getElementById("kpis").innerHTML = items.map(([label, value, d, pts], i) => {
+        const min = Math.min(...pts), max = Math.max(...pts) || 1;
+        const path = pts.map((v, j) => (j ? "L" : "M") + (j / (pts.length - 1) * 100).toFixed(1) + " " + (30 - (v - min) / (max - min || 1) * 26).toFixed(1)).join(" ");
+        return '<article class="card kpi"><small>' + label + '</small><b>' + value + '</b><span class="delta ' + (d >= 0 ? "up" : "down") + '">' + (d >= 0 ? "▲ " : "▼ ") + Math.abs(d * 100).toFixed(1) + '% vs previous</span><svg class="spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><path d="' + path + '" fill="none" stroke="' + COLORS[i] + '" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></article>';
+      }).join("");
+    }
+
+    const W = 640, H = 260, P = { l: 44, r: 10, t: 14, b: 26 };
+    const chart = document.getElementById("chart"), tip = document.getElementById("tip");
+    let focusIdx = -1;
+    function drawChart() {
+      const max = Math.max(...series.map((s) => Math.max(s.revenue, s.target))) * 1.1;
+      const x = (i) => P.l + i / (series.length - 1) * (W - P.l - P.r), y = (v) => H - P.b - v / max * (H - P.t - P.b);
+      const line = (k) => series.map((s, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(s[k]).toFixed(1)).join(" ");
+      let g = "";
+      for (let k = 0; k <= 4; k++) { const v = max / 4 * k, yy = y(v).toFixed(1); g += '<line x1="' + P.l + '" x2="' + (W - P.r) + '" y1="' + yy + '" y2="' + yy + '" stroke="#e4e9f2"/><text x="' + (P.l - 8) + '" y="' + yy + '" dy="4" text-anchor="end" font-size="10" fill="#64748b">' + fmt(v) + "</text>"; }
+      const ticks = [0, Math.floor((series.length - 1) / 2), series.length - 1];
+      ticks.forEach((i) => { g += '<text x="' + x(i) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="10" fill="#64748b">Day ' + (i + 1) + "</text>"; });
+      chart.innerHTML = '<defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2f7cf6" stop-opacity=".28"/><stop offset="1" stop-color="#2f7cf6" stop-opacity="0"/></linearGradient></defs>' + g +
+        '<path d="' + line("revenue") + " L" + x(series.length - 1) + " " + (H - P.b) + " L" + P.l + " " + (H - P.b) + ' Z" fill="url(#fill)"/>' +
+        '<path d="' + line("target") + '" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 5" vector-effect="non-scaling-stroke"/>' +
+        '<path d="' + line("revenue") + '" fill="none" stroke="#2f7cf6" stroke-width="2.5" vector-effect="non-scaling-stroke"/>' +
+        '<line id="guide" y1="' + P.t + '" y2="' + (H - P.b) + '" stroke="#0f172a" stroke-opacity=".25" visibility="hidden"/><circle id="dot" r="5" fill="#fff" stroke="#2f7cf6" stroke-width="3" visibility="hidden"/>';
+      chart._x = x; chart._y = y;
+    }
+    function showPoint(i) {
+      if (i < 0 || i >= series.length) return;
+      focusIdx = i;
+      const s = series[i], cx = chart._x(i), cy = chart._y(s.revenue);
+      const guide = chart.querySelector("#guide"), dot = chart.querySelector("#dot");
+      guide.setAttribute("x1", cx); guide.setAttribute("x2", cx); guide.setAttribute("visibility", "visible");
+      dot.setAttribute("cx", cx); dot.setAttribute("cy", cy); dot.setAttribute("visibility", "visible");
+      const box = chart.getBoundingClientRect();
+      tip.style.left = (cx / W * box.width) + "px"; tip.style.top = (cy / H * box.height) + "px"; tip.style.opacity = 1;
+      tip.innerHTML = "<b>Day " + (i + 1) + "</b>Revenue " + fmt(s.revenue) + " · Target " + fmt(s.target);
+      chart.setAttribute("aria-label", "Revenue trend. Day " + (i + 1) + ": revenue " + fmt(s.revenue) + ", target " + fmt(s.target));
+    }
+    const hide = () => { tip.style.opacity = 0; chart.querySelector("#guide")?.setAttribute("visibility", "hidden"); chart.querySelector("#dot")?.setAttribute("visibility", "hidden"); };
+    chart.addEventListener("pointermove", (e) => { const b = chart.getBoundingClientRect(); const px = (e.clientX - b.left) / b.width * W; showPoint(Math.round((px - P.l) / (W - P.l - P.r) * (series.length - 1))); });
+    chart.addEventListener("pointerleave", hide);
+    chart.addEventListener("keydown", (e) => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); showPoint(Math.max(0, Math.min(series.length - 1, (focusIdx < 0 ? series.length - 1 : focusIdx) + (e.key === "ArrowRight" ? 1 : -1)))); } });
+    chart.addEventListener("blur", hide);
+
+    function channels() {
+      const r = rng(range * 31);
+      const raw = [["Organic", 0.34], ["Referral", 0.22], ["LinkedIn", 0.18], ["Email", 0.14], ["Direct", 0.12]].map(([n, b]) => [n, b + r() * 0.06]);
+      const total = raw.reduce((a, b) => a + b[1], 0);
+      document.getElementById("channelList").innerHTML = raw.map(([n, v], i) => '<div class="ch-row"><span>' + n + '</span><div class="ch-bar"><i style="width:' + (v / total * 100 / 0.45).toFixed(1) + '%;background:' + COLORS[i] + '"></i></div><b>' + (v / total * 100).toFixed(0) + "%</b></div>").join("");
+      const leads = team.reduce((a, b) => a + b.leads, 0), won = team.reduce((a, b) => a + b.won, 0);
+      document.getElementById("funnel").innerHTML = [["Visitors", leads * 23], ["Leads", leads], ["Proposals", Math.round(leads * 0.31)], ["Won", won]].map(([k, v]) => "<div><span>" + k + "</span><b>" + v.toLocaleString() + "</b></div>").join("");
+    }
+
+    function table() {
+      const q = document.getElementById("search").value.trim().toLowerCase();
+      const rows = team.filter((t) => !q || (t.name + " " + t.region).toLowerCase().includes(q))
+        .sort((a, b) => (typeof a[sort.key] === "string" ? a[sort.key].localeCompare(b[sort.key]) : a[sort.key] - b[sort.key]) * sort.dir);
+      const tbody = document.getElementById("rows");
+      tbody.innerHTML = rows.length ? "" : '<tr><td colspan="7" class="empty">No owners match that search.</td></tr>';
+      for (const t of rows) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = '<td><div class="who"><span class="av"></span><span class="nm"></span></div></td><td class="rg"></td><td>' + t.leads + "</td><td>" + t.won + "</td><td>" + (t.rate * 100).toFixed(1) + "%</td><td>" + fmt(t.revenue) + '</td><td><span class="pill ' + (t.rate >= 0.14 ? "ok\">On track" : "warn\">Coaching") + "</span></td>";
+        tr.querySelector(".av").style.background = t.color; tr.querySelector(".av").textContent = t.name.split(" ").map((w) => w[0]).join("");
+        tr.querySelector(".nm").textContent = t.name; tr.querySelector(".rg").textContent = t.region;
+        tbody.appendChild(tr);
+      }
+      document.getElementById("rowCount").textContent = rows.length + " of " + team.length + " owners";
+      document.querySelectorAll("th[aria-sort]").forEach((th) => { const k = th.querySelector("button").dataset.key; th.setAttribute("aria-sort", k === sort.key ? (sort.dir > 0 ? "ascending" : "descending") : "none"); });
+    }
+    document.querySelectorAll("th button").forEach((b) => b.addEventListener("click", () => { sort = { key: b.dataset.key, dir: sort.key === b.dataset.key ? -sort.dir : (b.dataset.key === "name" || b.dataset.key === "region" ? 1 : -1) }; table(); }));
+    document.getElementById("search").addEventListener("input", table);
+
+    document.getElementById("exportCsv").addEventListener("click", () => {
+      const head = "owner,region,leads,won,win_rate,revenue_usd";
+      const lines = team.map((t) => [t.name, t.region, t.leads, t.won, (t.rate * 100).toFixed(1), t.revenue].join(","));
+      const blob = new Blob([[head, ...lines].join("\n")], { type: "text/csv" });
+      const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "pulse-team-" + range + "d.csv" });
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    });
+
+    function render() {
+      build(range);
+      document.getElementById("rangeLabel").textContent = "Last " + range + " days · sample data";
+      kpis(); drawChart(); channels(); table(); hide();
+    }
+    document.querySelectorAll("[data-range]").forEach((b) => b.addEventListener("click", () => {
+      range = Number(b.dataset.range);
+      document.querySelectorAll("[data-range]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      render();
+    }));
+    addEventListener("resize", hide);
+    render();
+  })();
+  </script>
+  <script src="/demo-ribbon.js" data-slug="pulse-analytics" data-kind="Concept demo" defer></script>
+  <script src="/xs-growth.js" defer></script>
+</body>
+</html>

@@ -182,6 +182,17 @@ try {
   record('commercial_pages', bad.length === 0, bad.join(', ') || 'all commercial pages have one lead form; city redirect ok');
 } catch (e) { record('commercial_pages', false, e); }
 
+// Portfolio (XEND-PORTFOLIO-002): every project card, the quote form and a working category filter.
+try {
+  const r = await page.goto(BASE + '/portfolio', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  const cards = await page.locator('.pf-card').count();
+  const forms = await page.locator('form[data-lead-form]').count();
+  await page.waitForFunction(() => window.XS !== undefined || document.readyState === 'complete', null, { timeout: 15000 });
+  await page.click('[data-filter="backend"]');
+  const backend = await page.locator('.pf-card:not([hidden])').count();
+  record('portfolio', r && r.status() === 200 && cards >= 11 && forms === 1 && backend >= 2, `status=${r && r.status()}; cards=${cards}; forms=${forms}; backend=${backend}`);
+} catch (e) { record('portfolio', false, e); }
+
 // Reader: Gutenberg chapters are static JSON (no backend); XH chapters come from the Worker
 // (/api/reader/*) with the Render service only as a fallback.
 try {

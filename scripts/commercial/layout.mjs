@@ -25,29 +25,29 @@ export const OFFERS = [
 export const offerById = (id) => OFFERS.find((o) => o.id === id);
 
 const NAV = [
-  ["/services.html", "Pricing"],
-  ["/website-catalog.html", "Work"],
+  ["/portfolio.html", "Portfolio"],
+  ["/services.html", "Services"],
+  ["/website-catalog.html", "Demos"],
   ["/builder", "AI Builder"],
-  ["/services.html#industries", "Industries"],
   ["/articles.html", "Guides"],
   ["/about.html", "About"],
-  ["/novels.html", "Novels"],
+  ["/contact.html", "Contact"],
 ];
 
-export function header({ home = false } = {}) {
+export function header({ home = false, current = "" } = {}) {
   const nav = home
-    ? [["/services.html", "Pricing"], ["/website-catalog.html", "Work"], ["/builder", "AI Builder"], ["#process", "How it works"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"]]
+    ? [["/portfolio.html", "Portfolio"], ["/services.html", "Services"], ["/website-catalog.html", "Demos"], ["/builder", "AI Builder"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"], ["/contact.html", "Contact"]]
     : NAV;
   return `<a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
       <nav class="nav" id="nav" aria-label="Main">
-        ${nav.map(([href, label]) => `<a href="${href}">${label}</a>`).join("\n        ")}
+        ${nav.map(([href, label]) => `<a href="${href}"${href === current ? ' aria-current="page"' : ""}>${label}</a>`).join("\n        ")}
       </nav>
       <div class="header-actions">
         <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark mode">◐</button>
-        <a class="btn primary header-cta" href="#start" data-cta="header-free-check">Free website check</a>
+        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Get a quote</a>
         <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
       </div>
     </div>
@@ -63,13 +63,15 @@ export function footer() {
         GSTIN: 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a>
       </div>
       <nav class="footer-links" aria-label="Footer">
+        <a href="/portfolio.html">Portfolio</a>
         <a href="/services.html">Pricing</a>
-        <a href="/website-catalog.html">Work</a>
+        <a href="/website-catalog.html">All demos</a>
         <a href="/business-templates.html">Templates</a>
         <a href="/builder">AI website builder</a>
         <a href="/website-cost-calculator.html">Cost calculator</a>
         <a href="/sitecheck.html">SiteCheck extension</a>
         <a href="/articles.html">Articles</a>
+        <a href="/novels.html">Novels</a>
         <a href="/about.html">About</a>
         <a href="/contact.html">Contact</a>
         <a href="/privacy.html">Privacy</a>
@@ -220,7 +222,7 @@ export function cleanLinks(html) {
 }
 
 /** Full HTML document. */
-export function page({ path, title, description, ogTitle, body, jsonld = [], home = false, robots = "index,follow", ogType = "website" }) {
+export function page({ path, title, description, ogTitle, body, jsonld = [], home = false, robots = "index,follow", ogType = "website", css = [], scripts = [], waText = "Hi Xender Secrets, I want a website for my business." }) {
   // Cloudflare assets (html_handling: auto-trailing-slash) 307-redirect /page.html → /page, so
   // canonical URLs use the final extensionless form.
   const canonical = canonicalUrl(path);
@@ -243,11 +245,11 @@ export function page({ path, title, description, ogTitle, body, jsonld = [], hom
   <meta property="og:image" content="${SITE}/og-xender.png">
   <meta name="twitter:card" content="summary_large_image">
   <script>try{if(localStorage.getItem("xs-theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
-  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/home.css">${css.map((c) => `\n  <link rel="stylesheet" href="${c}">`).join("")}
   ${ld}
 </head>
 <body>
-  ${header({ home })}
+  ${header({ home, current: path })}
 
   <main id="main">
     ${body}
@@ -255,9 +257,9 @@ export function page({ path, title, description, ogTitle, body, jsonld = [], hom
 
   ${footer()}
 
-  <a class="wa-float" href="${esc(wa("Hi Xender Secrets, I want a website for my business."))}" data-cta="float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
+  <a class="wa-float" href="${esc(wa(waText))}" data-cta="float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
 
-  <script src="/home.js" defer></script>
+  <script src="/home.js" defer></script>${scripts.map((j) => `\n  <script src="${j}" defer></script>`).join("")}
   <script src="/xs-growth.js" defer></script>
 </body>
 </html>
