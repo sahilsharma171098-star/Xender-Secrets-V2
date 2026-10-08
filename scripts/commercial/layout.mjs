@@ -176,7 +176,7 @@ export const ORG_JSONLD = {
   "@context": "https://schema.org", "@type": "ProfessionalService", "@id": ORG_ID, name: "Xender Secrets", url: SITE + "/",
   image: SITE + "/og-xender.png", logo: { "@type": "ImageObject", url: SITE + "/og-xender.png" }, email: EMAIL,
   description: "Business websites, landing pages and website redesigns for small businesses.",
-  founder: { "@type": "Person", name: "Sahil Kumar Sharma", sameAs: ["https://www.startupindia.gov.in/bhaskar/profile?bhaskarid=IN-1026-9552QE", "https://www.linkedin.com/in/sahilkumarsharma-operations"] }, areaServed: ["IN", "GB", "US", "CA"],
+  founder: { "@type": "Person", name: "Sahil Kumar Sharma" }, areaServed: ["IN", "GB", "US", "CA"],
   telephone: "+91-9821941814", address: { "@type": "PostalAddress", addressLocality: "Gurugram", addressRegion: "Haryana", addressCountry: "IN" },
   priceRange: "₹999–₹4,999+ (+18% GST)",
 };
