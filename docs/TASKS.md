@@ -1,5 +1,17 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-PORTFOLIO-MOTION-001 — Client portfolio + scroll-led visuals (2026-10-08)
+Status: REVIEW (implemented on feature branch; CI/live deploy pending)
+Owner: ChatGPT
+
+- Add indexable, shareable `/portfolio` with six truthfully labelled demos/product examples and direct demo links.
+- Add accessible category filters, copy/share URL, international-friendly contact CTA and real existing demos.
+- Add lightweight scroll-led showcase, motion reveals and graphical storytelling to the generated homepage and portfolio; reuse scroll motion on commercial pages through home.js.
+- Honor reduced motion, avoid third-party animation SDKs and avoid fabricated client claims.
+- Keep the homepage generator output synchronized, catalog nav updated and sitemap canonical.
+- Acceptance: passing offline CI, production deployment confirmed, mobile/desktop smoke checks where possible.
+
+
 Statuses: `READY`, `IN_PROGRESS`, `REVIEW`, `BLOCKED`, `DONE`
 
 ## XEND-AI-001 — Establish shared ChatGPT + Claude workflow
