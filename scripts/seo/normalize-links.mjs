@@ -14,6 +14,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isMain } from "../lib/is-main.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PUBLIC = path.join(ROOT, "public");
@@ -42,7 +43,7 @@ export function targets(dir = PUBLIC) {
   return fs.readdirSync(dir).filter((f) => /\.(html|js)$/.test(f)).map((f) => path.join(dir, f));
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isMain(import.meta.url)) {
   const check = process.argv.includes("--check");
   const changed = [];
   for (const file of targets()) {
