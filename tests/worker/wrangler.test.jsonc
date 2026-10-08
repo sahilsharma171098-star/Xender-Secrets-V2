@@ -4,6 +4,12 @@
   "name": "xender-secrets-v2-test",
   "main": "../../src/index.js",
   "compatibility_date": "2026-10-03",
+  "vars": {
+    "ADMIN_TOKEN": "local-payment-tests-only-32-chars",
+    "RAZORPAY_KEY_ID": "local-test-key",
+    "RAZORPAY_KEY_SECRET": "local-test-secret",
+    "RAZORPAY_WEBHOOK_SECRET": "local-webhook-secret"
+  },
   "assets": {
     "directory": "../../public",
     "binding": "ASSETS",

@@ -39,6 +39,7 @@ a{color:var(--accent)}
   <section class="card"><h2>Follow-ups due</h2><div id="due" class="muted">—</div></section>
   <section class="card"><h2>Client previews <a href="/preview-builder" style="font-size:12px;font-weight:600">+ build one</a></h2><p class="muted">A view means the prospect (or someone they shared it with) opened the link — a good moment to follow up.</p><div id="previews" class="muted">—</div></section>
   <section class="card"><h2>Leads &amp; pipeline</h2><p class="muted">Stages: new → contacted → qualified → proposal → won / lost. Quote = agreed price <b>excluding GST</b> (booked when won). Collected = cash actually received <b>excluding the 18% GST</b> (GST collected is a liability, not revenue).</p><div id="leads">Loading…</div></section>
+  <section class="card"><h2>Recent online payments</h2><p class="muted">Amounts include GST. “Verified” confirms the checkout signature; “Paid” confirms capture by Razorpay. Match the quote reference before updating a lead’s collected amount.</p><div id="payments">Loading…</div></section>
   <div class="grid2">
     <section class="card"><h2>Sources</h2><div id="sources"></div></section>
     <section class="card"><h2>Top pages</h2><div id="pages"></div></section>
@@ -65,9 +66,10 @@ a{color:var(--accent)}
 
   async function load() {
     const days = $("days").value;
-    const [rep, leads] = await Promise.all([
+    const [rep, leads, payments] = await Promise.all([
       api("/api/admin/report?days=" + days).then((r) => r.json()),
       api("/api/admin/leads" + ($("showTest").checked ? "?test=1" : "")).then((r) => r.json()),
+      api("/api/admin/payments").then((r) => r.json()),
     ]);
     stages = leads.stages || stages;
     const f = rep.funnel, v = rep.revenue;
@@ -85,6 +87,7 @@ a{color:var(--accent)}
     $("offers").innerHTML = table(rep.offers, [["Offer", "offer"], ["Leads", "leads"], ["Won", "won"]]);
     $("errors").innerHTML = table(rep.errors, [["Error", "label"], ["Page", "path"], ["Count", "n"]]);
     renderLeads(leads.leads || []);
+    $("payments").innerHTML = table(payments.orders || [], [["Created", r => String(r.created_at).slice(0,16).replace("T"," ")], ["Customer", "name"], ["Contact", r => r.email || r.phone], ["Quote", "quote_reference"], ["Package", "offer"], ["Amount incl. GST", r => inr(r.amount / 100)], ["Status", "status"], ["Order", r => r.provider_order_id || r.id], ["Payments", r => (r.attempts || []).map(a => a.payment_id + " (" + a.status + ")").join(", ")]]);
   }
 
   function waHref(l) {

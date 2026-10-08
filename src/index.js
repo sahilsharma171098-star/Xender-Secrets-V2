@@ -3,6 +3,7 @@ import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 import { handlePayments } from "./payments.mjs";
+import { ensurePaymentSchema } from "./payment-store.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
 const enc=new TextEncoder();
@@ -214,6 +215,7 @@ export class AppState extends DurableObject {
   constructor(ctx,env){
     super(ctx,env);
     this.sql=ctx.storage.sql;
+    this.paymentTransaction=fn=>ctx.storage.transactionSync(fn);
     ctx.blockConcurrencyWhile(async()=>{
       this.sql.exec(`
         CREATE TABLE IF NOT EXISTS users (
@@ -329,6 +331,7 @@ export class AppState extends DurableObject {
         CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date,slot);
       `);
       ensureGrowthSchema(this.sql);
+      ensurePaymentSchema(this.sql);
       const now=new Date().toISOString();
       for(const p of CATALOG_PRODUCTS){
         this.sql.exec("INSERT OR IGNORE INTO products (id,name,category,category_label,price,rating,active,updated_at) VALUES (?,?,?,?,?,?,1,?)",p.id,p.name,p.category,p.categoryLabel,p.price,p.rating,now);
@@ -374,6 +377,9 @@ export class AppState extends DurableObject {
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
     if(method!=="GET" && !this.sameOrigin(request)) return json({ok:false,error:"Invalid request origin."},403);
+
+    const payment=await handlePayments(request,this.env,{sql:this.sql,transaction:this.paymentTransaction});
+    if(payment)return payment;
 
     // XEND-WARROOM-001: lead capture v2, funnel events and private admin MIS (src/growth.mjs).
     const growth=await handleGrowth(request,{sql:this.sql,env:this.env});
@@ -865,9 +871,6 @@ export default {
     const canonical=await canonicalRedirect(request,env.ASSETS);
     if(canonical)return canonical;
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
-
-    const payment=await handlePayments(request,env);
-    if(payment)return payment;
 
     if(path==="/api/community/feed" && method==="GET"){
       const category=clean(url.searchParams.get("category")||"all",30),sort=url.searchParams.get("sort")==="trending"?"trending":"latest",limit=Math.max(1,Math.min(30,Number(url.searchParams.get("limit")||20)));
