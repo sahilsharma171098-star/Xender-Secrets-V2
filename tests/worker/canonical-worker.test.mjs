@@ -9,6 +9,7 @@ import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import http from "node:http";
 import { fileURLToPath } from "node:url";
+import { createHmac } from "node:crypto";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PORT = 8790 + Math.floor(Math.random() * 100);
@@ -45,6 +46,31 @@ const get = (p, host) => new Promise((resolve, reject) => {
     res.on("end", () => resolve({ status: res.statusCode, headers: { get: (k) => res.headers[k.toLowerCase()] ?? null }, text: async () => body }));
   });
   req.on("error", reject); req.end();
+});
+
+// Payment integration smoke checks use local-only keys and never contact Razorpay.
+test('payment config and admin history route through the real AppState SQLite object', async () => {
+  const config = await fetch(BASE + '/api/payments/config');
+  assert.equal(config.status,200);
+  assert.equal((await config.json()).available,true);
+  assert.equal((await fetch(BASE+'/api/admin/payments')).status,401);
+  const history = await fetch(BASE+'/api/admin/payments',{headers:{authorization:'Bearer local-payment-tests-only-32-chars'}});
+  assert.equal(history.status,200);
+  assert.equal(history.headers.get('cache-control'),'no-store');
+  assert.ok(Array.isArray((await history.json()).orders));
+});
+
+test('unknown checkout order is rejected through workerd without calling Razorpay', async () => {
+  const r=await fetch(BASE+'/api/payments/verify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({razorpay_order_id:'order_unknown',razorpay_payment_id:'pay_unknown',razorpay_signature:'0'.repeat(64)})});
+  assert.equal(r.status,404);
+});
+
+test('signed unknown webhook requests a retry and invalid signatures are rejected through workerd', async () => {
+  const raw=JSON.stringify({event:'payment.captured',payload:{payment:{entity:{id:'pay_unknown',order_id:'order_unknown',amount:117882,currency:'INR',status:'captured',captured:true}}}});
+  const sig=createHmac('sha256','local-webhook-secret').update(raw).digest('hex');
+  const send=signature=>fetch(BASE+'/api/payments/webhook',{method:'POST',headers:{'X-Razorpay-Signature':signature},body:raw});
+  assert.equal((await send(sig)).status,503);
+  assert.equal((await send('0'.repeat(64))).status,400);
 });
 
 test("test config mirrors production asset routing", () => {

@@ -78,6 +78,7 @@
 
       await loadCheckout();
 
+      let confirming = false;
       const checkout = new window.Razorpay({
         key: order.keyId,
         amount: order.amount,
@@ -95,7 +96,9 @@
           quote_reference: String(data.reference || "")
         },
         handler: async (response) => {
-          setStatus("Payment received. Verifying…", "working");
+          confirming = true;
+          setStatus("Confirming your checkout…", "working");
+          try {
           const verifyResponse = await fetch("/api/payments/verify", {
             method: "POST",
             headers: { "content-type": "application/json", accept: "application/json" },
@@ -103,8 +106,7 @@
           });
           const verified = await verifyResponse.json().catch(() => ({}));
           if (!verifyResponse.ok || !verified.ok) {
-            setStatus("Payment was received but automatic verification failed. Please contact us with your payment ID.", "error");
-            button.disabled = false;
+            setStatus("We could not confirm your payment yet. Please contact us with payment ID " + String(response.razorpay_payment_id || "") + " before paying again.", "error");
             return;
           }
           const q = new URLSearchParams({
@@ -112,11 +114,15 @@
             order_id: verified.orderId
           });
           location.href = "/payment-success?" + q.toString();
+          } catch {
+            setStatus("Confirmation could not be loaded. Please contact us with payment ID " + String(response.razorpay_payment_id || "") + " before paying again.", "error");
+          }
         },
         modal: {
           ondismiss: () => {
+            if (confirming) return;
             button.disabled = false;
-            setStatus("Checkout closed. No payment was made.", "pending");
+            setStatus("Checkout closed. If your bank shows a debit, contact us before paying again.", "pending");
           }
         }
       });

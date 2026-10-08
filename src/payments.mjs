@@ -1,3 +1,6 @@
+import { adminAuth } from './growth.mjs';
+import { createPaymentOrder, attachProviderOrder, findPaymentOrder, recordVerifiedPayment,
+  applyPaymentWebhook, listPaymentOrders, PaymentError } from './payment-store.mjs';
 const enc = new TextEncoder();
 
 export const PAYMENT_OFFERS = Object.freeze({
@@ -50,15 +53,29 @@ function publicOffers() {
   }));
 }
 
-export async function handlePayments(request, env) {
+export async function handlePayments(request, env, { sql, transaction = fn => fn(), fetchImpl = fetch } = {}) {
   const url = new URL(request.url);
   const path = url.pathname;
   const method = request.method.toUpperCase();
 
-  if (!path.startsWith("/api/payments/")) return null;
+  if (!path.startsWith("/api/payments/") && path !== '/api/admin/payments') return null;
+  const now = () => new Date().toISOString();
+  const stored = (fn) => {
+    try { return transaction(fn); }
+    catch (e) { return json({ ok: false, error: e instanceof PaymentError ? e.message : 'Payment storage is temporarily unavailable. Please retry.' }, e instanceof PaymentError ? e.status : 503); }
+  };
+  if (path === '/api/admin/payments') {
+    const auth = adminAuth(request, env);
+    if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
+    if (method !== 'GET') return json({ok:false,error:'Method not allowed.'},405);
+    if (!sql) return json({ok:false,error:'Payment storage is not configured.'},503);
+    const limit = Math.max(1, Math.min(100, Math.floor(Number(url.searchParams.get('limit')) || 50)));
+    const result = stored(() => listPaymentOrders(sql, limit));
+    return result instanceof Response ? result : json({ok:true,orders:result});
+  }
 
   if (path === "/api/payments/config" && method === "GET") {
-    const available = Boolean(env.RAZORPAY_KEY_ID && env.RAZORPAY_KEY_SECRET);
+    const available = Boolean(sql && env.RAZORPAY_KEY_ID && env.RAZORPAY_KEY_SECRET);
     return json({
       ok: true,
       provider: "razorpay",
@@ -69,14 +86,17 @@ export async function handlePayments(request, env) {
     });
   }
 
+  if (!sql) return json({ok:false,error:'Payment storage is not configured.'},503);
+
   if (path === "/api/payments/order" && method === "POST") {
     if (!sameOrigin(request)) return json({ ok: false, error: "Invalid request origin." }, 403);
     if (!env.RAZORPAY_KEY_ID || !env.RAZORPAY_KEY_SECRET) {
       return json({ ok: false, error: "Online payments are being activated. Please contact Xender Secrets for a payment link." }, 503);
     }
 
-    const body = await request.json().catch(() => ({}));
-    const offer = PAYMENT_OFFERS[clean(body.offer, 80)];
+    const body = (await request.json().catch(() => ({}))) || {};
+    const offerKey = clean(body?.offer, 80);
+    const offer = Object.hasOwn(PAYMENT_OFFERS, offerKey) ? PAYMENT_OFFERS[offerKey] : null;
     if (!offer) return json({ ok: false, error: "Choose a valid package." }, 400);
 
     const name = clean(body.name, 80);
@@ -88,12 +108,16 @@ export async function handlePayments(request, env) {
     if (!email && !phone) return json({ ok: false, error: "Enter an email or phone number." }, 400);
     if (!validEmail(email)) return json({ ok: false, error: "Enter a valid email address." }, 400);
 
-    const receipt = ("xs-" + Date.now().toString(36) + "-" + offer.id.split("-")[0]).slice(0, 40);
+    const localId = 'xs-' + crypto.randomUUID();
+    const receipt = localId;
+    const saved = stored(() => createPaymentOrder(sql, {id:localId,receipt,offer:offer.id,name,email,phone,reference,amount:offer.amountPaise}, now()));
+    if (saved instanceof Response) return saved;
     const payload = {
       amount: offer.amountPaise,
       currency: "INR",
       receipt,
       notes: {
+        xs_order_id: localId,
         offer: offer.id,
         package: offer.name,
         customer_name: name,
@@ -106,22 +130,28 @@ export async function handlePayments(request, env) {
     const auth = btoa(env.RAZORPAY_KEY_ID + ":" + env.RAZORPAY_KEY_SECRET);
     let upstream;
     try {
-      upstream = await fetch("https://api.razorpay.com/v1/orders", {
+      upstream = await fetchImpl("https://api.razorpay.com/v1/orders", {
         method: "POST",
         headers: {
           authorization: "Basic " + auth,
           "content-type": "application/json"
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(15000)
       });
     } catch {
+      stored(() => sql.exec("UPDATE payment_orders SET status='creation_unknown',updated_at=? WHERE id=? AND status='creating'",now(),localId));
       return json({ ok: false, error: "Payment provider is temporarily unavailable. Please try again." }, 502);
     }
 
     const data = await upstream.json().catch(() => ({}));
-    if (!upstream.ok || !data.id) {
+    if (!upstream.ok || !/^order_[A-Za-z0-9]+$/.test(data.id || '') || data.amount !== offer.amountPaise || data.currency !== 'INR') {
+      stored(() => sql.exec("UPDATE payment_orders SET status=?,updated_at=? WHERE id=? AND status='creating'",upstream.ok?'creation_unknown':'creation_failed',now(),localId));
       return json({ ok: false, error: "Could not start payment. Please try again or contact us.", providerStatus: upstream.status }, 502);
     }
+
+    const attached = stored(() => attachProviderOrder(sql,localId,data.id,now()));
+    if (attached instanceof Response) return attached;
 
     return json({
       ok: true,
@@ -139,16 +169,22 @@ export async function handlePayments(request, env) {
     if (!sameOrigin(request)) return json({ ok: false, error: "Invalid request origin." }, 403);
     if (!env.RAZORPAY_KEY_SECRET) return json({ ok: false, error: "Payment verification is not configured." }, 503);
 
-    const body = await request.json().catch(() => ({}));
+    const body = (await request.json().catch(() => ({}))) || {};
     const orderId = clean(body.razorpay_order_id, 120);
     const paymentId = clean(body.razorpay_payment_id, 120);
     const signature = clean(body.razorpay_signature, 256).toLowerCase();
-    if (!orderId || !paymentId || !signature) return json({ ok: false, error: "Missing payment verification fields." }, 400);
+    if (!/^order_[A-Za-z0-9]+$/.test(orderId) || !/^pay_[A-Za-z0-9]+$/.test(paymentId) || !/^[a-f0-9]{64}$/.test(signature)) return json({ ok: false, error: "Missing or invalid payment verification fields." }, 400);
+
+    const known = stored(() => findPaymentOrder(sql,orderId));
+    if (known instanceof Response) return known;
+    if (!known) return json({ok:false,error:'Payment order was not created by Xender Secrets.'},404);
 
     const expected = await hmacHex(env.RAZORPAY_KEY_SECRET, orderId + "|" + paymentId);
     if (!timingSafeEqual(expected, signature)) return json({ ok: false, error: "Payment signature verification failed." }, 400);
 
-    return json({ ok: true, verified: true, orderId, paymentId });
+    const status = stored(() => recordVerifiedPayment(sql,orderId,paymentId,now()));
+    if (status instanceof Response) return status;
+    return json({ ok: true, verified: true, orderId, paymentId, status });
   }
 
   if (path === "/api/payments/webhook" && method === "POST") {
@@ -157,7 +193,13 @@ export async function handlePayments(request, env) {
     const raw = await request.text();
     const expected = await hmacHex(env.RAZORPAY_WEBHOOK_SECRET, raw);
     if (!signature || !timingSafeEqual(expected, signature)) return json({ ok: false, error: "Invalid webhook signature." }, 400);
-    return json({ ok: true });
+    let event;
+    try { event = JSON.parse(raw); } catch { return json({ok:false,error:'Invalid webhook JSON.'},400); }
+    if (!event || typeof event.event !== 'string') return json({ok:false,error:'Invalid webhook event.'},400);
+    const digest = toHex(new Uint8Array(await crypto.subtle.digest('SHA-256',enc.encode(raw))));
+    const eventId = clean(request.headers.get('X-Razorpay-Event-Id'),200) || digest;
+    const result = stored(() => applyPaymentWebhook(sql,event,eventId,now(),digest));
+    return result instanceof Response ? result : json({ok:true,...result});
   }
 
   return json({ ok: false, error: "Payment route not found." }, 404);

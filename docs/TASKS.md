@@ -1,5 +1,16 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-PAYMENTS-001 — Persist and reconcile Razorpay payments (2026-10-08)
+Status: REVIEW · Owner: ChatGPT · Branch: `fix/payment-persistence-p1` (stacked on PR #42)
+
+- Persist server-priced package orders, checkout verification and signed webhook attempts in
+  the existing AppState SQLite storage; preserve quote references and customer contact.
+- Validate provider order/amount/currency; keep signature verification separate from capture.
+- Deduplicate retries, handle out-of-order events and save webhook changes atomically.
+- Show recent payments in authenticated MIS. No automatic lead-revenue change or fulfillment.
+- Release checks: CI suite, test-mode preview checkout, webhook settings/secrets and historical
+  payment reconciliation. Merge and production deploy remain pending owner approval.
+
 ## XEND-PORTFOLIO-002 — Sales portfolio, live demos and scroll-scrubbed site (2026-10-08)
 Status: REVIEW (branch `claude/project-thread-5ar4i7`)
 Owner: Claude
@@ -143,4 +154,3 @@ Status: REVIEW · Owner: Claude · Branch: `claude/ext-001-sitecheck`
 Delivered: `extension/` (MV3 Chrome/Edge + Firefox build, 49 checks, scoring, popup), tests (unit, audit rules on 12 fixtures, real-extension E2E), reproducible packages, store kit (`extension/store/`), `/sitecheck` + `/sitecheck-privacy` pages.
 Open (Sahil): submit to Edge Add-ons, then Firefox AMO (`extension/store/release-checklist.md`); Chrome registration fee (US$5 one-time) is approved by Sahil as of 6 October 2026; submit when the owner-side registration/payment step is completed. After each approval, set the store URL in `SITECHECK_STORES` and rebuild pages.
 Next version candidates: highlight-on-page for issues, optional same-origin link status checks (explicit opt-in permission), page weight from Resource Timing, export to PDF, Hindi UI.
-

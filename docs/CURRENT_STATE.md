@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Current State
 
+## XEND-PAYMENTS-001 (2026-10-08, implementation prepared for review)
+- Razorpay payment routes now use the existing AppState SQLite object and additive payment
+  order, attempt and webhook-event tables. Customer/package/quote records survive requests.
+- Checkout verification is tracked separately from captured payment. Signed, amount-checked
+  webhooks update state atomically and deduplicate retries; late failures cannot undo payment.
+- The existing MIS gains admin-only recent online payment history. Legacy shop and lead
+  revenue records are not automatically changed. Historical provider orders are not backfilled.
+- See `docs/PAYMENT_PERSISTENCE.md` for configuration and reconciliation. No merge,
+  production deployment or real payment transaction was performed for this task.
+
 ## XEND-PORTFOLIO-002 (2026-10-08, Claude, branch `claude/project-thread-5ar4i7`)
 - `/portfolio` moved into the commercial generator: edit `scripts/commercial/portfolio.mjs` (PROJECTS) then `npm run build:pages`; never hand-edit `public/portfolio.html`.
 - Scroll scenes: add `data-scroll-scene="exit|pass|pin"` (+ `data-steps`) and style with `var(--p)` / `var(--k)`; pinned heights only under `html.scroll-fx`. Sticky stages must not have an `overflow:hidden` ancestor.
