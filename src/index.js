@@ -2,6 +2,7 @@ import { canonicalRedirect } from "./canonical.mjs";
 import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
+import { handlePayments } from "./payments.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
 const enc=new TextEncoder();
@@ -865,6 +866,8 @@ export default {
     if(canonical)return canonical;
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
+    const payment=await handlePayments(request,env);
+    if(payment)return payment;
 
     if(path==="/api/community/feed" && method==="GET"){
       const category=clean(url.searchParams.get("category")||"all",30),sort=url.searchParams.get("sort")==="trending"?"trending":"latest",limit=Math.max(1,Math.min(30,Number(url.searchParams.get("limit")||20)));
