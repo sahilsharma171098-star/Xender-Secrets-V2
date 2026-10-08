@@ -84,7 +84,7 @@ We keep seeing points 4–6 fail on otherwise good businesses. Each one quietly 
 If you want a second pair of eyes, we do a free website check and send you a short written list: https://www.xendersecrets.com/?utm_source=linkedin&utm_medium=organic&utm_campaign=20261007-checklist
 ```
 
-### Day 3 · Thu 8 Oct · CA firms
+### Day 3 · Thu 8 Oct · CA firms (PUBLISHED 2026-10-08, `urn:li:share:7513816322716368896`)
 ```
 For CA firms, the website's job is simple: make a business owner comfortable picking up the phone.
 
