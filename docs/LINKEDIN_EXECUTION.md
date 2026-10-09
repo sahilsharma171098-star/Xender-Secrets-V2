@@ -99,7 +99,7 @@ What turns them away: a 2019 copyright line, news from five years ago, or a site
 We build CA firm websites around exactly this, from ₹999 + GST: https://www.xendersecrets.com/accountant-website-development?utm_source=linkedin&utm_medium=organic&utm_campaign=20261008-ca
 ```
 
-### Day 4 · Fri 9 Oct · Clinics
+### Day 4 · Fri 9 Oct · Clinics (PUBLISHED 2026-10-09, `urn:li:share:7514178702268772352`)
 ```
 If a patient finds your clinic on Google at 9pm, what happens next?
 
