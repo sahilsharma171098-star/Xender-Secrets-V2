@@ -1,5 +1,17 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-OS-003 — Centralized AI-team business operating system (2026-10-09)
+Status: REVIEW (branch `xend-os-003-operating-system`)
+Owner: ChatGPT
+
+- Add website sales/outreach/CRM SOP, Instagram engine with caption-only promotion, cross-platform/community drafts and reserved Amazon lane.
+- Extend private existing Command Center; create private Notion hub. Keep contacts outside GitHub.
+- Prepare serialized Apps Script task claims, expiring/fenced leases, version checks, handoffs, human completion and intent/commit audit recovery; no send/publish endpoint.
+- Add exact-approval/contact-suppression preflight, inactive n8n polling and metadata inventory checks.
+- Acceptance: queue/gate tests pass, native Sheet values read back, SEO audit recorded, PR reviewable. Live automation activation remains BLOCKED on browser Google auth, Apps Script OAuth and runner configuration; n8n runtime import and phone rendering not verified.
+
+Operational tasks are in the private `OS Tasks` tab; this file indexes technical work only. Use the same IDs in PRs and handoffs.
+
 ## XEND-PORTFOLIO-002 — Sales portfolio, live demos and scroll-scrubbed site (2026-10-08)
 Status: REVIEW (branch `claude/project-thread-5ar4i7`)
 Owner: Claude

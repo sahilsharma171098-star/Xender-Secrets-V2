@@ -2,6 +2,8 @@
 
 This repository is the single source of truth for Xender Secrets V2.
 
+For cross-business operations, read `docs/operations/README.md`. The private Command Center owns operational queue/CRM/content state; GitHub owns code and versioned SOPs. Notion is navigation. No direct agent chat syncing is assumed. Automated queue mutations must use the installed Apps Script controller; until it is installed, Sahil is the sole dispatcher. Never commit private CRM data or queue credentials.
+
 ## Roles
 - ChatGPT: architecture, research, task design, code/PR review, regression/security checks, and implementation when useful.
 - Claude: primary repo-level implementation agent for large multi-file coding tasks, testing, debugging, and PR preparation.

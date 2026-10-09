@@ -1,5 +1,9 @@
 # Xender Operating System
 
+## Centralized system update — XEND-OS-003, 2026-10-09
+
+The implementation and activation runbook are now in [operations/README.md](operations/README.md). Website sales and Instagram are active business lanes; Amazon is reserved pending Sahil's SOP. The six functions below remain the functional model. The private Command Center owns cross-business tasks, lead/touch/suppression records and content; GitHub owns code/SOP versions; Notion links to them. No autonomous chat syncing is claimed. Scripts are tested locally but require Apps Script/n8n authentication before automation runs. New outbound cadence and channel permission rules in operations/SALES.md supersede older broad sending targets.
+
 Xender will be run through six execution tracks:
 
 1. Development
