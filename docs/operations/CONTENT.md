@@ -2,7 +2,7 @@
 
 ## Goal and measurement
 
-Aim for 1,000,000 accounts reached in a rolling 30-day window, organic first. This is an aspirational target. Use account-level unique reach from native Insights; summing reel reach double-counts people and must be labelled gross reel reach. Never replace reach with views or promise a result. Capture baseline before setting growth expectations.
+Aim for 1,000,000 accounts reached during the seven-day campaign ending 16 October 2026, starting 9 October, Asia/Kolkata, organic first. This is the user's updated aspirational target, not a guarantee. Use account-level unique reach from native Insights; summing reel reach double-counts people and must be labelled gross reel reach. Never replace reach with views or promise a result. Capture baseline before setting growth expectations.
 
 Weekly scorecard: account reach, views, average watch time, completion (where available), shares/reach, saves/reach, follows, profile visits and caption-link enquiries. Store metric definition, source, period and observed-at time. Missing analytics is UNKNOWN, not zero. No bot views, fake followers or engagement farms.
 

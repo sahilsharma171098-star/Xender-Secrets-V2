@@ -64,3 +64,15 @@ test('sheet-bound text escapes formula injection',()=>{
   const {context}=fixture();
   assert.equal(context.osSafe_('=IMPORTXML("x")'),'\'=IMPORTXML("x")');
 });
+
+test('task listing never exposes lease secrets to any actor',()=>{
+  const {call,data}=fixture();
+  const claimed=call({action:'claim'});
+  for (const actor of [{actor:'codex',token:'key1'},{actor:'claude',token:'key2'}]) {
+    const listed=call({action:'list',...actor});
+    assert.ok(listed.every(t=>!Object.hasOwn(t,'lease_token')));
+    assert.ok(!JSON.stringify(listed).includes(claimed.lease_token));
+  }
+  assert.equal(data['OS Tasks'][1][6],claimed.lease_token);
+  assert.equal(call({action:'heartbeat',lease_token:claimed.lease_token,version:claimed.version}).version,3);
+});

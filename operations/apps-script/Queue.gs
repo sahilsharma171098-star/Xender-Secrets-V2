@@ -77,7 +77,7 @@ function osHandle_(req) {
   var lock=LockService.getScriptLock();
   if (!lock.tryLock(10000)) throw new Error('Busy; retry later with same request only if no audit intent exists');
   try {
-    if (req.action === 'list') return osRows_('OS Tasks').rows.map(function(t){delete t._row;return t;});
+    if (req.action === 'list') return osRows_('OS Tasks').rows.map(function(t){delete t._row;delete t.lease_token;return t;});
     return osMutation_(req);
   } finally { SpreadsheetApp.flush(); lock.releaseLock(); }
 }
