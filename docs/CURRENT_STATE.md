@@ -1,5 +1,10 @@
 # Xender Secrets V2 — Current State
 
+## XEND-SHOWCASE-001 (2026-10-09, Claude, branch `claude/xend-showcase-rebuild`)
+- Site positioned as a showcase catalog; homepage has no prices. Pricing lives on `/services`; premium lane on `/studio`; catalog on `/portfolio` (nav label "Catalog").
+- Design tokens + fonts in `public/home.css`; dark is the default theme. Showcase images in `public/work/` — re-capture when a demo changes (1440×900 → 1200/640 WebP).
+- Pending (Sahil): novels move to a subdomain needs a Cloudflare DNS/route change — see CQ-020.
+
 ## XEND-PORTFOLIO-002 (2026-10-08, Claude, branch `claude/project-thread-5ar4i7`)
 - `/portfolio` moved into the commercial generator: edit `scripts/commercial/portfolio.mjs` (PROJECTS) then `npm run build:pages`; never hand-edit `public/portfolio.html`.
 - Scroll scenes: add `data-scroll-scene="exit|pass|pin"` (+ `data-steps`) and style with `var(--p)` / `var(--k)`; pinned heights only under `html.scroll-fx`. Sticky stages must not have an `overflow:hidden` ancestor.

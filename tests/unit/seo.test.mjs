@@ -211,7 +211,7 @@ test("homepage links strongly to the high-value pages", () => {
     assert.ok(new RegExp(`href="${p}["#?]`).test(home), "home links " + p);
   }
   const nav = home.match(/<nav class="nav"[\s\S]*?<\/nav>/)[0];
-  for (const p of ["/services", "/website-catalog", "/articles", "/about"]) assert.ok(nav.includes(`href="${p}"`), "home header nav links " + p);
+  for (const p of ["/portfolio", "/studio", "/services", "/articles", "/about"]) assert.ok(nav.includes(`href="${p}"`), "home header nav links " + p);
 });
 
 test("FAQ page answers match published prices and carry FAQPage schema", () => {

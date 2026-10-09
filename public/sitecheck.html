@@ -7,7 +7,7 @@
   <meta name="description" content="Free browser extension for Edge, Firefox and Chrome: check any webpage for SEO basics, accessibility, usability and conversion issues. Runs locally, no tracking.">
   <link rel="canonical" href="https://www.xendersecrets.com/sitecheck">
   <meta name="robots" content="index,follow">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0f0f0e">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Xender Secrets">
   <meta property="og:title" content="Xender SiteCheck — free website QA &amp; conversion checker">
@@ -15,7 +15,9 @@
   <meta property="og:url" content="https://www.xendersecrets.com/sitecheck">
   <meta property="og:image" content="https://www.xendersecrets.com/og-xender.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script>try{if(localStorage.getItem("xs-theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
+  <script>try{if(localStorage.getItem("xs-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="preload" href="/fonts/playfair-display-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/home.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Xender SiteCheck","applicationCategory":"DeveloperApplication","operatingSystem":"Microsoft Edge, Firefox, Google Chrome","description":"Browser extension that checks the current webpage for SEO basics, accessibility, usability and conversion issues, locally in the browser.","url":"https://www.xendersecrets.com/sitecheck","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},"publisher":{"@type":"Organization","name":"Xender Secrets","url":"https://www.xendersecrets.com/","logo":{"@type":"ImageObject","url":"https://www.xendersecrets.com/og-xender.png"}}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Xender SiteCheck free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The extension is free, with no account and no paid tier. If you want a person to review your site, our website check is free too."}},{"@type":"Question","name":"Does it send my website or browsing data to Xender?","acceptedAnswer":{"@type":"Answer","text":"No. The analysis runs inside your browser when you click the button, and the extension makes no network requests. Nothing is sent unless you choose to copy the report or contact us yourself. Read the SiteCheck privacy policy."}},{"@type":"Question","name":"Is the score a Google or Lighthouse score?","acceptedAnswer":{"@type":"Answer","text":"No. It is a Xender SiteCheck heuristic score with a published formula (below). It does not measure page speed or Core Web Vitals, and it isn't a full accessibility (WCAG) audit."}},{"@type":"Question","name":"Does it check broken links?","acceptedAnswer":{"@type":"Answer","text":"It verifies same-page links (for example #pricing) and flags empty, javascript: or mistyped link addresses. It does not request external links over the network, so it never claims an external page is broken without testing it."}},{"@type":"Question","name":"Which browsers are supported?","acceptedAnswer":{"@type":"Answer","text":"Microsoft Edge, Firefox and Google Chrome on desktop. Store listings are being prepared for submission; until a store link appears above, that store's listing isn't live yet."}}]}</script>
@@ -27,16 +29,16 @@
     <div class="wrap header-inner">
       <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
       <nav class="nav" id="nav" aria-label="Main">
-        <a href="/portfolio">Portfolio</a>
-        <a href="/services">Services</a>
-        <a href="/website-catalog">Demos</a>
+        <a href="/portfolio">Catalog</a>
+        <a href="/studio">Studio</a>
+        <a href="/services">Pricing</a>
         <a href="/articles">Guides</a>
         <a href="/about">About</a>
         <a href="/contact">Contact</a>
       </nav>
       <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark mode">◐</button>
-        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Get a quote</a>
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to light mode">◐</button>
+        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Start a project</a>
         <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
       </div>
     </div>
@@ -209,7 +211,7 @@
               <option value="business-starter-1999">₹1,999 + GST · Business Starter (3 pages)</option>
               <option value="business-pro-3499">₹3,499 + GST · Business Pro (5 pages)</option>
               <option value="redesign">Redesign my existing website</option>
-              <option value="custom-build">Custom build / automation</option>
+              <option value="custom-build">Custom website, store or web app</option>
               <option value="not-sure">Not sure yet</option>
             </select>
           </div>
@@ -234,7 +236,8 @@
         GSTIN: 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a>
       </div>
       <nav class="footer-links" aria-label="Footer">
-        <a href="/portfolio">Portfolio</a>
+        <a href="/portfolio">Catalog</a>
+        <a href="/studio">Studio</a>
         <a href="/services">Pricing</a>
         <a href="/website-catalog">All demos</a>
         <a href="/business-templates">Templates</a>

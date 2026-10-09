@@ -3,11 +3,11 @@
 import fs from "node:fs";
 import { page, leadForm, faqBlock, faqJsonLd, ORG_JSONLD, ORG_ID, breadcrumbJsonLd, serviceJsonLd, canonicalUrl, esc, wa, EMAIL, SITE } from "./layout.mjs";
 import { ARTICLES } from "./articles.mjs";
-import { portfolioBody, workRail, portfolioJsonLd } from "./portfolio.mjs";
+import { portfolioBody, portfolioJsonLd, PROJECTS, KINDS, CATEGORY_LABEL } from "./portfolio.mjs";
 import { hero, offerCard, pricingBlock, processBlock, cardsBlock, buildListBlock, templatesBlock, includedAside, relatedBlock } from "./blocks.mjs";
 
 /** Bump when generated page content changes materially (used for sitemap lastmod). */
-export const CONTENT_DATE = "2026-10-08";
+export const CONTENT_DATE = "2026-10-09";
 
 const COMMON_FAQ = [
   ["How long does it take?", "It depends on the package and how quickly we receive your logo, photos and text. We agree a delivery date in writing with your quote, before any payment."],
@@ -371,76 +371,169 @@ function locationPage(loc) {
 
 // ---------------------------------------------------------------- core pages
 const HOME_FAQ = [
-  ["Is the ₹999 website real? What's the catch?", "It's a genuine launch price for our first 10 businesses — ₹999 + 18% GST (₹1,178.82 in total): a one-page, mobile-first site with your branding, WhatsApp/contact integration and full handover. The catch is scope — it's one page. If you need more pages later, you can upgrade."],
-  ...COMMON_FAQ,
-  ["Can you redesign my existing website?", "Yes. Start with the free website check — we'll tell you whether a few fixes are enough or a redesign is worth it."],
-  ["Are the demos your client projects?", "No. The catalog contains concept demos we built ourselves to show capability, and they are labelled that way. We don't publish fake clients or testimonials."],
-  ["Do you work with businesses outside India?", "Yes — we work with businesses in the UK, US and Canada too. Conversion-focused landing pages start from US$299."],
+  ["Are the projects in the catalog client work?", "No. Everything in the catalog is a concept demo, working demo or product that Xender Secrets designed and built itself, and each one is labelled that way. We don't publish fake clients, logos or testimonials."],
+  ["How much does a website cost?", "Local-business websites have fixed, published packages on our <a href=\"/services.html\">pricing page</a>. Custom brand websites, stores and web apps get a written, fixed quote after a short brief. The price is always agreed before any work starts."],
+  ...COMMON_FAQ.filter(([q]) => !/GST/.test(q)),
+  ["Can you redesign my existing website?", "Yes. Send us the link — we'll tell you honestly whether a few fixes are enough or a redesign is worth it."],
+  ["Do you work with businesses outside India?", "Yes — we work with businesses in the UK, US, Canada, Australia and the UAE as well as across India, entirely online."],
 ];
 
+/** Homepage showcase. Only Xender's own demos and products appear, each with its honest label. */
+const FEATURED = ["forge-fitness", "north-store", "pulse-analytics", "slotly-booking", "nebula-saas", "sprint-workspace"];
+const REEL = ["north-store", "pulse-analytics", "forge-fitness"];
+const project = (slug) => PROJECTS.find((p) => p.slug === slug);
+const shot = (slug, { sizes = "(max-width: 900px) 100vw, 50vw", eager = false, alt } = {}) => `<img src="/work/${slug}-1200.webp" srcset="/work/${slug}-640.webp 640w, /work/${slug}-1200.webp 1200w" sizes="${sizes}" width="1200" height="750" alt="${esc(alt || "Screenshot of " + project(slug).title + ", a " + KINDS[project(slug).kind].label.toLowerCase() + " by Xender Secrets")}"${eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async">`;
+
 function homeHero() {
-  return `<section class="hx" data-scroll-scene="exit" aria-labelledby="hx-title">
-      <div class="wrap hx-grid">
-        <div class="hx-copy">
-          <p class="eyebrow">Web design &amp; development studio · India → worldwide</p>
-          <h1 id="hx-title">Websites and web apps that turn visitors into <em>customers.</em></h1>
-          <p class="lede">Xender Secrets designs and builds fast business websites, landing pages, online stores, dashboards and full-stack web apps — for small businesses in India and growing companies in the US, UK, Canada, Australia and the UAE. Written scope, fixed quote, full handover.</p>
+  return `<section class="sx-hero" aria-labelledby="hx-title">
+      <div class="wrap">
+        <div class="sx-hero-top"><p class="eyebrow">Independent web studio · Gurugram, India</p><span>Websites · Web apps · Tools</span></div>
+        <h1 id="hx-title">Websites, web apps and tools — built with <em>craft.</em></h1>
+        <div class="sx-hero-foot">
+          <p class="lede">Xender Secrets designs and builds for brands that care how they look and businesses that need enquiries — from a single page to a full-stack product. Everything in our catalog is live: open it, test it, then tell us what you want built.</p>
           <div class="actions">
-            <a class="btn primary lg" href="#start" data-offer="custom-build" data-cta="home-hero-primary">Get a quote</a>
-            <a class="btn ghost lg" href="/portfolio.html" data-cta="home-hero-portfolio">See our work <span aria-hidden="true">↗</span></a>
+            <a class="btn primary lg" href="/portfolio.html" data-cta="home-hero-portfolio">Browse the catalog</a>
+            <a class="btn ghost lg" href="#start" data-offer="custom-build" data-cta="home-hero-primary">Start a project</a>
           </div>
-          <p class="hx-alt">Prefer to chat? <a href="${esc(wa("Hi Xender Secrets, I want to discuss a website or web app."))}" data-cta="home-hero-whatsapp" target="_blank" rel="noopener">WhatsApp +91 98219 41814</a> · India packages from ₹999 + GST · international landing pages from US$299</p>
-          <ul class="trust" aria-label="Why work with Xender">
-            <li>GST &amp; MSME-registered business</li>
-            <li>Price fixed before work starts</li>
-            <li>You own the code &amp; content</li>
-            <li>Live demos you can test today</li>
-          </ul>
         </div>
-        <div class="hx-stage" aria-hidden="true">
-          <div class="hx-glow"></div>
-          <div class="hx-browser">
-            <div class="hx-bar"><i></i><i></i><i></i><span>your-business.com</span></div>
-            <div class="hx-page">
-              <div class="hx-nav"><b></b><span></span><span></span><span></span><i></i></div>
-              <div class="hx-head"><small>BOOK · BUY · ENQUIRE</small><b></b><b></b><i>Get started →</i></div>
-              <div class="hx-tiles"><span></span><span></span><span></span></div>
-            </div>
-          </div>
-          <div class="hx-phone"><div class="hx-notch"></div><div class="hx-phone-ui"><b></b><span></span><span></span><i>WhatsApp us</i></div></div>
-          <div class="hx-card hx-chart"><small>Enquiries</small><svg viewBox="0 0 160 56" preserveAspectRatio="none"><path class="hx-line" pathLength="1" d="M2 50 C24 44 34 30 56 34 S90 14 110 20 S146 6 158 4"/></svg></div>
-          <div class="hx-card hx-api"><code>POST /api/lead</code><b>201 · saved</b></div>
-          <div class="hx-card hx-ok">✓ Mobile · Fast · Accessible</div>
+        <div class="sx-reel">
+          ${REEL.map((slug, i) => { const p = project(slug); return `<a href="/portfolio.html#p-${slug}" data-cta="home-reel-${slug}"><figure>${shot(slug, { eager: true, sizes: i === 0 ? "(max-width: 560px) 100vw, 45vw" : "(max-width: 560px) 100vw, 30vw" })}<figcaption><b>${esc(p.title)}</b><span>${KINDS[p.kind].label}</span></figcaption></figure></a>`; }).join("\n          ")}
+        </div>
+        <p class="sx-hero-alt fine">Prefer to talk first? <a href="${esc(wa("Hi Xender Secrets, I want to discuss a website or web app."))}" data-cta="home-hero-whatsapp" target="_blank" rel="noopener">WhatsApp +91 98219 41814</a> · <a href="mailto:${EMAIL}" data-cta="home-hero-email">${EMAIL.toLowerCase()}</a></p>
+      </div>
+    </section>`;
+}
+
+function homeDoors() {
+  return `<section class="section" id="paths" aria-labelledby="paths-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">Two ways to work with us</p>
+          <h2 id="paths-h">Pick the door <span>that fits.</span></h2>
+        </div>
+        <div class="sx-doors">
+          <a class="sx-door" href="/studio.html" data-cta="home-door-studio">
+            <p class="kicker">For brands</p>
+            <h3>Custom, design-led websites and products.</h3>
+            <p>For brands, D2C labels, agencies and founders who need a site that looks considered and works hard — designed from your brand, not a template.</p>
+            <ul><li>Brand websites</li><li>E-commerce</li><li>Web apps</li><li>Design systems</li></ul>
+            <span class="more">See the studio</span>
+          </a>
+          <a class="sx-door" href="/services.html" data-cta="home-door-pricing">
+            <p class="kicker">For local businesses</p>
+            <h3>Fast, fixed-scope websites that bring enquiries.</h3>
+            <p>For clinics, CA firms, gyms, restaurants, agents and local services — mobile-first sites with WhatsApp and call buttons, at published fixed prices.</p>
+            <ul><li>One-page sites</li><li>Business websites</li><li>WhatsApp enquiries</li><li>Local SEO basics</li></ul>
+            <span class="more">See packages &amp; pricing</span>
+          </a>
         </div>
       </div>
     </section>`;
 }
 
-/** Pinned scroll story: the four layers Xender builds, separating as the reader scrolls. */
-const STACK = [
-  ["Interface", "Websites &amp; landing pages", "Distinctive, mobile-first pages that explain your offer in seconds and make the next step obvious.", "/demo-frontend-saas.html", "Open a landing page demo"],
-  ["Experience", "Stores, dashboards &amp; apps", "Carts, filters, bookings and dashboards that respond instantly — the interactive layer customers actually use.", "/demo-frontend-store.html", "Try the storefront"],
-  ["Backend", "APIs &amp; data", "Edge APIs, validation and persistent storage so forms, orders and bookings are saved, not emailed into the void.", "/demo-fullstack-booking.html", "Book a live slot"],
-  ["Automation", "Leads &amp; workflows", "Enquiries captured with a reference, routed to WhatsApp or a dashboard, and measured with privacy-friendly analytics.", "/demo-backend-crm.html", "Send a test lead"],
-];
-function stackStory() {
-  return `<section class="stack" id="build" data-scroll-scene="pin" data-steps="4" aria-labelledby="stack-title">
-      <div class="stack-sticky">
-        <div class="wrap stack-grid">
-          <div class="stack-copy">
-            <p class="kicker">What we build</p>
-            <h2 id="stack-title">One studio for the whole stack. <span>Scroll to take it apart.</span></h2>
-            <ol class="stack-steps">
-              ${STACK.map(([layer, h, p, href, cta], i) => `<li class="stack-step" data-i="${i}"><button type="button" class="stack-n" data-scene-go="${i}">0${i + 1} · ${layer}</button><h3>${h}</h3><p>${p}</p><a href="${href}" data-cta="home-stack-${i + 1}">${cta} →</a></li>`).join("\n              ")}
-            </ol>
+function homeWork() {
+  return `<section class="section" id="work" aria-labelledby="work-h">
+      <div class="wrap">
+        <div class="sx-work-head">
+          <div class="section-head">
+            <p class="kicker">Selected work</p>
+            <h2 id="work-h">Open it. Click it. <span>Test it.</span></h2>
+            <p>Every piece is a live build by Xender Secrets — fictional brands, real interfaces, some with real backends. Labelled honestly, never passed off as client projects.</p>
           </div>
-          <div class="stack-stage" aria-hidden="true">
-            <div class="stack-3d">
-              ${STACK.map(([layer], i) => `<div class="stack-layer stack-layer-${i}" data-i="${i}" style="--i:${i}"><span>${layer}</span><div class="stack-ui stack-ui-${i}"><i></i><i></i><i></i><i></i></div></div>`).join("\n              ")}
-            </div>
-            <div class="stack-meter"><span></span></div>
-          </div>
+          <div class="actions"><a class="btn primary" href="/portfolio.html" data-cta="home-portfolio-primary">Full catalog</a><a class="btn ghost" href="/website-catalog.html" data-cta="work-full-catalog">All live demos</a></div>
         </div>
+        <div class="sx-grid">
+          ${FEATURED.map((slug, i) => { const p = project(slug); return `<a class="sx-tile" href="/portfolio.html#p-${slug}" data-cta="home-work-${slug}">
+            <div class="sx-shot">${shot(slug)}<span class="pf-kind pf-kind-${p.kind}">${KINDS[p.kind].label}</span></div>
+            <div class="sx-meta"><h3><span class="sx-num">${String(i + 1).padStart(2, "0")}</span>${esc(p.title)}</h3><span>${p.cats.map((c) => CATEGORY_LABEL[c]).join(" · ")}</span></div>
+            <p>${esc(p.oneLine)}.</p>
+          </a>`; }).join("\n          ")}
+        </div>
+      </div>
+    </section>`;
+}
+
+const CAPS = [
+  ["Websites", "Brand sites, business sites and landing pages — fast, mobile-first and built around one clear action.", "/demo-frontend-saas.html", "Landing page demo"],
+  ["Web apps", "Dashboards, bookings, internal tools and portals that save real data, not mock-ups.", "/demo-fullstack-booking.html", "Booking app demo"],
+  ["E-commerce", "Storefronts and quote flows with search, filters and carts that feel premium on a phone.", "/demo-frontend-store.html", "Storefront demo"],
+  ["Backends &amp; APIs", "Edge APIs, validation and storage on Cloudflare Workers, wired to your forms and tools.", "/demo-backend-api.html", "Live API console"],
+  ["Extensions &amp; tools", "Browser extensions and small tools — like SiteCheck, our own website audit extension.", "/sitecheck.html", "See SiteCheck"],
+];
+
+function homeCaps() {
+  return `<section class="section" id="services" aria-labelledby="caps-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">What we build</p>
+          <h2 id="caps-h">One studio, <span>the whole stack.</span></h2>
+          <p>Design, front end, backend and launch handled in one place — so what you approve is exactly what ships.</p>
+        </div>
+        <div class="sx-caps">
+          ${CAPS.map(([h, p, href, cta], i) => `<div class="card"><span class="sx-cap-n">0${i + 1}</span><h3>${h}</h3><p>${p}</p><a href="${href}" data-cta="home-cap-${i + 1}">${cta} →</a></div>`).join("\n          ")}
+        </div>
+      </div>
+    </section>`;
+}
+
+function homeIndustries() {
+  const items = [
+    ["/accountant-website-development.html", "CA &amp; accounting firms"], ["/clinic-website-development.html", "Clinics &amp; dentists"],
+    ["/real-estate-website-development.html", "Real-estate agents"], ["/recruitment-agency-website-development.html", "Recruitment agencies"],
+    ["/consultant-website-development.html", "Consultants"], ["/coaching-website-development.html", "Coaching institutes"],
+    ["/gym-website-development.html", "Gyms &amp; fitness"], ["/restaurant-website-development.html", "Restaurants &amp; cafés"],
+  ];
+  return `<section class="section alt" id="industries" aria-labelledby="ind-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">By industry</p>
+          <h2 id="ind-h">Websites shaped around <span>how your customers decide.</span></h2>
+          <p>Each industry page explains what buyers in that field look for, and what we build to answer it.</p>
+        </div>
+        <nav class="sx-industries" aria-label="Websites by industry">
+          ${items.map(([href, label]) => `<a href="${href}" data-cta="home-industry-${href.slice(1, -5)}">${label}</a>`).join("\n          ")}
+        </nav>
+        <p class="center"><a class="btn ghost" href="/business-templates.html" data-cta="home-templates">Browse design directions by industry</a> <a class="btn ghost" href="/small-business-website-india.html" data-cta="home-all-india">Other local businesses</a></p>
+      </div>
+    </section>`;
+}
+
+function homeStudio() {
+  return `<section class="section" id="about-studio" aria-labelledby="studio-h">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">Who you'll work with</p>
+          <h2 id="studio-h" class="sx-statement">A small studio with <em>one person accountable</em> for your project.</h2>
+          <p style="margin-top:24px">Xender Secrets is a GST-registered business in Gurugram, founded by Sahil Kumar Sharma. You deal directly with the person responsible for your build — no account managers, no hand-offs — and every project starts with a written scope.</p>
+          <p><a href="/about.html" data-cta="home-about">More about Xender Secrets →</a></p>
+        </div>
+        <ul class="sx-facts">
+          <li><b>Founder</b><span>Sahil Kumar Sharma</span></li>
+          <li><b>Based in</b><span>Gurugram, Haryana · working worldwide</span></li>
+          <li><b>Registration</b><span>GSTIN 06IQFPS4456B1ZP</span></li>
+          <li><b>MSME (Udyam)</b><span><a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a></span></li>
+          <li><b>Ownership</b><span>You own the code, content and accounts</span></li>
+          <li><b>Proof</b><span>Live demos, labelled — no invented clients</span></li>
+        </ul>
+      </div>
+    </section>`;
+}
+
+function homeGuides() {
+  return `<section class="section alt" id="guides" aria-labelledby="guides-h">
+      <div class="wrap">
+        <div class="sx-work-head">
+          <div class="section-head">
+            <p class="kicker">Field notes</p>
+            <h2 id="guides-h">Planning a website? <span>Read these first.</span></h2>
+            <p>Plain-language guides for business owners — useful whether or not you hire us.</p>
+          </div>
+          <div class="actions"><a class="btn ghost" href="/articles.html" data-cta="home-all-guides">All guides</a><a class="btn ghost" href="/faq.html" data-cta="home-faq-page">Full FAQ</a></div>
+        </div>
+        <nav class="sx-guides" aria-label="Guides">
+          ${ARTICLES.map((a, i) => `<a href="/${a.file}" data-cta="home-guide-${a.file.replace(/^article-|\.html$/g, "")}"><span class="sx-num">${String(i + 1).padStart(2, "0")}</span><b>${esc(a.h1.split(":")[0])}</b><span class="sx-guide-k">${esc(a.kicker)}</span></a>`).join("\n          ")}
+        </nav>
+        <p class="center">Not sure what a website should cost? Try the free <a href="/website-cost-calculator.html" data-cta="home-calculator">website cost calculator</a>.</p>
       </div>
     </section>`;
 }
@@ -448,96 +541,123 @@ function stackStory() {
 function homePage() {
   const body = [
     homeHero(),
-    stackStory(),
-    workRail(),
-    `<section class="who" aria-label="Who we build for">
-      <div class="wrap">
-        <p class="kicker">Built for businesses where one new enquiry pays for the website</p>
-        <div class="chips">
-          <a href="/accountant-website-development.html">CA &amp; accounting firms</a>
-          <a href="/clinic-website-development.html">Clinics &amp; dentists</a>
-          <a href="/real-estate-website-development.html">Real-estate agents</a>
-          <a href="/recruitment-agency-website-development.html">Recruitment agencies</a>
-          <a href="/consultant-website-development.html">Consultants</a>
-          <a href="/coaching-website-development.html">Coaches &amp; institutes</a>
-          <a href="/gym-website-development.html">Gyms &amp; fitness</a>
-          <a href="/restaurant-website-development.html">Restaurants &amp; cafés</a>
-          <a href="/small-business-website-india.html">Salons, shops &amp; local services</a>
-        </div>
-      </div>
-    </section>`,
-    `<section class="section alt launch-offer" aria-labelledby="rec-title">
-      <div class="wrap split">
-        <div>
-          <p class="kicker">India launch offer</p>
-          <h2>A complete one-page business website <span>for ₹999 + GST.</span></h2>
-          <p>For our first 10 Indian businesses: a fast, mobile-first page with your branding, WhatsApp and call buttons, and a live preview link before you approve. Need more? Every package below is a fixed price, and custom builds are quoted in writing.</p>
-          <p><a href="/portfolio.html" data-cta="home-offer-portfolio">See the quality first in our portfolio →</a></p>
-        </div>
-        ${offerCard({ offer: "founding-website-999", title: "Founding offer · first 10 businesses", bullets: ["Mobile-first design with your branding", "WhatsApp, call and enquiry buttons", "Services, location and contact sections", "Basic on-page SEO and Google-ready setup", "Live preview link before you approve", "Complete handover of files and access"], cta: "Claim a ₹999 website", ctaPrefix: "home" })}
-      </div>
-    </section>`,
-    pricingBlock({ ctaPrefix: "home" }),
+    homeDoors(),
+    homeWork(),
+    homeCaps(),
+    homeIndustries(),
     processBlock(),
-    `<section class="section" id="areas" aria-labelledby="areas-h">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="kicker">Where we work</p>
-          <h2 id="areas-h">Based in Gurugram. <span>Working across India.</span></h2>
-          <p>Meet in person anywhere in Delhi NCR, or run the whole project over WhatsApp from anywhere in India — or the UK, US and Canada.</p>
-        </div>
-        <div class="chips">
-          ${LOCATION_LINKS.map(([href, label]) => `<a href="${href}" data-cta="home-area-${href.slice(1, -5)}">${label === "All of India" ? "Small business websites across India" : "Website development in " + label}</a>`).join("\n          ")}
-        </div>
-        <p class="center">Not sure what a website should cost? Try the free <a href="/website-cost-calculator.html" data-cta="home-calculator">website cost calculator</a>.</p>
-      </div>
-    </section>`,
-    FOUNDER,
-    `<section class="section alt" id="guides" aria-labelledby="guides-h">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="kicker">Free guides</p>
-          <h2 id="guides-h">Planning a website? <span>Start here.</span></h2>
-          <p>Practical, no-jargon guides for small-business owners — useful whether or not you hire us.</p>
-        </div>
-        <div class="grid3 grid-auto">
-          ${ARTICLES.map((a) => `<a class="card work" href="/${a.file}" data-cta="home-guide-${a.file.replace(/^article-|\.html$/g, "")}">
-            <span class="tag">${esc(a.kicker)}</span>
-            <h3>${esc(a.h1.split(":")[0])}</h3>
-            <p>${esc(a.deck)}</p>
-            <span class="more">Read the guide →</span>
-          </a>`).join("\n          ")}
-        </div>
-        <p class="center"><a class="btn ghost" href="/articles.html" data-cta="home-all-guides">All guides</a> <a class="btn ghost" href="/faq.html" data-cta="home-faq-page">Full FAQ</a> <a class="btn ghost" href="/about.html" data-cta="home-about">About Xender</a></p>
-      </div>
-    </section>`,
+    homeStudio(),
+    homeGuides(),
     faqBlock(HOME_FAQ),
-    leadForm({ cta: "home-start-form" }),
-    `<section class="novel-strip">
-      <div class="wrap novel-inner">
-        <p><strong>Also from Xender:</strong> completed novels you can read free, start to finish.</p>
-        <a class="btn ghost" href="/novels.html">Browse novels →</a>
-      </div>
-    </section>`,
+    leadForm({ cta: "home-start-form", offer: "custom-build", plainOffers: true,
+      heading: "Have something <span>worth building?</span>",
+      intro: "Tell us what you have in mind — a brand site, a store, an app or a simple business website. We reply personally, usually on WhatsApp, with honest next steps and a written quote.",
+      bullets: ["Written scope and fixed price before any payment", "A live preview link before launch", "No obligation, no newsletters"] }),
   ].join("\n\n    ");
-  return page({ path: "/index.html", home: true, title: "Website Development for Small Businesses from ₹999 + GST | Xender Secrets",
-    ogTitle: "Business websites from ₹999 + GST — Xender Secrets",
-    description: "Fast, mobile-first business websites, landing pages and web apps — from ₹999 + GST in India, US$299 internationally. Live demos you can test, fixed prices, full handover. Free website check.",
+  return page({ path: "/index.html", home: true, title: "Xender Secrets — Websites, Web Apps & Tools Built with Craft",
+    ogTitle: "Xender Secrets — websites, web apps and tools built with craft",
+    description: "Independent web design and development studio in Gurugram. Browse live websites, stores, dashboards and apps we built, then get a fixed quote for yours.",
     body, jsonld: [ORG_JSONLD, faqJsonLd(HOME_FAQ)] });
 }
 
 function portfolioPage() {
-  const form = leadForm({ cta: "portfolio-quote", offer: "custom-build",
-    heading: "Tell us what you want to build. <span>We'll quote it in writing.</span>",
-    intro: "Mention a project from this page if one is close to what you need. You'll get a scope, a fixed quote and a delivery date before any payment — we reply personally, usually on WhatsApp.",
-    bullets: ["Websites, stores, dashboards, APIs and full-stack apps", "International projects welcome — landing pages from US$299", "Written scope and fixed price first, no obligation"],
-    waText: "Hi Xender Secrets, I looked at your portfolio and want a quote." });
-  return page({ path: "/portfolio.html", title: "Portfolio: Websites, Web Apps, Dashboards & Extensions | Xender Secrets",
-    ogTitle: "Xender Secrets portfolio — live websites, apps and tools you can test",
-    description: "Open and test 11 live builds by Xender Secrets: business websites, landing pages, e-commerce, SaaS dashboards, backend APIs, full-stack apps and a browser extension. Then request a quote.",
+  const form = leadForm({ cta: "portfolio-quote", offer: "custom-build", plainOffers: true,
+    heading: "Seen something close? <span>Let's build yours.</span>",
+    intro: "Mention a project from the catalog if one is close to what you need. You'll get a written scope, a fixed quote and a delivery date before any payment — we reply personally, usually on WhatsApp.",
+    bullets: ["Websites, stores, dashboards, APIs and full-stack apps", "Designed around your brand, not copied from the demo", "Written scope and fixed price first, no obligation"],
+    waText: "Hi Xender Secrets, I looked at your catalog and want a quote." });
+  return page({ path: "/portfolio.html", current: "/portfolio.html", title: "Catalog: Live Websites, Web Apps, Stores & Tools | Xender Secrets",
+    ogTitle: "The Xender Secrets catalog — live websites, apps and tools you can test",
+    description: "Open and test live builds by Xender Secrets: business websites, landing pages, e-commerce, dashboards, booking apps, APIs and a browser extension. Then get a quote.",
     body: portfolioBody({ leadForm: form }), css: ["/portfolio.css"], scripts: ["/portfolio.js"],
-    waText: "Hi Xender Secrets, I liked your portfolio and want to discuss a project.",
-    jsonld: [ORG_JSONLD, portfolioJsonLd(SITE, ORG_ID), breadcrumbJsonLd([["Home", "/"], ["Portfolio", "/portfolio.html"]])] });
+    waText: "Hi Xender Secrets, I liked your catalog and want to discuss a project.",
+    jsonld: [ORG_JSONLD, portfolioJsonLd(SITE, ORG_ID), breadcrumbJsonLd([["Home", "/"], ["Catalog", "/portfolio.html"]])] });
+}
+
+const STUDIO_FAQ = [
+  ["How is a studio project priced?", "After a short brief we send a written scope with a fixed price and delivery date. Nothing starts, and nothing is paid, until you've agreed it. Larger builds can be split into phases so you approve each one."],
+  ["Can you work from our brand guidelines or with our designer?", "Yes. We can build from your existing identity, typography and assets, or work alongside your designer or agency as the build partner."],
+  ["What do you need from us?", "Your brand assets, the content you already have and a person who can approve decisions. We help shape copy and structure, and flag anything missing early."],
+  ["Who owns the result?", "You do — code, content, design files and accounts are handed over at launch. No lock-in and no compulsory monthly fee."],
+  ["Is the work in your catalog client work?", "No. The catalog shows concept demos, working demos and products we designed and built ourselves, each labelled that way. We don't publish invented clients or testimonials."],
+];
+
+function studioPage() {
+  const tiles = ["north-store", "forge-fitness", "pulse-analytics", "slotly-booking"];
+  const body = [
+    `<section class="sx-hero" aria-labelledby="st-title">
+      <div class="wrap">
+        <div class="sx-hero-top"><p class="eyebrow">Studio · for brands</p><span>Design · Build · Launch</span></div>
+        <h1 id="st-title">Websites for brands that care how they <em>look.</em></h1>
+        <div class="sx-hero-foot">
+          <p class="lede">Custom, design-led websites, stores and web products for D2C brands, agencies and founders — built from your brand and your customers, not a template, and engineered to load fast and convert.</p>
+          <div class="actions">
+            <a class="btn primary lg" href="#start" data-offer="custom-build" data-cta="studio-hero-start">Start a project</a>
+            <a class="btn ghost lg" href="/portfolio.html" data-cta="studio-hero-catalog">See the catalog</a>
+          </div>
+        </div>
+      </div>
+    </section>`,
+    `<section class="section" id="work" aria-labelledby="st-work">
+      <div class="wrap">
+        <div class="sx-work-head">
+          <div class="section-head">
+            <p class="kicker">Selected work</p>
+            <h2 id="st-work">Craft you can <span>click through.</span></h2>
+            <p>Fictional brands, real interfaces — each one a live build by Xender Secrets, labelled honestly.</p>
+          </div>
+          <div class="actions"><a class="btn ghost" href="/portfolio.html" data-cta="studio-catalog">Full catalog</a></div>
+        </div>
+        <div class="sx-grid">
+          ${tiles.map((slug, i) => { const p = project(slug); return `<a class="sx-tile" href="/portfolio.html#p-${slug}" data-cta="studio-work-${slug}">
+            <div class="sx-shot">${shot(slug)}<span class="pf-kind pf-kind-${p.kind}">${KINDS[p.kind].label}</span></div>
+            <div class="sx-meta"><h3><span class="sx-num">${String(i + 1).padStart(2, "0")}</span>${esc(p.title)}</h3><span>${p.cats.map((c) => CATEGORY_LABEL[c]).join(" · ")}</span></div>
+            <p>${esc(p.oneLine)}.</p>
+          </a>`; }).join("\n          ")}
+        </div>
+      </div>
+    </section>`,
+    `<section class="section alt" id="services" aria-labelledby="st-caps">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">What we make</p>
+          <h2 id="st-caps">From brand site <span>to product.</span></h2>
+        </div>
+        <div class="sx-caps">
+          <div class="card"><span class="sx-cap-n">01</span><h3>Brand websites</h3><p>Editorial, story-led sites with considered typography, motion and a clear path to enquiry.</p></div>
+          <div class="card"><span class="sx-cap-n">02</span><h3>E-commerce</h3><p>Storefronts with search, filters and carts that feel premium on a phone, without a heavy theme.</p></div>
+          <div class="card"><span class="sx-cap-n">03</span><h3>Landing pages</h3><p>Launch and campaign pages that explain the offer in seconds and are measured from day one.</p></div>
+          <div class="card"><span class="sx-cap-n">04</span><h3>Web apps</h3><p>Dashboards, booking flows and internal tools on a fast edge backend that saves real data.</p></div>
+          <div class="card"><span class="sx-cap-n">05</span><h3>Design systems</h3><p>Reusable type, colour and components so every new page stays on-brand.</p></div>
+        </div>
+      </div>
+    </section>`,
+    `<section class="section" id="process" aria-labelledby="st-process">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">How a studio project runs</p>
+          <h2 id="st-process">Four phases, <span>each one approved.</span></h2>
+        </div>
+        <ol class="steps">
+          <li><h3>Discover</h3><p>Your brand, customers and the one action the site must drive. Ends with a written scope and fixed quote.</p></li>
+          <li><h3>Direction</h3><p>Structure, type, colour and motion explored and agreed before any page is designed in full.</p></li>
+          <li><h3>Design &amp; build</h3><p>Pages designed and built together, reviewed on a live preview link on your own devices.</p></li>
+          <li><h3>Launch</h3><p>Speed, mobile, keyboard and form checks, then domain, analytics and complete handover.</p></li>
+        </ol>
+      </div>
+    </section>`,
+    faqBlock(STUDIO_FAQ, { heading: "Working with <span>the studio.</span>" }),
+    leadForm({ cta: "studio-start-form", offer: "custom-build", plainOffers: true,
+      heading: "Have a brand <span>worth building for?</span>",
+      intro: "Share a little about your brand, what you need and any sites you admire. We reply personally with honest next steps and a written, fixed quote.",
+      bullets: ["Custom design from your brand", "Fixed quote and delivery date before payment", "You own everything at launch"],
+      waText: "Hi Xender Secrets, I want to discuss a custom website for my brand." }),
+  ].join("\n\n    ");
+  return page({ path: "/studio.html", title: "Studio: Custom Design-Led Websites for Brands | Xender Secrets",
+    ogTitle: "Xender Secrets Studio — custom, design-led websites for brands",
+    description: "Custom, design-led websites, stores and web products for brands, D2C labels and agencies — built from your brand, engineered to load fast and convert.",
+    body, waText: "Hi Xender Secrets, I want to discuss a custom website for my brand.",
+    jsonld: [ORG_JSONLD, faqJsonLd(STUDIO_FAQ), breadcrumbJsonLd([["Home", "/"], ["Studio", "/studio.html"]])] });
 }
 
 function servicesPage() {
@@ -579,7 +699,7 @@ function servicesPage() {
     `<section class="section alt" id="compare">
       <div class="wrap">
         <div class="section-head"><p class="kicker">Compare</p><h2>What each package <span>includes.</span></h2></div>
-        <div class="card table-wrap">
+        <div class="card table-wrap" tabindex="0" role="region" aria-label="Package comparison table">
           <table class="compare">
             <thead><tr><th scope="col">Feature</th><th scope="col">Founding · ₹999 + GST</th><th scope="col">Starter · ₹1,999 + GST</th><th scope="col">Pro · ₹3,499 + GST</th></tr></thead>
             <tbody>${rows.map((r) => `<tr><th scope="row">${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody>
@@ -971,6 +1091,7 @@ export function allPages() {
   return [
     { file: "index.html", html: homePage() },
     { file: "portfolio.html", html: portfolioPage() },
+    { file: "studio.html", html: studioPage() },
     { file: "services.html", html: servicesPage() },
     { file: "about.html", html: aboutPage() },
     { file: "contact.html", html: contactPage() },
