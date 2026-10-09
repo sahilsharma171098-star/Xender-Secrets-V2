@@ -1,0 +1,81 @@
+{
+  "name": "Xender OS — manual queue inventory (activate after auth)",
+  "active": false,
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Manual test",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "poll",
+      "name": "Read authenticated queue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://script.google.com/macros/s/REPLACE_AFTER_DEPLOYMENT/exec",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"action\":\"list\"}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "check",
+      "name": "Require application success",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const r = $input.first().json; if (r.ok !== true) throw new Error(r.error || \"Queue read failed\"); return (r.result || []).map(t => ({json:t}));"
+      }
+    }
+  ],
+  "connections": {
+    "Manual test": {
+      "main": [
+        [
+          {
+            "node": "Read authenticated queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read authenticated queue": {
+      "main": [
+        [
+          {
+            "node": "Require application success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none"
+  }
+}

@@ -1,5 +1,7 @@
 # Xender Sales Playbook — SALES-001
 
+**2026-10-09 update:** For all new outbound work use [operations/SALES.md](../operations/SALES.md), including exact-action approval, global suppression, permission evidence and at most two unanswered follow-ups. The old sending quota, day 2/5/12 cadence and published-number WhatsApp permission below are historical templates and are superseded. Public listing alone is not WhatsApp opt-in.
+
 For Sahil and ChatGPT. Personal, evidence-based messages only — never bulk. Every link carries UTM tags (see `docs/DATA_MEASUREMENT_PLAN.md`). Log every touch in `/admin.html` (or the private CRM) the same day.
 
 ## Daily rhythm (target, not quota)
