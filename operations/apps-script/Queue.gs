@@ -34,12 +34,12 @@ function osMutation_(req) {
   var audit = allAudit.filter(function(r){return r.request_id === req.request_id;});
   if (audit.length) throw new Error('Request already recorded; inspect audit before retry');
   var pending = allAudit.some(function(r){
-    return r.entity_id === req.task_id && r.phase === 'intent' && !allAudit.some(function(c){return c.request_id === r.request_id && c.phase === 'commit';});
+    return String(r.entity_id) === String(req.task_id) && r.phase === 'intent' && !allAudit.some(function(c){return c.request_id === r.request_id && c.phase === 'commit';});
   });
   if (pending) throw new Error('Unresolved audit intent; owner reconciliation required');
   var table = osRows_('OS Tasks');
   if (table.headers.join('|') !== OS_HEADERS.join('|')) throw new Error('Task schema mismatch');
-  var task = table.rows.find(function(t){return t.task_id === req.task_id;});
+  var task = table.rows.find(function(t){return String(t.task_id) === String(req.task_id);});
   if (!task) throw new Error('Unknown task');
   if (task.lane === 'amazon') throw new Error('Amazon SOP not defined');
   var now = Date.now(), active = Date.parse(task.lease_until) > now;

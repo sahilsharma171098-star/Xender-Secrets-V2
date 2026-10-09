@@ -76,3 +76,18 @@ test('task listing never exposes lease secrets to any actor',()=>{
   assert.equal(data['OS Tasks'][1][6],claimed.lease_token);
   assert.equal(call({action:'heartbeat',lease_token:claimed.lease_token,version:claimed.version}).version,3);
 });
+
+test('numeric Sheet task IDs support string requests without bypassing pending intent',()=>{
+  const {call,data,context}=fixture();
+  data['OS Tasks'][1][0]=123;
+  const claimed=call({action:'claim',task_id:'123'});
+  // Simulate getValues returning numeric-looking strings as numbers on another read.
+  data['OS Tasks'][1][0]=123;
+  data['OS Tasks'][1][12]=Number(data['OS Tasks'][1][12]);
+  assert.equal(call({action:'heartbeat',task_id:'123',lease_token:claimed.lease_token,version:String(claimed.version)}).version,3);
+  data['OS Tasks'][1][0]=123;
+  context.osWrite_=()=>{throw new Error('write unavailable');};
+  assert.throws(()=>call({action:'heartbeat',task_id:'123',lease_token:claimed.lease_token,version:3}),/write unavailable/);
+  data['OS Audit'].at(-1)[5]=123;
+  assert.throws(()=>call({action:'heartbeat',task_id:'123',lease_token:claimed.lease_token,version:3}),/Unresolved audit intent/);
+});
