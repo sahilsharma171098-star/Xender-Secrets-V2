@@ -1,0 +1,26 @@
+# XEND-ACQ-002 starter queries — categories that match the preview-builder verticals.
+# One search per line. Keep a run to ~10–15 lines; rotate areas across days.
+
+# Clinics → "dental" preview
+dentist Sector 56 Gurugram
+dental clinic Sohna Road Gurugram
+physiotherapy clinic DLF Phase 4 Gurugram
+skin clinic Sector 14 Gurugram
+
+# Gyms / studios → "fitness" preview
+gym DLF Phase 3 Gurugram
+yoga studio Sector 57 Gurugram
+gym Palam Vihar Gurugram
+
+# Cafés / restaurants → "restaurant" preview
+cafe Sector 29 Gurugram
+bakery Sector 46 Gurugram
+restaurant Sector 15 Gurugram
+
+# Professionals → "pro" preview
+chartered accountant Udyog Vihar Gurugram
+tax consultant Sector 31 Gurugram
+
+# Property → "realestate" preview
+property dealer Golf Course Extension Road Gurugram
+real estate agent Sector 49 Gurugram

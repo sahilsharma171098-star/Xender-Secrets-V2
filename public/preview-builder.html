@@ -110,6 +110,10 @@ $("importBtn").onclick = () => {
   if (box.hidden) { box.hidden = false; box.focus(); return; }
   try { fill(JSON.parse(box.value)); box.hidden = true; box.value = ""; } catch { alert("That isn't valid JSON."); }
 };
+// XEND-ACQ-002: /preview-builder#prospect=P-…&cfg=<json> (opened from admin → Prospects).
+const hash = new URLSearchParams(location.hash.slice(1));
+const prospectId = /^P-[A-Z2-9]{8}$/.test(hash.get("prospect") || "") ? hash.get("prospect") : "";
+if (hash.get("cfg")) { try { fill(JSON.parse(hash.get("cfg"))); } catch {} }
 document.querySelectorAll(".devices button").forEach((b) => (b.onclick = () => { frame.style.width = b.dataset.w ? b.dataset.w + "px" : "100%"; }));
 
 const api = async (path, opts = {}) => {
@@ -138,7 +142,11 @@ $("save").onclick = async () => {
   $("link").textContent = link;
   $("pitch").textContent = `Hi! I made a quick draft of what a website for ${first} could look like — no cost, no obligation:\n${link}\n\nIt works on mobile and the WhatsApp/call buttons go straight to you. If you like it, we can finish it with your real photos and details from ₹999 + GST (one page). Happy to change anything.\n\n— Sahil, Xender Secrets`;
   $("shareOut").hidden = false;
-  $("saveStatus").textContent = "Saved · expires " + body.expires_at.slice(0, 10); $("saveStatus").className = "ok";
+  if (prospectId) {
+    const r = await api("/api/admin/prospects/" + prospectId, { method: "PATCH", body: JSON.stringify({ preview_id: body.id }) });
+    if (r.body.ok) $("saveStatus").dataset.prospect = " · linked to prospect (WhatsApp it from /admin)";
+  }
+  $("saveStatus").textContent = "Saved · expires " + body.expires_at.slice(0, 10) + ($("saveStatus").dataset.prospect || ""); $("saveStatus").className = "ok";
   loadList();
 };
 const copy = (id) => navigator.clipboard?.writeText($(id).textContent);

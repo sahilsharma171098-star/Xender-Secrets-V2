@@ -6,3 +6,6 @@ wrangler.local.jsonc
 
 # Xender SiteCheck build output (rebuild with npm run extension:package)
 extension/dist/
+
+# XEND-ACQ-002 prospect finder output (business lists stay local)
+prospects-out/

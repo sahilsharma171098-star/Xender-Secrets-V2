@@ -22,6 +22,10 @@ button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:800px){.grid2{grid-template-columns:1fr}}
 .lead-cell small{display:block;color:var(--muted)}td input[type=number]{width:90px}td input[type=date]{width:140px}td textarea{width:220px;min-height:54px}
 #login{max-width:420px;margin:60px auto}
+.pill{display:inline-block;padding:1px 8px;border-radius:99px;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+.prospect small{display:block;color:var(--muted)}#pTable td{min-width:0}#pTable textarea{width:180px;min-height:44px}
+.tpl{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tpl textarea{width:100%;min-height:96px}@media(max-width:800px){.tpl{grid-template-columns:1fr}}
+details summary{cursor:pointer;color:var(--muted)}
 a{color:var(--accent)}
 </style>
 </head>
@@ -35,9 +39,25 @@ a{color:var(--accent)}
 </section>
 <main id="app" hidden>
   <section class="kpis" id="kpis"></section>
-  <section class="card" id="scorecardBox" hidden><h2>Daily scorecard</h2><p class="muted">Copied to clipboard — paste into Issue #5 / WhatsApp. Outreach numbers (found/contacted/replies) live in the private CRM, so fill those in before posting.</p><pre id="scorecardText" style="white-space:pre-wrap;margin:0"></pre></section>
+  <section class="card" id="scorecardBox" hidden><h2>Daily scorecard</h2><p class="muted">Copied to clipboard — paste into Issue #5 / WhatsApp. Outreach numbers come from the Prospects list below.</p><pre id="scorecardText" style="white-space:pre-wrap;margin:0"></pre></section>
   <section class="card"><h2>Follow-ups due</h2><div id="due" class="muted">—</div></section>
   <section class="card"><h2>Client previews <a href="/preview-builder" style="font-size:12px;font-weight:600">+ build one</a></h2><p class="muted">A view means the prospect (or someone they shared it with) opened the link — a good moment to follow up.</p><div id="previews" class="muted">—</div></section>
+  <section class="card" id="prospectsCard"><h2>Prospects — businesses with no website</h2>
+    <p class="muted">Found by <code>scripts/prospecting/find-no-website.mjs</code> on your laptop. Highest score = busy, well-reviewed, WhatsApp-able. Message by hand, keep it under the daily cap, and stop if someone says no.</p>
+    <div class="kpis" id="pKpis"></div>
+    <div class="row" style="margin:12px 0">
+      <label>Show <select id="pStage"><option value="">Open</option><option value="all">All</option></select></label>
+      <input id="pSearch" type="search" placeholder="Search name, category, area…" style="flex:1;min-width:160px">
+      <label class="ghost" style="cursor:pointer"><input id="pFile" type="file" accept=".json,.csv,application/json,text/csv" hidden><span class="pill">Import file (.json / .csv)</span></label>
+      <span id="pImportMsg" class="muted"></span>
+    </div>
+    <details><summary>WhatsApp message templates</summary>
+      <p class="muted">Placeholders: {name} {area} {rating} {reviews} {preview}. Saved in this browser only.</p>
+      <div class="tpl"><label>First touch (no preview yet)<textarea id="tplFirst"></textarea></label><label>With preview link<textarea id="tplPreview"></textarea></label></div>
+      <p><button class="ghost" id="tplReset" type="button">Reset to defaults</button></p>
+    </details>
+    <div id="pTable" class="muted">—</div>
+  </section>
   <section class="card"><h2>Leads &amp; pipeline</h2><p class="muted">Stages: new → contacted → qualified → proposal → won / lost. Quote = agreed price <b>excluding GST</b> (booked when won). Collected = cash actually received <b>excluding the 18% GST</b> (GST collected is a liability, not revenue).</p><div id="leads">Loading…</div></section>
   <div class="grid2">
     <section class="card"><h2>Sources</h2><div id="sources"></div></section>
@@ -85,6 +105,7 @@ a{color:var(--accent)}
     $("offers").innerHTML = table(rep.offers, [["Offer", "offer"], ["Leads", "leads"], ["Won", "won"]]);
     $("errors").innerHTML = table(rep.errors, [["Error", "label"], ["Page", "path"], ["Count", "n"]]);
     renderLeads(leads.leads || []);
+    loadProspects().catch(() => {});
   }
 
   function waHref(l) {
@@ -128,6 +149,138 @@ a{color:var(--accent)}
     } catch (err) { status.textContent = " failed"; }
   });
 
+
+  // ------------------------------------------------ XEND-ACQ-002 prospects (no-website businesses)
+  const DAILY_CAP = 25;
+  const TPL_KEY = "xs-prospect-templates";
+  const TPL_DEFAULT = {
+    first: "Namaste! Main Sahil, Xender Secrets (Gurugram) se. Google Maps par {name} dekha{rating_line} — lekin website nahi mili.\n\nKya main aapke liye ek free sample website bana ke bhej doon? Koi charge ya commitment nahi.\n\nInterest nahi hai toh bas \"No\" likh dijiye, dobara message nahi karunga 🙏",
+    preview: "Namaste! Main Sahil, Xender Secrets (Gurugram) se. {name} ke liye ek free sample website banayi hai:\n{preview}\n\nMobile par chalti hai aur WhatsApp/call button seedha aapke paas jaata hai. Pasand aaye toh ₹999 + GST mein aapki real photos ke saath live kar denge.\n\nInterest nahi hai toh \"No\" likh dijiye 🙏",
+  };
+  const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+  const tpls = () => { try { return { ...TPL_DEFAULT, ...JSON.parse(store.get(TPL_KEY) || "{}") }; } catch { return { ...TPL_DEFAULT }; } };
+  const saveTpls = () => store.set(TPL_KEY, JSON.stringify({ first: $("tplFirst").value, preview: $("tplPreview").value }));
+  const fillTpls = () => { const t = tpls(); $("tplFirst").value = t.first; $("tplPreview").value = t.preview; };
+  fillTpls();
+  $("tplFirst").oninput = $("tplPreview").oninput = saveTpls;
+  $("tplReset").onclick = () => { store.set(TPL_KEY, "{}"); fillTpls(); };
+
+  let pStages = ["new", "messaged", "replied", "interested", "converted", "not_interested", "skip"];
+  let pStats = { messaged_today: 0 };
+  let pRows = [];
+  const today = () => new Date().toISOString().slice(0, 10);
+  const plusDays = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+  const isMobile = (p) => /^\+91[6-9]\d{9}$/.test(p || "");
+  const cityOf = (addr) => (/gurugram|gurgaon/i.test(addr || "") ? "Gurugram" : /delhi/i.test(addr || "") ? "Delhi" : /noida/i.test(addr || "") ? "Noida" : "");
+
+  function message(p) {
+    const t = tpls();
+    const previewUrl = p.preview_id ? "https://www.xendersecrets.com/p/" + p.preview_id : "";
+    const ratingLine = p.rating ? ` (${p.rating}★, ${p.reviews ?? 0} reviews — badhiya!)` : "";
+    return (previewUrl ? t.preview : t.first)
+      .replace(/\{rating_line\}/g, ratingLine).replace(/\{name\}/g, p.name).replace(/\{area\}/g, p.area || "")
+      .replace(/\{rating\}/g, p.rating ?? "").replace(/\{reviews\}/g, p.reviews ?? "").replace(/\{preview\}/g, previewUrl);
+  }
+  function previewHref(p) {
+    if (!p.vertical) return "";
+    const cfg = { vertical: p.vertical, name: p.name, area: p.area || "", city: cityOf(p.address), phone: p.phone || "", address: p.address || "", mapsQuery: [p.name, p.area].filter(Boolean).join(" "), googleUrl: p.maps_url || "" };
+    return "/preview-builder#prospect=" + encodeURIComponent(p.id) + "&cfg=" + encodeURIComponent(JSON.stringify(cfg));
+  }
+
+  async function loadProspects() {
+    const qs = new URLSearchParams({ stage: $("pStage").value, q: $("pSearch").value.trim() });
+    const j = await api("/api/admin/prospects?" + qs).then((r) => r.json());
+    pStages = j.stages || pStages; pStats = j.stats || pStats; pRows = j.prospects || [];
+    if ($("pStage").options.length < 3) pStages.forEach((s) => $("pStage").insertAdjacentHTML("beforeend", `<option value="${s}">${s.replace("_", " ")}</option>`));
+    const b = pStats.by_stage || {};
+    const open = (b.new || 0) + (b.messaged || 0) + (b.replied || 0) + (b.interested || 0);
+    $("pKpis").innerHTML = [["Open prospects", open], ["Found today", pStats.found_today], ["Messaged today", `${pStats.messaged_today} / ${DAILY_CAP}`], ["Replies today", pStats.replies_today], ["Interested", b.interested || 0], ["Follow-ups due", pStats.follow_ups_due]]
+      .map(([k, n]) => `<div class="kpi"><b class="${k === "Messaged today" && pStats.messaged_today >= DAILY_CAP ? "bad" : ""}">${esc(n ?? 0)}</b><span>${esc(k)}</span></div>`).join("");
+    renderProspects();
+  }
+
+  function renderProspects() {
+    if (!pRows.length) { $("pTable").innerHTML = '<p class="muted">No prospects here yet. Run the finder on your laptop, then import its .json file above (or use <code>--upload</code>).</p>'; return; }
+    $("pTable").innerHTML = "<table><tr><th>Business</th><th>Google</th><th>Score</th><th>Contact</th><th>Stage</th><th>Follow-up</th><th>Notes</th><th></th></tr>" + pRows.map((p) => {
+      const pv = previewHref(p);
+      const due = p.next_action_at && p.next_action_at <= today() && ["messaged", "replied", "interested"].includes(p.stage);
+      return `<tr data-id="${esc(p.id)}">
+        <td class="prospect"><b>${esc(p.name)}</b><small>${esc([p.category, p.area].filter(Boolean).join(" · "))}</small>${p.maps_url ? `<small><a href="${esc(p.maps_url)}" target="_blank" rel="noopener noreferrer">Maps ↗</a></small>` : ""}</td>
+        <td>${p.rating != null ? esc(p.rating) + "★" : "—"}<small class="muted" style="display:block">${esc(p.reviews ?? 0)} reviews</small></td>
+        <td><b>${esc(p.score)}</b></td>
+        <td class="prospect">${p.phone ? esc(p.phone) : '<span class="muted">no phone</span>'}
+          ${isMobile(p.phone) ? `<small><a href="#" data-wa>WhatsApp ${p.preview_id ? "(with preview)" : "(first touch)"}</a></small>` : p.phone ? `<small><a href="tel:${esc(p.phone)}">Call (landline)</a></small>` : ""}
+          ${p.preview_id ? `<small><a href="/preview?id=${esc(p.preview_id)}&nocount=1" target="_blank">/p/${esc(p.preview_id)}</a></small>` : pv ? `<small><a href="${esc(pv)}" target="_blank">Build preview</a></small>` : '<small class="muted">no preview template for this category</small>'}
+          ${p.lead_id ? `<small>Lead ${esc(p.lead_id)}</small>` : ""}</td>
+        <td><select name="stage">${pStages.map((s) => `<option value="${s}" ${s === p.stage ? "selected" : ""}>${s.replace("_", " ")}</option>`).join("")}</select></td>
+        <td><input name="next_action_at" type="date" value="${esc(p.next_action_at)}">${due ? '<small class="bad">due</small>' : ""}</td>
+        <td><textarea name="notes" placeholder="Owner name, reply, objection…">${esc(p.notes)}</textarea></td>
+        <td><button data-psave>Save</button>${!p.lead_id && ["replied", "interested"].includes(p.stage) ? ' <button class="ghost" data-convert title="Move into the leads pipeline">→ Lead</button>' : ""}<small class="status"></small></td></tr>`;
+    }).join("") + "</table>";
+  }
+
+  const patchProspect = (id, body) => api("/api/admin/prospects/" + encodeURIComponent(id), { method: "PATCH", body: JSON.stringify(body) }).then((r) => r.json());
+
+  $("pTable").addEventListener("click", async (e) => {
+    const tr = e.target.closest("tr[data-id]"); if (!tr) return;
+    const id = tr.dataset.id, p = pRows.find((x) => x.id === id), status = tr.querySelector(".status");
+    if (e.target.matches("[data-wa]")) {
+      e.preventDefault();
+      if (p.stage === "new" && pStats.messaged_today >= DAILY_CAP && !confirm(`You've already messaged ${pStats.messaged_today} businesses today. Sending more cold messages risks a WhatsApp ban. Send anyway?`)) return;
+      window.open("https://wa.me/" + p.phone.replace(/\D/g, "") + "?text=" + encodeURIComponent(message(p)), "_blank", "noopener");
+      if (p.stage === "new") { await patchProspect(id, { stage: "messaged", ...(p.next_action_at ? {} : { next_action_at: plusDays(2) }) }); loadProspects().catch(() => {}); }
+      return;
+    }
+    if (e.target.matches("[data-psave]")) {
+      const patch = {}; tr.querySelectorAll("[name]").forEach((el) => { patch[el.name] = el.value; });
+      status.textContent = "…";
+      const j = await patchProspect(id, patch).catch(() => ({}));
+      status.textContent = j.ok ? " saved" : " " + (j.error || "error"); status.className = "status " + (j.ok ? "ok" : "bad");
+      if (j.ok) loadProspects().catch(() => {});
+      return;
+    }
+    if (e.target.matches("[data-convert]")) {
+      const j = await api("/api/admin/prospects/" + encodeURIComponent(id) + "/convert", { method: "POST" }).then((r) => r.json());
+      status.textContent = j.ok ? " → " + j.lead_id : " " + (j.error || "error"); status.className = "status " + (j.ok ? "ok" : "bad");
+      if (j.ok) load().catch(() => {});
+    }
+  });
+
+  function parseCsv(txt) {
+    const rows = []; let row = [], cell = "", q = false;
+    for (let i = 0; i < txt.length; i++) {
+      const c = txt[i];
+      if (q) { if (c === '"' && txt[i + 1] === '"') { cell += '"'; i++; } else if (c === '"') q = false; else cell += c; }
+      else if (c === '"') q = true; else if (c === ",") { row.push(cell); cell = ""; }
+      else if (c === "\n" || c === "\r") { if (c === "\r" && txt[i + 1] === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+      else cell += c;
+    }
+    if (cell || row.length) { row.push(cell); rows.push(row); }
+    const [head, ...body] = rows.filter((r) => r.some((x) => x.trim()));
+    return (body || []).map((r) => Object.fromEntries(head.map((h, i) => [h.trim(), String(r[i] ?? "").replace(/^'(?=[=+\-@])/, "")])));
+  }
+  $("pFile").onchange = async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    $("pImportMsg").textContent = "Importing…"; $("pImportMsg").className = "muted";
+    try {
+      const txt = await f.text();
+      const list = /\.csv$/i.test(f.name) ? parseCsv(txt) : JSON.parse(txt);
+      const arr = Array.isArray(list) ? list : list.prospects || [];
+      let added = 0, updated = 0;
+      for (let i = 0; i < arr.length; i += 200) {
+        const j = await api("/api/admin/prospects/import", { method: "POST", body: JSON.stringify({ prospects: arr.slice(i, i + 200) }) }).then((r) => r.json());
+        if (!j.ok) throw new Error(j.error || "Import failed");
+        added += j.added; updated += j.updated;
+      }
+      $("pImportMsg").textContent = `${added} new · ${updated} refreshed`; $("pImportMsg").className = "ok";
+      loadProspects().catch(() => {});
+    } catch (err) { $("pImportMsg").textContent = String(err.message || err); $("pImportMsg").className = "bad"; }
+    e.target.value = "";
+  };
+  let searchTimer;
+  $("pSearch").oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadProspects().catch(() => {}), 250); };
+  $("pStage").onchange = () => loadProspects().catch(() => {});
+
   $("csv").onclick = async () => {
     const r = await api("/api/admin/leads.csv" + ($("showTest").checked ? "?test=1" : ""));
     const url = URL.createObjectURL(await r.blob());
@@ -140,13 +293,13 @@ a{color:var(--accent)}
   // MIS-001 daily scorecard: today's site funnel + pipeline snapshot, as paste-ready text.
   $("scorecard").onclick = async () => {
     const [today, all] = await Promise.all([api("/api/admin/report?days=1").then((r) => r.json()), api("/api/admin/leads").then((r) => r.json())]);
-    const f = today.funnel, v = today.revenue, d = new Date().toISOString().slice(0, 10);
+    const f = today.funnel, v = today.revenue, o = today.outreach || {}, d = new Date().toISOString().slice(0, 10);
     const stage = Object.fromEntries((today.pipeline || []).map((p) => [p.stage, p.leads]));
     const newToday = (all.leads || []).filter((l) => String(l.created_at).startsWith(d)).length;
     const viewedToday = (today.previews || []).filter((p) => String(p.last_view_at || "").startsWith(d)).length;
     const lines = [
       `Xender daily scorecard — ${d}`,
-      `Qualified leads found: __ · Contacted: __ · Replies: __  (from CRM)`,
+      `Prospects found: ${o.found_today ?? 0} · Messaged: ${o.messaged_today ?? 0} · Replies: ${o.replies_today ?? 0} · Interested (open): ${o.by_stage?.interested ?? 0}`,
       `Website: ${f.page_views} visits · ${f.lead_starts} form starts · ${newToday} new enquiries · ${f.whatsapp_clicks} WhatsApp clicks`,
       `Previews opened today: ${viewedToday}`,
       `Pipeline: new ${stage.new || 0} · contacted ${stage.contacted || 0} · qualified ${stage.qualified || 0} · proposal ${stage.proposal || 0} · won ${stage.won || 0} · lost ${stage.lost || 0}`,
