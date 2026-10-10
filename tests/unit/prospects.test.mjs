@@ -80,6 +80,11 @@ test('normalisers, vertical mapping and score', () => {
   const quiet = scoreProspect({ phone: '+919810123456', rating: 3.9, reviews: 4 });
   const landline = scoreProspect({ phone: '+911244012345', rating: 4.8, reviews: 300 });
   assert.ok(busy > quiet && busy > landline && busy <= 100, `${busy} ${quiet} ${landline}`);
+  // sweet spot: a 4.6★ / 200-review clinic outranks a 4.3★ / 5,853-review chain restaurant
+  const clinic = scoreProspect({ phone: '+919810123456', rating: 4.6, reviews: 200 });
+  const chain = scoreProspect({ phone: '+919667180466', rating: 4.3, reviews: 5853 });
+  const bakery = scoreProspect({ phone: '+918510800040', rating: 4.9, reviews: 1318 });
+  assert.ok(clinic > chain + 30 && bakery > chain + 30, `${clinic} ${bakery} ${chain}`);
   assert.equal(validateProspect({ name: 'X', website: 'x.com' }).error, 'has a website');
 });
 

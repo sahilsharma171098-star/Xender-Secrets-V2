@@ -56,14 +56,18 @@ export function verticalFor(category) {
 }
 
 /**
- * Priority 0–100. Busy, well-reviewed businesses with a WhatsApp-able number come first:
- * they have customers searching for them and the most to gain from a site.
+ * Priority 0–100. Established independents (roughly 30–800 reviews, high rating, WhatsApp-able
+ * number) come first: real demand, owner-reachable, most to gain from a site. Very large
+ * listings are tapered down because they are usually chains/brands with a site elsewhere.
  * No phone → 0 (nothing to act on).
  */
 export function scoreProspect({ phone, rating, reviews }) {
   if (!phone) return 0;
   const n = Math.max(0, Number(reviews) || 0);
-  const reviewsPart = Math.min(50, (50 * Math.log10(1 + n)) / Math.log10(301));
+  let reviewsPart = Math.min(50, (50 * Math.log10(1 + n)) / Math.log10(301));
+  // Past ~800 reviews a listing is usually a chain or established brand: likely has a site
+  // elsewhere, an agency, and a front-desk number. Taper them down (floor 10 at ~4,000+).
+  if (n > 800) reviewsPart = Math.max(10, 50 - (40 * Math.log10(n / 800)) / Math.log10(5));
   const r = Number(rating);
   const ratingPart = Number.isFinite(r) && r > 0 ? Math.min(1, Math.max(0, (r - 3.5) / 1.5)) * 40 : 0;
   const mobilePart = isIndianMobile(phone) ? 10 : 0;
