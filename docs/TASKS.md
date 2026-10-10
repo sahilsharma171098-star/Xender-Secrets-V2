@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10)
+Status: REVIEW (branch `claude/acq-002-maps-prospects`)
+Owner: Claude
+
+- `scripts/prospecting/find-no-website.mjs` (local Playwright, visible browser, low volume) finds Google Maps listings without a website → `prospects-out/*.json|csv`, optional `--upload`. Starter queries in `queries.gurugram.txt`.
+- `src/prospects.mjs`: new `growth_prospects` table (additive), import/upsert with de-dup, priority score, stages new → messaged → replied → interested → converted / not interested / skip, convert-to-lead. Admin-only routes under `/api/admin/prospects*`.
+- `/admin`: Prospects section (import file, search, WhatsApp first-touch / with-preview templates, 25/day cap warning, follow-ups, convert). Daily scorecard outreach line is now automatic. `/preview-builder` accepts a prospect prefill and links the saved preview back.
+- Tests: `tests/unit/prospects.test.mjs` (6) — unit suite 68/68; manual E2E of the admin flow against `wrangler dev` with Chrome.
+- Open (Sahil): run the finder on the laptop for a first batch; message ≤25/day by hand.
+
 ## XEND-SHOWCASE-001 — Showcase catalog rebuild: studio design system, catalog, Studio page (2026-10-09)
 Status: REVIEW (branch `claude/xend-showcase-rebuild`)
 Owner: Claude

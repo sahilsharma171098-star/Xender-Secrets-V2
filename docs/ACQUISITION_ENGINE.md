@@ -84,3 +84,17 @@ Track:
 - source and vertical.
 
 The sprint optimizes for qualified conversations and collected revenue, not raw message volume.
+
+## No-website prospect finder (XEND-ACQ-002)
+
+For local SMBs the visible issue is simpler: they have customers searching for them on Google Maps but no website at all.
+
+1. **Find (laptop):** `npm install --no-save playwright@1.57.0 && npx playwright install chromium` once, then
+   `node scripts/prospecting/find-no-website.mjs --file scripts/prospecting/queries.gurugram.txt`
+   It opens a visible Chromium window, scans each search, skips every listing that shows a Website link, and saves the rest to `prospects-out/` (JSON + CSV, git-ignored). Add `--upload` with `XENDER_ADMIN_TOKEN` set to push straight to the MIS, or import the JSON from `/admin` later.
+2. **Prioritise (`/admin` → Prospects):** de-duplicated by phone; score 0–100 favours many reviews, high rating and a +91 mobile (WhatsApp-able). No phone = score 0.
+3. **First touch:** "WhatsApp" opens a prefilled, permission-first message (asks before sending anything, offers an opt-out) and marks the prospect `messaged` with a follow-up in 2 days. Daily cap: 25, with a warning beyond it.
+4. **Preview:** "Build preview" opens `/preview-builder` prefilled from the listing (clinic, gym, café/restaurant, CA/consultant, property categories). Saving links the `/p/<id>` back to the prospect and switches the WhatsApp template to the "with preview" version.
+5. **Convert:** a `replied`/`interested` prospect becomes a `qualified` lead (source `outbound`, campaign `maps-prospecting`) so it counts in pipeline and revenue. The daily scorecard now fills found/messaged/replies automatically.
+
+Limits: Google's terms do not permit automated collection from Maps, so the finder stays low-volume (human-paced, ~25 listings per query, stops on any robot check, no proxies/CAPTCHA solving). Only public business-listing facts are stored. Never bulk-send identical messages; respect every "No".
