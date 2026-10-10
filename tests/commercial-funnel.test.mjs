@@ -82,7 +82,7 @@ async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = n
 const rows = (db, q) => db.exec(q).toArray();
 const flushEvents = (page) => page.evaluate(() => { document.dispatchEvent(new Event('visibilitychange')); window.dispatchEvent(new Event('pagehide')); });
 
-test('homepage answers the buyer questions and keeps the live-E2E contract', async () => {
+test('homepage is a price-free showcase and keeps the live-E2E contract', async () => {
   const { page, log, context } = await newPage();
   await page.goto(ORIGIN + '/');
   const h1 = await page.locator('h1').innerText();
@@ -90,8 +90,19 @@ test('homepage answers the buyer questions and keeps the live-E2E contract', asy
   assert.ok(await page.locator('#services .card').count() >= 3);
   assert.ok(await page.locator('a[href*="wa.me/919821941814"]').count() >= 1);
   assert.ok(await page.locator('a[href*="website-catalog"]').count() >= 1);
+  // Two doors: premium studio and fixed-price local packages.
+  assert.ok(await page.locator('#paths a[href="/studio"]').count() === 1);
+  assert.ok(await page.locator('#paths a[href="/services"]').count() === 1);
+  // Featured work uses real screenshots of the demos, every tile labelled honestly.
+  const tiles = page.locator('#work .sx-tile');
+  assert.equal(await tiles.count(), 6);
+  for (const t of await tiles.all()) {
+    assert.match(await t.locator('.pf-kind').innerText(), /concept demo|working demo|xender product/i);
+    assert.match(await t.locator('img').getAttribute('src'), /^\/work\/[a-z-]+-1200\.webp$/);
+  }
   const text = await page.locator('main').innerText();
-  for (const must of ['₹999', '₹1,999', '₹3,499', '+ 18% GST', '₹1,178.82 incl. GST', '₹2,358.82 incl. GST', '₹4,128.82 incl. GST', 'Are prices inclusive of GST?', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
+  assert.ok(!/₹|US\$/.test(text), 'no prices on the homepage');
+  for (const must of ['GST-registered', 'Concept demo', 'Are the projects in the catalog client work?']) assert.ok(text.toLowerCase().includes(must.toLowerCase()), 'homepage mentions ' + must);
   assert.ok(await page.locator('form[data-lead-form]').count() === 1);
   const lds = (await page.locator('script[type="application/ld+json"]').allInnerTexts()).map((t) => JSON.parse(t)['@type']);
   assert.deepEqual(lds, ['ProfessionalService', 'FAQPage']);
@@ -121,8 +132,8 @@ test('mobile: no horizontal overflow, menu toggles, key pages clean', async () =
 
 test('offer button preselects the offer; empty contact is caught client-side', async () => {
   const { page, log, context } = await newPage();
-  await page.goto(ORIGIN + '/');
-  await page.click('[data-cta="home-offer-business-starter-1999"]');
+  await page.goto(ORIGIN + '/services.html');
+  await page.click('[data-cta="services-offer-business-starter-1999"]');
   assert.equal(await page.inputValue('#lf-offer'), 'business-starter-1999');
   await page.fill('#lf-name', 'Asha');
   await page.click('form[data-lead-form] [type="submit"]');
@@ -133,8 +144,8 @@ test('offer button preselects the offer; empty contact is caught client-side', a
 
 test('lead submit stores attribution, shows reference and a one-tap WhatsApp follow-up', async () => {
   const { page, db, log, context } = await newPage();
-  await page.goto(ORIGIN + '/?utm_source=linkedin&utm_campaign=clinics-oct');
-  await page.click('[data-cta="home-card"]');
+  await page.goto(ORIGIN + '/services.html?utm_source=linkedin&utm_campaign=clinics-oct');
+  await page.click('[data-cta="services-card"]');
   await page.fill('#lf-name', 'Asha Verma');
   await page.fill('#lf-phone', '98765 43210');
   await page.fill('#lf-business', 'Verma Dental, Gurugram');
@@ -154,8 +165,8 @@ test('lead submit stores attribution, shows reference and a one-tap WhatsApp fol
   assert.equal(lead.source, 'linkedin');
   assert.equal(lead.campaign, 'clinics-oct');
   assert.equal(lead.website, 'https://vermadental.in');
-  assert.equal(lead.page, '/');
-  assert.equal(lead.cta, 'home-start-form');
+  assert.equal(lead.page, '/services.html');
+  assert.equal(lead.cta, 'services-start-form');
   await flushEvents(page);
   await page.waitForTimeout(300);
   const ev = Object.fromEntries(rows(db, 'SELECT event,SUM(count) n FROM growth_daily GROUP BY event').map((r) => [r.event, r.n]));
@@ -200,13 +211,13 @@ test('whatsapp clicks are measured; GPC visitors send no events', async () => {
   await gpc.context.close();
 });
 
-test('theme: light by default, dark persists across reloads', async () => {
+test('theme: dark by default, light persists across reloads', async () => {
   const { page, context } = await newPage();
   await page.goto(ORIGIN + '/');
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme || 'light'), 'light');
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme || 'dark'), 'dark');
   await page.click('#themeToggle');
   await page.reload();
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
   await context.close();
 });
 
@@ -367,35 +378,25 @@ const scrollInto = (page, sel, frac) => page.evaluate(([s, f]) => {
   scrollTo({ top: top + (el.offsetHeight - innerHeight) * f, behavior: 'instant' });
 }, [sel, frac]);
 
-test('homepage scroll scenes scrub forwards and backwards with scroll position', async () => {
+test('catalog search and filters combine; empty state offers a quote', async () => {
   const { page, log, context } = await newPage();
-  await page.goto(ORIGIN + '/');
-  assert.equal(await page.evaluate(() => document.documentElement.classList.contains('scroll-fx')), true);
-  const read = async (sel) => { await page.waitForTimeout(120); return scrollMetrics(page, sel); };
-  // Pinned "what we build" stack: progress and the active layer follow the scroll position.
-  await scrollInto(page, '.stack', 0.1); const a = await read('.stack');
-  await scrollInto(page, '.stack', 0.9); const b = await read('.stack');
-  await scrollInto(page, '.stack', 0.4); const c = await read('.stack');
-  assert.ok(a.p < c.p && c.p < b.p, `stack progress ${a.p} < ${c.p} < ${b.p}`);
-  assert.deepEqual([a.step, c.step, b.step], ['0', '1', '3']);
-  assert.equal(c.active, '1', 'scrolling back re-activates the earlier layer');
-  // Horizontal rail moves with vertical scroll and back again.
-  const tx = () => page.evaluate(() => new DOMMatrix(getComputedStyle(document.querySelector('.rail-track')).transform).m41);
-  await scrollInto(page, '.rail', 0); await page.waitForTimeout(120); const x0 = await tx();
-  await scrollInto(page, '.rail', 1); await page.waitForTimeout(120); const x1 = await tx();
-  await scrollInto(page, '.rail', 0.2); await page.waitForTimeout(120); const x2 = await tx();
-  assert.ok(x1 < x2 && x2 < x0 + 1, `rail translate ${x0} → ${x1} → ${x2}`);
-  // The stages really stay pinned (an overflow:hidden ancestor would silently break sticky).
-  for (const [scene, stage] of [['.rail', '.rail-sticky'], ['.stack', '.stack-sticky']]) {
-    await scrollInto(page, scene, 0.5); await page.waitForTimeout(80);
-    const top = await page.evaluate((s) => document.querySelector(s).getBoundingClientRect().top, stage);
-    assert.ok(Math.abs(top) < 2, `${stage} pinned at top (top=${top})`);
+  await page.goto(ORIGIN + '/portfolio');
+  const visible = () => page.locator('.pf-card:not([hidden])').count();
+  await page.fill('#pfSearch', 'booking');
+  assert.ok(await visible() >= 1);
+  assert.ok((await page.locator('.pf-card:not([hidden]) h3').allInnerTexts()).some((t) => /Slotly/.test(t)));
+  await page.click('[data-filter="backend"]');
+  await page.fill('#pfSearch', 'zzz-nothing');
+  assert.equal(await visible(), 0);
+  assert.equal(await page.locator('#pfEmpty').isVisible(), true);
+  await page.fill('#pfSearch', '');
+  assert.equal(await visible(), 2);
+  // Every card image is a local screenshot that exists on disk.
+  for (const src of await page.locator('.pf-card .pf-shot img').evaluateAll((is) => is.map((i) => i.getAttribute('src')))) {
+    assert.ok(fs.existsSync(path.join(PUBLIC, src)), src);
   }
-  // Hero exit scene.
-  await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); const h0 = await read('.hx');
-  await page.evaluate(() => scrollTo({ top: 400, behavior: 'instant' })); const h1 = await read('.hx');
-  assert.ok(h0.p === 0 && h1.p > 0, `hero ${h0.p} → ${h1.p}`);
   assert.deepEqual(log.errors, []);
+  assert.deepEqual(log.missing, []);
   await context.close();
 });
 
@@ -406,14 +407,13 @@ test('reduced motion and no-JS: no pinned layouts, all story content readable', 
     assert.equal(await page.evaluate(() => document.documentElement.classList.contains('scroll-fx')), false, p);
     assert.equal(await page.evaluate(() => document.documentElement.classList.contains('motion-enabled')), false, p);
   }
-  assert.equal(await page.locator('.pf-step p:visible').count(), 4, 'all four story steps visible');
-  assert.equal(await page.evaluate(() => document.querySelector('.pf-story').offsetHeight < innerHeight * 2), true, 'story is not pinned');
+  assert.equal(await page.locator('.pf-card:visible').count(), 11, 'all projects visible with reduced motion');
   await ctx.close();
 
   const { page: np, context: nojs } = await newPage({ viewport: { width: 375, height: 812 }, contextOptions: { javaScriptEnabled: false } });
   await np.goto(ORIGIN + '/portfolio');
   assert.equal(await np.locator('.pf-card:visible').count(), 11, 'every project visible without JS');
-  assert.equal(await np.locator('.stack-step, .pf-step p').filter({ hasText: /./ }).count() >= 4, true);
+  assert.equal(await np.locator('.pf-card .pf-one').filter({ hasText: /./ }).count(), 11, 'every description readable without JS');
   const d = await np.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   assert.ok(d <= 1, 'no overflow without JS');
   await nojs.close();

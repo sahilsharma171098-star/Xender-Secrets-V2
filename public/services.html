@@ -7,7 +7,7 @@
   <meta name="description" content="Fixed-price website packages: free website check, ₹999 one-page site, ₹1,999 Business Starter, ₹3,499 Business Pro, and custom builds from ₹4,999. All prices + 18% GST. No compulsory monthly fees.">
   <link rel="canonical" href="https://www.xendersecrets.com/services">
   <meta name="robots" content="index,follow">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0f0f0e">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Xender Secrets">
   <meta property="og:title" content="Website Packages &amp; Pricing from ₹999 + GST | Xender Secrets">
@@ -15,7 +15,9 @@
   <meta property="og:url" content="https://www.xendersecrets.com/services">
   <meta property="og:image" content="https://www.xendersecrets.com/og-xender.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script>try{if(localStorage.getItem("xs-theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
+  <script>try{if(localStorage.getItem("xs-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="preload" href="/fonts/playfair-display-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/home.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://www.xendersecrets.com/#business","name":"Xender Secrets","url":"https://www.xendersecrets.com/","image":"https://www.xendersecrets.com/og-xender.png","logo":{"@type":"ImageObject","url":"https://www.xendersecrets.com/og-xender.png"},"email":"Sahilsharma171098@gmail.com","description":"Business websites, landing pages and website redesigns for small businesses.","founder":{"@type":"Person","name":"Sahil Kumar Sharma"},"areaServed":["IN","GB","US","CA"],"telephone":"+91-9821941814","address":{"@type":"PostalAddress","addressLocality":"Gurugram","addressRegion":"Haryana","addressCountry":"IN"},"priceRange":"₹999–₹4,999+ (+18% GST)"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What's not included?","acceptedAnswer":{"@type":"Answer","text":"Domain names, paid hosting, paid plugins, stock photos and third-party subscriptions are billed at cost if you need them. Anything outside the agreed scope is quoted before we do it."}},{"@type":"Question","name":"Can I start with ₹999 and upgrade later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Many businesses start with one page and add pages once enquiries come in; you pay only the difference in scope, quoted in writing."}},{"@type":"Question","name":"How long does it take?","acceptedAnswer":{"@type":"Answer","text":"It depends on the package and how quickly we receive your logo, photos and text. We agree a delivery date in writing with your quote, before any payment."}},{"@type":"Question","name":"How do payments work?","acceptedAnswer":{"@type":"Answer","text":"You receive a written quote with scope, price and delivery date first. Payment terms are stated on the quote, and every payment gets a GST-compliant invoice."}},{"@type":"Question","name":"Are prices inclusive of GST?","acceptedAnswer":{"@type":"Answer","text":"No — package prices are shown before GST, and 18% GST is added on the invoice. For example, the Founding Website is ₹999 + ₹179.82 GST = ₹1,178.82. Xender Secrets is GST-registered (GSTIN 06IQFPS4456B1ZP), so you receive a proper tax invoice; GST-registered businesses can usually claim the GST as input tax credit — confirm with your CA."}},{"@type":"Question","name":"Do I have to pay every month?","acceptedAnswer":{"@type":"Answer","text":"No. There is no compulsory maintenance or retainer. You pay only for hosting or a domain if your setup needs them, and only for support if you choose it."}},{"@type":"Question","name":"Who owns the website?","acceptedAnswer":{"@type":"Answer","text":"You do. We hand over the files, content and access at launch."}},{"@type":"Question","name":"Do you do custom software, AI workflows or automation?","acceptedAnswer":{"@type":"Answer","text":"Yes, as custom work from ₹4,999 + GST — e.g. booking or quote flows, lead routing, dashboards, AI-assisted workflows. We scope it after a short discussion and suggest the simplest version that works."}}]}</script>
@@ -27,16 +29,16 @@
     <div class="wrap header-inner">
       <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
       <nav class="nav" id="nav" aria-label="Main">
-        <a href="/portfolio">Portfolio</a>
-        <a href="/services" aria-current="page">Services</a>
-        <a href="/website-catalog">Demos</a>
+        <a href="/portfolio">Catalog</a>
+        <a href="/studio">Studio</a>
+        <a href="/services" aria-current="page">Pricing</a>
         <a href="/articles">Guides</a>
         <a href="/about">About</a>
         <a href="/contact">Contact</a>
       </nav>
       <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark mode">◐</button>
-        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Get a quote</a>
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to light mode">◐</button>
+        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Start a project</a>
         <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
       </div>
     </div>
@@ -138,7 +140,7 @@
     <section class="section alt" id="compare">
       <div class="wrap">
         <div class="section-head"><p class="kicker">Compare</p><h2>What each package <span>includes.</span></h2></div>
-        <div class="card table-wrap">
+        <div class="card table-wrap" tabindex="0" role="region" aria-label="Package comparison table">
           <table class="compare">
             <thead><tr><th scope="col">Feature</th><th scope="col">Founding · ₹999 + GST</th><th scope="col">Starter · ₹1,999 + GST</th><th scope="col">Pro · ₹3,499 + GST</th></tr></thead>
             <tbody><tr><th scope="row">Total incl. 18% GST</th><td>₹1,178.82</td><td>₹2,358.82</td><td>₹4,128.82</td></tr><tr><th scope="row">Pages</th><td>1 (up to 6 sections)</td><td>Up to 3</td><td>Up to 5</td></tr><tr><th scope="row">Mobile-first responsive design</th><td>✓</td><td>✓</td><td>✓</td></tr><tr><th scope="row">WhatsApp &amp; call buttons</th><td>✓</td><td>✓</td><td>✓</td></tr><tr><th scope="row">Location map &amp; contact section</th><td>✓</td><td>✓</td><td>✓</td></tr><tr><th scope="row">Enquiry form</th><td>—</td><td>✓</td><td>✓</td></tr><tr><th scope="row">On-page SEO basics (titles, descriptions, headings)</th><td>Basic</td><td>City &amp; service wording</td><td>Per service page</td></tr><tr><th scope="row">Analytics setup</th><td>—</td><td>—</td><td>✓</td></tr><tr><th scope="row">Revision rounds on the preview</th><td>Agreed in quote</td><td>Agreed in quote</td><td>Agreed in quote</td></tr><tr><th scope="row">Handover of files &amp; access</th><td>✓</td><td>✓</td><td>✓</td></tr></tbody>
@@ -267,7 +269,7 @@
               <option value="business-starter-1999">₹1,999 + GST · Business Starter (3 pages)</option>
               <option value="business-pro-3499">₹3,499 + GST · Business Pro (5 pages)</option>
               <option value="redesign">Redesign my existing website</option>
-              <option value="custom-build">Custom build / automation</option>
+              <option value="custom-build">Custom website, store or web app</option>
               <option value="not-sure">Not sure yet</option>
             </select>
           </div>
@@ -292,7 +294,8 @@
         GSTIN: 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a>
       </div>
       <nav class="footer-links" aria-label="Footer">
-        <a href="/portfolio">Portfolio</a>
+        <a href="/portfolio">Catalog</a>
+        <a href="/studio">Studio</a>
         <a href="/services">Pricing</a>
         <a href="/website-catalog">All demos</a>
         <a href="/business-templates">Templates</a>

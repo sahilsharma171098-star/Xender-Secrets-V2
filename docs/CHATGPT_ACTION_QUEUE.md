@@ -165,3 +165,9 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 - Expected: `.html`, apex and `http://` entries move to "Page with redirect"; `/demo-backend-api` to "Excluded by noindex"; commercial pages get recrawled. Indexing itself isn't guaranteed on a new domain.
 - MIS: record per-URL inspection status (indexed / crawled-not-indexed / discovered) on the Day-7 row of `docs/SEO_TRAFFIC_PLAN.md` §4.
 - Optional decision for Sahil (Cloudflare → SSL/TLS → Edge Certificates): turning **Always Use HTTPS off** makes `http://xendersecrets.com/x` one 301 instead of two, because the Worker already upgrades the scheme. Leaving it on is also fine.
+
+## Added by Claude — 2026-10-09 (XEND-SHOWCASE-001)
+### CQ-020 — Move novels to a subdomain (P2, Sahil decision + Cloudflare access)
+- Channel: Cloudflare dashboard (DNS + Workers routes) — needs Sahil's login.
+- Action: decide the hostname (e.g. `novels.xendersecrets.com`), add it as a Worker custom domain for `xender-secrets-v2`, then ask Claude to add host-based routing and 301s from `/novels`, `/reader` and chapter URLs. Do not remove the existing URLs before the redirects ship (they carry search traffic).
+- Expected: the main domain reads as a studio catalog; novel traffic keeps working.
