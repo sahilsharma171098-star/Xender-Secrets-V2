@@ -13,3 +13,11 @@ test('ambiguous provider receipt, pending reply, contact cooldown and followup c
 });
 test('WhatsApp requires opt-in and matching channel preference',()=>{const i=input();i.touch.channel=i.approval.channel=i.lead.preferred_channel='WhatsApp';i.lead.permission_status='REVIEWED_BASIS';assert.equal(checkOutreach(i).ok,false);});
 test('approval for another contact cannot borrow this leads permission',()=>{const i=input();i.touch.target=i.approval.target='other@example.invalid';assert.equal(checkOutreach(i).ok,false);});
+
+test('approved email cannot borrow an unrelated suppression key',()=>{
+  const i=input();
+  i.lead.suppression_key='email:other@example.invalid';
+  i.suppression=[{contact_key:'email:test@example.invalid'}];
+  assert.equal(checkOutreach(i).ok,false);
+  assert.equal(checkOutreach(i).reason,'Suppression identity mismatch');
+});

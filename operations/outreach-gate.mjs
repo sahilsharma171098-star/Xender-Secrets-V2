@@ -7,6 +7,9 @@ export function checkOutreach({lead, approval, suppression = [], touch, now = Da
   if (!['OPTED_IN','REVIEWED_BASIS'].includes(lead.permission_status) || !lead.permission_evidence) return reject('Permission evidence required');
   if (!touch?.target || !touch.content_hash || !touch.channel) return reject('Exact touch required');
   if (lead.target !== touch.target) return reject('Recipient does not match verified lead');
+  // Prevent a caller from attaching an unrelated, unsuppressed key to an email recipient.
+  // Approval matching below deliberately remains exact, including original recipient casing.
+  if (touch.channel === 'Email' && lead.suppression_key !== 'email:' + String(lead.target).trim().toLowerCase()) return reject('Suppression identity mismatch');
   if (touch.channel === 'WhatsApp' && lead.permission_status !== 'OPTED_IN') return reject('WhatsApp opt-in required');
   if (lead.preferred_channel && lead.preferred_channel !== touch.channel) return reject('Channel preference mismatch');
   if (!approval || approval.status !== 'APPROVED' || !approval.approved_by || !approval.evidence_url) return reject('Human approval required');
