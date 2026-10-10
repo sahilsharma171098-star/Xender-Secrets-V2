@@ -1,0 +1,26 @@
+name: Validate Facebook novel campaign
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/facebook-novel-campaign.mjs'
+      - 'tests/marketing/facebook-novels.test.mjs'
+      - 'public/licensed-novels.js'
+      - 'public/novel-data/catalog.json'
+      - '.github/workflows/facebook-novel-*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check scripts/facebook-novel-campaign.mjs
+      - run: node --test tests/marketing/facebook-novels.test.mjs
+      - run: node scripts/facebook-novel-campaign.mjs --dry-run > /tmp/novel-posts.json
