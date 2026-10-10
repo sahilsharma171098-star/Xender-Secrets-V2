@@ -114,7 +114,7 @@ One thing to avoid: a form that says "under maintenance". Patients won't wait fo
 Clinic websites from ₹999 + GST, with a live preview before you pay: https://www.xendersecrets.com/clinic-website-development?utm_source=linkedin&utm_medium=organic&utm_campaign=20261009-clinic
 ```
 
-### Day 5 · Sat 10 Oct · Concept demo (gyms)
+### Day 5 · Sat 10 Oct · Concept demo (gyms) (PUBLISHED 2026-10-10, `urn:li:share:7514541414144315392`)
 ```
 Concept demo: what a gym website needs to turn a visitor into a trial.
 
