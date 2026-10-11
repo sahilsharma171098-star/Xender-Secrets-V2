@@ -15,7 +15,7 @@ export function parseResearchArgs(args) {
     const arg = args[i];
     if (arg === "--help" || arg === "-h") opts.help = true;
     else if (arg === "--platform" || arg === "--query") {
-      if (!args[i + 1]) throw new Error("Missing value for " + arg);
+      if (i + 1 >= args.length) throw new Error("Missing value for " + arg);
       opts[arg.slice(2)] = args[++i];
     } else if (arg.startsWith("--platform=")) opts.platform = arg.slice(11);
     else if (arg.startsWith("--query=")) opts.query = arg.slice(8);
