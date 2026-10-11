@@ -1,5 +1,16 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11)
+Status: REVIEW (branch `chatgpt/xend-agent-reach-001`)
+Owner: ChatGPT
+
+- Add user-only Windows bootstrap for pinned Agent-Reach, read-only diagnostics, a single Facebook/Instagram OpenCLI research capture command and unit tests.
+- Local-only output under gitignored `prospects-out/agent-reach`; public business evidence must be checked before private MIS import.
+- Do not add a Cloudflare Worker dependency, log in automatically, copy cookies, send bulk DMs or bypass platform protections.
+- Next: review PR, run safe bootstrap on ThinkPad, inspect `agent-reach doctor`, and separately approve needed desktop channel installs and Chrome extension setup.
+- Setup guide: `docs/AGENT_REACH_XENDER.md`. No live machine install / capture / outreach completed in this PR.
+
+
 ## XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10)
 Status: REVIEW (branch `claude/acq-002-maps-prospects`)
 Owner: Claude
