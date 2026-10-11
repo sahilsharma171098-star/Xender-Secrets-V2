@@ -127,7 +127,7 @@ This is a concept template we built, not a client project:
 See the gym concept and what's included: https://www.xendersecrets.com/gym-website-development?utm_source=linkedin&utm_medium=organic&utm_campaign=20261010-gym
 ```
 
-### Day 6 · Sun 11 Oct · What we saw this week
+### Day 6 · Sun 11 Oct · What we saw this week (PUBLISHED 2026-10-11, `urn:li:share:7514903317437722624`)
 ```
 This week we reviewed small-business websites across Gurugram. These were the most common problems, and none of them needs a redesign to fix:
 
