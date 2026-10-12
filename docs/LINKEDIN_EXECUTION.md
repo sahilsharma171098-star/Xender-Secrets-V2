@@ -141,7 +141,7 @@ This week we reviewed small-business websites across Gurugram. These were the mo
 Each one costs enquiries without anyone noticing. Want us to check yours? It's free: https://www.xendersecrets.com/?utm_source=linkedin&utm_medium=organic&utm_campaign=20261011-patterns
 ```
 
-### Day 7 · Mon 12 Oct · Real estate & recruiters + transparent pricing
+### Day 7 · Mon 12 Oct · Real estate & recruiters + transparent pricing (PUBLISHED 2026-10-12, `urn:li:share:7515265873021124608`)
 ```
 Real-estate agents and recruiters live or die on enquiries. Yet many sites send leads to a generic contact page.
 
@@ -181,3 +181,24 @@ No public LinkedIn "need a website" posts in Gurugram were found through web sea
 | LI-08 | Dental clinic | DLF Phase 1 | © 2020, a "Start 2021 with a Smile" event still live, no WhatsApp | clinic | P1 |
 | LI-09 | Real estate | Gurugram / Delhi | © 2022, no listings on a property site, CTA typo | real-estate | P2 |
 | LI-10 | Gym | Gurugram (2 clubs) | WhatsApp icon number may differ from the listed phone; repeated sections | gym | P2 |
+
+## 6. Week-1 review (2026-10-12, Windsor LinkedIn Organic data)
+
+| Day | Post | Impressions | Clicks | Likes | Comments |
+|---|---|---|---|---|---|
+| 1 | Offer intro | 18 | 1 | 0 | 0 |
+| 2 | Practical checklist | 14 | 1 | 0 | 0 |
+| 3 | CA firms | 66 | 1 | 0 | 0 |
+| 4 | Clinics | 9 | 1 | 0 | 0 |
+| 5 | Gym concept demo | 4 | 0 | 0 | 0 |
+| 6 | What we saw this week | not reported yet | | | |
+| 7 | Real estate + pricing | published today | | | |
+
+Followers stayed at 1 all week. Three other posts went out on the page from outside this plan (one on 6 Oct, two on 9 Oct). They got 5–9 impressions each.
+
+What this says:
+- With 1 follower, the page has almost no organic reach. Every post is seen by a handful of people. No reshare from Sahil's profile shows up in the numbers, and CQ-LI-03 is still open.
+- The CA firm post got about 4× the impressions of any other post. A vertical-specific, practical post is the one format worth repeating.
+- Clicks are flat at 1 per post, so no landing page is proven yet.
+
+Next week: post 3 times, not 7. Make every post vertical-specific (CA, then clinics, then CA again). Sahil reshares each one with a one-line personal note. The real lever is CQ-LI-02 (the direct first touches), not more page posts.
