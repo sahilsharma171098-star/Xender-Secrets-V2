@@ -188,9 +188,18 @@ Status: REVIEW · Owner: ChatGPT · Branch: `chatgpt/xend-growth-20261014`
 - Existing task-board statuses are historical; live PR states must be checked separately.
 
 
+## XEND-LOCAL-SETUP-001 — Current-main integration (2026-10-14)
+Status: REVIEW · Owner: ChatGPT · PR #45
+
+- Retargeted from the already-shipped #42 branch to main; preserved latest showcase homepage and SEO blog.
+- Reapplied reviewed CLI guards, local doctor/dev/verification tooling, Playwright dependency and regression tests.
+- Dropped only obsolete `.stack-stage` CSS because those classes no longer exist in current home.css.
+- CI rerun required after integration. No local installation claimed; this Work session's terminal/browser are blocked by invalid Linux paths in Windows sandbox/runtime configuration.
+
+
 ## XEND-SALES-003 — Exact-brand previews integration (2026-10-14)
 Status: REVIEW · Owner: ChatGPT · PR #32
 
-- Preserved current prospect prefill and preview-to-prospect linking while adding public logo URL support and a verified-issue field for personalised outreach drafts.
-- Retained escaping, URL sanitisation, admin-only sharing and explicit concept/not-official labels.
-- CI must pass after integrating current main before deployment. No prospect preview or new outreach was auto-created by this code change.
+- Preserved current prospect prefill and preview-to-prospect linking; added public logo URL and verified-issue input for personalised outreach drafts.
+- Kept escaping, HTTP(S) URL sanitisation, admin-only share creation, expiry and explicit concept/not-official labels.
+- Integrated on top of merged #45, preserving the Windows/local setup fixes and current showcase. CI rerun required; no customer preview or outbound message was automatically created.

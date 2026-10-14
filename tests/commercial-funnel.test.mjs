@@ -47,10 +47,13 @@ let browser;
 test.before(async () => { browser = await chromium.launch(); });
 test.after(async () => { await browser?.close(); });
 
-async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = null, sql = null, contextOptions = {} } = {}) {
+// `cores` pins navigator.hardwareConcurrency: home.js skips scroll-fx on <=2-core devices, so without
+// this the motion tests depended on the machine running them (2-vCPU runners/laptop VMs failed).
+async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = null, sql = null, contextOptions = {}, cores = 8 } = {}) {
   const db = sql || doSql();
   ensureGrowthSchema(db);
   const context = await browser.newContext({ viewport, ...contextOptions });
+  await context.addInitScript((n) => Object.defineProperty(Navigator.prototype, 'hardwareConcurrency', { get: () => n, configurable: true }), cores);
   const page = await context.newPage();
   const log = { errors: [], external: [], leadPosts: 0, missing: [] };
   page.on('pageerror', (e) => log.errors.push(e.message));
@@ -417,6 +420,26 @@ test('reduced motion and no-JS: no pinned layouts, all story content readable', 
   const d = await np.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   assert.ok(d <= 1, 'no overflow without JS');
   await nojs.close();
+});
+
+// The static (no scroll-fx) homepage is what reduced-motion users, Save-Data users and low-end
+// (<=2 core) phones get; it used to overflow ~27px at 375px because of the 3D stack illustration.
+test('static homepage (reduced motion, low-power, no JS) never overflows on phones', async () => {
+  const variants = [
+    ['reduced motion', { contextOptions: { reducedMotion: 'reduce' } }],
+    ['2-core device', { cores: 2 }],
+    ['no JS', { contextOptions: { javaScriptEnabled: false } }],
+  ];
+  for (const [label, opts] of variants) {
+    for (const width of [360, 375, 414]) {
+      const { page, context } = await newPage({ viewport: { width, height: 800 }, ...opts });
+      await page.goto(ORIGIN + '/');
+      if (label !== 'no JS') assert.equal(await page.evaluate(() => document.documentElement.classList.contains('scroll-fx')), false, label);
+      const d = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      assert.ok(d <= 1, `${label}: / overflows by ${d}px at ${width}px`);
+      await context.close();
+    }
+  }
 });
 
 test('portfolio: filters, deep links, sharing and "build something like this" → quote', async () => {
