@@ -1,5 +1,11 @@
 # Xender Secrets V2 — Current State
 
+## XEND-AGENT-REACH-001 (2026-10-11, ChatGPT, branch `chatgpt/xend-agent-reach-001`)
+- Implemented **repo-side integration preparation only**: pinned user-only Windows setup script, read-only OpenCLI Facebook/Instagram capture script, tests, runbook.
+- Agent-Reach is a local agent capability layer, not part of the public site/Worker or an automatic DM provider. No live laptop install, connected social account, lead capture or production deploy has occurred.
+- Pending local setup + doctor check and separate user-controlled Chrome/OpenCLI configuration; public business vetting before existing private MIS import.
+
+
 ## XEND-SHOWCASE-001 (2026-10-09, Claude, branch `claude/xend-showcase-rebuild`)
 - Site positioned as a showcase catalog; homepage has no prices. Pricing lives on `/services`; premium lane on `/studio`; catalog on `/portfolio` (nav label "Catalog").
 - Design tokens + fonts in `public/home.css`; dark is the default theme. Showcase images in `public/work/` — re-capture when a demo changes (1440×900 → 1200/640 WebP).
