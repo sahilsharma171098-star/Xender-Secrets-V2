@@ -5,6 +5,10 @@ deploys, logs in to Cloudflare, or touches production data. Use PowerShell (not 
 call `npm.cmd`/`npx.cmd` if PowerShell's execution policy blocks `npm.ps1`. Do not change the
 execution policy machine-wide for this.
 
+## Current-main integration (14 October 2026)
+
+PR #42 is already merged. The current showcase homepage removed the old `.hx-stage` and `.stack-stage` illustration, so the obsolete PR CSS hunk is deliberately not restored. The mobile static-layout regression test remains. This PR ships tooling; it does not claim the user's current Windows session has been repaired or the software installed.
+
 ## 1. Tools (free)
 
 | Tool | Why | Install (user scope where possible) |

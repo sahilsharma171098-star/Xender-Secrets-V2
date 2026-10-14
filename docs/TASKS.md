@@ -1,5 +1,37 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11)
+Status: REVIEW (branch `chatgpt/xend-agent-reach-001`)
+Owner: ChatGPT
+
+- Add user-only Windows bootstrap for pinned Agent-Reach, read-only diagnostics, a single Facebook/Instagram OpenCLI research capture command and unit tests.
+- Local-only output under gitignored `prospects-out/agent-reach`; public business evidence must be checked before private MIS import.
+- Do not add a Cloudflare Worker dependency, log in automatically, copy cookies, send bulk DMs or bypass platform protections.
+- Next: review PR, run safe bootstrap on ThinkPad, inspect `agent-reach doctor`, and separately approve needed desktop channel installs and Chrome extension setup.
+- Setup guide: `docs/AGENT_REACH_XENDER.md`. No live machine install / capture / outreach completed in this PR.
+
+
+## XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10)
+Status: REVIEW (branch `claude/acq-002-maps-prospects`)
+Owner: Claude
+
+- `scripts/prospecting/find-no-website.mjs` (local Playwright, visible browser, low volume) finds Google Maps listings without a website → `prospects-out/*.json|csv`, optional `--upload`. Starter queries in `queries.gurugram.txt`.
+- `src/prospects.mjs`: new `growth_prospects` table (additive), import/upsert with de-dup, priority score, stages new → messaged → replied → interested → converted / not interested / skip, convert-to-lead. Admin-only routes under `/api/admin/prospects*`.
+- `/admin`: Prospects section (import file, search, WhatsApp first-touch / with-preview templates, 25/day cap warning, follow-ups, convert). Daily scorecard outreach line is now automatic. `/preview-builder` accepts a prospect prefill and links the saved preview back.
+- Tests: `tests/unit/prospects.test.mjs` (6) — unit suite 68/68; manual E2E of the admin flow against `wrangler dev` with Chrome.
+- Open (Sahil): run the finder on the laptop for a first batch; message ≤25/day by hand.
+
+## XEND-SHOWCASE-001 — Showcase catalog rebuild: studio design system, catalog, Studio page (2026-10-09)
+Status: REVIEW (branch `claude/xend-showcase-rebuild`)
+Owner: Claude
+
+- New site-wide design system in `public/home.css` (direction explored in Google Stitch): charcoal default with warm-paper light mode, self-hosted Playfair Display + Inter (`public/fonts/`, OFL), hairline editorial layout, one saffron accent. Every generated page picks it up; theme default is now dark (`xs-theme=light` opts into light).
+- Homepage is a price-free showcase: hero + real screenshot reel, two doors (Studio for brands → `/studio`, packages for local businesses → `/services`), 6 featured builds, capabilities (`#services`), industries, process, studio facts, guides, FAQ, one lead form. Pinned scroll scenes removed (no scroll-jacking).
+- `/portfolio` is now the Catalog: real screenshots (`public/work/*.webp`, captured from the demos) instead of 11 live iframes, filters + search + empty state, 32 industry design directions, share box. New `/studio` page for the premium lane.
+- Removed invented trust stats ("4.9★ Client trust", "24/7 Enquiries", "★ 4.9 local rating") from `template-preview.js`.
+- Prices stay on `/services` (GST rules unchanged); showcase lead forms use price-free option labels.
+- Tests: unit 62/62, browser 25/25 (incl. the 4 mobile-overflow/scroll failures that existed on `main`), axe WCAG 2.1 AA clean on 8 key pages in both themes at 1440/390.
+
 ## XEND-PORTFOLIO-002 — Sales portfolio, live demos and scroll-scrubbed site (2026-10-08)
 Status: REVIEW (branch `claude/project-thread-5ar4i7`)
 Owner: Claude
@@ -144,3 +176,22 @@ Delivered: `extension/` (MV3 Chrome/Edge + Firefox build, 49 checks, scoring, po
 Open (Sahil): submit to Edge Add-ons, then Firefox AMO (`extension/store/release-checklist.md`); Chrome registration fee (US$5 one-time) is approved by Sahil as of 6 October 2026; submit when the owner-side registration/payment step is completed. After each approval, set the store URL in `SITECHECK_STORES` and rebuild pages.
 Next version candidates: highlight-on-page for issues, optional same-origin link status checks (explicit opt-in permission), page weight from Resource Timing, export to PDF, Hindi UI.
 
+
+
+## XEND-SEO-BLOG-001 — Contractor buyer guide (2026-10-14)
+Status: REVIEW · Owner: ChatGPT · Branch: `chatgpt/xend-growth-20261014`
+
+- Original roofing/contractor guide covering project evidence, services, service areas, quote forms, mobile launch checks and follow-up.
+- Added through `scripts/commercial/articles.mjs`; regenerated article, homepage guide link, Guides hub and sitemap.
+- Verified: `node scripts/build-commercial-pages.mjs --check`; `node --test --test-isolation=none tests/unit/seo.test.mjs` (17/17).
+- Production publication is pending merge/deployment; indexing and ranking are not claimed.
+- Existing task-board statuses are historical; live PR states must be checked separately.
+
+
+## XEND-LOCAL-SETUP-001 — Current-main integration (2026-10-14)
+Status: REVIEW · Owner: ChatGPT · PR #45
+
+- Retargeted from the already-shipped #42 branch to main; preserved latest showcase homepage and SEO blog.
+- Reapplied reviewed CLI guards, local doctor/dev/verification tooling, Playwright dependency and regression tests.
+- Dropped only obsolete `.stack-stage` CSS because those classes no longer exist in current home.css.
+- CI rerun required after integration. No local installation claimed; this Work session's terminal/browser are blocked by invalid Linux paths in Windows sandbox/runtime configuration.

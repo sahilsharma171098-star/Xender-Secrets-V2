@@ -14,6 +14,7 @@
 // against node:sqlite.
 
 import { sanitizeConfig } from "../public/preview/preview-core.mjs";
+import { ensureProspectSchema, handleProspectsAdmin, prospectStats } from "./prospects.mjs";
 
 export const LEAD_STAGES = ["new", "contacted", "qualified", "proposal", "won", "lost"];
 export const OFFERS = [
@@ -178,6 +179,7 @@ export function ensureGrowthSchema(sql) {
       last_view_at TEXT
     );
   `);
+  ensureProspectSchema(sql); // XEND-ACQ-002 outbound prospects (src/prospects.mjs)
 }
 
 async function sha256Hex(value) {
@@ -399,6 +401,7 @@ export function buildReport(sql, { days = 30, nowMs = Date.now() } = {}) {
       deals_won: Number(won?.leads || 0),
     },
     previews: rows("SELECT id,business,vertical,views,last_view_at FROM growth_previews ORDER BY COALESCE(last_view_at,created_at) DESC LIMIT 20"),
+    outreach: prospectStats(sql, nowMs),
     follow_ups_due: rows("SELECT id,name,business,stage,next_action,next_action_at FROM growth_leads WHERE is_test=0 AND stage NOT IN ('won','lost') AND next_action_at<>'' AND next_action_at<=? ORDER BY next_action_at", new Date(nowMs).toISOString().slice(0, 10)),
   };
 }
@@ -521,6 +524,8 @@ export async function handleGrowth(request, { sql, env = {}, nowMs = Date.now() 
       sql.exec("DELETE FROM growth_previews WHERE id=?", pd[1]);
       return json({ ok: true });
     }
+    const prospects = await handleProspectsAdmin(request, { sql, url, nowMs, json, leadRef });
+    if (prospects) return prospects;
     if (path === "/api/admin/report" && method === "GET") {
       return json(buildReport(sql, { days: url.searchParams.get("days"), nowMs }));
     }

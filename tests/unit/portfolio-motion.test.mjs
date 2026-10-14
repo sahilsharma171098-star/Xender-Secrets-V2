@@ -57,23 +57,23 @@ test("demos carry the honest ribbon and the rebuilt demos are interactive", () =
   assert.match(read("public/xs-growth.js"), /window\.self !== window\.top/);
 });
 
-test("scroll scenes are scrubbed by scroll position, optional and reduced-motion safe", () => {
-  assert.match(homepage, /data-scroll-scene="exit"/);
-  assert.match(homepage, /data-scroll-scene="pin" data-steps="4"/);
-  assert.match(homepage, /class="rail" id="work" data-scroll-scene="pin"/);
-  assert.match(portfolio, /class="pf-story" id="process" data-scroll-scene="pin" data-steps="4"/);
-  assert.match(engine, /setProperty\("--p"/);
+test("motion is optional and reduced-motion safe; no pinned scroll-jacking", () => {
+  assert.doesNotMatch(homepage, /data-scroll-scene="pin"/, "homepage scrolls normally");
+  assert.doesNotMatch(portfolio, /data-scroll-scene="pin"/, "catalog scrolls normally");
   assert.match(engine, /prefers-reduced-motion: reduce/);
   assert.match(engine, /saveData/);
-  assert.match(engine, /classList\.add\("scroll-fx"\)/);
-  // Pinned (tall) layouts only exist when JS opted in.
-  assert.match(read("public/home.css"), /html\.scroll-fx \.stack\{height:400vh\}/);
-  assert.match(read("public/portfolio.css"), /html\.scroll-fx \.pf-story\{height:380vh\}/);
+  assert.match(engine, /IntersectionObserver/);
+  assert.match(read("public/home.css"), /@media\s*\(prefers-reduced-motion:reduce\)/);
 });
 
-test("navigation leads with Portfolio, Services and Contact / Get a quote", () => {
+test("showcase uses real, local screenshots of every project", () => {
+  for (const p of PROJECTS) for (const w of [640, 1200]) assert.ok(fs.existsSync(path.join(ROOT, "public/work", `${p.slug}-${w}.webp`)), `${p.slug}-${w}.webp`);
+  assert.doesNotMatch(portfolio, /<iframe/, "no heavy live iframes on the catalog");
+});
+
+test("navigation leads with Catalog, Studio, Pricing and Contact / Start a project", () => {
   const nav = homepage.match(/<nav class="nav"[\s\S]*?<\/nav>/)[0];
-  for (const href of ["/portfolio", "/services", "/contact"]) assert.ok(nav.includes(`href="${href}"`), "home nav " + href);
-  assert.match(homepage, /data-cta="header-quote">Get a quote</);
+  for (const href of ["/portfolio", "/studio", "/services", "/contact"]) assert.ok(nav.includes(`href="${href}"`), "home nav " + href);
+  assert.match(homepage, /data-cta="header-quote">Start a project</);
   assert.match(read("public/services.html"), /<nav class="nav"[\s\S]*href="\/portfolio"[\s\S]*<\/nav>/);
 });

@@ -5,29 +5,36 @@
   const cards = [...document.querySelectorAll(".pf-card[data-cats]")];
   const filters = [...document.querySelectorAll(".pf-filter[data-filter]")];
   const status = document.getElementById("pfStatus");
-  const frames = [...document.querySelectorAll("[data-live-frame]")];
   const names = Object.fromEntries(filters.map((b) => [b.dataset.filter, b.firstChild.textContent.trim()]));
 
-  // ---- category filter, mirrored in ?type= so a filtered view can be shared
-  const setFilter = (value, { push = false } = {}) => {
-    if (!names[value]) value = "all";
+  // ---- category filter + text search, filter mirrored in ?type= so a filtered view can be shared
+  const search = document.getElementById("pfSearch");
+  const empty = document.getElementById("pfEmpty");
+  let current = "all";
+  const apply = () => {
+    const q = (search && search.value || "").trim().toLowerCase();
     let shown = 0;
     for (const card of cards) {
-      const match = value === "all" || card.dataset.cats.split(" ").includes(value);
+      const match = (current === "all" || card.dataset.cats.split(" ").includes(current)) && (!q || (card.dataset.search || "").includes(q));
       card.hidden = !match;
       if (match) shown++;
     }
-    for (const b of filters) b.setAttribute("aria-pressed", String(b.dataset.filter === value));
-    if (status) status.textContent = "Showing " + shown + " " + (shown === 1 ? "project" : "projects") + (value === "all" ? "." : " in " + names[value] + ".");
+    for (const b of filters) b.setAttribute("aria-pressed", String(b.dataset.filter === current));
+    if (empty) empty.hidden = shown > 0;
+    if (status) status.textContent = "Showing " + (current === "all" && !q ? "all " + shown + " projects" : shown + " " + (shown === 1 ? "project" : "projects")) + (current === "all" ? "" : " in " + names[current]) + (q ? " matching “" + q + "”" : "") + ".";
+  };
+  const setFilter = (value, { push = false } = {}) => {
+    current = names[value] ? value : "all";
+    apply();
     if (push) {
       const url = new URL(location.href);
-      if (value === "all") url.searchParams.delete("type"); else url.searchParams.set("type", value);
+      if (current === "all") url.searchParams.delete("type"); else url.searchParams.set("type", current);
       url.hash = "projects";
       history.replaceState(null, "", url);
     }
-    sizeFrames();
   };
   filters.forEach((b) => b.addEventListener("click", () => setFilter(b.dataset.filter, { push: true })));
+  search?.addEventListener("input", apply);
   const initial = new URLSearchParams(location.search).get("type");
   if (initial) setFilter(initial);
 
@@ -37,28 +44,12 @@
     if (!id.startsWith("p-")) return;
     const card = document.getElementById(id);
     if (!card) return;
-    if (card.hidden) setFilter("all");
+    if (card.hidden) { if (search) search.value = ""; setFilter("all"); }
     cards.forEach((c) => c.classList.toggle("is-target", c === card));
     card.scrollIntoView({ block: "start" });
   };
   addEventListener("hashchange", focusTarget);
   focusTarget();
-
-  // ---- live previews: render each demo at desktop width, scaled to the card
-  function sizeFrames() {
-    for (const f of frames) if (f.offsetWidth) f.style.setProperty("--s", (f.offsetWidth / 1280).toFixed(4));
-  }
-  if (frames.length) {
-    document.documentElement.classList.add("pf-scaled");
-    for (const f of frames) {
-      const iframe = f.querySelector("iframe");
-      f.classList.add("is-loading");
-      iframe.addEventListener("load", () => f.classList.remove("is-loading"), { once: true });
-    }
-    if ("ResizeObserver" in window) new ResizeObserver(sizeFrames).observe(document.querySelector(".pf-grid"));
-    addEventListener("resize", sizeFrames, { passive: true });
-    sizeFrames();
-  }
 
   // ---- copy helpers
   const copy = async (text, input) => {

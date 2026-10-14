@@ -1,5 +1,16 @@
 # Xender Secrets V2 — Current State
 
+## XEND-AGENT-REACH-001 (2026-10-11, ChatGPT, branch `chatgpt/xend-agent-reach-001`)
+- Implemented **repo-side integration preparation only**: pinned user-only Windows setup script, read-only OpenCLI Facebook/Instagram capture script, tests, runbook.
+- Agent-Reach is a local agent capability layer, not part of the public site/Worker or an automatic DM provider. No live laptop install, connected social account, lead capture or production deploy has occurred.
+- Pending local setup + doctor check and separate user-controlled Chrome/OpenCLI configuration; public business vetting before existing private MIS import.
+
+
+## XEND-SHOWCASE-001 (2026-10-09, Claude, branch `claude/xend-showcase-rebuild`)
+- Site positioned as a showcase catalog; homepage has no prices. Pricing lives on `/services`; premium lane on `/studio`; catalog on `/portfolio` (nav label "Catalog").
+- Design tokens + fonts in `public/home.css`; dark is the default theme. Showcase images in `public/work/` — re-capture when a demo changes (1440×900 → 1200/640 WebP).
+- Pending (Sahil): novels move to a subdomain needs a Cloudflare DNS/route change — see CQ-020.
+
 ## XEND-PORTFOLIO-002 (2026-10-08, Claude, branch `claude/project-thread-5ar4i7`)
 - `/portfolio` moved into the commercial generator: edit `scripts/commercial/portfolio.mjs` (PROJECTS) then `npm run build:pages`; never hand-edit `public/portfolio.html`.
 - Scroll scenes: add `data-scroll-scene="exit|pass|pin"` (+ `data-steps`) and style with `var(--p)` / `var(--k)`; pinned heights only under `html.scroll-fx`. Sticky stages must not have an `overflow:hidden` ancestor.
@@ -132,3 +143,9 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Content: 4 buyer guides rewritten and generated (BlogPosting schema, ≥ 600 words); `/faq` rebuilt from current offers (22 Q&A, FAQPage); `/website-catalog`, `/business-templates`, `/articles` get server-rendered sections + CollectionPage/Breadcrumb (`scripts/seo/hubs.mjs`); homepage nav and a guides section link Services/Catalog/Guides/About/FAQ.
 - PR #35's Udyam/MSME credential was committed to the root `index.html`, which is **not deployed** (assets = `public/`). It's now in the generated footer and founder section.
 - Tests: `tests/unit/canonical.test.mjs`, `tests/worker/canonical-worker.test.mjs` (real workerd), 7 new checks in `tests/unit/seo.test.mjs`. Live audit: `scripts/seo/audit-live.mjs` + `.github/workflows/seo-live-audit.yml` (preview on branch pushes, strict production check after deploy).
+
+
+## XEND-SEO-BLOG-001 (2026-10-14, ChatGPT)
+- Branch `chatgpt/xend-growth-20261014`: adds an original roofing/contractor website guide via the existing commercial article generator, with homepage discovery, Guides hub card/schema and sitemap entry.
+- Build freshness passes; existing SEO suite 17/17 passes with Node test isolation disabled because this sandbox rejects subprocess spawning.
+- Not merged or production-verified at this checkpoint. No Search Console metrics or ranking improvements are asserted.

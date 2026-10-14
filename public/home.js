@@ -1,16 +1,16 @@
-/* Xender homepage: theme toggle (light default, dark optional) and mobile menu. */
+/* Xender pages: theme toggle (dark default, light optional) and mobile menu. */
 (() => {
   const root = document.documentElement;
   const btn = document.getElementById("themeToggle");
   const paint = () => {
-    const dark = root.dataset.theme === "dark";
-    if (btn) { btn.textContent = dark ? "☀" : "◐"; btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode"); }
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0a0f1a" : "#ffffff");
+    const light = root.dataset.theme === "light";
+    if (btn) { btn.textContent = light ? "◑" : "◐"; btn.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode"); }
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", light ? "#f6f2ea" : "#0f0f0e");
   };
   btn?.addEventListener("click", () => {
-    const dark = root.dataset.theme === "dark";
-    if (dark) root.removeAttribute("data-theme"); else root.dataset.theme = "dark";
-    try { localStorage.setItem("xs-theme", dark ? "light" : "dark"); } catch {}
+    const light = root.dataset.theme === "light";
+    if (light) root.removeAttribute("data-theme"); else root.dataset.theme = "light";
+    try { localStorage.setItem("xs-theme", light ? "dark" : "light"); } catch {}
     paint();
   });
   paint();
@@ -48,7 +48,7 @@
   const lowPower = conn.saveData === true || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
   if (reduced.matches) { reduced.addEventListener?.("change", () => location.reload(), { once: true }); return; }
 
-  const reveal = document.querySelectorAll(".motion-reveal, .section-head, .offers .offer, .grid3 .work, .steps > li");
+  const reveal = document.querySelectorAll(".motion-reveal, .section-head, .offers .offer, .grid3 .work, .steps > li, .sx-tile, .sx-door, .sx-caps .card");
   if ("IntersectionObserver" in window && reveal.length) {
     root.classList.add("motion-enabled");
     const io = new IntersectionObserver((entries) => {
