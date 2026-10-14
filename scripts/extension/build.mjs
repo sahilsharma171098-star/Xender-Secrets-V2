@@ -8,6 +8,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { zip } from "./zip.mjs";
+import { isMain } from "../lib/is-main.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "extension");
 const SRC = path.join(ROOT, "src");
@@ -68,6 +69,6 @@ export function build({ pack = false, targets = Object.keys(TARGETS), log = cons
   return out;
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isMain(import.meta.url)) {
   build({ pack: process.argv.includes("--package") });
 }

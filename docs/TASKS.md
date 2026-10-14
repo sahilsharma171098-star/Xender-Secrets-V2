@@ -186,3 +186,12 @@ Status: REVIEW · Owner: ChatGPT · Branch: `chatgpt/xend-growth-20261014`
 - Verified: `node scripts/build-commercial-pages.mjs --check`; `node --test --test-isolation=none tests/unit/seo.test.mjs` (17/17).
 - Production publication is pending merge/deployment; indexing and ranking are not claimed.
 - Existing task-board statuses are historical; live PR states must be checked separately.
+
+
+## XEND-LOCAL-SETUP-001 — Current-main integration (2026-10-14)
+Status: REVIEW · Owner: ChatGPT · PR #45
+
+- Retargeted from the already-shipped #42 branch to main; preserved latest showcase homepage and SEO blog.
+- Reapplied reviewed CLI guards, local doctor/dev/verification tooling, Playwright dependency and regression tests.
+- Dropped only obsolete `.stack-stage` CSS because those classes no longer exist in current home.css.
+- CI rerun required after integration. No local installation claimed; this Work session's terminal/browser are blocked by invalid Linux paths in Windows sandbox/runtime configuration.
