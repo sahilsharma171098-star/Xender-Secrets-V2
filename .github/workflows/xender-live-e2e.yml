@@ -42,6 +42,7 @@ on:
       - 'scripts/build-commercial-pages.mjs'
       - 'public/*.html'
       - 'public/_redirects'
+      - 'public/_headers'
       - 'public/sitemap.xml'
       - 'public/index.html'
       - 'public/home.css'
@@ -82,8 +83,12 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Reader data + Worker reader API unit tests
         run: node --test tests/unit/*.test.mjs
-      - name: Generated commercial pages + sitemap are up to date
+      - name: Generated commercial pages + hubs + sitemap are up to date
         run: node scripts/build-commercial-pages.mjs --check
+      - name: Internal links point at canonical URLs (no .html hops)
+        run: node scripts/seo/normalize-links.mjs --check
+      - name: Canonical 301s through the real Worker + asset layer (local workerd)
+        run: node --test tests/worker/canonical-worker.test.mjs
       - name: Committed novel data is consistent
         run: node scripts/build-novel-data.mjs --check
       - name: Reader sources in a real browser (network mocked)

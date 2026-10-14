@@ -20,7 +20,7 @@ try {
   const hero = (await page.locator('h1').first().innerText()).replace(/\s+/g, ' ');
   const serviceCards = await page.locator('#services .card').count();
   const waLinks = await page.locator('a[href*="wa.me/919821941814"]').count();
-  const catalogLink = await page.locator('a[href*="website-catalog.html"]').count();
+  const catalogLink = await page.locator('a[href*="website-catalog"]').count();
   const leadForm = await page.locator('form[data-lead-form]').count();
   record('homepage_lead_form', leadForm === 1, `leadForms=${leadForm}`);
   record('homepage', title.includes('Xender Secrets') && /websites?/i.test(hero) && serviceCards >= 3 && waLinks >= 1 && catalogLink >= 1,
@@ -181,6 +181,17 @@ try {
   if (!redirect || !/\/small-business-website-india(\.html)?$/.test(redirect.url())) bad.push('mumbai-redirect:' + (redirect && redirect.url()));
   record('commercial_pages', bad.length === 0, bad.join(', ') || 'all commercial pages have one lead form; city redirect ok');
 } catch (e) { record('commercial_pages', false, e); }
+
+// Portfolio (XEND-PORTFOLIO-002): every project card, the quote form and a working category filter.
+try {
+  const r = await page.goto(BASE + '/portfolio', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  const cards = await page.locator('.pf-card').count();
+  const forms = await page.locator('form[data-lead-form]').count();
+  await page.waitForFunction(() => window.XS !== undefined || document.readyState === 'complete', null, { timeout: 15000 });
+  await page.click('[data-filter="backend"]');
+  const backend = await page.locator('.pf-card:not([hidden])').count();
+  record('portfolio', r && r.status() === 200 && cards >= 11 && forms === 1 && backend >= 2, `status=${r && r.status()}; cards=${cards}; forms=${forms}; backend=${backend}`);
+} catch (e) { record('portfolio', false, e); }
 
 // Reader: Gutenberg chapters are static JSON (no backend); XH chapters come from the Worker
 // (/api/reader/*) with the Render service only as a fallback.

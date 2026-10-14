@@ -1,5 +1,59 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11)
+Status: REVIEW (branch `chatgpt/xend-agent-reach-001`)
+Owner: ChatGPT
+
+- Add user-only Windows bootstrap for pinned Agent-Reach, read-only diagnostics, a single Facebook/Instagram OpenCLI research capture command and unit tests.
+- Local-only output under gitignored `prospects-out/agent-reach`; public business evidence must be checked before private MIS import.
+- Do not add a Cloudflare Worker dependency, log in automatically, copy cookies, send bulk DMs or bypass platform protections.
+- Next: review PR, run safe bootstrap on ThinkPad, inspect `agent-reach doctor`, and separately approve needed desktop channel installs and Chrome extension setup.
+- Setup guide: `docs/AGENT_REACH_XENDER.md`. No live machine install / capture / outreach completed in this PR.
+
+
+## XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10)
+Status: REVIEW (branch `claude/acq-002-maps-prospects`)
+Owner: Claude
+
+- `scripts/prospecting/find-no-website.mjs` (local Playwright, visible browser, low volume) finds Google Maps listings without a website → `prospects-out/*.json|csv`, optional `--upload`. Starter queries in `queries.gurugram.txt`.
+- `src/prospects.mjs`: new `growth_prospects` table (additive), import/upsert with de-dup, priority score, stages new → messaged → replied → interested → converted / not interested / skip, convert-to-lead. Admin-only routes under `/api/admin/prospects*`.
+- `/admin`: Prospects section (import file, search, WhatsApp first-touch / with-preview templates, 25/day cap warning, follow-ups, convert). Daily scorecard outreach line is now automatic. `/preview-builder` accepts a prospect prefill and links the saved preview back.
+- Tests: `tests/unit/prospects.test.mjs` (6) — unit suite 68/68; manual E2E of the admin flow against `wrangler dev` with Chrome.
+- Open (Sahil): run the finder on the laptop for a first batch; message ≤25/day by hand.
+
+## XEND-SHOWCASE-001 — Showcase catalog rebuild: studio design system, catalog, Studio page (2026-10-09)
+Status: REVIEW (branch `claude/xend-showcase-rebuild`)
+Owner: Claude
+
+- New site-wide design system in `public/home.css` (direction explored in Google Stitch): charcoal default with warm-paper light mode, self-hosted Playfair Display + Inter (`public/fonts/`, OFL), hairline editorial layout, one saffron accent. Every generated page picks it up; theme default is now dark (`xs-theme=light` opts into light).
+- Homepage is a price-free showcase: hero + real screenshot reel, two doors (Studio for brands → `/studio`, packages for local businesses → `/services`), 6 featured builds, capabilities (`#services`), industries, process, studio facts, guides, FAQ, one lead form. Pinned scroll scenes removed (no scroll-jacking).
+- `/portfolio` is now the Catalog: real screenshots (`public/work/*.webp`, captured from the demos) instead of 11 live iframes, filters + search + empty state, 32 industry design directions, share box. New `/studio` page for the premium lane.
+- Removed invented trust stats ("4.9★ Client trust", "24/7 Enquiries", "★ 4.9 local rating") from `template-preview.js`.
+- Prices stay on `/services` (GST rules unchanged); showcase lead forms use price-free option labels.
+- Tests: unit 62/62, browser 25/25 (incl. the 4 mobile-overflow/scroll failures that existed on `main`), axe WCAG 2.1 AA clean on 8 key pages in both themes at 1440/390.
+
+## XEND-PORTFOLIO-002 — Sales portfolio, live demos and scroll-scrubbed site (2026-10-08)
+Status: REVIEW (branch `claude/project-thread-5ar4i7`)
+Owner: Claude
+
+- `/portfolio` is now generated (`scripts/commercial/portfolio.mjs`, one data source with the homepage rail): 11 live builds across all 8 requested categories, honest labels (Xender product / Working demo / Concept demo), problem, features, tech, live iframe previews of the real demo pages, per-project share deep links (`#p-slug`), shareable filters (`?type=`), "Build something like this" pre-filling the quote form (`cta=portfolio-quote`, offer `custom-build`).
+- Homepage: international-first hero with scroll-scrubbed device composition, pinned "what we build" layer stack (4 steps), horizontal work rail driven by vertical scroll. Header nav on every generated page: Portfolio, Services, Demos, Guides, About, Contact + "Get a quote".
+- `home.js` scroll engine (XEND-MOTION-002): continuous `--p`/`--k` per `[data-scroll-scene]` (exit / pass / pin), off for reduced motion, Save-Data and ≤2-core devices; no-JS renders complete static content.
+- Demos rebuilt: Forge Fitness gym site, Pulse Analytics dashboard, North Store cart, Slotly booking. `demo-ribbon.js` labels every demo and links back to a quote; hidden inside portfolio previews. `xs-growth.js` ignores framed page views.
+- Tests: unit `tests/unit/portfolio-motion.test.mjs`; browser tests appended to `tests/commercial-funnel.test.mjs` (scroll scrub forward/reverse + sticky pinning, reduced motion, no-JS, filters/share/deep link/quote, mobile overflow, demo flows); live E2E `portfolio` check.
+
+## XEND-PORTFOLIO-MOTION-001 — Client portfolio + scroll-led visuals (2026-10-08)
+Status: DONE (merged as PR #39; superseded by XEND-PORTFOLIO-002)
+Owner: ChatGPT
+
+- Add indexable, shareable `/portfolio` with six truthfully labelled demos/product examples and direct demo links.
+- Add accessible category filters, copy/share URL, international-friendly contact CTA and real existing demos.
+- Add lightweight scroll-led showcase, motion reveals and graphical storytelling to the generated homepage and portfolio; reuse scroll motion on commercial pages through home.js.
+- Honor reduced motion, avoid third-party animation SDKs and avoid fabricated client claims.
+- Keep the homepage generator output synchronized, catalog nav updated and sitemap canonical.
+- Acceptance: passing offline CI, production deployment confirmed, mobile/desktop smoke checks where possible.
+
+
 Statuses: `READY`, `IN_PROGRESS`, `REVIEW`, `BLOCKED`, `DONE`
 
 ## XEND-AI-001 — Establish shared ChatGPT + Claude workflow
@@ -124,18 +178,19 @@ Next version candidates: highlight-on-page for issues, optional same-origin link
 
 
 
-## XEND-SALES-003 — Exact-brand prospect previews
-Status: REVIEW · Owner: ChatGPT · Branch: `xend-sales-003-brand-personalization`
+## XEND-SEO-BLOG-001 — Contractor buyer guide (2026-10-14)
+Status: REVIEW · Owner: ChatGPT · Branch: `chatgpt/xend-growth-20261014`
 
-Scope:
-- Use each prospect's exact public business name and brand identity in its private sales preview.
-- Support a public logo image alongside accent colour, hero image, services, location and contact details.
-- Generate outreach copy tied to one verified issue/opportunity when available.
-- Keep previews noindex and explicitly labelled as a Xender concept redesign, not the official website.
-- Never invent reviews, credentials, results, offers or claims.
+- Original roofing/contractor guide covering project evidence, services, service areas, quote forms, mobile launch checks and follow-up.
+- Added through `scripts/commercial/articles.mjs`; regenerated article, homepage guide link, Guides hub and sitemap.
+- Verified: `node scripts/build-commercial-pages.mjs --check`; `node --test --test-isolation=none tests/unit/seo.test.mjs` (17/17).
+- Production publication is pending merge/deployment; indexing and ranking are not claimed.
+- Existing task-board statuses are historical; live PR states must be checked separately.
 
-Acceptance:
-- Logo URLs go through the existing HTTP(S) sanitisation gate.
-- Exact business name and optional logo render safely.
-- Outreach copy says the preview was made specifically for the named business.
-- Existing preview expiry, view tracking, escaping and admin controls remain intact.
+
+## XEND-SALES-003 — Exact-brand previews integration (2026-10-14)
+Status: REVIEW · Owner: ChatGPT · PR #32
+
+- Preserved current prospect prefill and preview-to-prospect linking while adding public logo URL support and a verified-issue field for personalised outreach drafts.
+- Retained escaping, URL sanitisation, admin-only sharing and explicit concept/not-official labels.
+- CI must pass after integrating current main before deployment. No prospect preview or new outreach was auto-created by this code change.

@@ -28,14 +28,29 @@ function doSql() {
   };
 }
 
+const demoBookings = new Set();
+function demoApi(url, req) {
+  const body = () => { try { return JSON.parse(req.postData() || '{}'); } catch { return {}; } };
+  switch (url.pathname) {
+    case '/api/slots': { const d = url.searchParams.get('date'); return { json: { ok: true, date: d, slots: ['10:00', '11:30', '14:00', '16:30'].filter((s) => !demoBookings.has(d + s)) } }; }
+    case '/api/bookings': { const b = body(); if (demoBookings.has(b.date + b.slot)) return { status: 409, json: { ok: false, error: 'That slot is no longer available.' } }; demoBookings.add(b.date + b.slot); return { status: 201, json: { ok: true, bookingId: 'BK-TEST0001', status: 'confirmed' } }; }
+    case '/api/tasks': return { json: { ok: true, tasks: [{ id: 't1', title: 'Ship it', status: 'Todo', owner: 'You' }] } };
+    case '/api/products': return { json: { ok: true, products: [{ id: 'p1', name: 'Kit', category: 'kits', categoryLabel: 'Kits', price: 499, rating: 4.6 }] } };
+    case '/api/quote': return { json: { ok: true, subtotal: 0, shipping: 0, total: 0, currency: 'INR', note: 'Cart is empty' } };
+    case '/api/health': return { json: { ok: true, service: 'Xender Secrets API' } };
+    case '/api/catalog': return { json: { ok: true, builds: 9 } };
+    default: return null;
+  }
+}
+
 let browser;
 test.before(async () => { browser = await chromium.launch(); });
 test.after(async () => { await browser?.close(); });
 
-async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = null, sql = null } = {}) {
+async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = null, sql = null, contextOptions = {} } = {}) {
   const db = sql || doSql();
   ensureGrowthSchema(db);
-  const context = await browser.newContext({ viewport });
+  const context = await browser.newContext({ viewport, ...contextOptions });
   const page = await context.newPage();
   const log = { errors: [], external: [], leadPosts: 0, missing: [] };
   page.on('pageerror', (e) => log.errors.push(e.message));
@@ -45,6 +60,9 @@ async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = n
     const url = new URL(req.url());
     if (url.origin !== ORIGIN) { log.external.push(url.host); return route.fulfill({ status: 204, body: '' }); }
     if (url.pathname.startsWith('/api/')) {
+      // Demo backends (src/index.js AppState) are stubbed with the same response shapes.
+      const demo = demoApi(url, req);
+      if (demo) return route.fulfill(demo);
       if (url.pathname === '/api/lead') { log.leadPosts++; if (leadStatus) return route.fulfill({ status: leadStatus, json: { ok: false, error: 'Server busy' } }); }
       const headers = { ...req.headers() };
       const r = new Request('https://www.xendersecrets.com' + url.pathname + url.search, { method: req.method(), headers, body: ['GET', 'HEAD'].includes(req.method()) ? undefined : req.postData() });
@@ -54,6 +72,8 @@ async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = n
     }
     let file = path.join(PUBLIC, decodeURIComponent(url.pathname));
     if (url.pathname.endsWith('/')) file = path.join(file, 'index.html');
+    // Mirror Cloudflare html_handling (auto-trailing-slash): /page serves page.html.
+    else if (!path.extname(file) && fs.existsSync(file + '.html')) file += '.html';
     if (!file.startsWith(PUBLIC) || !fs.existsSync(file)) { log.missing.push(url.pathname); return route.fulfill({ status: 404, body: 'nf' }); }
     return route.fulfill({ status: 200, headers: { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' }, body: fs.readFileSync(file) });
   });
@@ -62,16 +82,27 @@ async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = n
 const rows = (db, q) => db.exec(q).toArray();
 const flushEvents = (page) => page.evaluate(() => { document.dispatchEvent(new Event('visibilitychange')); window.dispatchEvent(new Event('pagehide')); });
 
-test('homepage answers the buyer questions and keeps the live-E2E contract', async () => {
+test('homepage is a price-free showcase and keeps the live-E2E contract', async () => {
   const { page, log, context } = await newPage();
   await page.goto(ORIGIN + '/');
   const h1 = await page.locator('h1').innerText();
   assert.match(h1, /websites?/i);
   assert.ok(await page.locator('#services .card').count() >= 3);
   assert.ok(await page.locator('a[href*="wa.me/919821941814"]').count() >= 1);
-  assert.ok(await page.locator('a[href*="website-catalog.html"]').count() >= 1);
+  assert.ok(await page.locator('a[href*="website-catalog"]').count() >= 1);
+  // Two doors: premium studio and fixed-price local packages.
+  assert.ok(await page.locator('#paths a[href="/studio"]').count() === 1);
+  assert.ok(await page.locator('#paths a[href="/services"]').count() === 1);
+  // Featured work uses real screenshots of the demos, every tile labelled honestly.
+  const tiles = page.locator('#work .sx-tile');
+  assert.equal(await tiles.count(), 6);
+  for (const t of await tiles.all()) {
+    assert.match(await t.locator('.pf-kind').innerText(), /concept demo|working demo|xender product/i);
+    assert.match(await t.locator('img').getAttribute('src'), /^\/work\/[a-z-]+-1200\.webp$/);
+  }
   const text = await page.locator('main').innerText();
-  for (const must of ['₹999', '₹1,999', '₹3,499', '+ 18% GST', '₹1,178.82 incl. GST', '₹2,358.82 incl. GST', '₹4,128.82 incl. GST', 'Are prices inclusive of GST?', 'Free website check', 'concept demo', 'GST-registered']) assert.ok(text.includes(must), 'homepage mentions ' + must);
+  assert.ok(!/₹|US\$/.test(text), 'no prices on the homepage');
+  for (const must of ['GST-registered', 'Concept demo', 'Are the projects in the catalog client work?']) assert.ok(text.toLowerCase().includes(must.toLowerCase()), 'homepage mentions ' + must);
   assert.ok(await page.locator('form[data-lead-form]').count() === 1);
   const lds = (await page.locator('script[type="application/ld+json"]').allInnerTexts()).map((t) => JSON.parse(t)['@type']);
   assert.deepEqual(lds, ['ProfessionalService', 'FAQPage']);
@@ -101,8 +132,8 @@ test('mobile: no horizontal overflow, menu toggles, key pages clean', async () =
 
 test('offer button preselects the offer; empty contact is caught client-side', async () => {
   const { page, log, context } = await newPage();
-  await page.goto(ORIGIN + '/');
-  await page.click('[data-cta="home-offer-business-starter-1999"]');
+  await page.goto(ORIGIN + '/services.html');
+  await page.click('[data-cta="services-offer-business-starter-1999"]');
   assert.equal(await page.inputValue('#lf-offer'), 'business-starter-1999');
   await page.fill('#lf-name', 'Asha');
   await page.click('form[data-lead-form] [type="submit"]');
@@ -113,8 +144,8 @@ test('offer button preselects the offer; empty contact is caught client-side', a
 
 test('lead submit stores attribution, shows reference and a one-tap WhatsApp follow-up', async () => {
   const { page, db, log, context } = await newPage();
-  await page.goto(ORIGIN + '/?utm_source=linkedin&utm_campaign=clinics-oct');
-  await page.click('[data-cta="home-card"]');
+  await page.goto(ORIGIN + '/services.html?utm_source=linkedin&utm_campaign=clinics-oct');
+  await page.click('[data-cta="services-card"]');
   await page.fill('#lf-name', 'Asha Verma');
   await page.fill('#lf-phone', '98765 43210');
   await page.fill('#lf-business', 'Verma Dental, Gurugram');
@@ -134,8 +165,8 @@ test('lead submit stores attribution, shows reference and a one-tap WhatsApp fol
   assert.equal(lead.source, 'linkedin');
   assert.equal(lead.campaign, 'clinics-oct');
   assert.equal(lead.website, 'https://vermadental.in');
-  assert.equal(lead.page, '/');
-  assert.equal(lead.cta, 'home-start-form');
+  assert.equal(lead.page, '/services.html');
+  assert.equal(lead.cta, 'services-start-form');
   await flushEvents(page);
   await page.waitForTimeout(300);
   const ev = Object.fromEntries(rows(db, 'SELECT event,SUM(count) n FROM growth_daily GROUP BY event').map((r) => [r.event, r.n]));
@@ -180,13 +211,13 @@ test('whatsapp clicks are measured; GPC visitors send no events', async () => {
   await gpc.context.close();
 });
 
-test('theme: light by default, dark persists across reloads', async () => {
+test('theme: dark by default, light persists across reloads', async () => {
   const { page, context } = await newPage();
   await page.goto(ORIGIN + '/');
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme || 'light'), 'light');
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme || 'dark'), 'dark');
   await page.click('#themeToggle');
   await page.reload();
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
   await context.close();
 });
 
@@ -270,7 +301,7 @@ test('every generated commercial page: one lead form, valid metadata, no broken 
     for (const h of hrefs) {
       const p = h.split(/[?#]/)[0];
       const f = p === '/' ? 'index.html' : p.slice(1);
-      if (!fs.existsSync(path.join(PUBLIC, f))) broken.add(file + ' -> ' + h);
+      if (!fs.existsSync(path.join(PUBLIC, f)) && !fs.existsSync(path.join(PUBLIC, f + '.html'))) broken.add(file + ' -> ' + h);
     }
     const offers = await page.locator('[data-offer]').evaluateAll((els) => els.map((e) => e.dataset.offer));
     const options = await page.locator('form[data-lead-form] [name=offer] option').evaluateAll((os) => os.map((o) => o.value));
@@ -331,6 +362,177 @@ test('preview builder: live draft, admin-only share link, prospect view is count
 
   await prospect.goto(ORIGIN + '/preview.html?id=zzzzzz');
   await prospect.waitForFunction(() => /not found/i.test(document.body.innerText));
+  assert.deepEqual(log.errors, []);
+  await context.close();
+});
+
+
+// ---------------------------------------------------------------- XEND-PORTFOLIO-002
+const scrollMetrics = (page, sel) => page.evaluate((s) => {
+  const el = document.querySelector(s);
+  return { p: Number(getComputedStyle(el).getPropertyValue('--p') || -1), step: el.dataset.step || '', active: el.querySelector('.is-active')?.dataset.i || '' };
+}, sel);
+const scrollInto = (page, sel, frac) => page.evaluate(([s, f]) => {
+  const el = document.querySelector(s);
+  const top = el.getBoundingClientRect().top + scrollY;
+  scrollTo({ top: top + (el.offsetHeight - innerHeight) * f, behavior: 'instant' });
+}, [sel, frac]);
+
+test('catalog search and filters combine; empty state offers a quote', async () => {
+  const { page, log, context } = await newPage();
+  await page.goto(ORIGIN + '/portfolio');
+  const visible = () => page.locator('.pf-card:not([hidden])').count();
+  await page.fill('#pfSearch', 'booking');
+  assert.ok(await visible() >= 1);
+  assert.ok((await page.locator('.pf-card:not([hidden]) h3').allInnerTexts()).some((t) => /Slotly/.test(t)));
+  await page.click('[data-filter="backend"]');
+  await page.fill('#pfSearch', 'zzz-nothing');
+  assert.equal(await visible(), 0);
+  assert.equal(await page.locator('#pfEmpty').isVisible(), true);
+  await page.fill('#pfSearch', '');
+  assert.equal(await visible(), 2);
+  // Every card image is a local screenshot that exists on disk.
+  for (const src of await page.locator('.pf-card .pf-shot img').evaluateAll((is) => is.map((i) => i.getAttribute('src')))) {
+    assert.ok(fs.existsSync(path.join(PUBLIC, src)), src);
+  }
+  assert.deepEqual(log.errors, []);
+  assert.deepEqual(log.missing, []);
+  await context.close();
+});
+
+test('reduced motion and no-JS: no pinned layouts, all story content readable', async () => {
+  const { page, context: ctx } = await newPage({ contextOptions: { reducedMotion: 'reduce' } });
+  for (const p of ['/', '/portfolio']) {
+    await page.goto(ORIGIN + p);
+    assert.equal(await page.evaluate(() => document.documentElement.classList.contains('scroll-fx')), false, p);
+    assert.equal(await page.evaluate(() => document.documentElement.classList.contains('motion-enabled')), false, p);
+  }
+  assert.equal(await page.locator('.pf-card:visible').count(), 11, 'all projects visible with reduced motion');
+  await ctx.close();
+
+  const { page: np, context: nojs } = await newPage({ viewport: { width: 375, height: 812 }, contextOptions: { javaScriptEnabled: false } });
+  await np.goto(ORIGIN + '/portfolio');
+  assert.equal(await np.locator('.pf-card:visible').count(), 11, 'every project visible without JS');
+  assert.equal(await np.locator('.pf-card .pf-one').filter({ hasText: /./ }).count(), 11, 'every description readable without JS');
+  const d = await np.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  assert.ok(d <= 1, 'no overflow without JS');
+  await nojs.close();
+});
+
+test('portfolio: filters, deep links, sharing and "build something like this" → quote', async () => {
+  const { page, db, log, context } = await newPage();
+  // The test origin is not a secure context, so copying uses the execCommand fallback; record what it copies.
+  await context.addInitScript(() => document.addEventListener('copy', (e) => { window.__copied = e.target && 'value' in e.target ? e.target.value : String(getSelection()); }));
+  await page.goto(ORIGIN + '/portfolio');
+  const visible = () => page.locator('.pf-card:not([hidden])').count();
+  assert.equal(await visible(), 11);
+  await page.click('[data-filter="backend"]');
+  assert.equal(await visible(), 2);
+  assert.match(await page.locator('#pfStatus').innerText(), /Showing 2 projects in Backend systems/);
+  assert.equal(await page.getAttribute('[data-filter="backend"]', 'aria-pressed'), 'true');
+  assert.match(page.url(), /\?type=backend#projects$/);
+  await page.click('[data-filter="extension"]');
+  assert.deepEqual(await page.locator('.pf-card:not([hidden]) h3').allInnerTexts(), ['11 Xender SiteCheck']);
+  await page.click('[data-filter="all"]');
+  // Filtered views are shareable.
+  await page.goto(ORIGIN + '/portfolio?type=ecommerce');
+  assert.equal(await visible(), 2);
+  // Per-project share copies a deep link; the deep link highlights that card.
+  await page.goto(ORIGIN + '/portfolio');
+  await page.click('#p-slotly-booking [data-share]');
+  assert.equal(await page.evaluate(() => window.__copied), 'https://www.xendersecrets.com/portfolio#p-slotly-booking');
+  assert.equal(await page.locator('#p-slotly-booking [data-share]').innerText(), 'Link copied');
+  await page.goto(ORIGIN + '/portfolio#p-slotly-booking');
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator('#p-slotly-booking').evaluate((e) => e.classList.contains('is-target') && !e.hidden), true);
+  // Whole-portfolio copy link.
+  await page.click('#pfCopy');
+  await page.waitForFunction(() => /Link copied/.test(document.getElementById('pfCopyMsg').textContent));
+  // Build something like this → pre-filled quote, custom-build offer, lead saved.
+  await page.click('[data-like="pulse-analytics"]');
+  assert.equal(await page.inputValue('#lf-offer'), 'custom-build');
+  assert.match(await page.inputValue('#lf-message'), /Pulse Analytics/);
+  await page.fill('#lf-name', 'Jordan Lee');
+  await page.fill('#lf-email', 'jordan@example.com');
+  await page.click('form[data-lead-form] [type="submit"]');
+  await page.waitForSelector('.lead-success');
+  const lead = rows(db, 'SELECT offer,cta,page,message FROM growth_leads')[0];
+  assert.equal(lead.offer, 'custom-build');
+  assert.equal(lead.cta, 'portfolio-quote');
+  assert.match(lead.message, /Pulse Analytics/);
+  // Every demo link resolves; live previews load the real demo pages without errors.
+  for (const href of await page.locator('.pf-actions a.btn.primary').evaluateAll((as) => as.map((a) => a.getAttribute('href')))) {
+    assert.ok(fs.existsSync(path.join(PUBLIC, href.slice(1) + '.html')), href);
+  }
+  assert.deepEqual(log.errors, []);
+  assert.deepEqual(log.missing.filter((m) => !m.startsWith('/api/')), []);
+  await context.close();
+});
+
+test('portfolio and homepage on mobile: no overflow, menu reaches Portfolio and Contact', async () => {
+  const { page, log, context } = await newPage({ viewport: { width: 360, height: 740 } });
+  for (const p of ['/', '/portfolio', '/demo-gym', '/demo-frontend-dashboard', '/demo-frontend-store', '/demo-fullstack-booking']) {
+    await page.goto(ORIGIN + p);
+    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight / 2));
+    await page.waitForTimeout(100);
+    const d = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    assert.ok(d <= 1, `${p} overflows by ${d}px at 360px`);
+  }
+  await page.goto(ORIGIN + '/portfolio');
+  await page.click('#menu');
+  assert.equal(await page.locator('#nav a[href="/portfolio"]').isVisible(), true);
+  assert.equal(await page.locator('#nav a[href="/contact"]').isVisible(), true);
+  assert.deepEqual(log.errors, []);
+  await context.close();
+});
+
+test('rebuilt demos work end to end', async () => {
+  const { page, log, context } = await newPage();
+  // Booking: live slots → confirm → slot no longer offered.
+  await page.goto(ORIGIN + '/demo-fullstack-booking');
+  await page.waitForSelector('#slots button');
+  await page.click('#slots button:has-text("11:30")');
+  await page.fill('#name', 'Sam');
+  await page.click('#confirm');
+  await page.waitForSelector('.done');
+  assert.equal(await page.locator('.done code').innerText(), 'BK-TEST0001');
+  await page.click('#again');
+  await page.waitForSelector('#slots button');
+  assert.deepEqual(await page.locator('#slots button').allInnerTexts(), ['10:00', '14:00', '16:30']);
+  // Store: add, change quantity, totals and free-shipping meter.
+  await page.goto(ORIGIN + '/demo-frontend-store');
+  await page.evaluate(() => localStorage.removeItem('north-cart'));
+  await page.reload();
+  await page.click('button[aria-label="Add Halo Desk Lamp to cart"]');
+  assert.equal(await page.locator('#cartCount').innerText(), '1');
+  await page.click('#cartBtn');
+  await page.click('.qty button[aria-label="Increase"]');
+  assert.equal(await page.locator('#total').innerText(), '₹4,998');
+  assert.match(await page.locator('#ship').innerText(), /free shipping/i);
+  await page.keyboard.press('Escape');
+  await page.fill('#q', 'pouch');
+  assert.equal(await page.locator('#grid .p').count(), 1);
+  // Dashboard: range switch changes the data; CSV export downloads.
+  await page.goto(ORIGIN + '/demo-frontend-dashboard');
+  const k30 = await page.locator('.kpi b').first().innerText();
+  await page.click('[data-range="7"]');
+  assert.notEqual(await page.locator('.kpi b').first().innerText(), k30);
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#exportCsv')]);
+  assert.equal(dl.suggestedFilename(), 'pulse-team-7d.csv');
+  await page.click('th button[data-key="name"]');
+  assert.equal(await page.getAttribute('th:has(button[data-key="name"])', 'aria-sort'), 'ascending');
+  // Gym: validation, then confirmation; ribbon is honest about demo status.
+  await page.goto(ORIGIN + '/demo-gym');
+  await page.click('#trialForm [type="submit"]');
+  assert.match(await page.locator('#trialMsg').innerText(), /name/);
+  await page.click('.slots li button >> nth=0');
+  await page.fill('#t-name', 'Alex Morgan');
+  await page.fill('#t-phone', '+1 415 555 0134');
+  await page.click('#trialForm [type="submit"]');
+  await page.waitForSelector('.done');
+  assert.match(await page.locator('.done').innerText(), /Demo only — nothing was sent/);
+  assert.match(await page.locator('.xs-ribbon').innerText(), /Concept demo/);
+  assert.equal(await page.getAttribute('.xs-ribbon [data-cta]', 'href'), '/portfolio#p-forge-fitness');
   assert.deepEqual(log.errors, []);
   await context.close();
 });

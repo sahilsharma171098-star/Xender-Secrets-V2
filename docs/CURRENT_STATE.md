@@ -1,5 +1,31 @@
 # Xender Secrets V2 — Current State
 
+## XEND-AGENT-REACH-001 (2026-10-11, ChatGPT, branch `chatgpt/xend-agent-reach-001`)
+- Implemented **repo-side integration preparation only**: pinned user-only Windows setup script, read-only OpenCLI Facebook/Instagram capture script, tests, runbook.
+- Agent-Reach is a local agent capability layer, not part of the public site/Worker or an automatic DM provider. No live laptop install, connected social account, lead capture or production deploy has occurred.
+- Pending local setup + doctor check and separate user-controlled Chrome/OpenCLI configuration; public business vetting before existing private MIS import.
+
+
+## XEND-SHOWCASE-001 (2026-10-09, Claude, branch `claude/xend-showcase-rebuild`)
+- Site positioned as a showcase catalog; homepage has no prices. Pricing lives on `/services`; premium lane on `/studio`; catalog on `/portfolio` (nav label "Catalog").
+- Design tokens + fonts in `public/home.css`; dark is the default theme. Showcase images in `public/work/` — re-capture when a demo changes (1440×900 → 1200/640 WebP).
+- Pending (Sahil): novels move to a subdomain needs a Cloudflare DNS/route change — see CQ-020.
+
+## XEND-PORTFOLIO-002 (2026-10-08, Claude, branch `claude/project-thread-5ar4i7`)
+- `/portfolio` moved into the commercial generator: edit `scripts/commercial/portfolio.mjs` (PROJECTS) then `npm run build:pages`; never hand-edit `public/portfolio.html`.
+- Scroll scenes: add `data-scroll-scene="exit|pass|pin"` (+ `data-steps`) and style with `var(--p)` / `var(--k)`; pinned heights only under `html.scroll-fx`. Sticky stages must not have an `overflow:hidden` ancestor.
+- Demo pages: include `/demo-ribbon.js` with `data-slug` (portfolio slug) and `data-kind`.
+- Production verification pending merge + Cloudflare deploy.
+
+## XEND-PORTFOLIO-MOTION-001 (2026-10-08, merged PR #39)
+- New `public/portfolio.html` is a truthful prospect-facing showcase with six existing Xender demo/product destinations, project filters, share URL, and WhatsApp enquiry links.
+- `public/portfolio.css` and `public/portfolio.js` add responsive illustrative graphics, scroll storytelling and graceful interaction.
+- `public/home.js` and `public/home.css` add dependency-free commercial-page scroll reveal and progress, respecting `prefers-reduced-motion`.
+- Generated homepage changes originate in `scripts/commercial/pages.mjs` and are mirrored to `public/index.html`; sitemap and marketplace navigation include `/portfolio`.
+- No paid client case studies/results are claimed; existing demo destinations used, not invented clients.
+- Production live verification and CI must be confirmed after PR merge.
+
+
 Snapshot date: 2026-10-06
 
 ## Source of truth
@@ -97,3 +123,29 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Site: generated `/sitecheck` (product page, "Coming soon" per store until a listing is live — flip `SITECHECK_STORES` in `scripts/commercial/pages.mjs`; B2B "custom browser extension" lead section → lead form with `custom-build` offer) and `/sitecheck-privacy` (rendered from `extension/store/privacy-policy.md`). Footer link "SiteCheck extension" on all generated pages.
 - Publishing: Edge (free) and Firefox AMO (free) ready, blocked only on Sahil's account sign-in/agreements. Chrome package + listing ready; Sahil explicitly approved the one-time US$5 Chrome Web Store developer registration fee on 6 October 2026. No other paid extension spend is approved.
 - Dogfood findings on our own site (not fixed here): `.kicker`/`.eyebrow` cyan (#0891b2) is 3.4–3.7:1 on white (below AA) site-wide; `website-catalog.html` mint text on light background is ~1.5:1; contact page jumps H1→H3; catalog/novels header pill overflows at 1280px (same as QA report).
+
+## XEND-SEO-TRAFFIC-001 organic discovery (2026-10-06, Claude) — branch `claude/xend-seo-traffic-001`
+- **GSC baseline (settled through 2026-10-03):** 28d clicks 0, impressions 0; `/` and `/services.html` indexed (crawled 2026-10-05); `/website-development-gurgaon.html` "URL unknown" because that URL never existed (real page: `/website-development-gurugram`); a mis-submitted sitemap entry for the homepage shows 1 error. Full table, priority URL list and Day 7/14/28 checkpoints (2026-10-13 / 10-20 / 11-03): `docs/SEO_TRAFFIC_PLAN.md`.
+- Internal links on generated pages now point at final extensionless URLs (no more 307 hop per link); `scripts/commercial/layout.mjs` → `cleanLinks()`.
+- Gurugram page targets "Gurgaon (Gurugram)"; `/website-development-gurgaon(.html)`, `-in-gurgaon`, `-in-gurugram` → 301 Gurugram; `-ncr`, `-delhi-ncr` → 301 Delhi.
+- Location pages carry distinct local guides, areas served and city FAQs; homepage + pricing link all location pages; industry pages link all NCR pages. `Service` JSON-LD (provider `@id`) on industry + location pages; no ratings/reviews/street address (tested).
+- Sitemap 52 → 44 URLs: 9 `demo-*` concept pages now `noindex,follow`; `/website-cost-calculator` added (had no robots meta). Canonicals added to privacy/terms/refund. Home title → "Website Development for Small Businesses from ₹999 + GST".
+- IndexNow: key file `public/cdf3c21dd3122dca7cc50b92e6c6cfea.txt` (public by design), `scripts/seo/indexnow.mjs`, workflow `.github/workflows/indexnow.yml` (runs after sitemap changes on `main`, verifies the live key first).
+- Tests: `tests/unit/seo.test.mjs` (10 crawl/index invariants). Local test server now mirrors Cloudflare's extensionless serving.
+- Still open (not code): apex `xendersecrets.com` serves 200 instead of 301 → www (verified 2026-10-06) — CQ-015; GSC write actions — CQ-010; Bing — CQ-011; Google Business Profile — CQ-012.
+
+## XEND-GSC-INDEXING-001 indexing architecture (2026-10-07, Claude) — PR #36 `claude/xend-gsc-indexing-001`
+- **Canonical standard:** `https://www.xendersecrets.com` + extensionless path. Details, redirect matrix, exclusions, GSC order: `docs/SEO_INDEXING.md`.
+- Pre-change production audit (run 37613729633): `.html` and trailing slash returned **307**, the apex host served **200** duplicates, `http://apex/x.html` was a 301→307 chain to the wrong host.
+- `src/canonical.mjs` + `run_worker_first: ["/*", "!/novel-data/*"]`: one **301** to the final URL for host/.html/slash/index variants (follows `_redirects` in the same hop; `/p/:id` stays 302; `/api/*` untouched). `http://` still gets Cloudflare's edge HTTPS upgrade first (2 hops) unless "Always Use HTTPS" is turned off.
+- All internal links in legacy HTML/JS rewritten to canonical paths (`scripts/seo/normalize-links.mjs`, CI `--check`); worker chat links too.
+- Sitemap 44 → **32**: thin legacy articles (12), `/community`, `/ideas`, `/reader`, all `/demo-*` are `noindex,follow`; `_headers` adds `X-Robots-Tag` for extensionless private/utility paths (`/admin` previously had none).
+- Content: 4 buyer guides rewritten and generated (BlogPosting schema, ≥ 600 words); `/faq` rebuilt from current offers (22 Q&A, FAQPage); `/website-catalog`, `/business-templates`, `/articles` get server-rendered sections + CollectionPage/Breadcrumb (`scripts/seo/hubs.mjs`); homepage nav and a guides section link Services/Catalog/Guides/About/FAQ.
+- PR #35's Udyam/MSME credential was committed to the root `index.html`, which is **not deployed** (assets = `public/`). It's now in the generated footer and founder section.
+- Tests: `tests/unit/canonical.test.mjs`, `tests/worker/canonical-worker.test.mjs` (real workerd), 7 new checks in `tests/unit/seo.test.mjs`. Live audit: `scripts/seo/audit-live.mjs` + `.github/workflows/seo-live-audit.yml` (preview on branch pushes, strict production check after deploy).
+
+
+## XEND-SEO-BLOG-001 (2026-10-14, ChatGPT)
+- Branch `chatgpt/xend-growth-20261014`: adds an original roofing/contractor website guide via the existing commercial article generator, with homepage discovery, Guides hub card/schema and sitemap entry.
+- Build freshness passes; existing SEO suite 17/17 passes with Node test isolation disabled because this sandbox rejects subprocess spawning.
+- Not merged or production-verified at this checkpoint. No Search Console metrics or ranking improvements are asserted.

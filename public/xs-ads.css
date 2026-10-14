@@ -1,0 +1,10 @@
+/* Xender content monetization slots: intentionally excluded from sales/commercial pages. */
+.xs-ad-slot{margin:24px auto;min-height:90px;display:flex;align-items:center;justify-content:center;max-width:100%;clear:both}
+.xs-ad-frame{width:100%;border:1px solid color-mix(in srgb,currentColor 14%,transparent);border-radius:12px;padding:14px 16px;background:color-mix(in srgb,currentColor 4%,transparent)}
+.xs-ad-label{display:block;font-size:10px;line-height:1.2;letter-spacing:.12em;text-transform:uppercase;opacity:.55;margin-bottom:8px}
+.xs-house-ad{display:flex;align-items:center;justify-content:space-between;gap:16px;text-decoration:none;color:inherit}
+.xs-house-copy strong{display:block;font-size:15px;line-height:1.25;margin-bottom:4px}.xs-house-copy span{font-size:12px;opacity:.68}
+.xs-house-cta{flex:0 0 auto;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;background:#16855b;color:#fff}
+.xs-ad-slot[data-ad-format="sidebar"]{min-height:250px}.xs-ad-slot[data-ad-format="sidebar"] .xs-house-ad{display:block}.xs-ad-slot[data-ad-format="sidebar"] .xs-house-cta{display:inline-block;margin-top:12px}
+.xs-ad-slot ins.adsbygoogle{width:100%}
+@media(max-width:640px){.xs-ad-slot{margin:18px auto;min-height:72px}.xs-house-ad{align-items:flex-start;flex-direction:column}.xs-house-cta{align-self:flex-start}}

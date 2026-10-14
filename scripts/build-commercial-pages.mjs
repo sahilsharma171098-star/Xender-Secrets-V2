@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { allPages, CONTENT_DATE } from "./commercial/pages.mjs";
+import { HUBS } from "./seo/hubs.mjs";
 
 const PUBLIC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "public");
 const check = process.argv.includes("--check");
@@ -18,6 +19,15 @@ for (const { file, html } of allPages()) {
   if (check) stale.push(file);
   else { fs.writeFileSync(target, html); console.log("wrote public/" + file); }
 }
+// Hand-written hub pages get server-rendered sections + schema (scripts/seo/hubs.mjs).
+for (const [file, transform] of Object.entries(HUBS)) {
+  const target = path.join(PUBLIC, file);
+  const current = fs.readFileSync(target, "utf8");
+  const html = transform(current);
+  if (html === current) continue;
+  if (check) stale.push(file);
+  else { fs.writeFileSync(target, html); console.log("wrote public/" + file + " (hub)"); }
+}
 // Sitemap: every indexable page in public/ (robots meta allows indexing), commercial pages first.
 // lastmod is preserved from the existing sitemap; generated pages carry CONTENT_DATE.
 const SITE = "https://www.xendersecrets.com";
@@ -25,7 +35,7 @@ const EXCLUDE = new Set(["reader.html", "demo-gym.html", "demo-local.html", "dem
 const sitemapPath = path.join(PUBLIC, "sitemap.xml");
 const oldSitemap = fs.existsSync(sitemapPath) ? fs.readFileSync(sitemapPath, "utf8") : "";
 const oldLastmod = Object.fromEntries([...oldSitemap.matchAll(/<loc>([^<]+)<\/loc><lastmod>([^<]+)<\/lastmod>/g)].map((m) => [m[1].replace(/\.html$/, ""), m[2]]));
-const generated = new Set(allPages().map((p) => p.file));
+const generated = new Set([...allPages().map((p) => p.file), ...Object.keys(HUBS)]);
 const priority = (f) => f === "index.html" ? "1.0" : ["services.html", "contact.html"].includes(f) ? "0.9" : generated.has(f) ? "0.8" : null;
 const files = fs.readdirSync(PUBLIC).filter((f) => f.endsWith(".html") && !EXCLUDE.has(f)).filter((f) => {
   const robots = (fs.readFileSync(path.join(PUBLIC, f), "utf8").match(/<meta name="robots" content="([^"]*)"/) || [])[1];

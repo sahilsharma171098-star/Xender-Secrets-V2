@@ -12,7 +12,10 @@
     get(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
   };
-  const optedOut = navigator.globalPrivacyControl === true || navigator.doNotTrack === "1" || window.doNotTrack === "1";
+  // Live previews on /portfolio embed demo pages in iframes; those aren't visits, so don't count them.
+  let framed = false;
+  try { framed = window.self !== window.top; } catch { framed = true; }
+  const optedOut = framed || navigator.globalPrivacyControl === true || navigator.doNotTrack === "1" || window.doNotTrack === "1";
 
   // Attribution: keep the most recent non-direct touch for 30 days; direct visits never overwrite it.
   const attribution = (() => {

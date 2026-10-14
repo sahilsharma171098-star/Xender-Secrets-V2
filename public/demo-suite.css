@@ -3,3 +3,6 @@
 .hero>*{min-width:0}
 .hero h1{overflow-wrap:break-word}
 @media(max-width:420px){.hero h1{font-size:42px}}
+/* Inside /portfolio live previews the demo chrome is hidden so the card shows the product itself. */
+.xs-embedded .top{position:static}
+.xs-embedded body{overflow:hidden}

@@ -1,0 +1,97 @@
+name: SEO live audit
+
+# XEND-GSC-INDEXING-001: read-only audit of production indexing signals (redirect chains,
+# status, canonical, meta robots, X-Robots-Tag, sitemap membership). Runs after each deploy to
+# main, on demand, and on pushes to the indexing branch (to capture the pre-change baseline).
+on:
+  workflow_dispatch:
+    inputs:
+      comment_on:
+        description: "Optional issue/PR number to post the report on (sticky comment)"
+        required: false
+      strict:
+        description: "Fail the run on any indexing problem"
+        type: boolean
+        default: true
+  push:
+    branches: [main, 'claude/xend-gsc-indexing-*']
+    paths:
+      - 'public/**'
+      - 'src/**'
+      - 'wrangler.jsonc'
+      - 'scripts/seo/**'
+      - '.github/workflows/seo-live-audit.yml'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: seo-live-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for the Cloudflare deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: sleep 120
+      - name: Audit production
+        run: |
+          STRICT=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.strict }}" = "true" ]; then STRICT="--strict"; fi
+          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ github.event_name }}" = "push" ]; then STRICT="--strict"; fi
+          set +e
+          node scripts/seo/audit-live.mjs --json seo-audit.json $STRICT > seo-audit.md
+          code=$?
+          cat seo-audit.md
+          echo "code=$code" >> "$GITHUB_ENV"
+          exit 0
+      - name: Audit this branch's Cloudflare preview (path rules on the real asset layer)
+        if: github.ref != 'refs/heads/main'
+        run: |
+          SLUG=$(echo "${GITHUB_REF_NAME}" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g')
+          ORIGIN="https://${SLUG}-xender-secrets-v2.fragrant-morning-6341.workers.dev"
+          echo "Preview: $ORIGIN"
+          # Wait until the preview serves this commit (its sitemap matches the committed one).
+          WANT=$(sha256sum public/sitemap.xml | cut -d' ' -f1)
+          for i in $(seq 1 40); do
+            GOT=$(curl -fsS "$ORIGIN/sitemap.xml?c=$GITHUB_SHA" | sha256sum | cut -d' ' -f1 || true)
+            [ "$GOT" = "$WANT" ] && { echo "preview is current"; break; }
+            sleep 15
+          done
+          set +e
+          node scripts/seo/audit-live.mjs --preview "$ORIGIN" > seo-preview.md
+          echo "preview_code=$?" >> "$GITHUB_ENV"
+          { echo "## Preview deployment ($ORIGIN)"; sed -n '1p' seo-preview.md; echo; sed -n '/^### Problems/,$p' seo-preview.md | head -c 8000; echo; echo "<details><summary>Preview table</summary>"; echo; sed -n '/^| URL/,/^$/p' seo-preview.md | head -c 25000; echo "</details>"; } > preview-section.md
+          exit 0
+      - name: Post report as a sticky comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ inputs.comment_on }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ -z "$TARGET" ] && [ "$BRANCH" != "main" ]; then
+            TARGET=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          fi
+          [ -z "$TARGET" ] && { echo "no PR/issue to comment on"; exit 0; }
+          { echo "<!-- xender-seo-live-audit -->"; echo "**SEO live audit** · run [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) · commit ${GITHUB_SHA::7}"; echo;
+            [ -f preview-section.md ] && { cat preview-section.md; echo; }
+            echo "## Production (www.xendersecrets.com)"; sed -n '1p' seo-audit.md; echo; sed -n '/^### Problems/,$p' seo-audit.md | head -c 6000; echo;
+            echo "<details><summary>Production table</summary>"; echo; sed -n '/^| URL/,/^$/p' seo-audit.md | head -c 24000; echo "</details>"; } > body.md
+          ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" --paginate --jq '.[] | select(.body | startswith("<!-- xender-seo-live-audit -->")) | .id' | tail -1)
+          if [ -n "$ID" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@body.md >/dev/null; else gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" -F body=@body.md >/dev/null; fi
+      - name: Result
+        run: exit ${code:-0}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: seo-live-audit
+          path: seo-audit.json

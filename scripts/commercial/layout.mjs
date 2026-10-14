@@ -15,37 +15,38 @@ export const inclGst = (base) => inr(Math.round(base * (1 + GST_RATE) * 100) / 1
 
 export const OFFERS = [
   { id: "free-website-check", name: "Free website check", price: "₹0", unit: "", short: "Free website check" },
-  { id: "founding-website-999", name: "Founding Website", price: "₹999", base: 999, unit: "one-time", short: "₹999 + GST · Founding Website (1 page)" },
-  { id: "business-starter-1999", name: "Business Starter", price: "₹1,999", base: 1999, unit: "one-time", short: "₹1,999 + GST · Business Starter (3 pages)" },
-  { id: "business-pro-3499", name: "Business Pro", price: "₹3,499", base: 3499, unit: "one-time", short: "₹3,499 + GST · Business Pro (5 pages)" },
+  { id: "founding-website-999", name: "Founding Website", price: "₹999", base: 999, unit: "one-time", short: "₹999 + GST · Founding Website (1 page)", plain: "Founding Website (1-page site)" },
+  { id: "business-starter-1999", name: "Business Starter", price: "₹1,999", base: 1999, unit: "one-time", short: "₹1,999 + GST · Business Starter (3 pages)", plain: "Business Starter (up to 3 pages)" },
+  { id: "business-pro-3499", name: "Business Pro", price: "₹3,499", base: 3499, unit: "one-time", short: "₹3,499 + GST · Business Pro (5 pages)", plain: "Business Pro (up to 5 pages)" },
   { id: "redesign", short: "Redesign my existing website" },
-  { id: "custom-build", short: "Custom build / automation" },
+  { id: "custom-build", short: "Custom website, store or web app" },
   { id: "not-sure", short: "Not sure yet" },
 ];
 export const offerById = (id) => OFFERS.find((o) => o.id === id);
 
 const NAV = [
+  ["/portfolio.html", "Catalog"],
+  ["/studio.html", "Studio"],
   ["/services.html", "Pricing"],
-  ["/website-catalog.html", "Work"],
-  ["/services.html#industries", "Industries"],
+  ["/articles.html", "Guides"],
   ["/about.html", "About"],
-  ["/novels.html", "Novels"],
+  ["/contact.html", "Contact"],
 ];
 
-export function header({ home = false } = {}) {
+export function header({ home = false, current = "" } = {}) {
   const nav = home
-    ? [["#services", "Pricing"], ["#work", "Work"], ["#process", "How it works"], ["#faq", "FAQ"], ["/novels.html", "Novels"]]
+    ? [["/portfolio.html", "Catalog"], ["/studio.html", "Studio"], ["/services.html", "Pricing"], ["/articles.html", "Guides"], ["/about.html", "About"], ["#faq", "FAQ"], ["/contact.html", "Contact"]]
     : NAV;
   return `<a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
       <nav class="nav" id="nav" aria-label="Main">
-        ${nav.map(([href, label]) => `<a href="${href}">${label}</a>`).join("\n        ")}
+        ${nav.map(([href, label]) => `<a href="${href}"${href === current ? ' aria-current="page"' : ""}>${label}</a>`).join("\n        ")}
       </nav>
       <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark mode">◐</button>
-        <a class="btn primary header-cta" href="#start" data-cta="header-free-check">Free website check</a>
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to light mode">◐</button>
+        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Start a project</a>
         <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
       </div>
     </div>
@@ -58,15 +59,18 @@ export function footer() {
       <div>
         <strong>XENDER SECRETS</strong><br>
         Founded by Sahil Kumar Sharma · Gurugram, Haryana, India<br>
-        GSTIN: 06IQFPS4456B1ZP
+        GSTIN: 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a>
       </div>
       <nav class="footer-links" aria-label="Footer">
+        <a href="/portfolio.html">Catalog</a>
+        <a href="/studio.html">Studio</a>
         <a href="/services.html">Pricing</a>
-        <a href="/website-catalog.html">Work</a>
+        <a href="/website-catalog.html">All demos</a>
         <a href="/business-templates.html">Templates</a>
         <a href="/website-cost-calculator.html">Cost calculator</a>
         <a href="/sitecheck.html">SiteCheck extension</a>
         <a href="/articles.html">Articles</a>
+        <a href="/novels.html">Novels</a>
         <a href="/about.html">About</a>
         <a href="/contact.html">Contact</a>
         <a href="/privacy.html">Privacy</a>
@@ -84,16 +88,19 @@ export function footer() {
       <a href="/coaching-website-development.html">Coaching</a>
       <a href="/gym-website-development.html">Gyms</a>
       <a href="/restaurant-website-development.html">Restaurants</a>
-      <a href="/website-development-gurugram.html">Gurugram</a>
-      <a href="/website-development-delhi.html">Delhi</a>
+    </div>
+    <div class="wrap footer-industries">
+      <span>Website development in:</span>
+      <a href="/website-development-gurugram.html">Gurgaon (Gurugram)</a>
+      <a href="/website-development-delhi.html">Delhi NCR</a>
       <a href="/website-development-noida.html">Noida</a>
-      <a href="/small-business-website-india.html">India</a>
+      <a href="/small-business-website-india.html">All of India</a>
     </div>
   </footer>`;
 }
 
 /** The lead form. `cta` labels the form in analytics; `offer` preselects the dropdown. */
-export function leadForm({ cta, offer = "free-website-check", heading, intro, waText, bullets }) {
+export function leadForm({ cta, offer = "free-website-check", heading, intro, waText, bullets, plainOffers = false }) {
   const id = (s) => `lf-${s}`;
   return `<section id="start" class="section start">
       <div class="wrap split">
@@ -131,7 +138,7 @@ export function leadForm({ cta, offer = "free-website-check", heading, intro, wa
           <div class="field">
             <label for="${id("offer")}">What do you need?</label>
             <select id="${id("offer")}" name="offer">
-              ${OFFERS.map((o) => `<option value="${o.id}"${o.id === offer ? " selected" : ""}>${esc(o.short)}</option>`).join("\n              ")}
+              ${OFFERS.map((o) => `<option value="${o.id}"${o.id === offer ? " selected" : ""}>${esc(plainOffers && o.plain ? o.plain : o.short)}</option>`).join("\n              ")}
             </select>
           </div>
           <div class="field">
@@ -167,8 +174,10 @@ export function faqJsonLd(items) {
   return { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: strip(a) } })) };
 }
 
+export const ORG_ID = SITE + "/#business";
 export const ORG_JSONLD = {
-  "@context": "https://schema.org", "@type": "ProfessionalService", name: "Xender Secrets", url: SITE + "/",
+  "@context": "https://schema.org", "@type": "ProfessionalService", "@id": ORG_ID, name: "Xender Secrets", url: SITE + "/",
+  image: SITE + "/og-xender.png", logo: { "@type": "ImageObject", url: SITE + "/og-xender.png" }, email: EMAIL,
   description: "Business websites, landing pages and website redesigns for small businesses.",
   founder: { "@type": "Person", name: "Sahil Kumar Sharma" }, areaServed: ["IN", "GB", "US", "CA"],
   telephone: "+91-9821941814", address: { "@type": "PostalAddress", addressLocality: "Gurugram", addressRegion: "Haryana", addressCountry: "IN" },
@@ -176,16 +185,48 @@ export const ORG_JSONLD = {
 };
 
 export function breadcrumbJsonLd(trail) {
-  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: trail.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: SITE + path })) };
+  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: trail.map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: canonicalUrl(path) })) };
+}
+
+/**
+ * Service schema for an industry or location page. Only facts we can stand behind: the
+ * provider, where we work and the published package prices (exclusive of GST). No ratings,
+ * reviews or client claims (docs/REVENUE_ARCHITECTURE.md copy rules).
+ */
+export function serviceJsonLd({ path, name, serviceType, description, areaServed, audience }) {
+  return {
+    "@context": "https://schema.org", "@type": "Service", name, serviceType, description,
+    url: canonicalUrl(path), provider: { "@id": ORG_ID }, areaServed,
+    ...(audience ? { audience: { "@type": "BusinessAudience", audienceType: audience } } : {}),
+    offers: { "@type": "AggregateOffer", priceCurrency: "INR", lowPrice: "999", highPrice: "3499", offerCount: "3",
+      description: "Fixed-price website packages; prices exclude 18% GST." },
+  };
+}
+
+/** /page.html → https://www.xendersecrets.com/page (the URL Cloudflare serves with 200). */
+export function canonicalUrl(path) {
+  const p = path.split(/[?#]/)[0];
+  return SITE + (p === "/" || p === "/index.html" ? "/" : p.replace(/\.html$/, ""));
+}
+
+/**
+ * Cloudflare assets (html_handling: auto-trailing-slash) answer /page.html with a 307 to /page.
+ * Internal links therefore point at the final URL so crawlers never spend a hop on a redirect
+ * and every link agrees with the page's canonical. Applies to root-relative hrefs only.
+ */
+export function cleanLinks(html) {
+  return html
+    .replace(/href="\/index\.html(?=[?#"])/g, 'href="/')
+    .replace(/href="\/([a-z0-9][a-z0-9-]*)\.html(?=[?#"])/g, 'href="/$1');
 }
 
 /** Full HTML document. */
-export function page({ path, title, description, ogTitle, body, jsonld = [], home = false, robots = "index,follow" }) {
+export function page({ path, title, description, ogTitle, body, jsonld = [], home = false, robots = "index,follow", ogType = "website", css = [], scripts = [], waText = "Hi Xender Secrets, I want a website for my business." }) {
   // Cloudflare assets (html_handling: auto-trailing-slash) 307-redirect /page.html → /page, so
   // canonical URLs use the final extensionless form.
-  const canonical = SITE + (path === "/index.html" ? "/" : path.replace(/\.html$/, ""));
+  const canonical = canonicalUrl(path);
   const ld = jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join("\n  ");
-  return `<!doctype html>
+  return cleanLinks(`<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -194,20 +235,22 @@ export function page({ path, title, description, ogTitle, body, jsonld = [], hom
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${canonical}">
   <meta name="robots" content="${robots}">
-  <meta name="theme-color" content="#ffffff">
-  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0f0f0e">
+  <meta property="og:type" content="${ogType}">
   <meta property="og:site_name" content="Xender Secrets">
   <meta property="og:title" content="${esc(ogTitle || title)}">
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:url" content="${canonical}">
   <meta property="og:image" content="${SITE}/og-xender.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script>try{if(localStorage.getItem("xs-theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
-  <link rel="stylesheet" href="/home.css">
+  <script>try{if(localStorage.getItem("xs-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="preload" href="/fonts/playfair-display-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/home.css">${css.map((c) => `\n  <link rel="stylesheet" href="${c}">`).join("")}
   ${ld}
 </head>
 <body>
-  ${header({ home })}
+  ${header({ home, current: path })}
 
   <main id="main">
     ${body}
@@ -215,11 +258,11 @@ export function page({ path, title, description, ogTitle, body, jsonld = [], hom
 
   ${footer()}
 
-  <a class="wa-float" href="${esc(wa("Hi Xender Secrets, I want a website for my business."))}" data-cta="float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
+  <a class="wa-float" href="${esc(wa(waText))}" data-cta="float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
 
-  <script src="/home.js" defer></script>
+  <script src="/home.js" defer></script>${scripts.map((j) => `\n  <script src="${j}" defer></script>`).join("")}
   <script src="/xs-growth.js" defer></script>
 </body>
 </html>
-`;
+`);
 }

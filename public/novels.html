@@ -7,7 +7,7 @@
 <meta name="description" content="Browse completed novels on Xender Secrets. Read full available chapters free, continue where you left off, and translate chapters on demand.">
 <link rel="canonical" href="https://www.xendersecrets.com/novels">
 <meta name="robots" content="index,follow">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">\n<link rel="stylesheet" href="/xs-ads.css">\n<script src="/xs-ads-config.js"></script>\n<script src="/xs-ads.js" defer></script>
 <style>
 :root{
   --nv-bg:#f6f7f8;--nv-card:#ffffff;--nv-text:#15181b;--nv-muted:#6d747b;--nv-line:#e4e7ea;
@@ -85,17 +85,17 @@ body.novel-light footer,body.novel-dark footer{background:var(--nv-card);border-
 </head>
 <body class="novel-light">
 <header>
-<a class="logo" href="index.html">XENDER <span>SECRETS</span></a>
+<a class="logo" href="/">XENDER <span>SECRETS</span></a>
 <button id="menu" aria-label="Menu">☰</button>
 <nav>
-<a href="community.html">Community</a><a href="ideas.html">Ideas</a><a href="articles.html">Articles</a>
-<a href="website-catalog.html">Websites</a><a href="services.html">Services</a><a href="novels.html">Novels</a><a href="about.html">About</a>
+<a href="/community">Community</a><a href="/ideas">Ideas</a><a href="/articles">Articles</a>
+<a href="/website-catalog">Websites</a><a href="/services">Services</a><a href="/novels">Novels</a><a href="/about">About</a>
 </nav>
-<a class="pill desktop" href="novels.html">Read Now</a>
+<a class="pill desktop" href="/novels">Read Now</a>
 </header>
 
 <main class="novels-shell">
-<div class="crumbs"><a href="index.html">Home</a> / Novels</div>
+<div class="crumbs"><a href="/">Home</a> / Novels</div>
 
 <div class="novels-title">
   <div>
@@ -105,7 +105,7 @@ body.novel-light footer,body.novel-dark footer{background:var(--nv-card);border-
   <button class="theme-btn" id="themeToggle">🌙 Dark mode</button>
 </div>
 
-<div class="nv-toolbar">
+<div class="xs-ad-slot" data-ad-slot="novels-top" data-ad-format="banner" aria-label="Advertisement"></div>\n\n<div class="nv-toolbar">
   <input id="search" type="search" placeholder="Search novels…" aria-label="Search novels">
   <select id="genreFilter" aria-label="Filter novels">
     <option value="all">All categories</option>
@@ -161,7 +161,7 @@ body.novel-light footer,body.novel-dark footer{background:var(--nv-card);border-
 
 <footer>
 <div><b>XENDER SECRETS</b><p>Completed web fiction + digital projects</p></div>
-<div class="footer-links"><a href="index.html">Home</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="terms.html">Terms</a></div>
+<div class="footer-links"><a href="/">Home</a><a href="/community">Community</a><a href="/contact">Contact</a><a href="/terms">Terms</a></div>
 <small>© 2026 Xender Secrets.</small>
 </footer>
 
@@ -212,10 +212,10 @@ function storageKey(s){
  return "xs-"+t+"-reading-"+s.slug;
 }
 function hrefFor(s,n=1){
- if(s.sourceSite==="Licensed Fiction") return "reader.html?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;
- if(s.sourceSite==="Project Gutenberg") return "reader.html?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;
- if(isImported(s)) return "reader.html?imported="+encodeURIComponent(s.slug)+"&chapter="+n;
- return "reader.html?xh="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(s.sourceSite==="Licensed Fiction") return "/reader?licensed="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(s.sourceSite==="Project Gutenberg") return "/reader?gutenberg="+encodeURIComponent(s.slug)+"&chapter="+n;
+ if(isImported(s)) return "/reader?imported="+encodeURIComponent(s.slug)+"&chapter="+n;
+ return "/reader?xh="+encodeURIComponent(s.slug)+"&chapter="+n;
 }
 function filtered(){
  const q=search.value.trim().toLowerCase();

@@ -178,3 +178,4 @@ html:not([data-theme="dark"]) .lead-form input,html:not([data-theme="dark"]) .le
  nav.open{display:flex}
  html:not([data-theme="dark"]) nav{background:#fff;border-top:1px solid #e2e8ed;box-shadow:0 8px 20px rgba(15,23,42,.08)}
 }
+.featured-guides{padding-bottom:0}.featured-guides .kicker{margin-bottom:16px}.guides-note{margin-top:22px;color:#8f9aa3;font-size:14px}

@@ -67,6 +67,7 @@ export function pricingBlock({ ctaPrefix, heading = 'Simple packages. <span>Clea
           </div>
           <a class="btn ghost" href="#start" data-offer="custom-build" data-cta="${ctaPrefix}-offer-custom">Discuss a project</a>
         </div>
+        ${id === "pricing" ? "" : `<p class="center"><a href="/services.html#compare" data-cta="${ctaPrefix}-compare-packages">Compare everything in each package →</a></p>`}
       </div>
     </section>`;
 }

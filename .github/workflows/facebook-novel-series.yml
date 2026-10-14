@@ -1,0 +1,58 @@
+name: Facebook novel reading series
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 11:30 AM and 7:30 PM Asia/Kolkata. Actions cron may be delayed.
+    - cron: '0 6,14 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: facebook-novel-reading-series
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Detect Facebook Page credentials
+        id: creds
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$FB_PAGE_ID" ] || [ -z "$FB_PAGE_ACCESS_TOKEN" ]; then
+            echo "::notice::Facebook Page credentials not configured. Queue verified; publishing skipped."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify campaign without publishing
+        run: |
+          node scripts/facebook-novel-campaign.mjs --dry-run > /tmp/facebook-novel-preview.json
+          node --test tests/marketing/facebook-novels.test.mjs
+      - name: Publish next nonduplicate Facebook Page post
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: node scripts/facebook-novel-campaign.mjs --publish
+      - name: Persist successful post ID for resuming the campaign
+        if: steps.creds.outputs.ready == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/novels/facebook-publish-log.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(marketing): log Facebook novel series post [skip ci]"
+            git push
+          fi
