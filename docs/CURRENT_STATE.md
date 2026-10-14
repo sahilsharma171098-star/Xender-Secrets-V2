@@ -137,3 +137,9 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Content: 4 buyer guides rewritten and generated (BlogPosting schema, ≥ 600 words); `/faq` rebuilt from current offers (22 Q&A, FAQPage); `/website-catalog`, `/business-templates`, `/articles` get server-rendered sections + CollectionPage/Breadcrumb (`scripts/seo/hubs.mjs`); homepage nav and a guides section link Services/Catalog/Guides/About/FAQ.
 - PR #35's Udyam/MSME credential was committed to the root `index.html`, which is **not deployed** (assets = `public/`). It's now in the generated footer and founder section.
 - Tests: `tests/unit/canonical.test.mjs`, `tests/worker/canonical-worker.test.mjs` (real workerd), 7 new checks in `tests/unit/seo.test.mjs`. Live audit: `scripts/seo/audit-live.mjs` + `.github/workflows/seo-live-audit.yml` (preview on branch pushes, strict production check after deploy).
+
+
+## XEND-SEO-BLOG-001 (2026-10-14, ChatGPT)
+- Branch `chatgpt/xend-growth-20261014`: adds an original roofing/contractor website guide via the existing commercial article generator, with homepage discovery, Guides hub card/schema and sitemap entry.
+- Build freshness passes; existing SEO suite 17/17 passes with Node test isolation disabled because this sandbox rejects subprocess spawning.
+- Not merged or production-verified at this checkpoint. No Search Console metrics or ranking improvements are asserted.
