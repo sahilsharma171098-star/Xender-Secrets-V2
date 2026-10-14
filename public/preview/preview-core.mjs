@@ -96,6 +96,7 @@ export function sanitizeConfig(input = {}) {
     googleUrl: httpUrl(input.googleUrl),
     instagram: httpUrl(input.instagram),
     heroImage: httpUrl(input.heroImage),
+    logoImage: httpUrl(input.logoImage),
     accent: color(input.accent, meta.accent),
     services: svc.length ? svc : services(meta.defaults),
     servicesAreSamples: !svc.length,
@@ -135,8 +136,7 @@ export function renderPreview(cfg, { id = "", expiresAt = "" } = {}) {
   .xp-wrap{width:min(1080px,calc(100% - 32px));margin:auto}
   .xp-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px}
   .xp-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem}
-  .xp-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--a);color:#fff;font-weight:800;font-size:.9rem}
-  .xp-btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;background:var(--a);color:#fff!important;font-weight:700;text-decoration:none;border:0}
+  .xp-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--a);color:#fff;font-weight:800;font-size:.9rem}\n  .xp-logo-img{width:42px;height:42px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid var(--line);padding:3px}\n  .xp-btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;background:var(--a);color:#fff!important;font-weight:700;text-decoration:none;border:0}
   .xp-btn.ghost{background:transparent;color:var(--ink)!important;border:1px solid var(--line)}
   .xp-hero{padding:48px 0 40px;background:linear-gradient(180deg,color-mix(in srgb,var(--a) 9%,#fff),#fff)}
   .xp-hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:center}
@@ -163,11 +163,11 @@ export function renderPreview(cfg, { id = "", expiresAt = "" } = {}) {
   return `<style>${css}</style>
 <div class="xp">
   <div class="xp-banner" role="note">
-    <span><strong>Draft website preview</strong> prepared by Xender Secrets for ${esc(cfg.name)} — not the official website.${expiresAt ? ` Expires ${esc(String(expiresAt).slice(0, 10))}.` : ""}</span>
+    <span><strong>Draft website preview · concept redesign</strong> prepared by Xender Secrets for ${esc(cfg.name)} — not the official website.${expiresAt ? ` Expires ${esc(String(expiresAt).slice(0, 10))}.` : ""}</span>
     <a href="${esc(waLink(XENDER_WA, xenderMsg))}" target="_blank" rel="noopener" data-cta="preview-banner">Get this website →</a>
   </div>
   <header class="xp-wrap xp-nav">
-    <div class="xp-logo"><span class="xp-mark">${esc(initials)}</span><span>${esc(cfg.name)}</span></div>
+    <div class="xp-logo">${cfg.logoImage ? `<img class="xp-logo-img" src="${esc(cfg.logoImage)}" alt="${esc(cfg.name)} logo" loading="eager" referrerpolicy="no-referrer">` : `<span class="xp-mark">${esc(initials)}</span>`}<span>${esc(cfg.name)}</span></div>
     <a class="xp-btn" href="${esc(primaryHref)}" target="_blank" rel="noopener">${esc(cfg.cta)}</a>
   </header>
   <section class="xp-hero">

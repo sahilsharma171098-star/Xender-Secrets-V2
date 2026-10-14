@@ -195,3 +195,11 @@ Status: REVIEW · Owner: ChatGPT · PR #45
 - Reapplied reviewed CLI guards, local doctor/dev/verification tooling, Playwright dependency and regression tests.
 - Dropped only obsolete `.stack-stage` CSS because those classes no longer exist in current home.css.
 - CI rerun required after integration. No local installation claimed; this Work session's terminal/browser are blocked by invalid Linux paths in Windows sandbox/runtime configuration.
+
+
+## XEND-SALES-003 — Exact-brand previews integration (2026-10-14)
+Status: REVIEW · Owner: ChatGPT · PR #32
+
+- Preserved current prospect prefill and preview-to-prospect linking; added public logo URL and verified-issue input for personalised outreach drafts.
+- Kept escaping, HTTP(S) URL sanitisation, admin-only share creation, expiry and explicit concept/not-official labels.
+- Integrated on top of merged #45, preserving the Windows/local setup fixes and current showcase. CI rerun required; no customer preview or outbound message was automatically created.
