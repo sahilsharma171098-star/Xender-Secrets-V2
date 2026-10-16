@@ -157,6 +157,21 @@ Core KPIs:
 - proposal-to-win rate
 - sales cycle length
 
+## HQ structure (XEND-HQ-001)
+All tracks run from this one repository. `PROJECTS.md` maps every project to its track and folder.
+
+| Track | Where it lives | Automation |
+| --- | --- | --- |
+| Development | `public/`, `src/`, `extension/`, `services/` | `@claude` workflow, live E2E, unit tests |
+| Customer Acquisition | `scripts/prospecting/`, `scripts/seo/` | prospect finder (laptop), SEO audit + IndexNow (Actions) |
+| Sales | `/admin` prospects + leads, `src/pipeline.mjs` | auto follow-up dates, "Aaj ka plan", 08:45 IST Telegram digest |
+| Revenue Generation | `src/payments.mjs`, `/services` | — |
+| MIS | `/admin` report + scorecard | daily digest numbers |
+| Admin | `ops/`, `PROJECTS.md`, this file | handoff file for AI failover |
+
+Lead pipeline rule: the system schedules and reminds; Sahil sends every WhatsApp message himself,
+within the daily cap of 25 first messages, and closes a prospect after two unanswered follow-ups.
+
 ## Daily operating rhythm
 1. Acquisition: add qualified leads.
 2. Sales: contact/follow up and move opportunities.
