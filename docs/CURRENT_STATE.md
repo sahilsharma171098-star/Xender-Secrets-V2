@@ -1,7 +1,7 @@
 # Xender Secrets V2 — Current State
 
 ## XEND-SCREEN-RECORDER-001 / CQ-021 (2026-10-16, ChatGPT)
-- `projects/screen-recorder/` preserves the original Firefox 0.1.1 runtime source, icons, packaging script, 12 tests and store/privacy notes; branch `chatgpt/xend-screen-recorder-001`.
+- `projects/screen-recorder/` preserves the original Firefox 0.1.1 runtime source, icons, packaging script, 12 tests and store/privacy notes; branch `chatgpt/xend-screen-recorder-001`, PR #58.
 - Uploaded-package provenance is recorded per file; `npm run verify:release` rebuilds and verifies all 11 Firefox files exactly. No secrets, private contacts or signed/upload ZIPs are committed.
 - AMO slug: `xender-screen-recorder`. CQ-021 reports awaiting review; this repository handoff does not change or independently verify store publication.
 - HQ PR #57 is separate. After both PRs merge, remove CQ-021's pending marker from the recorder row in `PROJECTS.md`. No website/Worker change.

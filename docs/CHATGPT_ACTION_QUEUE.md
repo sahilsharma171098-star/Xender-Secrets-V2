@@ -175,7 +175,7 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 
 ## CQ-021 execution — XEND-SCREEN-RECORDER-001 (2026-10-16, ChatGPT)
 
-Source request read from `claude/xend-hq-001` / PR #57. Status: REVIEW, branch `chatgpt/xend-screen-recorder-001`, PR to `main`.
+Source request read from `claude/xend-hq-001` / PR #57. Status: REVIEW, branch `chatgpt/xend-screen-recorder-001`, [PR #58](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/58) to `main`.
 
 - Added the exact Firefox 0.1.1 runtime source, packaging, icons, tests and README under `projects/screen-recorder/`.
 - `release/firefox-0.1.1.json` records the uploaded package and per-file hashes; `npm run verify:release` rebuilds and checks all 11 output files.
