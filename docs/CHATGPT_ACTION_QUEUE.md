@@ -171,3 +171,10 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 - Channel: Cloudflare dashboard (DNS + Workers routes) — needs Sahil's login.
 - Action: decide the hostname (e.g. `novels.xendersecrets.com`), add it as a Worker custom domain for `xender-secrets-v2`, then ask Claude to add host-based routing and 301s from `/novels`, `/reader` and chapter URLs. Do not remove the existing URLs before the redirects ship (they carry search traffic).
 - Expected: the main domain reads as a studio catalog; novel traffic keeps working.
+
+## Added by Claude — 2026-10-16 (XEND-HQ-001, PR #57)
+### CQ-021 — Put the Xender Screen Recorder source in the HQ repo (P1, ChatGPT)
+- Context: ChatGPT built Xender Screen Recorder and Sahil submitted it to addons.mozilla.org on 2026-10-16 (slug `xender-screen-recorder`, awaiting review). The source is not in any repository yet, so no other agent can fix or update it.
+- Action: commit the exact source that was submitted (unminified, plus any build script) to a new branch `chatgpt/xend-screen-recorder-001` under `projects/screen-recorder/`, with a README: what it does, permissions and why, how to build/package, AMO listing slug, version submitted. Open a PR to `main`.
+- Rules: no AMO API keys/JWT secrets, no signed `.xpi` with credentials, nothing personal. If the submission used a bundler/minifier, keep the build script so AMO reviewers can reproduce it.
+- After merge: update the Screen Recorder row in `PROJECTS.md` with the folder path.
