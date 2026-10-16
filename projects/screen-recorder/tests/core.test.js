@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {chooseMime,timestamp,mixAudio,stopStreams} from '../src/core.js';
+test('codec fallback selects supported WebM and permits browser default',()=>{assert.equal(chooseMime(x=>x.includes('vp8')),'video/webm;codecs=vp8,opus');assert.equal(chooseMime(()=>false),'');});
+test('timestamps remain accurate beyond an hour',()=>{assert.equal(timestamp(59999),'00:59');assert.equal(timestamp(3601000),'60:01');});
+test('mixes available audio without connecting mic to speakers, then disconnects',()=>{let connects=0,disconnects=0;const dest={stream:{getAudioTracks:()=>['mixed']}};const context={createMediaStreamDestination:()=>dest,createMediaStreamSource:()=>({connect:target=>{assert.equal(target,dest);connects++;},disconnect:()=>disconnects++})};const stream={getAudioTracks:()=>[1]};const mix=mixAudio(context,[stream,undefined,{getAudioTracks:()=>[]},stream]);assert.deepEqual(mix.tracks,['mixed']);assert.equal(connects,2);mix.dispose();assert.equal(disconnects,2);});
+test('no sources creates no silent audio track',()=>{const mix=mixAudio({createMediaStreamDestination:()=>({stream:{getAudioTracks:()=>['silent']}})},[]);assert.deepEqual(mix.tracks,[]);});
+test('cleanup tolerates partially initialized recording',()=>{let stopped=0;stopStreams([undefined,{getTracks:()=>[{stop:()=>stopped++}]}]);assert.equal(stopped,1);});

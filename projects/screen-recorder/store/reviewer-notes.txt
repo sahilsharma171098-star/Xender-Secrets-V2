@@ -1,0 +1,11 @@
+Xender Screen Recorder 0.1.1
+
+Test: Open toolbar popup > Open recorder > select mic/camera options > Start recording > grant screen/window and device permissions > optionally Pause/Resume and add timestamp notes > Stop & save > download WebM and notes. Keep recorder tab open and visible for webcam.
+
+Firefox getDisplayMedia audio is unsupported. This build requests display video only; optional microphone uses getUserMedia. No offscreen API or background worker. No tab/system-audio claim. No Android support.
+
+No remote requests, telemetry, content scripts, host permissions, account or payment system. No data transmission; data_collection_permissions.required is [none]. Local downloads are user-initiated Blob URLs. All capture tracks stop on normal stop, native stop sharing and startup failures. Pause retains device streams, disclosed in UI/privacy.
+
+No minification/transpilation/third-party runtime code. src is directly copied by Python scripts/package.py, with manifest/platform settings written for Firefox/Chrome. Source archive includes original code, icons, tests and build script. Build requires Python3; tests require Node20+. No npm install is needed.
+
+12 deterministic unit/orchestration tests pass; web-ext10.7.0:0 errors/0 warnings/0 notices. Live Firefox screen/device/encoder behavior has not been verified in this environment. Please test the actual capture/download flow. Videos use memory, stop around250MiB, have no crash recovery; webcam can throttle if hidden; WebM seeking support varies by player. These limits are disclosed.
