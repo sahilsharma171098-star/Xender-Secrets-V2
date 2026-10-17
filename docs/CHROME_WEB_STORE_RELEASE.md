@@ -4,7 +4,19 @@
 
 ## Actual status
 
-Google sign-in succeeded through the secure browser-auth flow. The account is at the developer registration page: Developer Agreement/Privacy Policies are not accepted and the US$5 registration fee remains unpaid. The fee was approved earlier; accepting this new legal agreement still requires action-time confirmation. No Chrome package has been uploaded or submitted.
+Sahil reports the registration fee paid and developer account registered. Secure sign-in reached the dashboard, then publishing continued under the **Xender Secrets** publisher (`c49da791-aff5-4849-9b09-47179cef820f`). No additional payment was made by ChatGPT.
+
+| Item | Store ID | Last verified status |
+| --- | --- | --- |
+| SiteCheck 1.0.0 | `egkpcmgkfakclaooopabcmffdmaldkhe` | **Pending review**; final submission confirmation observed; automatic publication after approval selected |
+| PDF Converter 1.0.1 | `cagohinedblhjfafkkomikcnjdpaflfm` | **Draft**; package, description, English/Tools category, icon, promo, support and privacy fields saved; Google reports only missing screenshot/video |
+| Screen Recorder 0.1.1 | `mlaokliabcdmlacefdimacekcppoinha` | **Draft package uploaded**; description/category/language entered but not yet confirmed saved; icon upload timed out and browser session was lost |
+
+No extension is claimed live. Account limit dialog says two published/review-submitted extensions are allowed, and drafts can still be saved. Last observed usage was 1/2 after SiteCheck submission, despite two draft/listed items. Do not infer the quota is exhausted merely from draft count.
+
+PDF/Recorder still need genuine Chrome screenshots and actual device/UI validation. Local file preview was rejected by browser URL security policy; do not work around the block. A legitimate screenshot or video must come from a permitted product test environment. Do not substitute a mockup for an actual product screenshot. On 17 October at approximately 18:23 IST the dashboard redirected to Google sign-in again, so current state after the Recorder timeout remains unknown.
+
+Resume: securely sign in; inspect existing IDs before any writes; finish Recorder fields/assets; obtain genuine screenshots; submit PDF and Recorder individually subject to the two-extension quota. Do not repay registration or create duplicate items.
 
 | Extension | Version | Chrome ZIP | Local validation | Assets |
 | --- | --- | --- | --- | --- |
@@ -41,7 +53,7 @@ PDF libraries are pinned and bundled; there is no runtime CDN. Chrome PDF uses a
 
 ## Resume after account registration
 
-1. Obtain action-time confirmation before accepting Google's new Developer Agreement. The $5 fee already has approval; do not ask for that same approval again unless the amount/terms materially change. Never accept new subscriptions or unrelated charges.
+1. Registration is complete according to Sahil and the publisher dashboard was reached. Do not pay registration again. Any future new legal agreement still requires action-time confirmation.
 2. Inspect the registered publisher's items before creating anything, avoiding duplicates.
 3. Upload SiteCheck first; fill store/privacy/distribution fields, verify existing images, and submit only when mandatory fields are complete.
 4. Obtain genuine Chrome screenshots for PDF/Recorder, test their actual Chrome flows, verify public privacy URLs, then upload their ZIPs and complete each listing. Do not use invented screenshots or claim system audio is universal.

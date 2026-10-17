@@ -1,11 +1,12 @@
 # Xender Secrets V2 — Current State
 
 ## XEND-CHROME-RELEASE-001 (2026-10-17, ChatGPT)
-- Chrome packages prepared for SiteCheck1.0.0, PDF Converter1.0.1 and Screen Recorder0.1.1; Chrome adaptation/source preserved under `projects/`.
-- Local checks: SiteCheck10, PDF11, Recorder13 tests pass; SiteCheck lint and archive/icon checks pass. Existing Firefox runtime packages preserved.
-- Google account sign-in succeeded; developer agreement acceptance and approved US$5 registration are still pending. No Chrome upload/submission/publication is claimed.
-- Actual PDF/Recorder Chrome screenshots/live media checks remain open. Store/privacy drafts and resume steps: `docs/CHROME_WEB_STORE_RELEASE.md`.
-
+- Registered account reached; publishing uses Xender Secrets publisher `c49da791-aff5-4849-9b09-47179cef820f`. Sahil reports fee paid; no additional charge made.
+- SiteCheck1.0.0 **Pending review**, ID `egkpcmgkfakclaooopabcmffdmaldkhe`; final submission confirmed with automatic publish after approval.
+- PDF1.0.1 draft `cagohinedblhjfafkkomikcnjdpaflfm`: listing/assets/privacy saved; required genuine screenshot/video missing.
+- Recorder0.1.1 draft package uploaded, ID `mlaokliabcdmlacefdimacekcppoinha`; field edits and icon upload not confirmed saved after timeout/session loss. Privacy/promo/screenshots incomplete.
+- Browser now requires secure sign-in again. No Chrome live publication or PDF/Recorder submission claimed. Account allows two published/submitted extensions; drafts do not count.
+- Existing local checks10+11+13 pass; no runtime changes this session. Detail: `docs/CHROME_WEB_STORE_RELEASE.md`.
 
 ## XEND-SCREEN-RECORDER-001 / CQ-021 (2026-10-16, ChatGPT)
 - `projects/screen-recorder/` preserves the original Firefox 0.1.1 runtime source, icons, packaging script, 12 tests and store/privacy notes; branch `chatgpt/xend-screen-recorder-001`, PR #58.

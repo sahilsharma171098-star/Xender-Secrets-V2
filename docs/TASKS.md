@@ -1,14 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
-## XEND-CHROME-RELEASE-001 — Submit the existing extensions to Chrome Web Store (2026-10-17)
-Status: BLOCKED on account registration (branch `chatgpt/xend-chrome-release-001`)
+## XEND-CHROME-RELEASE-001 — Submit existing extensions to Chrome Web Store (2026-10-17)
+Status: PARTIAL / BLOCKED on secure sign-in and genuine screenshots (branch `chatgpt/xend-chrome-release-001`, draft PR #59)
 Owner: ChatGPT
 
-- Prepared SiteCheck1.0.0, PDF Converter1.0.1 MV3 worker port and Recorder0.1.1 Chrome package/icon/privacy copy.
-- Verified local tests10+11+13, package integrity and preserved Firefox output.
-- Current blocker: action-time confirmation for Google Developer Agreement; previously approved US$5 registration remains unpaid. No store uploads yet.
-- Complete genuine Chrome screenshots/device tests for PDF/Recorder, then submit each item and record its actual ID/status. Runbook: `docs/CHROME_WEB_STORE_RELEASE.md`.
-
+- SiteCheck1.0.0 submitted and **Pending review**; automatic publish after approval.
+- PDF1.0.1 package/listing/privacy saved as draft; Google's only reported blocker is screenshot/video.
+- Recorder0.1.1 package uploaded as draft; icon upload timed out, entered listing fields not confirmed saved. Finish assets/privacy and live device validation.
+- Resume by signing in securely, inspecting existing IDs and completing each draft without duplicates. Two published/submitted extension quota may block the third; drafts remain allowed.
+- Registration fee already paid according to Sahil; do not pay again. Item IDs and exact state: `docs/CHROME_WEB_STORE_RELEASE.md`.
 
 ## XEND-SCREEN-RECORDER-001 — CQ-021: preserve submitted screen recorder source (2026-10-16)
 Status: REVIEW (branch `chatgpt/xend-screen-recorder-001`, PR #58)
