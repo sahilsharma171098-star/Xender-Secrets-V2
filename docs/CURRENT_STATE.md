@@ -4,8 +4,8 @@
 - Registered account reached; publishing uses Xender Secrets publisher `c49da791-aff5-4849-9b09-47179cef820f`. Sahil reports fee paid; no additional charge made.
 - SiteCheck1.0.0 **Pending review**, ID `egkpcmgkfakclaooopabcmffdmaldkhe`; final submission confirmed with automatic publish after approval.
 - PDF1.0.1 draft `cagohinedblhjfafkkomikcnjdpaflfm`: listing/assets/privacy saved; required genuine screenshot/video missing.
-- Recorder0.1.1 draft package uploaded, ID `mlaokliabcdmlacefdimacekcppoinha`; field edits and icon upload not confirmed saved after timeout/session loss. Privacy/promo/screenshots incomplete.
-- Browser now requires secure sign-in again. No Chrome live publication or PDF/Recorder submission claimed. Account allows two published/submitted extensions; drafts do not count.
+- Recorder0.1.1 draft `mlaokliabcdmlacefdimacekcppoinha`: description/category/language, homepage/support, icon, promo and privacy saved on evening resume. Google reports only missing screenshot/video.
+- Secure sign-in succeeded again on evening resume. Genuine PDF/Recorder screenshots and Chrome UI/device validation remain blockers. No live publication or PDF/Recorder submission claimed. Account allows two published/submitted extensions; drafts do not count.
 - Existing local checks10+11+13 pass; no runtime changes this session. Detail: `docs/CHROME_WEB_STORE_RELEASE.md`.
 
 ## XEND-SCREEN-RECORDER-001 / CQ-021 (2026-10-16, ChatGPT)

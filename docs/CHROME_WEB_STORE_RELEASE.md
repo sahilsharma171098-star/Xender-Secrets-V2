@@ -10,7 +10,7 @@ Sahil reports the registration fee paid and developer account registered. Secure
 | --- | --- | --- |
 | SiteCheck 1.0.0 | `egkpcmgkfakclaooopabcmffdmaldkhe` | **Pending review**; final submission confirmation observed; automatic publication after approval selected |
 | PDF Converter 1.0.1 | `cagohinedblhjfafkkomikcnjdpaflfm` | **Draft**; package, description, English/Tools category, icon, promo, support and privacy fields saved; Google reports only missing screenshot/video |
-| Screen Recorder 0.1.1 | `mlaokliabcdmlacefdimacekcppoinha` | **Draft package uploaded**; description/category/language entered but not yet confirmed saved; icon upload timed out and browser session was lost |
+| Screen Recorder 0.1.1 | `mlaokliabcdmlacefdimacekcppoinha` | **Draft**; package, description, English/Tools category, homepage/support, icon, promo and privacy fields saved; Google reports only missing screenshot/video |
 
 No extension is claimed live. Account limit dialog says two published/review-submitted extensions are allowed, and drafts can still be saved. Last observed usage was 1/2 after SiteCheck submission, despite two draft/listed items. Do not infer the quota is exhausted merely from draft count.
 
@@ -58,3 +58,8 @@ PDF libraries are pinned and bundled; there is no runtime CDN. Chrome PDF uses a
 3. Upload SiteCheck first; fill store/privacy/distribution fields, verify existing images, and submit only when mandatory fields are complete.
 4. Obtain genuine Chrome screenshots for PDF/Recorder, test their actual Chrome flows, verify public privacy URLs, then upload their ZIPs and complete each listing. Do not use invented screenshots or claim system audio is universal.
 5. Record each item ID, version, submitted/pending/live status and any rejection independently. Publication depends on Google review.
+
+
+## Resume update, 17 October 2026 (evening IST)
+
+Sahil explicitly approved cloud-browser continuation after the connected local Chrome browser rejected Web Store scripting. Secure sign-in succeeded again. All three existing items were visible; SiteCheck remained Pending review. Recorder description/category/language, homepage/support, privacy declarations and linked policy were saved, followed by successful icon and small promo uploads. The final Why-can-I-not-submit dialog reports only: "At least one screenshot or video is required." PDF has the same previously verified blocker. Neither draft was submitted. Genuine screenshots/video and actual Chrome UI/device validation remain required. Do not generate a mock screenshot or report successful media tests. The last verification was made while signed in; the prior sign-out observation above is historical. No further fee was charged.
