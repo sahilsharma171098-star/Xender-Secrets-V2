@@ -1,5 +1,13 @@
 # Xender Secrets V2 — Current State
 
+## XEND-CHROME-RELEASE-001 (2026-10-17, ChatGPT)
+- Registered account reached; publishing uses Xender Secrets publisher `c49da791-aff5-4849-9b09-47179cef820f`. Sahil reports fee paid; no additional charge made.
+- SiteCheck1.0.0 **Pending review**, ID `egkpcmgkfakclaooopabcmffdmaldkhe`; final submission confirmed with automatic publish after approval.
+- PDF1.0.1 draft `cagohinedblhjfafkkomikcnjdpaflfm`: listing/assets/privacy saved; required genuine screenshot/video missing.
+- Recorder0.1.1 draft `mlaokliabcdmlacefdimacekcppoinha`: description/category/language, homepage/support, icon, promo and privacy saved on evening resume. Google reports only missing screenshot/video.
+- Secure sign-in succeeded again on evening resume. Genuine PDF/Recorder screenshots and Chrome UI/device validation remain blockers. No live publication or PDF/Recorder submission claimed. Account allows two published/submitted extensions; drafts do not count.
+- Existing local checks10+11+13 pass; no runtime changes this session. Detail: `docs/CHROME_WEB_STORE_RELEASE.md`.
+
 ## XEND-SCREEN-RECORDER-001 / CQ-021 (2026-10-16, ChatGPT)
 - `projects/screen-recorder/` preserves the original Firefox 0.1.1 runtime source, icons, packaging script, 12 tests and store/privacy notes; branch `chatgpt/xend-screen-recorder-001`, PR #58.
 - Uploaded-package provenance is recorded per file; `npm run verify:release` rebuilds and verifies all 11 Firefox files exactly. No secrets, private contacts or signed/upload ZIPs are committed.

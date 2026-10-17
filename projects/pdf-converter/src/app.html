@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Xender PDF Converter</title>
+  <link rel="icon" href="icons/icon-48.png">
+  <link rel="stylesheet" href="app.css">
+  <script src="vendor/pdf-lib.js"></script>
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="app.html" aria-label="Xender PDF Converter home"><img src="icons/icon-48.png" width="38" height="38" alt=""><span>Xender<span class="brand-small">PDF CONVERTER</span></span></a>
+    <span class="privacy-badge"><span aria-hidden="true">●</span> All files stay on your device</span>
+  </header>
+  <main>
+    <section class="intro">
+      <p class="eyebrow">A LITTLE LESS PAPERWORK.</p>
+      <h1>Your PDFs. Sorted.</h1>
+      <p class="lede">Everyday PDF tools, right in Firefox.<br>No uploads, no account, no subscription.</p>
+    </section>
+    <div class="workspace">
+      <nav class="tool-nav" aria-label="PDF tools">
+        <p class="nav-label">CHOOSE A TOOL</p>
+        <button class="tool active" type="button" data-tool="images" aria-pressed="true"><span class="tool-icon" aria-hidden="true">▧</span><span>Images to PDF<small>JPG, PNG &amp; WebP</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+        <button class="tool" type="button" data-tool="render" aria-pressed="false"><span class="tool-icon" aria-hidden="true">▤</span><span>PDF to images<small>PNG or JPG, in a ZIP</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+        <button class="tool" type="button" data-tool="merge" aria-pressed="false"><span class="tool-icon" aria-hidden="true">⊞</span><span>Merge PDFs<small>Make one document</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+        <button class="tool" type="button" data-tool="extract" aria-pressed="false"><span class="tool-icon" aria-hidden="true">▥</span><span>Extract pages<small>Keep just what you need</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+        <button class="tool" type="button" data-tool="rotate" aria-pressed="false"><span class="tool-icon" aria-hidden="true">↻</span><span>Rotate PDF<small>Get the right angle</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+        <div class="nav-note"><span aria-hidden="true">◇</span><p>Private by default.<br><strong>Works offline after install.</strong></p></div>
+      </nav>
+      <section class="panel" aria-labelledby="tool-title">
+        <div class="panel-top"><div><p class="step-label">01 / ADD YOUR FILES</p><h2 id="tool-title">Images to PDF</h2></div><button id="clear" type="button" class="text-button">Clear files</button></div>
+        <p id="tool-description" class="description">Turn your images into a tidy PDF. Arrange them in the order you want.</p>
+        <div id="dropzone" class="dropzone">
+          <span class="drop-icon" aria-hidden="true">↑</span>
+          <p><strong id="drop-title">Drop images here</strong></p>
+          <p id="accepted-types">JPG, PNG or WebP · up to 30 files / 80 MB total</p>
+          <button id="choose-files" type="button" class="choose-button">Choose files <span aria-hidden="true">+</span></button>
+          <input type="file" id="file-input" multiple accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden aria-label="Choose files">
+        </div>
+        <ol id="file-list" class="file-list" aria-label="Selected files"></ol>
+        <div id="options" class="options">
+          <div id="page-options" class="option-row" hidden><label for="pages">Pages <span class="optional">(blank = all)</span></label><input id="pages" type="text" placeholder="e.g. 1-3, 5, 8" autocomplete="off" spellcheck="false"><p class="hint">Use page numbers and ranges. The order you enter is preserved.</p></div>
+          <div class="options-grid">
+            <div id="paper-options" class="option-row"><label for="paper-size">Page size</label><select id="paper-size"><option value="a4">A4 · fit to page</option><option value="letter">US Letter · fit to page</option><option value="image">Match each image</option></select></div>
+            <div id="format-options" class="option-row" hidden><label for="image-format">Image format</label><select id="image-format"><option value="png">PNG · lossless</option><option value="jpeg">JPG · smaller files</option></select></div>
+            <div id="resolution-options" class="option-row" hidden><label for="resolution">Resolution</label><select id="resolution"><option value="1">72 DPI · screen</option><option value="2" selected>144 DPI · balanced</option><option value="3">216 DPI · detailed</option></select></div>
+            <div id="rotation-options" class="option-row" hidden><label for="angle">Rotate clockwise</label><select id="angle"><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></div>
+            <div class="option-row"><label for="output-name">Output name</label><input id="output-name" type="text" value="xender-document" maxlength="100" spellcheck="false"></div>
+          </div>
+        </div>
+        <div class="action-row"><p class="local-note"><span aria-hidden="true">◇</span> Processed on this device</p><button id="run" class="primary" type="button" disabled>Create PDF <span aria-hidden="true">→</span></button><button id="cancel" class="text-button" type="button" hidden>Cancel</button></div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+        <progress id="progress" max="100" value="0" hidden aria-label="Conversion progress"></progress>
+        <div id="result" class="result" hidden><span class="result-check" aria-hidden="true">✓</span><div><strong>Your file is ready.</strong><p id="result-details"></p></div><a id="download" class="download" download>Download <span aria-hidden="true">↓</span></a></div>
+      </section>
+    </div>
+    <aside class="service-offer" aria-labelledby="service-title"><div><p class="eyebrow">OPTIONAL PAID SERVICE · FOR BUSINESSES</p><h2 id="service-title">Doing this every week?</h2><p>Xender Secrets can build a custom PDF workflow for your business: branded document generation, bulk processing, or a private browser tool.</p><small>Request a quote on our website. These are separate custom services; the tools above stay free. Your files are never attached to the enquiry.</small></div><a class="service-link" href="https://www.xendersecrets.com/contact?utm_source=pdf_extension&amp;utm_medium=extension&amp;utm_campaign=pdf_automation#start" target="_blank" rel="noopener noreferrer">Get a paid-service quote <span aria-hidden="true">↗</span></a></aside>
+    <aside class="limits"><strong>Good to know</strong><p>For ordinary, unencrypted PDFs. Password-protected PDFs are not supported. Editing a PDF may remove interactive features or invalidate digital signatures. PDF to images exports up to 50 pages per run. Word, Excel and OCR conversion are not included.</p></aside>
+  </main>
+  <footer><span>Made by <a href="https://www.xendersecrets.com" target="_blank" rel="noopener noreferrer">Xender Secrets ↗</a></span><span>Free tools. Zero file uploads. <a href="privacy.html" target="_blank" rel="noopener">Privacy</a> · <a href="https://www.xendersecrets.com/contact" target="_blank" rel="noopener noreferrer">Support</a></span></footer>
+</body>
+</html>

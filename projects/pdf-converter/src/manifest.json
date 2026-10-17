@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Xender PDF Converter — Offline PDF Tools",
+  "version": "1.0.1",
+  "description": "Convert images to PDF and PDF to images. Merge, extract and rotate PDF pages offline, without uploading your files.",
+  "author": "Xender Secrets",
+  "homepage_url": "https://www.xendersecrets.com",
+  "icons": { "48": "icons/icon-48.png", "96": "icons/icon-96.png", "128": "icons/icon-128.png" },
+  "action": { "default_title": "Open Xender PDF Converter", "default_icon": { "48": "icons/icon-48.png", "96": "icons/icon-96.png" } },
+  "background": { "scripts": ["background.js"] },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "pdf-converter@xendersecrets.com",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": { "required": ["none"] }
+    },
+    "gecko_android": { "strict_min_version": "142.0" }
+  },
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' blob: data:; font-src 'self' blob:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+  }
+}

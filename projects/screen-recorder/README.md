@@ -71,3 +71,8 @@ A paid release needs hosted checkout from an actual merchant account, verified/i
 - https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/isTypeSupported_static
 - https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/
 - https://developer.chrome.com/docs/extensions/how-to/web-platform/screen-capture
+
+
+## Chrome Web Store preparation — 17 October 2026
+
+Chrome packaging adds a required 128px icon from `store/chrome/` and corrects the bundled privacy page to describe available screen/tab audio. The Firefox runtime release remains unchanged. `npm test` now builds before running 13 tests, including Chrome display/microphone mixing and mixer cleanup with deterministic media doubles. These are not live Chrome hardware tests. Chrome listing/privacy drafts and a promo tile are in `store/chrome/`; an actual Chrome screenshot and store registration remain pending. See `docs/CHROME_WEB_STORE_RELEASE.md` from the repo root.

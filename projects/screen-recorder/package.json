@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test",
+    "test": "python3 scripts/package.py && node --test",
     "build": "python3 scripts/package.py",
     "verify:release": "python3 scripts/verify-release.py"
   }

@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-CHROME-RELEASE-001 — Submit existing extensions to Chrome Web Store (2026-10-17)
+Status: PARTIAL / BLOCKED on genuine screenshots and Chrome UI/device validation (branch `chatgpt/xend-chrome-release-001`, draft PR #59)
+Owner: ChatGPT
+
+- SiteCheck1.0.0 submitted and **Pending review**; automatic publish after approval.
+- PDF1.0.1 package/listing/privacy saved as draft; Google's only reported blocker is screenshot/video.
+- Recorder0.1.1 draft listing, icon, promo and privacy saved on evening resume; Google reports only screenshot/video missing. Obtain genuine Chrome screenshots and live UI/device validation before submission.
+- Resume by signing in securely, inspecting existing IDs and completing each draft without duplicates. Two published/submitted extension quota may block the third; drafts remain allowed.
+- Registration fee already paid according to Sahil; do not pay again. Item IDs and exact state: `docs/CHROME_WEB_STORE_RELEASE.md`.
+
 ## XEND-SCREEN-RECORDER-001 — CQ-021: preserve submitted screen recorder source (2026-10-16)
 Status: REVIEW (branch `chatgpt/xend-screen-recorder-001`, PR #58)
 Owner: ChatGPT

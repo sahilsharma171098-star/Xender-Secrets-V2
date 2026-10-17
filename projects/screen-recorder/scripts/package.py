@@ -19,6 +19,12 @@ for browser in ['firefox', 'chrome']:
         }}
     else:
         manifest['minimum_chrome_version'] = '116'
+        shutil.copyfile(root / 'store/chrome/icon-128.png', folder / 'icons/recorder-128.png')
+        manifest['icons']['128'] = 'icons/recorder-128.png'
+        privacy = folder / 'privacy.html'
+        privacy.write_text(privacy.read_text().replace(
+            'Firefox captures screen/window video and optional microphone audio; it does not capture system/tab audio.',
+            'Chrome captures screen/window/tab video, optional microphone audio and available screen/tab audio. Screen/tab audio availability depends on Chrome, your OS and the selected sharing source.'))
         (folder / 'platform.js').write_text("export const platform = {name: 'Chrome', displayAudio: true};\n")
     (folder / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     target = out / f'xender-recorder-{browser}-{version}.zip'
