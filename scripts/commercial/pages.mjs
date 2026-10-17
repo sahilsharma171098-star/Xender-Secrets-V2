@@ -376,6 +376,7 @@ const HOME_FAQ = [
   ...COMMON_FAQ.filter(([q]) => !/GST/.test(q)),
   ["Can you redesign my existing website?", "Yes. Send us the link — we'll tell you honestly whether a few fixes are enough or a redesign is worth it."],
   ["Do you work with businesses outside India?", "Yes — we work with businesses in the UK, US, Canada, Australia and the UAE as well as across India, entirely online."],
+  ["Do you work with agencies?", "Yes. Agencies can use Xender Secrets as a white-label development partner: we build under your brand and you keep the client relationship. Projects run entirely online, so it works for agencies anywhere — built in India, delivered worldwide."],
 ];
 
 /** Homepage showcase. Only Xender's own demos and products appear, each with its honest label. */
@@ -416,7 +417,7 @@ function homeDoors() {
             <p class="kicker">For brands</p>
             <h3>Custom, design-led websites and products.</h3>
             <p>For brands, D2C labels, agencies and founders who need a site that looks considered and works hard — designed from your brand, not a template.</p>
-            <ul><li>Brand websites</li><li>E-commerce</li><li>Web apps</li><li>Design systems</li></ul>
+            <ul><li>Brand websites</li><li>E-commerce</li><li>Web apps</li><li>Design systems</li><li>White-label for agencies</li></ul>
             <span class="more">See the studio</span>
           </a>
           <a class="sx-door" href="/services.html" data-cta="home-door-pricing">
@@ -509,7 +510,7 @@ function homeStudio() {
         </div>
         <ul class="sx-facts">
           <li><b>Founder</b><span>Sahil Kumar Sharma</span></li>
-          <li><b>Based in</b><span>Gurugram, Haryana · working worldwide</span></li>
+          <li><b>Based in</b><span>Gurugram, Haryana · built in India, delivered worldwide</span></li>
           <li><b>Registration</b><span>GSTIN 06IQFPS4456B1ZP</span></li>
           <li><b>MSME (Udyam)</b><span><a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a></span></li>
           <li><b>Ownership</b><span>You own the code, content and accounts</span></li>
@@ -576,7 +577,7 @@ function portfolioPage() {
 
 const STUDIO_FAQ = [
   ["How is a studio project priced?", "After a short brief we send a written scope with a fixed price and delivery date. Nothing starts, and nothing is paid, until you've agreed it. Larger builds can be split into phases so you approve each one."],
-  ["Can you work from our brand guidelines or with our designer?", "Yes. We can build from your existing identity, typography and assets, or work alongside your designer or agency as the build partner."],
+  ["Can you work from our brand guidelines or with our designer?", "Yes. We can build from your existing identity, typography and assets, or work alongside your designer or agency as the build partner — including white-label builds delivered under your agency's brand."],
   ["What do you need from us?", "Your brand assets, the content you already have and a person who can approve decisions. We help shape copy and structure, and flag anything missing early."],
   ["Who owns the result?", "You do — code, content, design files and accounts are handed over at launch. No lock-in and no compulsory monthly fee."],
   ["Is the work in your catalog client work?", "No. The catalog shows concept demos, working demos and products we designed and built ourselves, each labelled that way. We don't publish invented clients or testimonials."],
@@ -741,7 +742,7 @@ function aboutPage() {
       <div class="wrap narrow">
         <p class="eyebrow">About Xender Secrets</p>
         <h1>Small studio. <em>Straight answers.</em></h1>
-        <p class="lede">Xender Secrets is a GST-registered proprietorship in Gurugram, founded by Sahil Kumar Sharma. We build websites and simple digital systems for small businesses — designed around how customers actually enquire and buy.</p>
+        <p class="lede">Xender Secrets is a GST-registered proprietorship in Gurugram, founded by Sahil Kumar Sharma. We build websites and simple digital systems for small businesses — designed around how customers actually enquire and buy. Our mission is simple: make professional digital solutions accessible, affordable and easy to launch.</p>
         <div class="actions"><a class="btn primary lg" href="#start" data-cta="about-hero-primary">Get a free website check</a><a class="btn ghost lg" href="/services.html" data-cta="about-hero-pricing">See pricing</a></div>
       </div>
     </section>`,
@@ -751,6 +752,16 @@ function aboutPage() {
       ["You own everything", "Files, content and access are handed over at launch. No lock-in."],
       ["No forced retainers", "Support after launch is optional, never a condition of the sale."],
     ] }),
+    `<section class="section" id="agencies">
+      <div class="wrap narrow">
+        <div class="section-head">
+          <p class="kicker">Agencies &amp; collaborations</p>
+          <h2>Built in India. <span>Delivered worldwide.</span></h2>
+          <p>Agencies anywhere can use Xender Secrets as a white-label development partner — reliable, cost-effective execution under your brand, while you focus on your client relationships. We're open to client projects, agency partnerships and collaborations.</p>
+        </div>
+        <div class="actions"><a class="btn ghost" href="#start" data-cta="about-agency-enquiry">Talk about a partnership</a></div>
+      </div>
+    </section>`,
     `<section class="section alt">
       <div class="wrap split">
         <div>
@@ -787,7 +798,7 @@ function contactPage() {
         </div>
       </div>
     </section>`,
-    leadForm({ cta: "contact-form", offer: "not-sure", heading: "Or send a quick <span>enquiry.</span>", intro: "Tell us what you need; we reply on WhatsApp or email.", bullets: ["Websites, redesigns and landing pages", "Custom builds and automation", "Anything else — just ask"] }),
+    leadForm({ cta: "contact-form", offer: "not-sure", heading: "Or send a quick <span>enquiry.</span>", intro: "Tell us what you need; we reply on WhatsApp or email.", bullets: ["Websites, redesigns and landing pages", "Custom builds and automation", "White-label work and agency partnerships", "Anything else — just ask"] }),
   ].join("\n\n    ");
   return page({ path: "/contact.html", title: "Contact Xender Secrets | WhatsApp, Email",
     description: "Contact Xender Secrets about a business website, redesign or custom build — WhatsApp +91 98219 41814, email or the enquiry form. We reply personally.",
@@ -1013,6 +1024,7 @@ const FAQ_GROUPS = [
     ["Can you add a login, database or online payments?", "Yes, as custom work from ₹4,999 + GST, scoped after a short discussion. Online payments need a payment-provider account in your business's name; the provider charges its own fees."],
     HOME_FAQ.find(([q]) => q.startsWith("Can you redesign")),
     HOME_FAQ.find(([q]) => q.startsWith("Do you work with businesses outside India")),
+    HOME_FAQ.find(([q]) => q.startsWith("Do you work with agencies")),
   ]],
   ["Working with Xender Secrets", [
     ["What do I get from the free website check?", "A personal review of your current website, Google Business Profile or Instagram page, with the specific fixes we'd make first for mobile, speed, trust and enquiries. It's not an automated PDF, and there's no obligation to buy."],
