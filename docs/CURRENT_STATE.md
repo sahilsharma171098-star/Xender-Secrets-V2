@@ -1,5 +1,11 @@
 # Xender Secrets V2 — Current State
 
+## XEND-HQ-001 (2026-10-16, Claude, branch `claude/xend-hq-001`)
+- Repo is now the Xender HQ: `PROJECTS.md` lists every project; Amazon connector lives in `services/amazon-spapi/` (Render still deploys it from the old repo until repointed).
+- Lead pipeline automation in `src/pipeline.mjs`; Worker cron `15 3 * * *` posts the morning digest to Telegram once its secrets are set. WhatsApp sending stays manual.
+- AI failover: `ops/FAILOVER.md`, `ops/HANDOFF.md`, `npm run ops:handoff`, `GEMINI.md`.
+- Pending: laptop projects + n8n workflows (folder access not yet granted).
+
 ## XEND-AGENT-REACH-001 (2026-10-11, ChatGPT, branch `chatgpt/xend-agent-reach-001`)
 - Implemented **repo-side integration preparation only**: pinned user-only Windows setup script, read-only OpenCLI Facebook/Instagram capture script, tests, runbook.
 - Agent-Reach is a local agent capability layer, not part of the public site/Worker or an automatic DM provider. No live laptop install, connected social account, lead capture or production deploy has occurred.

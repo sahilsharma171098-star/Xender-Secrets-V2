@@ -15,6 +15,7 @@
 
 import { sanitizeConfig } from "../public/preview/preview-core.mjs";
 import { ensureProspectSchema, handleProspectsAdmin, prospectStats } from "./prospects.mjs";
+import { handlePipelineAdmin } from "./pipeline.mjs";
 
 export const LEAD_STAGES = ["new", "contacted", "qualified", "proposal", "won", "lost"];
 export const OFFERS = [
@@ -526,6 +527,9 @@ export async function handleGrowth(request, { sql, env = {}, nowMs = Date.now() 
     }
     const prospects = await handleProspectsAdmin(request, { sql, url, nowMs, json, leadRef });
     if (prospects) return prospects;
+    // XEND-HQ-001: daily lead queue + Telegram morning digest (src/pipeline.mjs).
+    const pipeline = await handlePipelineAdmin(request, { sql, url, env, nowMs, json, notify: notifyLead });
+    if (pipeline) return pipeline;
     if (path === "/api/admin/report" && method === "GET") {
       return json(buildReport(sql, { days: url.searchParams.get("days"), nowMs }));
     }

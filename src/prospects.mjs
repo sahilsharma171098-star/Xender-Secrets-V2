@@ -15,6 +15,14 @@ export const PROSPECT_STAGES = ["new", "messaged", "replied", "interested", "con
 const REPLIED = new Set(["replied", "interested", "converted", "not_interested"]);
 const MAX_IMPORT = 500;
 
+// XEND-HQ-001 lead pipeline: when a stage changes and no date was given, the next follow-up is
+// scheduled automatically, so "Follow-ups due" works without Sahil typing dates.
+export const FOLLOW_UP_DAYS = { messaged: 2, replied: 1, interested: 1 };
+export const CLOSED_STAGES = new Set(["converted", "not_interested", "skip"]);
+/** Follow-ups after the first message with no reply before the queue suggests closing it. */
+export const MAX_FOLLOW_UPS = 2;
+export const addDays = (day, n) => new Date(Date.parse(day + "T00:00:00Z") + n * 86400000).toISOString().slice(0, 10);
+
 const str = (v, n) => String(v ?? "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
 const text = (v, n) => String(v ?? "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "").trim().slice(0, n);
 
@@ -128,7 +136,19 @@ export function ensureProspectSchema(sql) {
     );
     CREATE INDEX IF NOT EXISTS idx_growth_prospects_stage ON growth_prospects(stage,score);
     CREATE INDEX IF NOT EXISTS idx_growth_prospects_contacted ON growth_prospects(contacted_at);
+    CREATE TABLE IF NOT EXISTS growth_prospect_touches (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      prospect_id TEXT NOT NULL,
+      at TEXT NOT NULL,
+      kind TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_growth_prospect_touches ON growth_prospect_touches(prospect_id,kind);
   `);
+}
+
+/** Follow-up messages already sent to a prospect (XEND-HQ-001). */
+export function followUpCount(sql, id) {
+  return Number(sql.exec("SELECT COUNT(*) AS n FROM growth_prospect_touches WHERE prospect_id=? AND kind='follow_up'", id).toArray()[0]?.n || 0);
 }
 
 function prospectId() {
@@ -222,10 +242,29 @@ export function updateProspect(sql, id, patch = {}, nowMs = Date.now()) {
     if (p && !/^[a-z2-9]{6}$/.test(p)) return { status: 400, body: { ok: false, error: "Invalid preview id." } };
     set.preview_id = p;
   }
+  // XEND-HQ-001: schedule (or clear) the next follow-up when the stage moves and Sahil gave no date.
+  const today = now.slice(0, 10);
+  const stageChanged = set.stage !== undefined && set.stage !== row.stage;
+  if (stageChanged && patch.next_action_at === undefined) {
+    if (FOLLOW_UP_DAYS[set.stage]) set.next_action_at = addDays(today, FOLLOW_UP_DAYS[set.stage]);
+    else if (CLOSED_STAGES.has(set.stage)) set.next_action_at = "";
+  }
+  // "I sent the follow-up": log it and push the next one out, without touching the stage.
+  const touches = [];
+  if (patch.followed_up === true) {
+    const stage = set.stage ?? row.stage;
+    if (!FOLLOW_UP_DAYS[stage]) return { status: 400, body: { ok: false, error: "Only messaged, replied or interested prospects take a follow-up." } };
+    touches.push("follow_up");
+    if (patch.next_action_at === undefined) set.next_action_at = addDays(today, FOLLOW_UP_DAYS[stage] + 1);
+  }
+  if (stageChanged) touches.push("stage:" + set.stage);
   const keys = Object.keys(set);
-  if (!keys.length) return { status: 400, body: { ok: false, error: "Nothing to update." } };
-  sql.exec(`UPDATE growth_prospects SET ${keys.map((k) => k + "=?").join(",")},updated_at=? WHERE id=?`, ...keys.map((k) => set[k]), now, id);
-  return { status: 200, body: { ok: true, prospect: sql.exec(`SELECT ${COLUMNS} FROM growth_prospects WHERE id=?`, id).toArray()[0] } };
+  if (!keys.length && !touches.length) return { status: 400, body: { ok: false, error: "Nothing to update." } };
+  const assignments = [...keys.map((k) => k + "=?"), "updated_at=?"].join(",");
+  sql.exec(`UPDATE growth_prospects SET ${assignments} WHERE id=?`, ...keys.map((k) => set[k]), now, id);
+  for (const kind of touches) sql.exec("INSERT INTO growth_prospect_touches (prospect_id,at,kind) VALUES (?,?,?)", id, now, kind);
+  const prospect = sql.exec(`SELECT ${COLUMNS} FROM growth_prospects WHERE id=?`, id).toArray()[0];
+  return { status: 200, body: { ok: true, prospect: { ...prospect, follow_ups: followUpCount(sql, id) } } };
 }
 
 /**

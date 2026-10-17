@@ -67,6 +67,12 @@
       ]
     }
   },
+  // XEND-HQ-001: 03:15 UTC = 08:45 IST daily lead digest (scheduled() in src/index.js).
+  "triggers": {
+    "crons": [
+      "15 3 * * *"
+    ]
+  },
   "secrets": {
     "required": [
       "ADMIN_TOKEN"

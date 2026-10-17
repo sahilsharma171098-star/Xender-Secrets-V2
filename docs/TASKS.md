@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-HQ-001 — Xender HQ: one repo for every project + lead pipeline automation (2026-10-16)
+Status: REVIEW (branch `claude/xend-hq-001`)
+Owner: Claude
+
+- Amazon SP-API connector moved into `services/amazon-spapi/` (code snapshot; old private repo keeps its history, which contains a supplier's contact details). Key check now fails closed.
+- Lead pipeline: auto follow-up dates on stage change, `followed_up` action, `/api/admin/pipeline/today` + `/digest`, "Aaj ka plan" card in `/admin`, Worker cron 03:15 UTC sends a Telegram morning digest (no-op until `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` exist).
+- HQ layer: `PROJECTS.md`, `ops/FAILOVER.md`, `ops/HANDOFF.md` + `npm run ops:handoff`, `GEMINI.md`; AGENTS.md and the OS doc updated.
+- Open (Sahil): grant folder access so `~/Xender`, `~/source` and n8n workflows can be scanned and merged; set Telegram secrets in Cloudflare; confirm `CONNECTOR_API_KEY` is set on the live Render connector.
+- Tests: unit suite (incl. `pipeline.test.mjs`, `handoff.test.mjs`), worker routing test, local `wrangler dev` check of routes + cron.
+
 ## XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11)
 Status: REVIEW (branch `chatgpt/xend-agent-reach-001`)
 Owner: ChatGPT

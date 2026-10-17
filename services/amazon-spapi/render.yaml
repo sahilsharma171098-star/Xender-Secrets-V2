@@ -1,0 +1,12 @@
+services:
+  # Reference config. Render only auto-reads render.yaml from a repo root, so when this
+  # service is pointed at Xender-Secrets-V2, set Root Directory = services/amazon-spapi
+  # in the Render dashboard (see README.md).
+  - type: web
+    name: xender-amazon-spapi
+    runtime: python
+    plan: free
+    rootDir: services/amazon-spapi
+    autoDeploy: false
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT

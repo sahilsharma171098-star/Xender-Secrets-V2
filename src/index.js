@@ -993,5 +993,14 @@ export default {
     }
 
     return env.ASSETS.fetch(request);
+  },
+
+  // XEND-HQ-001: free Worker cron (wrangler.jsonc "triggers") — morning lead digest to Sahil's
+  // Telegram. Goes through the normal admin route, so the same ADMIN_TOKEN check applies; it is a
+  // no-op when ADMIN_TOKEN or the Telegram secrets are not set.
+  async scheduled(controller,env,ctx){
+    if(!env.ADMIN_TOKEN||!env.TELEGRAM_BOT_TOKEN||!env.TELEGRAM_CHAT_ID)return;
+    const stub=env.APP_STATE.get(env.APP_STATE.idFromName("xender-secrets"));
+    ctx.waitUntil(stub.fetch(new Request("https://www.xendersecrets.com/api/admin/pipeline/digest",{method:"POST",headers:{authorization:"Bearer "+env.ADMIN_TOKEN}})));
   }
 };
