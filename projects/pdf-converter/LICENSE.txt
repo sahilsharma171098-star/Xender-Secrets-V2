@@ -1,0 +1,3 @@
+Copyright (c) 2026 Xender Secrets. All rights reserved.
+
+First-party extension source is provided for inspection. No licence to redistribute or modify that source is granted without the publisher's permission. Firefox users may install and use the published extension free of charge. Bundled third-party components retain their original licences, included under vendor/ in the built package.

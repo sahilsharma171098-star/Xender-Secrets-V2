@@ -1,6 +1,6 @@
 # Chrome Web Store listing — Xender SiteCheck
 
-Status: **package and listing ready; not submitted.** Publishing on the Chrome Web Store requires a one-time US$5 developer registration fee. Under the ₹0-spend rule this is intentionally **not** paid until Xender Secrets has its first revenue. Everything below is ready to paste once Sahil approves the fee.
+Status: **Chrome package prepared; registration blocks upload.** Sahil has already approved the one-time US$5 developer registration fee. Google Developer Agreement acceptance still requires action-time confirmation. No Chrome submission is claimed.
 
 | Field | Value |
 |---|---|
@@ -100,5 +100,5 @@ Used to run the extension's own bundled audit script (audit.js) once in the acti
 
 **Remote code:** No, I am not using remote code.
 
-**Data usage:** Do not tick any data type. The extension does not collect or transmit user data.
+**Data usage draft:** Disclose local processing of the active page content and URL. Google requires disclosure even when data stays on-device; do not leave data handling undeclared merely because there is no upload. Select the matching categories based on the current dashboard definitions. No page content, current URL or audit report is transmitted by the extension.
 Certify: does not sell data to third parties; does not use or transfer data for purposes unrelated to the single purpose; does not use or transfer data to determine creditworthiness or for lending.

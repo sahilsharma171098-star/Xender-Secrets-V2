@@ -1,5 +1,12 @@
 # Xender Secrets V2 — Current State
 
+## XEND-CHROME-RELEASE-001 (2026-10-17, ChatGPT)
+- Chrome packages prepared for SiteCheck1.0.0, PDF Converter1.0.1 and Screen Recorder0.1.1; Chrome adaptation/source preserved under `projects/`.
+- Local checks: SiteCheck10, PDF11, Recorder13 tests pass; SiteCheck lint and archive/icon checks pass. Existing Firefox runtime packages preserved.
+- Google account sign-in succeeded; developer agreement acceptance and approved US$5 registration are still pending. No Chrome upload/submission/publication is claimed.
+- Actual PDF/Recorder Chrome screenshots/live media checks remain open. Store/privacy drafts and resume steps: `docs/CHROME_WEB_STORE_RELEASE.md`.
+
+
 ## XEND-SCREEN-RECORDER-001 / CQ-021 (2026-10-16, ChatGPT)
 - `projects/screen-recorder/` preserves the original Firefox 0.1.1 runtime source, icons, packaging script, 12 tests and store/privacy notes; branch `chatgpt/xend-screen-recorder-001`, PR #58.
 - Uploaded-package provenance is recorded per file; `npm run verify:release` rebuilds and verifies all 11 Firefox files exactly. No secrets, private contacts or signed/upload ZIPs are committed.

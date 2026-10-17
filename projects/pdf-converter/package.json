@@ -1,0 +1,19 @@
+{
+  "name": "xender-pdf-converter",
+  "version": "1.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs && node --test tests/*.test.mjs",
+    "lint:firefox": "web-ext lint --source-dir dist/firefox",
+    "test:browser": "node tests/browser-smoke.mjs"
+  },
+  "dependencies": {
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.4.299"
+  },
+  "devDependencies": {
+    "web-ext": "10.7.0"
+  }
+}
