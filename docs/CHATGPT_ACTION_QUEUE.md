@@ -171,3 +171,14 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 - Channel: Cloudflare dashboard (DNS + Workers routes) — needs Sahil's login.
 - Action: decide the hostname (e.g. `novels.xendersecrets.com`), add it as a Worker custom domain for `xender-secrets-v2`, then ask Claude to add host-based routing and 301s from `/novels`, `/reader` and chapter URLs. Do not remove the existing URLs before the redirects ship (they carry search traffic).
 - Expected: the main domain reads as a studio catalog; novel traffic keeps working.
+
+
+## CQ-021 execution — XEND-SCREEN-RECORDER-001 (2026-10-16, ChatGPT)
+
+Source request read from `claude/xend-hq-001` / PR #57. Status: REVIEW, branch `chatgpt/xend-screen-recorder-001`, [PR #58](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/58) to `main`.
+
+- Added the exact Firefox 0.1.1 runtime source, packaging, icons, tests and README under `projects/screen-recorder/`.
+- `release/firefox-0.1.1.json` records the uploaded package and per-file hashes; `npm run verify:release` rebuilds and checks all 11 output files.
+- No AMO credentials, session data, private contacts, signed XPI or generated upload ZIPs are committed.
+- The request reports AMO slug `xender-screen-recorder` awaiting review; this source handoff does not change store status.
+- After this PR and HQ PR #57 merge, update the existing Screen Recorder row in `PROJECTS.md` to remove the pending CQ-021 marker. The HQ registry/tooling has not been copied into this source-only PR.
