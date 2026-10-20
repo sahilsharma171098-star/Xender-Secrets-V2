@@ -1,0 +1,52 @@
+{
+  "version": "0.1.1",
+  "amo_slug": "xender-screen-recorder",
+  "extension_id": "screen-recorder@xendersecrets.com",
+  "uploaded_package_sha256": "fff009b34edecf0dd6fc52717fb8b52ac648a5d67db0872bc3664c46e502f51e",
+  "files": {
+    "core.js": {
+      "size_bytes": 884,
+      "sha256": "8e0fbb3cb482fddd898427df777bda0050ee5ea28c2553ecf8632835eb1a6bf1"
+    },
+    "icons/recorder-48.png": {
+      "size_bytes": 2401,
+      "sha256": "4b33996a58678e6d8fdde94bf134520e5ad36e8d4373838d5f127cf32e1d01e2"
+    },
+    "icons/recorder-96.png": {
+      "size_bytes": 5604,
+      "sha256": "0fe5b4e2236bfe7d264e3a9f2d96f1a3b5acef230066eaea0149f2e2875e8e6e"
+    },
+    "manifest.json": {
+      "size_bytes": 619,
+      "sha256": "28e29647ec62d962ecf2abb1f308d1f583f4a39455cc8130248af85351b1c84c"
+    },
+    "platform.js": {
+      "size_bytes": 131,
+      "sha256": "946f0f326ea0f68c75d920732d10a9522ad13d7484c7653ce395b98fb3f54091"
+    },
+    "popup.html": {
+      "size_bytes": 424,
+      "sha256": "0616b59b2b1d7924cc49634a9ab2a12b3b9591a6ae18001afe7b3f17ed040356"
+    },
+    "popup.js": {
+      "size_bytes": 227,
+      "sha256": "fc29c9d1cfd7dd620b9b9b1d4e17b5fe5c79fb775c98caa641b340d1b9034755"
+    },
+    "privacy.html": {
+      "size_bytes": 1215,
+      "sha256": "434da13fccc63288c37274bfc9bb6c741403c362cff0d761a7ff7ee7c763f990"
+    },
+    "recorder.html": {
+      "size_bytes": 2261,
+      "sha256": "683122d3be85da06517b8ee13762bd9b833ac83ceb48054f37c880d90f74eb90"
+    },
+    "recorder.js": {
+      "size_bytes": 9620,
+      "sha256": "d7b0eb4b66576569c89cd577b9d760c760a23b034a3461daf770cbc8528a7f81"
+    },
+    "style.css": {
+      "size_bytes": 1998,
+      "sha256": "88a3b1bbf0e4f95027be6086eb2ed704e77a0d1dbe526bdbb92fda9fce0ff489"
+    }
+  }
+}

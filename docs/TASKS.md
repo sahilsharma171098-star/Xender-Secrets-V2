@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-SCREEN-RECORDER-001 — CQ-021: preserve submitted screen recorder source (2026-10-16)
+Status: REVIEW (branch `chatgpt/xend-screen-recorder-001`, PR #58)
+Owner: ChatGPT
+
+- Import the submitted Firefox 0.1.1 source into `projects/screen-recorder/`, with exact package-file provenance, original build script, tests and README covering permissions, build steps, AMO slug/version and limits.
+- Checks: recorder tests, rebuild/file-hash parity, Firefox manifest lint, staged secret/personal-data scan.
+- Open PR to `main`; after merge and HQ PR #57 landing, remove the pending marker from the existing Screen Recorder row in `PROJECTS.md`.
+- No runtime feature changes, store re-submission or production website deploy is part of this source handoff.
+
+
 ## XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11)
 Status: REVIEW (branch `chatgpt/xend-agent-reach-001`)
 Owner: ChatGPT

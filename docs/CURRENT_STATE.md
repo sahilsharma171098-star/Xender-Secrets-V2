@@ -1,5 +1,12 @@
 # Xender Secrets V2 — Current State
 
+## XEND-SCREEN-RECORDER-001 / CQ-021 (2026-10-16, ChatGPT)
+- `projects/screen-recorder/` preserves the original Firefox 0.1.1 runtime source, icons, packaging script, 12 tests and store/privacy notes; branch `chatgpt/xend-screen-recorder-001`, PR #58.
+- Uploaded-package provenance is recorded per file; `npm run verify:release` rebuilds and verifies all 11 Firefox files exactly. No secrets, private contacts or signed/upload ZIPs are committed.
+- AMO slug: `xender-screen-recorder`. CQ-021 reports awaiting review; this repository handoff does not change or independently verify store publication.
+- HQ PR #57 is separate. After both PRs merge, remove CQ-021's pending marker from the recorder row in `PROJECTS.md`. No website/Worker change.
+
+
 ## XEND-AGENT-REACH-001 (2026-10-11, ChatGPT, branch `chatgpt/xend-agent-reach-001`)
 - Implemented **repo-side integration preparation only**: pinned user-only Windows setup script, read-only OpenCLI Facebook/Instagram capture script, tests, runbook.
 - Agent-Reach is a local agent capability layer, not part of the public site/Worker or an automatic DM provider. No live laptop install, connected social account, lead capture or production deploy has occurred.

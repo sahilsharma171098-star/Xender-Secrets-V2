@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "Xender Screen Recorder",
+  "version": "0.1.1",
+  "description": "Record your screen with optional microphone, webcam and timestamp notes. Save locally.",
+  "icons": {"48": "icons/recorder-48.png", "96": "icons/recorder-96.png"},
+  "action": {"default_title": "Open Xender Recorder", "default_popup": "popup.html"}
+}
