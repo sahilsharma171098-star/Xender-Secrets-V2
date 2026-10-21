@@ -19,3 +19,7 @@
 /website-development-in-gurugram /website-development-gurugram 301
 /website-development-ncr /website-development-delhi 301
 /website-development-delhi-ncr /website-development-delhi 301
+
+# Faceless YouTube course: short, typeable link for Shorts (Shorts description links aren't clickable).
+/yt /faceless-youtube-course?utm_source=youtube&utm_medium=short_link&utm_campaign=yt_course 302
+/course /faceless-youtube-course 302

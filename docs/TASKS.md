@@ -1,5 +1,10 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21)
+- Status: done in branch `claude/xend-yt-course-001`.
+- Page: `public/faceless-youtube-course.html`; short links `/yt`, `/course`.
+- Next: add the course link to the YouTube channel's profile links (manual, YouTube Studio → Customization → Basic info → Links).
+
 ## XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11)
 Status: REVIEW (branch `chatgpt/xend-agent-reach-001`)
 Owner: ChatGPT
