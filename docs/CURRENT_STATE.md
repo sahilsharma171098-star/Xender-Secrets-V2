@@ -4,6 +4,7 @@
 - New free course page `/faceless-youtube-course` (hand-written, indexable, in sitemap): 9 lessons on making faceless AI YouTube videos with ₹0 tools, plus honest notes on YouTube's inauthentic-content rule and YPP thresholds (incl. the 1 Feb 2027 change).
 - Short links in `_redirects`: `/yt` (302, adds `utm_source=youtube&utm_medium=short_link`) for typing from Shorts, where description links aren't clickable; `/course` (302).
 - The AutoTube repo (`sahilsharma171098-star/autotube`) adds the course link to every upload's description and first comment.
+- Course page lists the channel's public videos ("Videos made with this method", `#videos`): 9 static cards in HTML, refreshed client-side from `GET /api/youtube/videos` (`src/youtube.mjs`: YouTube's public channel RSS, latest 15, edge-cached 1h, no API key). Hidden test uploads go in `HIDDEN`; date-only titles are skipped. Older videos: link to the channel.
 - Course copy switched to English on 2026-10-21 at Sahil's request (video CTA lines stay Hindi).
 - Lesson checkboxes use localStorage only (per-viewer convenience). WhatsApp help CTA has no price attached; course is free by Sahil's decision.
 
