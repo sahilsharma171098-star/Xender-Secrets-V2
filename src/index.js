@@ -3,6 +3,7 @@ import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 import { handlePayments } from "./payments.mjs";
+import { handleYouTubeVideos } from "./youtube.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
 const enc=new TextEncoder();
@@ -975,6 +976,8 @@ export default {
     if(path==="/api/catalog" && method==="GET")return json({ok:true,categories:["Frontend","Backend / API","Full Stack"],builds:9,persistentBackend:true});
 
     if(path.startsWith("/api/reader/"))return handleReaderApi(request,{assets:env.ASSETS,cache:typeof caches!=="undefined"?caches.default:null,ctx});
+
+    if(path==="/api/youtube/videos")return handleYouTubeVideos(request,{cache:typeof caches!=="undefined"?caches.default:null,ctx});
 
     if(path==="/api/lead" && method==="POST"){
       const stub=env.APP_STATE.get(env.APP_STATE.idFromName("xender-secrets"));
