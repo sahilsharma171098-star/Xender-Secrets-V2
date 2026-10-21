@@ -1,5 +1,11 @@
 # Xender Secrets V2 — Current State
 
+## XEND-YT-COURSE-001 (2026-10-21, Claude, branch `claude/xend-yt-course-001`)
+- New free Hinglish course page `/faceless-youtube-course` (hand-written, indexable, in sitemap): 9 lessons on making faceless AI YouTube videos with ₹0 tools, plus honest notes on YouTube's inauthentic-content rule and YPP thresholds (incl. the 1 Feb 2027 change).
+- Short links in `_redirects`: `/yt` (302, adds `utm_source=youtube&utm_medium=short_link`) for typing from Shorts, where description links aren't clickable; `/course` (302).
+- The AutoTube repo (`sahilsharma171098-star/autotube`) adds the course link to every upload's description and first comment.
+- Lesson checkboxes use localStorage only (per-viewer convenience). WhatsApp help CTA has no price attached; course is free by Sahil's decision.
+
 ## XEND-AGENT-REACH-001 (2026-10-11, ChatGPT, branch `chatgpt/xend-agent-reach-001`)
 - Implemented **repo-side integration preparation only**: pinned user-only Windows setup script, read-only OpenCLI Facebook/Instagram capture script, tests, runbook.
 - Agent-Reach is a local agent capability layer, not part of the public site/Worker or an automatic DM provider. No live laptop install, connected social account, lead capture or production deploy has occurred.
