@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-AI-INTEGRATION-001 — Shared Google AI tool workspace (2026-10-22)
+Status: BLOCKED (workspace and routing implemented; Antigravity workstation activation and Gemini skill save unverified)
+Owner: ChatGPT
+- Gemini signed-in access verified; Pro/Argon options observed.
+- Shared Flow project created: Xender HQ — Images & Video. HQ agent instruction saved; Nano Banana 2.1 and Veo 3.1 Fast defaults saved, one output per request. No generation performed.
+- Registry, host doctor and local task brief/receipt commands implemented; 3 focused tests pass.
+- Antigravity CLI absent in this Work host; actual ThinkPad installation/auth not inspected. Standalone Gemini xender-hq skill creation attempted, save unconfirmed. Repository instructions remain usable.
+- No automatic API calls, topups, background scheduling or publication configured.
+- Details and canonical links: ops/ai/README.md.
+
 ## XEND-HQ-GEMINI-001 — Include Gemini and Google AI tools (2026-10-22)
 Status: DONE (documentation delivered on task branch; active on main after merge)
 Owner: ChatGPT
