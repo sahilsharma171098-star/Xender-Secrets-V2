@@ -1,20 +1,22 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-16 07:42 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-10-22 09:17 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/xend-hq-001`
+- Branch: `claude/xend-hq-01-integration`
 - Last commits:
-  - `d393bd1 XEND-HQ-001: HQ layer — project registry, AI failover runbook and handoff file`
-  - `9b7049d XEND-HQ-001: lead pipeline automation — daily queue, auto follow-ups, Telegram digest`
-  - `b59f4e0 XEND-HQ-001: bring Amazon SP-API connector into services/amazon-spapi`
-  - `7ee3e7a XEND-SALES-003: exact-brand prospect previews (#32)`
+  - `56ed13d XEND-HQ-01: Worker-first HQ integration of PR #46 + PR #57`
+  - `7c04e8f Merge pull request #62 from sahilsharma171098-star/claude/xend-yt-course-videos`
+  - `85e9624 List the Xender channel's YouTube videos on the course page`
+  - `704976a Merge pull request #61 from sahilsharma171098-star/claude/xend-yt-course-english`
+  - `fffa411 Switch faceless YouTube course page to English`
 
 ## Uncommitted changes
 - none — working tree clean
 
 ## Open tasks (docs/TASKS.md)
-- XEND-HQ-001 — Xender HQ: one repo for every project + lead pipeline automation (2026-10-16) — REVIEW (branch `claude/xend-hq-001`)
+- XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22) — REVIEW (branch `claude/xend-hq-01-integration`, draft PR; do not merge without Sahil)
+- XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21) — UNKNOWN
 - XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11) — REVIEW (branch `chatgpt/xend-agent-reach-001`)
 - XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10) — REVIEW (branch `claude/acq-002-maps-prospects`)
 - XEND-SHOWCASE-001 — Showcase catalog rebuild: studio design system, catalog, Studio page (2026-10-09) — REVIEW (branch `claude/xend-showcase-rebuild`)
@@ -36,8 +38,8 @@ Generated 2026-10-16 07:42 UTC by **claude** with `npm run ops:handoff`. Everyth
 
 ## Notes from the last agent
 
-- **Task:** XEND-HQ-001 — Xender HQ merge + lead pipeline automation
-- **Done so far:** Amazon connector in `services/amazon-spapi/`; lead pipeline (`src/pipeline.mjs`, admin "Aaj ka plan", Telegram cron); HQ docs (`PROJECTS.md`, `ops/FAILOVER.md`, `GEMINI.md`); tests green.
-- **Next step:** once Sahil grants folder access, list `~/Xender`, `~/source` and `~/.n8n`; secret-scan each Xender project; copy into `projects/<name>/`; export n8n workflows without credentials into `automation/n8n/`; add rows to `PROJECTS.md`.
-- **Watch out for:** this repo is public — no `.env`, n8n `database.sqlite`/`config` (holds the encryption key), credentials, or personal phone numbers/emails. PolicyBazaar work and trading tools are not Xender projects; keep them out.
-- **Waiting on Sahil:** folder access on the laptop; `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` in Cloudflare; confirm `CONNECTOR_API_KEY` on Render.
+- **Task:** XEND-HQ-01 — Worker-first HQ integration (supersedes PR #46 and PR #57)
+- **Done so far:** branch `claude/xend-hq-01-integration`: lead export feed + Apps Script importer, shared outreach policy, #46 ops kit, #57 pipeline/handoff, docs (`docs/HQ_ARCHITECTURE.md`). Tests: unit 92/92, browser 26/26, operations 20/20, worker 4/4, wrangler dry-run OK.
+- **Next step:** ChatGPT review (CQ-022). Sahil decides merge. After merge: `EXPORT_TOKEN` secret, Apps Script install (CQ-023), then close #46 and #57 as superseded.
+- **Watch out for:** do not add `triggers` to `wrangler.jsonc` without Sahil's approval. Do not re-add the `services/amazon-spapi` copy or the n8n workflow. Repo is public: no contacts, tokens or `.env`.
+- **Waiting on Sahil:** merge decision; Apps Script OAuth (blocked); WhatsApp cap decision (25/day vs opt-in rule); laptop folder access for the audit.
