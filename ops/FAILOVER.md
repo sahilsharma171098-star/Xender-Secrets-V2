@@ -9,7 +9,9 @@ so any agent that can read files can pick up where the last one stopped.
 | --- | --- | --- | --- |
 | 1 | Claude (Claude Code, `@claude` on GitHub) | `CLAUDE.md` → `AGENTS.md` | lead: multi-file builds, tests, PRs |
 | 2 | Codex CLI / ChatGPT | `AGENTS.md` (Codex reads it automatically) | continue the same branch, reviews |
-| 3 | Gemini CLI | `GEMINI.md` → `AGENTS.md` | continue when both above are unavailable |
+| 3 | Gemini / Gemini CLI | `GEMINI.md` → `AGENTS.md` → `docs/BUILD_HOME.md` | research, coding or review when useful; also failover |
+
+The order above is the default failover order, not a restriction on choosing Gemini for a suitable task. Google AI tools follow the access/cost/validation policy in `docs/BUILD_HOME.md`.
 
 Using an agent through Sahil's own subscriptions is fine. Do not add paid API keys, and never
 put any key or token in this repository.
