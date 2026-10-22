@@ -1,6 +1,6 @@
 # Xender HQ — start every build here
 
-Sahil's standing instruction, 22 October 2026: all future builds by ChatGPT/Codex and Claude belong in one shared HQ.
+Sahil's standing instruction, 22 October 2026: all future builds by ChatGPT/Codex, Claude and Gemini belong in one shared HQ.
 
 ## One entry point
 
@@ -9,11 +9,19 @@ Canonical HQ: https://github.com/sahilsharma171098-star/Xender-Secrets-V2
 | Record | Canonical location |
 | --- | --- |
 | All projects and their source/deployment locations | [PROJECTS.md](../PROJECTS.md) |
-| Shared agent instructions | [AGENTS.md](../AGENTS.md), [CLAUDE.md](../CLAUDE.md) |
+| Shared agent instructions | [AGENTS.md](../AGENTS.md), [CLAUDE.md](../CLAUDE.md), [GEMINI.md](../GEMINI.md) |
 | Technical task IDs and progress | [TASKS.md](TASKS.md) |
 | Latest resume notes | [ops/HANDOFF.md](../ops/HANDOFF.md) |
 | Architecture and data ownership | [HQ_ARCHITECTURE.md](HQ_ARCHITECTURE.md) |
 | Outreach, approvals, suppression and operational queue | Existing private Command Center; access through authorized connectors |
+
+## Gemini and Google AI tools (Sahil approved, 2026-10-22)
+
+Gemini is part of the shared ChatGPT/Codex + Claude + Gemini workflow. Use it when the task benefits from its capabilities or another agent is unavailable; it does not have to wait until both other agents fail. All agents use this HQ, one task owner, the same canonical source, branch/PR review and handoff rules.
+
+When useful, use Google AI tools through an actually available, authorized connector, CLI or signed-in account. Choose the tool for the task (research, coding, document analysis or media generation); verify current availability, access, quota and cost before use. Existing subscription access does not imply API access or included API credits. Prefer existing included access or free allowance; any new paid API usage, credits or subscription requires Sahil's explicit spend approval. Never claim a tool is connected, invoked or successful without observing it.
+
+Pass only the minimum task context. Keep secrets, private customer records and unrelated personal information out of prompts and public handoffs. Record tool/model used where observable, output/source location, checks, quota/access blockers and next action in the task handoff. Review and validate AI outputs before integrating them. This policy authorizes choosing useful tools; it does not install integrations or automatically synchronize accounts/chats.
 
 ## Before building
 
@@ -41,7 +49,7 @@ Use this handoff template:
 
 This public HQ contains code and safe project metadata, never credentials, customer records or private business data. Secrets remain in the provider's secret store; business records remain in the Worker/private Command Center according to HQ_ARCHITECTURE.md. Existing production systems and external repositories are not migrated merely by this policy.
 
-ChatGPT and Claude do not automatically read each other's conversations. Start each new agent session with this HQ link and require the startup read. A Claude session outside these repositories needs the instruction below supplied once or installed in its own project instructions; this change cannot modify an unrelated Claude account/session.
+ChatGPT, Claude and Gemini do not automatically read each other's conversations. Start each new agent session with this HQ link and require the startup read. A Claude or Gemini session outside these repositories needs the instruction below supplied once or installed in its own project instructions; this change cannot modify an unrelated Claude or Gemini account/session.
 
 ## Bootstrap for a fresh session
 
