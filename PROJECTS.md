@@ -37,6 +37,10 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
   payments) need Sahil's explicit yes. Drafting and validating them does not.
 - Demos and concepts are labelled as such; never invent clients, results or testimonials.
 
+## Shared entry point
+
+Sahil requires all future ChatGPT/Codex and Claude builds to be registered here. Follow [docs/BUILD_HOME.md](docs/BUILD_HOME.md) before implementation. Reuse canonical sources and deployments; add links for private repositories rather than copying them into this public HQ.
+
 ## Adding a project
 
 1. Put it in its own folder (`projects/<name>/` for standalone apps, `services/<name>/` for
