@@ -1,5 +1,13 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-HQ-GEMINI-001 — Include Gemini and Google AI tools (2026-10-22)
+Status: DONE (documentation delivered on task branch; active on main after merge)
+Owner: ChatGPT
+- Include Gemini in shared startup, registration, canonical-source and handoff rules.
+- Authorize choosing available Google AI tools when useful; verify access/quota/cost and validate outputs. Existing subscription access does not imply API credits.
+- New paid spend requires approval; no credential, integration or runtime changes.
+- Validation: reviewed documentation consistency and preserved existing private data and one-owner rules.
+
 ## XEND-HQ-BUILD-001 — One shared home for future AI builds (2026-10-22)
 Status: DONE (documentation delivered in PR #66; active on main after merge)
 Owner: ChatGPT
