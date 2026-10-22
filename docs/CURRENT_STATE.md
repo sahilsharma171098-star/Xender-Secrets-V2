@@ -1,5 +1,10 @@
 # Xender Secrets V2 — Current State
 
+## NVIDIA and Grok routes (2026-10-22)
+- NVIDIA API Catalog/NIM and xAI/Grok added as optional research/code tools in the shared registry; use ai:prepare --tool nvidia|grok. Existing defaults unchanged.
+- Selected tools must support the task kind; prepared jobs preserve actual access status and do not execute requests.
+- Registration is complete; provider account, model/quota and API activation remain pending. No paid usage, credentials, provider calls or publishing enabled.
+
 ## Gemini and Google AI tools (2026-10-22)
 - Sahil added Gemini to the shared HQ workflow and authorized using useful Google AI tools when available through authorized access. Included/free usage preferred; new paid spend still requires approval. No new tool connection or execution is claimed by this documentation update. See BUILD_HOME.md and GEMINI.md.
 
