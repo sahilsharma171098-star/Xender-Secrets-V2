@@ -1,9 +1,9 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-22 14:12 UTC by **codex** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Updated 22 October 2026 (IST) by **Codex** for PR #66. The current notes supersede historical task snapshots below.
 
 ## Where the work is
-- Branch: `claude/xend-hq-01-audit-fixes`
+- Branch: `codex/shared-build-home-20261022` (PR #66; resume from current main after merge)
 - Last commits:
   - `b2151fd Merge pull request #64 from sahilsharma171098-star/claude/xend-hq-01-audit-fixes`
   - `2f91e93 XEND-HQ-01 audit fixes: single-use approvals, gap check, cursor-ahead error`
@@ -11,7 +11,7 @@ Generated 2026-10-22 14:12 UTC by **codex** with `npm run ops:handoff`. Everythi
   - `325633d XEND-HQ-01: refresh ops/HANDOFF.md`
   - `56ed13d XEND-HQ-01: Worker-first HQ integration of PR #46 + PR #57`
 
-## Uncommitted changes
+## Historical working-tree snapshot (not current remote status)
 - ` M PROJECTS.md`
 - ` M docs/CURRENT_STATE.md`
 - ` M docs/HQ_ARCHITECTURE.md`
@@ -19,7 +19,7 @@ Generated 2026-10-22 14:12 UTC by **codex** with `npm run ops:handoff`. Everythi
 
 ## Open tasks (docs/TASKS.md)
 - XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22) — BLOCKED (code merged/deployed via #63 and #64; importer activation pending)
-- XEND-CLEANUP-20261022 — Back up and retire redundant setups — BLOCKED (specific Cloudflare preview-deletion approval; account/laptop access for other setups)
+- XEND-CLEANUP-20261022 — Back up and retire redundant setups — BLOCKED (Cloudflare cleanup complete; other account/laptop audits pending)
 - XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21) — UNKNOWN
 - XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11) — REVIEW (branch `chatgpt/xend-agent-reach-001`)
 - XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10) — REVIEW (branch `claude/acq-002-maps-prospects`)
@@ -42,9 +42,10 @@ Generated 2026-10-22 14:12 UTC by **codex** with `npm run ops:handoff`. Everythi
 
 ## Notes from the last agent
 
-- **Task:** XEND-HQ-01 rollout; YT-03 owner approvals; XEND-CLEANUP-20261022.
-- **Done:** HQ audit #64 merged/deployed as b2151fd; Cloudflare build, live E2E, offline CI and SEO audit passed. AutoTube #3 merged after safety CI; 40 local tests pass. Backup/recovery metadata saved for 34 empty merged-PR previews; two backup previews have auto_build disabled.
-- **Not done:** no preview deletion, no global preview-build suppression, no Apps Script activation, no queued video upload, no laptop/n8n/Render deletion.
-- **Blockers:** automatic approval review requires explicit approval for the 34 permanent remote preview deletions. Global preview suppression was rejected as broader than authorized. Apps Script OAuth and EXPORT_TOKEN are not configured; actual Episode Studio files and owner verification key are pending.
-- **Next:** follow docs/HQ_ROLLOUT_2026-10-22.md; obtain approval for the exact recorded preview set, re-check empty namespaces, then use non-forced deletions. Keep production namespaces and open-PR previews. Finish importer parity and the real laptop bundle/key setup before activation.
-- **Evidence:** website CI on b2151fd; AutoTube safety run 39793183694; saved Xender_Cloudflare_PreCleanup_2026-10-22.json; source branches and all backup refs retained.
+- **Task:** XEND-HQ-BUILD-001, PR #66.
+- **Done:** Added docs/BUILD_HOME.md and linked the shared build registration/reuse/handoff policy from AGENTS.md, CLAUDE.md and PROJECTS.md. All future builds must have a canonical source, task ID, owner and deployment record in HQ. Separate private repositories retain private source. No automatic chat synchronization is claimed.
+- **Checks:** Documentation reviewed against HQ_ARCHITECTURE.md and registry; no runtime code changes. Automated gh-review-loop unavailable because gh CLI is not installed.
+- **Cleanup completed:** Sahil approved the exact 34 previews. All deleted without force after fresh emptiness checks; all return 404. 75 empty namespaces removed (99 → 24). Three production namespaces and production deployment unchanged. Saved pre-cleanup backup and cleanup result retained.
+- **Still pending:** EXPORT_TOKEN and Apps Script OAuth/import activation; real ThinkPad Episode Studio bundle and owner verification key; laptop/n8n/Render dependency audit. No queued video upload triggered. Global preview-build setting unchanged.
+- **Next:** Start new build sessions from current main, read docs/BUILD_HOME.md and registry, assign one task owner, reuse existing sources and update handoff before stopping. Verify live PR states before acting on historical task-board entries.
+- **Evidence:** HQ #63/#64/#65; AutoTube #3; Xender_Cloudflare_PreCleanup_2026-10-22.json; Xender_Cloudflare_Cleanup_Result_2026-10-22.json.
