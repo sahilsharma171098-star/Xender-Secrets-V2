@@ -1,13 +1,13 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-HQ-BUILD-001 — One shared home for future AI builds (2026-10-22)
-Status: REVIEW
+Status: DONE (documentation delivered in PR #66; active on main after merge)
 Owner: ChatGPT
 
 - Standing instruction from Sahil: register every future ChatGPT/Codex and Claude build in this HQ; reuse canonical source/deployment locations.
 - Startup requirements added to AGENTS.md and CLAUDE.md; PROJECTS.md links docs/BUILD_HOME.md for registration and handoff.
 - Shared records do not imply automatic chat synchronization or migration of private projects.
-- Acceptance: instructions and documentation links reviewed; merge this documentation PR to activate on main.
+- Acceptance: instructions and documentation links reviewed; no runtime behavior changed. PR #66 activates the policy on main.
 
 ## XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22)
 Status: BLOCKED (code merged/deployed via #63 and #64; importer activation pending)
