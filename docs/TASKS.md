@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-AI-NVIDIA-GROK-001 — Add NVIDIA and xAI/Grok (2026-10-22)
+Status: BLOCKED (registry and selectable task routing delivered; account/model/quota activation pending)
+Owner: ChatGPT
+- Sahil confirmed xAI/Grok as the requested second provider.
+- Register NVIDIA API Catalog/NIM and Grok as optional research/code tools; existing defaults remain.
+- Add --tool selection with capability checks and preserved pending-access receipts.
+- Validate routing and receipt preparation locally; no provider inference or billing changes.
+- Account/credentials, model availability, quota and production licensing/cost must be verified before live use.
+
 ## XEND-AI-INTEGRATION-001 — Shared Google AI tool workspace (2026-10-22)
 Status: BLOCKED (workspace and routing implemented; Antigravity workstation activation and Gemini skill save unverified)
 Owner: ChatGPT
