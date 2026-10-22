@@ -14,7 +14,10 @@
       "surface": "browser",
       "url": "https://gemini.google.com/app",
       "status": "signed_in_verified",
-      "notes": "Pro and Argon options observed; remaining quota not verified."
+      "notes": "Pro and Argon options observed; remaining quota not verified.",
+      "kinds": [
+        "research"
+      ]
     },
     {
       "id": "antigravity",
@@ -22,7 +25,10 @@
       "surface": "desktop",
       "url": "https://www.antigravity.google/",
       "status": "workstation_setup_pending",
-      "notes": "No Antigravity CLI found in this Work environment. ThinkPad installation/auth not inspected."
+      "notes": "No Antigravity CLI found in this Work environment. ThinkPad installation/auth not inspected.",
+      "kinds": [
+        "code"
+      ]
     },
     {
       "id": "nano-banana",
@@ -30,7 +36,10 @@
       "surface": "flow_image_ui",
       "url": "https://flow.google.com/project/9a5df5c0-d172-4972-a012-9526d9479743",
       "status": "model_options_verified",
-      "notes": "Nano Banana 2.1, Pro and 2 Lite options observed in PRO account. Actual generation and remaining credits not tested."
+      "notes": "Nano Banana 2.1, Pro and 2 Lite options observed in PRO account. Actual generation and remaining credits not tested.",
+      "kinds": [
+        "image"
+      ]
     },
     {
       "id": "veo",
@@ -38,7 +47,34 @@
       "surface": "browser",
       "url": "https://flow.google.com/project/9a5df5c0-d172-4972-a012-9526d9479743",
       "status": "model_options_verified",
-      "notes": "Veo 3.1 Lite, Fast and Quality options observed. Shared project and HQ agent instructions saved; no generation or credits spent by this setup."
+      "notes": "Veo 3.1 Lite, Fast and Quality options observed. Shared project and HQ agent instructions saved; no generation or credits spent by this setup.",
+      "kinds": [
+        "video"
+      ]
+    },
+    {
+      "id": "nvidia",
+      "label": "NVIDIA API Catalog / NIM",
+      "surface": "browser_or_api",
+      "url": "https://build.nvidia.com/",
+      "status": "registered_connection_pending",
+      "kinds": [
+        "research",
+        "code"
+      ],
+      "notes": "Optional model evaluation/prototyping route. Account, selected model, quota and API credentials not verified. Check applicable model/NIM terms before production use; do not assume self-hosting hardware is available."
+    },
+    {
+      "id": "grok",
+      "label": "xAI / Grok",
+      "surface": "browser_or_api",
+      "url": "https://grok.com/",
+      "status": "registered_connection_pending",
+      "kinds": [
+        "research",
+        "code"
+      ],
+      "notes": "Sahil confirmed xAI/Grok. Optional research/review/coding route. Account, live tools, quota and API billing not verified; no subscription or credit purchase authorized."
     }
   ],
   "policy": {
