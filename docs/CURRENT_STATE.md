@@ -1,5 +1,10 @@
 # Xender Secrets V2 — Current State
 
+## Shared build home (2026-10-22)
+- Sahil's standing instruction: all future ChatGPT/Codex and Claude builds must be registered in this HQ, reuse canonical projects and leave a task/PR/deployment handoff. See [BUILD_HOME.md](BUILD_HOME.md), AGENTS.md and CLAUDE.md; implemented in PR #66.
+- This centralizes project records; private repositories remain private and chat histories are not automatically synchronized.
+- Cloudflare cleanup completed with explicit approval: 34 previews and 75 freshly verified empty namespaces deleted without force; namespace count 99 → 24. Production namespaces and deployment unchanged; saved backup retained.
+
 ## XEND-HQ-01 Worker-first HQ (2026-10-22, deployed after PR #63 and #64)
 - Architecture decided by Sahil: Worker = source of truth for website leads; Command Center = outreach, approvals, suppression, task queue. One-way export Worker → Sheet. See `docs/HQ_ARCHITECTURE.md`.
 - Reconciles PR #46 (XEND-OS-003) and PR #57 (XEND-HQ-001). Neither PR was merged as-is. Left out: the n8n workflow, the `services/amazon-spapi` copy, the Worker cron, and a dated reels note.

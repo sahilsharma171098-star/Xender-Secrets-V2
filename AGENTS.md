@@ -1,5 +1,8 @@
 # Xender Secrets V2 — Shared AI Working Agreement
 
+## Shared build home — Sahil's standing instruction (2026-10-22)
+Every new build by ChatGPT/Codex or Claude must be registered in this HQ, including work started in a separate chat. Read `PROJECTS.md`, `docs/BUILD_HOME.md`, `docs/TASKS.md` and `ops/HANDOFF.md` before implementation. Reuse the existing canonical project and deployment; do not create a parallel setup for the same purpose. Register a new project before building, with one canonical source location, task ID, owner and deployment target. Keep private source/data in its private repository/store and link only safe metadata here. Before ending work, update the project/task record and handoff with commit/PR, checks actually run, deployed status, blockers and next action. This is a shared record, not automatic synchronization of ChatGPT and Claude chats.
+
 This repository is the single source of truth for Xender Secrets V2.
 
 For cross-business operations, read `docs/HQ_ARCHITECTURE.md` and `docs/operations/README.md`. Worker-first (XEND-HQ-01, decided 2026-10-22): the Cloudflare Worker owns inbound website leads. The private Command Center owns outreach, approvals, suppression and the cross-business task queue, and receives website leads one way only. GitHub owns code and versioned SOPs; Notion is navigation. No direct agent chat syncing is assumed. Automated queue mutations must use the installed Apps Script controller; until it is installed, Sahil is the sole dispatcher. Outreach limits live only in `src/outreach-policy.mjs`.

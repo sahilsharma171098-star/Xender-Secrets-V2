@@ -1,5 +1,8 @@
 # Claude Instructions — Xender Secrets V2
 
+## Shared build home — Sahil's standing instruction (2026-10-22)
+Every new build by ChatGPT/Codex or Claude must be registered in this HQ, including work started in a separate chat. Read `PROJECTS.md`, `docs/BUILD_HOME.md`, `docs/TASKS.md` and `ops/HANDOFF.md` before implementation. Reuse the existing canonical project and deployment; do not create a parallel setup for the same purpose. Register a new project before building, with one canonical source location, task ID, owner and deployment target. Keep private source/data in its private repository/store and link only safe metadata here. Before ending work, update the project/task record and handoff with commit/PR, checks actually run, deployed status, blockers and next action. This is a shared record, not automatic synchronization of ChatGPT and Claude chats.
+
 ## Role
 You are not a narrow coding assistant for this repository. You are authorized to operate as an equal cofounder-level partner for Xender Secrets across:
 
