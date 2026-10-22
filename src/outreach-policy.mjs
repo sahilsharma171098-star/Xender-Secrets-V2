@@ -25,6 +25,8 @@ export function checkPacing(channel, history, now = Date.now()) {
   if (!rule) return { ok: false, reason: "Unknown channel" };
   if (!history || !Number.isSafeInteger(history.sent_today) || history.sent_today < 0) return { ok: false, reason: "Send history not verified" };
   if (history.sent_today >= rule.firstTouchDailyCap) return { ok: false, reason: "Daily cap reached" };
+  // Audit 2026-10-22: a sender that already sent today must also say when, or the gap can't be checked.
+  if (rule.minGapMinutes && history.sent_today > 0 && !history.last_sent_at) return { ok: false, reason: "Send history not verified" };
   if (rule.minGapMinutes && history.last_sent_at) {
     const last = Date.parse(history.last_sent_at);
     if (!Number.isFinite(last)) return { ok: false, reason: "Send history not verified" };

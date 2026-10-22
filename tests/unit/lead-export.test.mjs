@@ -120,3 +120,13 @@ test('EXPORT_TOKEN reads the feed only; ADMIN_TOKEN still works; no token is rej
   const weak = await handleGrowth(req('/api/admin/export/leads', { token: 'short' }), { sql, env: { ADMIN_TOKEN: ADMIN, EXPORT_TOKEN: 'short' }, nowMs: T0 });
   assert.equal(weak.status, 401);
 });
+
+test('audit 2026-10-22: a cursor ahead of the feed fails loudly instead of stalling', async () => {
+  const sql = setup();
+  await add(sql, 1, T0);
+  const r = exportFeed(sql, { after: 50, nowMs: T0 + MIN });
+  assert.equal(r.status, 409);
+  assert.equal(r.body.code, 'cursor_ahead');
+  assert.equal(r.body.head_seq, 1);
+  assert.equal(exportFeed(sql, { after: 1, nowMs: T0 + MIN }).status, 200, 'cursor == head is fine');
+});

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {checkOutreach} from '../../operations/outreach-gate.mjs';
 const now=Date.parse('2026-10-09T10:00:00Z');
-function input() {return {now,lead:{id:'synthetic',target:'test@example.invalid',suppression_key:'email:test@example.invalid',contact_status:'VERIFIED',permission_status:'OPTED_IN',permission_evidence:'synthetic evidence',preferred_channel:'Email'},touch:{target:'test@example.invalid',channel:'Email',content_hash:'sha256:example'},approval:{approval_id:'synthetic-approval',status:'APPROVED',approved_by:'human',evidence_url:'https://example.invalid/approval',action:'send',target:'test@example.invalid',channel:'Email',content_hash:'sha256:example',approved_at:'2026-10-09T09:00:00Z',expires_at:'2026-10-09T11:00:00Z'},pacing:{sent_today:0,last_sent_at:''}};}
+function input() {return {now,lead:{id:'synthetic',target:'test@example.invalid',suppression_key:'email:test@example.invalid',contact_status:'VERIFIED',permission_status:'OPTED_IN',permission_evidence:'synthetic evidence',preferred_channel:'Email'},touch:{target:'test@example.invalid',channel:'Email',content_hash:'sha256:example'},approval:{approval_id:'synthetic-approval',status:'APPROVED',approved_by:'human',evidence_url:'https://example.invalid/approval',action:'send',target:'test@example.invalid',channel:'Email',content_hash:'sha256:example',approved_at:'2026-10-09T09:00:00Z',expires_at:'2026-10-09T11:00:00Z'},pacing:{sent_today:0,last_sent_at:'',used_approval_ids:[]}};}
 test('exact human-approved permitted contact passes preflight only',()=>assert.equal(checkOutreach(input()).ok,true));
 test('suppression overrides valid approval',()=>{const i=input();i.suppression=[{lead_id:'synthetic'}];assert.equal(checkOutreach(i).ok,false);});
 test('copy changes, wrong action, expiry and missing permission block',()=>{
@@ -27,9 +27,22 @@ test('LEAD-02 pacing: email needs verified send history, max 5 a day, 15 minutes
   for (const [pacing,reason] of [
     [undefined,'Send history not verified'],
     [{sent_today:'2'},'Send history not verified'],
-    [{sent_today:5,last_sent_at:''},'Daily cap reached'],
-    [{sent_today:1,last_sent_at:'2026-10-09T09:50:00Z'},'Minimum gap between sends'],
-    [{sent_today:1,last_sent_at:'not a date'},'Send history not verified'],
+    [{sent_today:5,last_sent_at:'2026-10-09T08:00:00Z',used_approval_ids:[]},'Daily cap reached'],
+    [{sent_today:1,last_sent_at:'2026-10-09T09:50:00Z',used_approval_ids:[]},'Minimum gap between sends'],
+    [{sent_today:1,last_sent_at:'not a date',used_approval_ids:[]},'Send history not verified'],
+    [{sent_today:3,last_sent_at:'',used_approval_ids:[]},'Send history not verified'],
+    [{sent_today:0,last_sent_at:''},'Send history not verified'],
   ]) {const i=input();i.pacing=pacing;const r=checkOutreach(i);assert.equal(r.ok,false);assert.equal(r.reason,reason);}
-  const i=input();i.pacing={sent_today:4,last_sent_at:'2026-10-09T09:45:00Z'};assert.equal(checkOutreach(i).ok,true);
+  const i=input();i.pacing={sent_today:4,last_sent_at:'2026-10-09T09:45:00Z',used_approval_ids:['older-approval']};assert.equal(checkOutreach(i).ok,true);
+});
+
+test('audit 2026-10-22: an approval authorises one message only',()=>{
+  const used=input();used.pacing.used_approval_ids=['synthetic-approval'];
+  assert.equal(checkOutreach(used).reason,'Approval already used');
+  const marked=input();marked.approval.used_at='2026-10-09T09:30:00Z';
+  assert.equal(checkOutreach(marked).reason,'Approval already used');
+  // even after the 24h per-lead cooldown, while the approval has not expired
+  const later=input();later.now=Date.parse('2026-10-10T10:30:00Z');later.approval.expires_at='2026-10-11T00:00:00Z';
+  later.lead.last_sent_at='2026-10-09T10:00:00Z';later.pacing={sent_today:0,last_sent_at:'2026-10-09T10:00:00Z',used_approval_ids:['synthetic-approval']};
+  assert.equal(checkOutreach(later).reason,'Approval already used');
 });
