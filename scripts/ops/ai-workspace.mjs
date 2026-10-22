@@ -8,12 +8,14 @@ export const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export async function registry(base = root) {
   return JSON.parse(await readFile(join(base, 'ops/ai/tools.json'), 'utf8'));
 }
-export function plan(config, { kind, task, project, brief }) {
+export function plan(config, { kind, task, project, brief, tool: toolId }) {
   if (!Object.hasOwn(config.routes, kind)) throw new Error('kind must be research, code, image or video');
   if (!/^XEND-[A-Z0-9-]+$/.test(task ?? '')) throw new Error('A valid XEND- task ID is required');
   if (!project?.trim() || !brief?.trim()) throw new Error('project and brief are required');
-  const tool = config.tools.find(t => t.id === config.routes[kind]);
-  if (!tool) throw new Error('Route has no registered tool');
+  const selected = toolId ?? config.routes[kind];
+  const tool = config.tools.find(t => t.id === selected);
+  if (!tool) throw new Error('Unknown tool: ' + selected);
+  if (!tool.kinds?.includes(kind)) throw new Error('Tool ' + tool.id + ' does not support ' + kind);
   return {
     schema_version: 1, id: randomUUID(), task, project, kind,
     created_at: new Date().toISOString(), tool: tool.id, entrypoint: tool.url,
@@ -63,16 +65,16 @@ export async function main(args = process.argv.slice(2)) {
     note: 'CLI presence does not establish authentication. Browser session, subscription, quota and workstation access require live checks.',
     api_calls_made: 0,
   };
-  if (command !== 'prepare') throw new Error('Use list, doctor or prepare --kind ... --task XEND-... --project ... --brief-file ...');
+  if (command !== 'prepare') throw new Error('Use list, doctor or prepare --kind ... [--tool ...] --task XEND-... --project ... --brief-file ...');
   const options = {};
   while (args.length) {
     const key = args.shift();
-    if (!['--kind', '--task', '--project', '--brief-file'].includes(key) || !args.length || Object.hasOwn(options, key)) throw new Error('Invalid or duplicate option');
+    if (!['--kind', '--tool', '--task', '--project', '--brief-file'].includes(key) || !args.length || Object.hasOwn(options, key)) throw new Error('Invalid or duplicate option');
     options[key] = args.shift();
   }
   if (!options['--brief-file']) throw new Error('--brief-file required; never put credentials in a brief');
   const brief = await readFile(resolve(options['--brief-file']), 'utf8');
-  return prepare(config, { kind: options['--kind'], task: options['--task'], project: options['--project'], brief });
+  return prepare(config, { kind: options['--kind'], task: options['--task'], project: options['--project'], tool: options['--tool'], brief });
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   main().then(value => console.log(JSON.stringify(value, null, 2))).catch(error => { console.error(error.message); process.exitCode = 1; });

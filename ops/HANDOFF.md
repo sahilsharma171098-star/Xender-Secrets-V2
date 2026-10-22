@@ -3,7 +3,7 @@
 Updated 22 October 2026 (IST) by Codex for XEND-AI-INTEGRATION-001. Current notes supersede historical task snapshots below.
 
 ## Where the work is
-- Branch: `codex/google-ai-workspace-20261022` (resume current main after merge)
+- Branch: `codex/nvidia-grok-hq-20261022` (resume current main after merge)
 - Last commits:
   - `b2151fd Merge pull request #64 from sahilsharma171098-star/claude/xend-hq-01-audit-fixes`
   - `2f91e93 XEND-HQ-01 audit fixes: single-use approvals, gap check, cursor-ahead error`
@@ -41,6 +41,8 @@ Updated 22 October 2026 (IST) by Codex for XEND-AI-INTEGRATION-001. Current note
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+- **Latest task:** XEND-AI-NVIDIA-GROK-001. NVIDIA API Catalog/NIM and xAI/Grok registered as optional research/code routes. Added --tool selection, supported-kind validation and tests; pending access is preserved in receipts. No provider calls, new credentials or spend. Verify account/model/quota and relevant license/cost before activation. See ops/ai/README.md.
 
 - **Current task:** XEND-AI-INTEGRATION-001. Added ops/ai registry/runbook, local task preparation/doctor and 3 passing routing/path-confinement/receipt tests. Gemini signed-in access verified. Shared Flow project created and HQ instructions saved; Nano Banana 2.1 / Veo 3.1 Fast defaults and one-output counts verified after save. No media generation performed.
 - **Activation blockers:** Antigravity installation/login on actual ThinkPad unverified; standalone Gemini xender-hq skill save unconfirmed. Do not claim end-to-end autonomous integration. See ops/ai/README.md. Existing publishing gates stay in force.
