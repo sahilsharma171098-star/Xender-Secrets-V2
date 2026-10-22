@@ -169,3 +169,6 @@ For each substantial work unit report:
 - Expected conversion/revenue impact
 - Risks/limitations
 - Exact actions needed from ChatGPT or Sahil, if any
+
+## Shared tool execution
+Use `ops/ai/README.md` and `ops/ai/tools.json` for the current Gemini, Antigravity, Nano Banana and Veo routes and activation status. `npm run ai:doctor` checks this host; `npm run ai:prepare -- --kind <research|code|image|video> --task XEND-... --project <name> --brief-file <path>` creates a local prompt and receipt. Prepared is not executed. Use the verified shared Flow project for Xender images/videos, record actual outputs in the canonical project, and preserve current publishing/owner-approval safeguards. An unavailable route may be handed to another authorized agent, with the real tool recorded. Follow the documented pending checks; never mark desktop/API access as connected from a browser login.

@@ -25,7 +25,10 @@
     "seo:links": "node scripts/seo/normalize-links.mjs",
     "seo:audit": "node scripts/seo/audit-live.mjs",
     "ops:handoff": "node scripts/ops/handoff.mjs",
-    "test:ops": "node --test tests/operations/*.test.mjs"
+    "test:ops": "node --test tests/operations/*.test.mjs",
+    "ai:list": "node scripts/ops/ai-workspace.mjs list",
+    "ai:doctor": "node scripts/ops/ai-workspace.mjs doctor",
+    "ai:prepare": "node scripts/ops/ai-workspace.mjs prepare"
   },
   "devDependencies": {
     "playwright": "1.57.0",

@@ -54,3 +54,7 @@ ChatGPT, Claude and Gemini do not automatically read each other's conversations.
 ## Bootstrap for a fresh session
 
 > Work from https://github.com/sahilsharma171098-star/Xender-Secrets-V2 as the shared HQ. First read AGENTS.md, docs/BUILD_HOME.md, PROJECTS.md, docs/TASKS.md and ops/HANDOFF.md on current main. Find and reuse the canonical existing project. Register new work with a task ID and one owner. Keep private source/data private. Before stopping, update task/project status and handoff with branch/PR, actual checks, deployment status and next action. Do not create a duplicate setup or assume chat synchronization.
+
+## Tool workspace
+
+See [ops/ai/README.md](../ops/ai/README.md) for verified entry points, actual connection status and shared task preparation commands. Gemini and Flow browser access are verified; Flow uses one Xender HQ image/video project. Antigravity workstation setup and standalone Gemini skill save remain pending. Task preparation is local and does not execute model calls.

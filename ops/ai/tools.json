@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "workspace": "Xender HQ",
+  "routes": {
+    "research": "gemini",
+    "code": "antigravity",
+    "image": "nano-banana",
+    "video": "veo"
+  },
+  "tools": [
+    {
+      "id": "gemini",
+      "label": "Gemini",
+      "surface": "browser",
+      "url": "https://gemini.google.com/app",
+      "status": "signed_in_verified",
+      "notes": "Pro and Argon options observed; remaining quota not verified."
+    },
+    {
+      "id": "antigravity",
+      "label": "Google Antigravity",
+      "surface": "desktop",
+      "url": "https://www.antigravity.google/",
+      "status": "workstation_setup_pending",
+      "notes": "No Antigravity CLI found in this Work environment. ThinkPad installation/auth not inspected."
+    },
+    {
+      "id": "nano-banana",
+      "label": "Nano Banana",
+      "surface": "flow_image_ui",
+      "url": "https://flow.google.com/project/9a5df5c0-d172-4972-a012-9526d9479743",
+      "status": "model_options_verified",
+      "notes": "Nano Banana 2.1, Pro and 2 Lite options observed in PRO account. Actual generation and remaining credits not tested."
+    },
+    {
+      "id": "veo",
+      "label": "Veo / Google Flow",
+      "surface": "browser",
+      "url": "https://flow.google.com/project/9a5df5c0-d172-4972-a012-9526d9479743",
+      "status": "model_options_verified",
+      "notes": "Veo 3.1 Lite, Fast and Quality options observed. Shared project and HQ agent instructions saved; no generation or credits spent by this setup."
+    }
+  ],
+  "policy": {
+    "automatic_api_calls": false,
+    "automatic_credit_topups": false,
+    "automatic_publishing": false,
+    "output_root": ".xender-ai/",
+    "subscriptions_are_not_api_credentials": true
+  }
+}

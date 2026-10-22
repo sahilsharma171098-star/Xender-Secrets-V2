@@ -23,6 +23,7 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 | Facebook novel campaign | Marketing | `scripts/facebook-novel-campaign.mjs`, `marketing/novels/` | GitHub Actions | workflow disabled 2026-10-22 (no Facebook credentials; it never posted) |
 | Amazon SP-API connector (Xender Seller Manager) | Commerce | own repo `xender-amazon-spapi` | Render free | live; key check unverified; lane reserved |
 | Claude Code executor (`@claude` on issues/PRs) | Development | `.github/workflows/claude-code.yml` | GitHub Actions | live |
+| Shared Google AI workspace | HQ / Content | `ops/ai/`, `scripts/ops/ai-workspace.mjs` | Gemini browser + shared Flow project; local task briefs | Gemini/Flow access verified, Nano Banana/Veo options verified; Antigravity workstation setup pending |
 | AI failover handoff | HQ | `ops/`, `scripts/ops/handoff.mjs`, `GEMINI.md` | any laptop with git | ready |
 | Laptop projects (trading bots, episode studio, website copies) | — | not in any repo yet | Sahil's laptop | **audit pending** (folder access) |
 

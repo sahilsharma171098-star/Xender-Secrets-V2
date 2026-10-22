@@ -9,3 +9,6 @@ extension/dist/
 
 # XEND-ACQ-002 prospect finder output (business lists stay local)
 prospects-out/
+
+# Private AI briefs, generated assets and result receipts
+.xender-ai/
