@@ -39,7 +39,7 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 
 ## Shared entry point
 
-Sahil requires all future ChatGPT/Codex and Claude builds to be registered here. Follow [docs/BUILD_HOME.md](docs/BUILD_HOME.md) before implementation. Reuse canonical sources and deployments; add links for private repositories rather than copying them into this public HQ.
+Sahil requires all future ChatGPT/Codex, Claude and Gemini builds to be registered here. Follow [docs/BUILD_HOME.md](docs/BUILD_HOME.md) before implementation. Reuse canonical sources and deployments; add links for private repositories rather than copying them into this public HQ.
 
 ## Adding a project
 

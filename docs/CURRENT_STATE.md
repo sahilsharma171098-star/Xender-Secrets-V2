@@ -1,7 +1,10 @@
 # Xender Secrets V2 — Current State
 
+## Gemini and Google AI tools (2026-10-22)
+- Sahil added Gemini to the shared HQ workflow and authorized using useful Google AI tools when available through authorized access. Included/free usage preferred; new paid spend still requires approval. No new tool connection or execution is claimed by this documentation update. See BUILD_HOME.md and GEMINI.md.
+
 ## Shared build home (2026-10-22)
-- Sahil's standing instruction: all future ChatGPT/Codex and Claude builds must be registered in this HQ, reuse canonical projects and leave a task/PR/deployment handoff. See [BUILD_HOME.md](BUILD_HOME.md), AGENTS.md and CLAUDE.md; implemented in PR #66.
+- Sahil's standing instruction: all future ChatGPT/Codex, Claude and Gemini builds must be registered in this HQ, reuse canonical projects and leave a task/PR/deployment handoff. See [BUILD_HOME.md](BUILD_HOME.md), AGENTS.md and CLAUDE.md; implemented in PR #66.
 - This centralizes project records; private repositories remain private and chat histories are not automatically synchronized.
 - Cloudflare cleanup completed with explicit approval: 34 previews and 75 freshly verified empty namespaces deleted without force; namespace count 99 → 24. Production namespaces and deployment unchanged; saved backup retained.
 
