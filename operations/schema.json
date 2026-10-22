@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "spreadsheet_id": "1TVMZP-EHE_1yqXk4H8huIaIKZtxsudgWvSNHf8VV2TY",
+  "tabs": {
+    "OS Guide": [
+      "Item",
+      "Instruction",
+      "Owner",
+      "Status"
+    ],
+    "OS Tasks": [
+      "task_id",
+      "lane",
+      "title",
+      "status",
+      "owner",
+      "resource_key",
+      "lease_token",
+      "lease_until",
+      "updated_at",
+      "artifact_url",
+      "blocker",
+      "next_action",
+      "version"
+    ],
+    "OS Touches": [
+      "touch_id",
+      "lead_id",
+      "channel",
+      "event",
+      "occurred_at",
+      "provider_id",
+      "thread_id",
+      "content_hash",
+      "approval_id",
+      "evidence_url",
+      "next_action",
+      "notes"
+    ],
+    "OS Suppression": [
+      "contact_key",
+      "lead_id",
+      "scope",
+      "reason",
+      "recorded_at",
+      "evidence_url",
+      "recorded_by"
+    ],
+    "OS Approvals": [
+      "approval_id",
+      "action",
+      "target",
+      "channel",
+      "content_hash",
+      "approved_by",
+      "approved_at",
+      "expires_at",
+      "status",
+      "evidence_url"
+    ],
+    "OS Audit": [
+      "event_id",
+      "request_id",
+      "occurred_at",
+      "actor",
+      "action",
+      "entity_id",
+      "phase",
+      "before_version",
+      "after_version",
+      "detail"
+    ],
+    "OS Content": [
+      "content_id",
+      "platform",
+      "pillar",
+      "hook",
+      "status",
+      "owner",
+      "script_url",
+      "asset_url",
+      "caption",
+      "rights_evidence",
+      "approval_id",
+      "scheduled_at",
+      "post_id",
+      "metrics_due"
+    ],
+    "OS Metrics": [
+      "period_start",
+      "period_end",
+      "platform",
+      "metric",
+      "value",
+      "definition",
+      "source_url",
+      "observed_at",
+      "notes"
+    ],
+    "OS Markets": [
+      "country",
+      "directories",
+      "pilot_vertical",
+      "contact_gate",
+      "status"
+    ],
+    "OS Access": [
+      "service",
+      "observed_access",
+      "activation_needed",
+      "owner",
+      "checked_at"
+    ]
+  },
+  "lead_added_columns": [
+    "country",
+    "contact_source_url",
+    "source_checked_at",
+    "contact_status",
+    "permission_status",
+    "permission_evidence",
+    "preferred_channel",
+    "opt_out_at",
+    "last_sent_at",
+    "last_provider_id",
+    "reply_status",
+    "portfolio_url",
+    "demo_url",
+    "next_followup_at",
+    "inbound_id",
+    "suppression_key",
+    "history_verified_at"
+  ]
+}

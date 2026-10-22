@@ -15,6 +15,8 @@
 
 import { sanitizeConfig } from "../public/preview/preview-core.mjs";
 import { ensureProspectSchema, handleProspectsAdmin, prospectStats } from "./prospects.mjs";
+import { handlePipelineAdmin } from "./pipeline.mjs";
+import { ensureExportSchema, exportFeed, ackExport, exportStatus } from "./lead-export.mjs";
 
 export const LEAD_STAGES = ["new", "contacted", "qualified", "proposal", "won", "lost"];
 export const OFFERS = [
@@ -180,6 +182,7 @@ export function ensureGrowthSchema(sql) {
     );
   `);
   ensureProspectSchema(sql); // XEND-ACQ-002 outbound prospects (src/prospects.mjs)
+  ensureExportSchema(sql); // XEND-HQ-01 one-way lead export to the Command Center (src/lead-export.mjs)
 }
 
 async function sha256Hex(value) {
@@ -462,6 +465,21 @@ export function adminAuth(request, env) {
 }
 
 /**
+ * XEND-HQ-01: the Command Center importer gets its own EXPORT_TOKEN secret, which can read the
+ * lead export feed and nothing else. ADMIN_TOKEN also works. EXPORT_TOKEN is optional; until it
+ * exists (32+ random chars recommended) only ADMIN_TOKEN can read the feed.
+ */
+export function exportAuth(request, env) {
+  const admin = adminAuth(request, env);
+  if (admin.ok) return admin;
+  const expected = String(env?.EXPORT_TOKEN || "").trim();
+  if (expected.length < 24) return admin;
+  const header = request.headers.get("authorization") || "";
+  const got = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+  return safeEqual(got, expected) ? { ok: true, scope: "export" } : { ok: false, status: 401, error: "Unauthorized." };
+}
+
+/**
  * Router used by AppState.fetch. Returns a Response for growth routes, or null so the caller
  * can continue with its legacy routes.
  */
@@ -490,6 +508,21 @@ export async function handleGrowth(request, { sql, env = {}, nowMs = Date.now() 
     if (!body || typeof body !== "object") return json({ ok: false, error: "Invalid request." }, 400);
     const r = await recordEvents(sql, body, { ip, salt, nowMs });
     return json(r.body, r.status);
+  }
+  if (path.startsWith("/api/admin/export/")) {
+    const auth = exportAuth(request, env);
+    if (!auth.ok) return json({ ok: false, error: auth.error, ...(auth.code ? { code: auth.code } : {}) }, auth.status);
+    if (path === "/api/admin/export/leads" && method === "GET") {
+      const r = exportFeed(sql, { after: url.searchParams.get("after") ?? 0, limit: url.searchParams.get("limit") ?? 100, consumer: url.searchParams.get("consumer") || "command-center", nowMs });
+      return json(r.body, r.status);
+    }
+    if (path === "/api/admin/export/ack" && method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const r = ackExport(sql, body || {}, nowMs);
+      return json(r.body, r.status);
+    }
+    if (path === "/api/admin/export/status" && method === "GET") return json(exportStatus(sql, nowMs));
+    return json({ ok: false, error: "Export route not found." }, 404);
   }
   if (path.startsWith("/api/admin/")) {
     const auth = adminAuth(request, env);
@@ -526,6 +559,9 @@ export async function handleGrowth(request, { sql, env = {}, nowMs = Date.now() 
     }
     const prospects = await handleProspectsAdmin(request, { sql, url, nowMs, json, leadRef });
     if (prospects) return prospects;
+    // XEND-HQ-001: daily lead queue + Telegram morning digest (src/pipeline.mjs).
+    const pipeline = await handlePipelineAdmin(request, { sql, url, env, nowMs, json, notify: notifyLead });
+    if (pipeline) return pipeline;
     if (path === "/api/admin/report" && method === "GET") {
       return json(buildReport(sql, { days: url.searchParams.get("days"), nowMs }));
     }

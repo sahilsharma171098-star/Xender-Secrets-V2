@@ -1,5 +1,18 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22)
+Status: REVIEW (branch `claude/xend-hq-01-integration`, draft PR; do not merge without Sahil)
+Owner: Claude builds, ChatGPT reviews
+
+- Worker owns website leads; Command Center owns outreach, approvals and suppression; one-way pull export with retry, dedup and audit (`src/lead-export.mjs`, `operations/apps-script/LeadImport.gs`).
+- Carried from #46: Command Center schema, `Queue.gs` lease controller, outreach gate (now with LEAD-02 pacing), SOPs, SEO inventory, operations CI.
+- Carried from #57: `src/pipeline.mjs` daily queue, follow-up touches, "Aaj ka plan" in `/admin`, digest preview/send, `ops/` handoff, `GEMINI.md`, `PROJECTS.md`.
+- Left out on purpose: n8n workflow, `services/amazon-spapi` copy (own repo), Worker cron (needs separate approval), dated reels note.
+- After merge (Sahil): Cloudflare secret `EXPORT_TOKEN`; Apps Script install + OAuth; first manual import; then trigger. PR #46 and #57 can then be closed as superseded.
+- Open decision: WhatsApp cold first-touch cap (25/day) vs the SOP rule that a public business number is not opt-in.
+
+Operational tasks are in the private `OS Tasks` tab; this file indexes technical work only. Use the same IDs in PRs and handoffs.
+
 ## XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21)
 - Status: done in branch `claude/xend-yt-course-001`.
 - Page: `public/faceless-youtube-course.html`; short links `/yt`, `/course`.
