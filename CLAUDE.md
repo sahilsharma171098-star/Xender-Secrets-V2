@@ -1,7 +1,15 @@
 # Claude Instructions — Xender Secrets V2
 
 ## Shared build home — Sahil's standing instruction (2026-10-22)
-Every new build by ChatGPT/Codex or Claude must be registered in this HQ, including work started in a separate chat. Read `PROJECTS.md`, `docs/BUILD_HOME.md`, `docs/TASKS.md` and `ops/HANDOFF.md` before implementation. Reuse the existing canonical project and deployment; do not create a parallel setup for the same purpose. Register a new project before building, with one canonical source location, task ID, owner and deployment target. Keep private source/data in its private repository/store and link only safe metadata here. Before ending work, update the project/task record and handoff with commit/PR, checks actually run, deployed status, blockers and next action. This is a shared record, not automatic synchronization of ChatGPT and Claude chats.
+Every new build by ChatGPT/Codex, Claude or Gemini must be registered in this HQ, including work started in a separate chat. Read `PROJECTS.md`, `docs/BUILD_HOME.md`, `docs/TASKS.md` and `ops/HANDOFF.md` before implementation. Reuse the existing canonical project and deployment; do not create a parallel setup for the same purpose. Register a new project before building, with one canonical source location, task ID, owner and deployment target. Keep private source/data in its private repository/store and link only safe metadata here. Before ending work, update the project/task record and handoff with commit/PR, checks actually run, deployed status, blockers and next action. This is a shared record, not automatic synchronization of ChatGPT, Claude and Gemini chats.
+
+## Gemini and Google AI tools (Sahil approved, 2026-10-22)
+
+Gemini is part of the shared ChatGPT/Codex + Claude + Gemini workflow. Use it when the task benefits from its capabilities or another agent is unavailable; it does not have to wait until both other agents fail. All agents use this HQ, one task owner, the same canonical source, branch/PR review and handoff rules.
+
+When useful, use Google AI tools through an actually available, authorized connector, CLI or signed-in account. Choose the tool for the task (research, coding, document analysis or media generation); verify current availability, access, quota and cost before use. Existing subscription access does not imply API access or included API credits. Prefer existing included access or free allowance; any new paid API usage, credits or subscription requires Sahil's explicit spend approval. Never claim a tool is connected, invoked or successful without observing it.
+
+Pass only the minimum task context. Keep secrets, private customer records and unrelated personal information out of prompts and public handoffs. Record tool/model used where observable, output/source location, checks, quota/access blockers and next action in the task handoff. Review and validate AI outputs before integrating them. This policy authorizes choosing useful tools; it does not install integrations or automatically synchronize accounts/chats.
 
 ## Role
 You are not a narrow coding assistant for this repository. You are authorized to operate as an equal cofounder-level partner for Xender Secrets across:
