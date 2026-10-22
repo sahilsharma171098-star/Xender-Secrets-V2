@@ -70,6 +70,10 @@ export function exportFeed(sql, { after = 0, limit = 100, consumer = "command-ce
   if (from < 0) return { status: 400, body: { ok: false, error: "after must be a non-negative integer." } };
   const size = Math.min(MAX_PAGE, Math.max(1, toInt(limit, 100) || 100));
   syncExportQueue(sql, nowMs);
+  // Audit 2026-10-22: a cursor ahead of the feed (e.g. the Durable Object was reset) used to return
+  // an empty page forever. Fail loudly instead, so the importer's run shows an error to fix.
+  const headNow = maxSeq(sql);
+  if (from > headNow) return { status: 409, body: { ok: false, code: "cursor_ahead", error: "Cursor is ahead of the feed. Check the Website Leads tab, then reset LEAD_EXPORT_CURSOR.", head_seq: headNow } };
   // The page is a fixed seq window; entries for leads later marked as test are skipped inside it,
   // and the cursor still moves past them.
   const scanned = sql.exec("SELECT seq FROM growth_lead_export WHERE seq>? ORDER BY seq LIMIT ?", from, size).toArray();

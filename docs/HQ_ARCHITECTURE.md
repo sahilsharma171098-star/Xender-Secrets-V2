@@ -46,7 +46,9 @@ outreach work, the Command Center creates its own outreach record and keeps the 
   `export_seq` is the same or newer.
 - **Retry:** the importer moves its cursor only after the rows are written. Network errors, 429 and
   5xx are retried 3 times with backoff; a rejected token stops at once. A crash replays the same
-  page and the rows are skipped, not duplicated.
+  page and the rows are skipped, not duplicated. A cursor ahead of the feed (for example after a
+  Durable Object reset) gets HTTP 409 `cursor_ahead`, so the run fails visibly instead of stalling.
+  Added after the 2026-10-22 audit.
 - **Audit:** the Worker logs every read and ack (`growth_export_log`). The importer writes one
   `OS Audit` row per page. `GET /api/admin/export/status` shows the lag per consumer.
 - **Auth:** `EXPORT_TOKEN` (new, optional Worker secret, 24+ chars) can read the three export routes and
@@ -57,7 +59,11 @@ outreach work, the Command Center creates its own outreach record and keeps the 
 One file holds the limits for both systems:
 
 - **Email:** 5 a day, 15 minutes apart (LEAD-02, approved 2026-10-22). `operations/outreach-gate.mjs` now
-  rejects any email when the sender's history is missing or unreadable.
+  rejects any email when the sender's history is missing or unreadable. That includes sends already made
+  today with no `last_sent_at`.
+- **One approval = one message** (audit 2026-10-22): the caller passes `pacing.used_approval_ids` (from
+  `OS Touches.approval_id`). An approval that is already used, or marked `used_at`, is rejected, even after
+  the 24h per-lead cooldown.
 - **WhatsApp:** manual from `/admin`, existing cap of 25 first messages a day. The gate allows
   *automated* WhatsApp only with recorded opt-in.
 - **All channels:** two unanswered follow-ups maximum, and one contact per lead per 24 hours.

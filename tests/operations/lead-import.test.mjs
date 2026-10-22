@@ -38,7 +38,7 @@ function harness({ failures = [], token = 'e'.repeat(32) } = {}) {
     if (f === 'throw') throw new Error('socket hang up');
     if (f) return resp(f, {});
     const u = new URL(url);
-    if (u.pathname === '/api/admin/export/leads') return resp(200, exportFeed(sql, { after: u.searchParams.get('after'), limit: u.searchParams.get('limit'), consumer: u.searchParams.get('consumer'), nowMs: T0 + 3600000 }).body);
+    if (u.pathname === '/api/admin/export/leads') { const r = exportFeed(sql, { after: u.searchParams.get('after'), limit: u.searchParams.get('limit'), consumer: u.searchParams.get('consumer'), nowMs: T0 + 3600000 }); return resp(r.status, r.body); }
     if (u.pathname === '/api/admin/export/ack') return resp(200, ackExport(sql, JSON.parse(opts.payload), T0 + 3600000).body);
     return resp(404, {});
   };
@@ -111,4 +111,12 @@ test('retries network errors and 5xx, but stops at once on a rejected token', as
   await add(down.sql, 1, T0);
   assert.throws(() => down.run(), /after 3 attempts/);
   assert.equal(down.props.LEAD_EXPORT_CURSOR, undefined, 'cursor untouched when the feed is down');
+});
+
+test('audit 2026-10-22: a cursor ahead of the Worker feed surfaces as an error and is left untouched', async () => {
+  const h = harness();
+  await add(h.sql, 1, T0);
+  h.props.LEAD_EXPORT_CURSOR = '40';
+  assert.throws(() => h.run(), /HTTP 409/);
+  assert.equal(h.props.LEAD_EXPORT_CURSOR, '40');
 });

@@ -18,6 +18,11 @@ export function checkOutreach({lead, approval, suppression = [], touch, pacing, 
   if (!approval || approval.status !== 'APPROVED' || !approval.approved_by || !approval.evidence_url) return reject('Human approval required');
   if (approval.action !== 'send' || approval.target !== touch.target || approval.channel !== touch.channel || approval.content_hash !== touch.content_hash) return reject('Approval scope mismatch');
   if (!(Date.parse(approval.expires_at) > now) || !(Date.parse(approval.approved_at) <= now)) return reject('Approval expired or invalid');
+  // One approval = one message. The caller must pass the approval ids already used for sends
+  // (OS Touches.approval_id); without that list the send cannot be verified as the first use.
+  if (approval.used_at) return reject('Approval already used');
+  if (!Array.isArray(pacing?.used_approval_ids)) return reject('Send history not verified');
+  if (pacing.used_approval_ids.includes(approval.approval_id)) return reject('Approval already used');
   if (touch.previous_result === 'unknown') return reject('Reconcile ambiguous provider result');
   if (lead.reply_pending) return reject('Review reply before follow-up');
   if (lead.last_sent_at && (!Number.isFinite(Date.parse(lead.last_sent_at)) || now-Date.parse(lead.last_sent_at) < OUTREACH_POLICY.contactCooldownHours*3600000)) return reject('One contact per 24 hours or invalid history');
