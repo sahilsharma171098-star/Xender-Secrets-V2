@@ -3,7 +3,7 @@
 Updated 22 October 2026 (IST) by **Codex** for PR #66. The current notes supersede historical task snapshots below.
 
 ## Where the work is
-- Branch: `codex/shared-build-home-20261022` (PR #66; resume from current main after merge)
+- Branch: `codex/gemini-shared-hq-20261022` (resume from current main after merge)
 - Last commits:
   - `b2151fd Merge pull request #64 from sahilsharma171098-star/claude/xend-hq-01-audit-fixes`
   - `2f91e93 XEND-HQ-01 audit fixes: single-use approvals, gap check, cursor-ahead error`
@@ -42,7 +42,8 @@ Updated 22 October 2026 (IST) by **Codex** for PR #66. The current notes superse
 
 ## Notes from the last agent
 
-- **Task:** XEND-HQ-BUILD-001, PR #66.
+- **Task:** XEND-HQ-GEMINI-001; branch `codex/gemini-shared-hq-20261022`.
+- **Current change:** Gemini included in the shared HQ workflow; useful authorized Google AI tools may be used with verified access/quota/cost, minimum context and output validation. New paid spend still needs approval. Documentation only; no tool connection or execution claimed. Read BUILD_HOME.md and GEMINI.md. Resume from current main after merge.
 - **Done:** Added docs/BUILD_HOME.md and linked the shared build registration/reuse/handoff policy from AGENTS.md, CLAUDE.md and PROJECTS.md. All future builds must have a canonical source, task ID, owner and deployment record in HQ. Separate private repositories retain private source. No automatic chat synchronization is claimed.
 - **Checks:** Documentation reviewed against HQ_ARCHITECTURE.md and registry; no runtime code changes. Automated gh-review-loop unavailable because gh CLI is not installed.
 - **Cleanup completed:** Sahil approved the exact 34 previews. All deleted without force after fresh emptiness checks; all return 404. 75 empty namespaces removed (99 → 24). Three production namespaces and production deployment unchanged. Saved pre-cleanup backup and cleanup result retained.
