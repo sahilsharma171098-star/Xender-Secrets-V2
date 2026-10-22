@@ -1,0 +1,394 @@
+{
+ "base": "https://www.xendersecrets.com",
+ "write": false,
+ "results": [
+  {
+   "name": "mobile menu opens and closes on /",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 736
+  },
+  {
+   "name": "mobile menu opens and closes on /services",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 657
+  },
+  {
+   "name": "mobile menu opens and closes on /contact",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 684
+  },
+  {
+   "name": "mobile menu opens and closes on /clinic-website-development",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 670
+  },
+  {
+   "name": "mobile menu opens and closes on /website-development-gurugram",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 674
+  },
+  {
+   "name": "theme toggle switches and persists (home)",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 257
+  },
+  {
+   "name": "lead form: empty submit shows validation, sends nothing",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 960
+  },
+  {
+   "name": "lead form: offer buttons preselect package",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "8 offer buttons"
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 554
+  },
+  {
+   "name": "website cost calculator updates estimate + WhatsApp link",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "₹7,000.00 – ₹10,000.00 -> $512.57 – $741.88",
+    "negative pages -> $425.42 – $617.37",
+    "empty pages -> $425.42 – $617.37"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me"
+   ],
+   "ms": 1078
+  },
+  {
+   "name": "preview builder renders live draft",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "vertical options: 5",
+    "save without admin token -> admin token (same as /admin.html)."
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 3417
+  },
+  {
+   "name": "chat widget answers a quick question",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "/api/chat 200",
+    "reply: Website Development catalog mein Frontend, Backend/API aur Full-Stack builds hain. Backend flows Cloudflare Workers aur persistent SQLite storage ke saath conne"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me"
+   ],
+   "ms": 1229
+  },
+  {
+   "name": "website catalog grids render and sample links open",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "catalogStats: 4",
+    "businessPreview: 8",
+    "frontendGrid: 20",
+    "60 sample links"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me"
+   ],
+   "ms": 6871
+  },
+  {
+   "name": "business templates: search, filters, load more, preview",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "initial cards 24",
+    "after search dental: 10",
+    "after nonsense search: 1 / No matching templates found.",
+    "load more 24 -> 48",
+    "#groupFilter -> 20",
+    "#businessFilter -> 20",
+    "#styleFilter -> 24",
+    "#featureFilter -> 24",
+    "#sortFilter -> 24",
+    "template preview: ← Templates REAL-01 · Minimal Luxury Property Showcase Desktop Mobile Customize This Template Get Th"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me"
+   ],
+   "ms": 5591
+  },
+  {
+   "name": "shop: filter, search, cart, checkout form",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "products 9",
+    "desk filter: 2",
+    "nonsense search: 0",
+    "cart button: Cart 1",
+    "cart drawer auto-opened after add: true"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me"
+   ],
+   "ms": 2727
+  },
+  {
+   "name": "novels: list, search, open reader, next chapter, translate",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "30 reader links",
+    "nonsense search visible links: 15",
+    "first: reader.html?gutenberg=journey-to-the-west-zh&chapter=1",
+    "next: https://www.xendersecrets.com/reader?chapter=1&gutenberg=journey-to-the-west-zh -> https://www.xendersecrets.com/reader?chapter=2&gutenberg=journey-to-the-west-zh",
+    "languages 27",
+    "translate: 502",
+    "after translate: XENDER SECRETS ☰ Auto: US (USD) India United States United Kingdom Canada Australia New Zealand United Arab Emirates Saudi Arabia Qatar Kuwait Bahrain Oman Singapore Malaysia Japan China Hong Kong South Korea Indonesia Thailand Philippines Vietnam Bangladesh Pakistan Sri Lanka Nepal Germany France N",
+    "jump 99999 -> https://www.xendersecrets.com/reader?chapter=100&gutenberg=journey-to-the-west-zh / XENDER SECRETS ☰ Auto: US (USD) India United States United Kingdom Canada Australia New Zealand United Arab Emirates Sau"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 502 ()",
+    "console: Failed to load resource: the server responded with a status of 502 ()",
+    "console: Failed to load resource: the server responded with a status of 502 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "502 POST /api/translate",
+    "502 POST /api/translate",
+    "502 POST /api/translate"
+   ],
+   "ms": 61484
+  },
+  {
+   "name": "account: wrong-password login shows error",
+   "status": "fail",
+   "error": "no error message",
+   "notes": [
+    "login API 401 in 316ms: {\"ok\":false,\"error\":\"Email or password is incorrect.\"}",
+    "message: "
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me",
+    "401 POST /api/auth/login",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me"
+   ],
+   "ms": 3016
+  },
+  {
+   "name": "community + ideas pages load feeds (logged out)",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "feed: No posts here yet. Be the first member to start this topic.",
+    "ideas: SALES APP Starter inspiration Lead follow-up dashboard for small sales teams Import leads, prioriti"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me",
+    "401 GET /api/auth/me"
+   ],
+   "ms": 4456
+  },
+  {
+   "name": "demo booking: load slots + book",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "4 slots; Loaded 4 slots for 2026-10-05"
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 1755
+  },
+  {
+   "name": "demo CRM lead (test-flagged)",
+   "status": "pass",
+   "error": "",
+   "notes": [],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 109
+  },
+  {
+   "name": "demo API explorer buttons",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "/api/health -> { \"ok\": true, \"service\": \"Xender Secrets API\", \"archit",
+    "/api/catalog -> { \"ok\": true, \"categories\": [ \"Frontend\", \"Backe",
+    "/api/products -> { \"ok\": true, \"products\": [ { \"id\": \"cable-org"
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 3164
+  },
+  {
+   "name": "demo commerce: products, cart, quote",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "9 products",
+    "2 items ₹278",
+    "Subtotal ₹278 · Shipping ₹49 · Total ₹327 · Free shipping from ₹499"
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 2388
+  },
+  {
+   "name": "demo SaaS tasks: load + add",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "Loaded 3 server tasks."
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 1281
+  },
+  {
+   "name": "demo store filters + cart; SaaS pricing toggle",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "visible after filter: 1",
+    "₹799 -> ₹639"
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 331
+  },
+  {
+   "name": "admin: wrong token rejected",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "XENDER · MIS Preview builder Days 7 30 90 show test leads Refresh Copy daily scorecard Export CSV Lock Admin access Enter the ADMIN_TOKEN Worker secret. It is kept only in this browser tab (session"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 401 ()",
+    "console: Failed to load resource: the server responded with a status of 401 ()"
+   ],
+   "badResponses": [
+    "401 GET /api/admin/report",
+    "401 GET /api/admin/leads"
+   ],
+   "ms": 1631
+  },
+  {
+   "name": "404 page for unknown URL",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "status 404: Skip to content XENDER SECRETS Pricing Work Industries About Novels ◐ Free website check 404 · PAGE NOT FOUND This pag"
+   ],
+   "pageErrors": [
+    "console: Failed to load resource: the server responded with a status of 404 ()"
+   ],
+   "badResponses": [
+    "404 GET /this-page-does-not-exist-qa"
+   ],
+   "ms": 146
+  },
+  {
+   "name": "expired/unknown client preview link",
+   "status": "pass",
+   "error": "",
+   "notes": [
+    "https://www.xendersecrets.com/preview?id=doesnotexist -> This preview link is incomplete. Visit Xender Secrets."
+   ],
+   "pageErrors": [],
+   "badResponses": [],
+   "ms": 1311
+  }
+ ]
+}
