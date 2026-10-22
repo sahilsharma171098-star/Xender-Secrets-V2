@@ -1,11 +1,21 @@
 # Xender Secrets V2 — Current State
 
-## XEND-HQ-01 Worker-first HQ (2026-10-22, Claude, branch `claude/xend-hq-01-integration`, not merged)
+## XEND-HQ-01 Worker-first HQ (2026-10-22, deployed after PR #63 and #64)
 - Architecture decided by Sahil: Worker = source of truth for website leads; Command Center = outreach, approvals, suppression, task queue. One-way export Worker → Sheet. See `docs/HQ_ARCHITECTURE.md`.
 - Reconciles PR #46 (XEND-OS-003) and PR #57 (XEND-HQ-001). Neither PR was merged as-is. Left out: the n8n workflow, the `services/amazon-spapi` copy, the Worker cron, and a dated reels note.
 - New: `src/lead-export.mjs` (`/api/admin/export/leads|ack|status`, optional read-only `EXPORT_TOKEN`), `operations/apps-script/LeadImport.gs`, and `src/outreach-policy.mjs` (email 5/day, 15 minutes apart, from LEAD-02; WhatsApp 25/day unchanged).
-- Nothing deployed. Activation needs merge + `EXPORT_TOKEN` + Apps Script OAuth, which is blocked today.
+- Production commit `b2151fd468830f75e1afed20b24d87c5d5217cb9` deployed successfully on 2026-10-22 at 13:33 UTC (19:03 IST), Worker version `5c93d2e7-0ebf-4235-a89d-9d59311a8ba2`. Cloudflare build, live E2E and offline CI passed. PR #64 adds single-use outreach approvals, missing-send-history rejection and cursor-ahead detection.
+- The importer is still inactive: `EXPORT_TOKEN` is absent and Apps Script installation/OAuth is pending; the Command Center has no Website Leads tab. This is an activation blocker, not a failed production deployment.
 - Ops changes on 22 Oct (Claude, via GitHub UI / scheduled tasks): workflows `facebook-novel-series.yml` (this repo) and `shorts_trial.yml` (autotube) disabled. Claude scheduled task "XEND-LI-001 daily LinkedIn post" disabled. All reversible.
+
+## Cleanup and AutoTube continuation (2026-10-22)
+- Existing backups verified: website/AutoTube backup refs and the separate 17-tab pre-cleanup Command Center copy.
+- 34 Cloudflare previews tied to merged PRs were audited; their owned Durable Object namespaces contained zero objects. The owner has a saved configuration/source/recovery backup, `Xender_Cloudflare_PreCleanup_2026-10-22.json`.
+- No previews were deleted: automatic approval review rejected permanent deletion because the specific remote resources need explicit approval. Global preview-build suppression was also rejected; the parent preview setting remains enabled.
+- The two backup-branch previews now have `auto_build: false`; production automatic deployment remains on `main`.
+- AutoTube PR #3 implements owner-signed, single-use approvals, signature expiry, thumbnail/rights/privacy binding, a main-only manual publisher, channel verification and a remote uploading reservation before the first YouTube call. Local tests: 40 passed; GitHub safety CI also passed. AutoTube PR #3 merged.
+- Queue activation still needs the owner verification key and the actual ThinkPad Episode Studio bundle/review. No upload was dispatched in this continuation. Laptop audit, n8n retirement and Render deletions remain unperformed.
+- Details and exact preview list: `docs/HQ_ROLLOUT_2026-10-22.md`.
 
 ## XEND-YT-COURSE-001 (2026-10-21, Claude, branch `claude/xend-yt-course-001`)
 - New free course page `/faceless-youtube-course` (hand-written, indexable, in sitemap): 9 lessons on making faceless AI YouTube videos with ₹0 tools, plus honest notes on YouTube's inauthentic-content rule and YPP thresholds (incl. the 1 Feb 2027 change).

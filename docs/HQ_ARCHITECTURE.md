@@ -84,9 +84,9 @@ it; it is one number in `src/outreach-policy.mjs`.
 | `services/amazon-spapi/` copy | #57 | the connector lives in its own repo (`xender-amazon-spapi`) and Render deploys from there; a second copy would drift |
 | Worker cron `triggers` in `wrangler.jsonc` + `scheduled()` | #57 | production change; needs Sahil's separate approval. The digest can still be sent from `/admin` |
 
-## Rollout (each step needs Sahil's approval; nothing here is live yet)
+## Rollout (updated 2026-10-22)
 
-1. Review and merge this PR. The merge deploys the Worker. Changes are additive: two new
+1. Done: PR #63 and audit fix PR #64 merged; production deployment and live E2E confirmed. Changes are additive: two new
    SQLite tables and new admin-only routes; no existing route changes behaviour.
 2. Cloudflare: add Worker secret `EXPORT_TOKEN` (32+ random chars). Sahil does this in the
    dashboard; nobody pastes it into chat or the repo.

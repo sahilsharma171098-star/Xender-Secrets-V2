@@ -1,21 +1,25 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-22 09:17 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-10-22 14:12 UTC by **codex** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/xend-hq-01-integration`
+- Branch: `claude/xend-hq-01-audit-fixes`
 - Last commits:
+  - `b2151fd Merge pull request #64 from sahilsharma171098-star/claude/xend-hq-01-audit-fixes`
+  - `2f91e93 XEND-HQ-01 audit fixes: single-use approvals, gap check, cursor-ahead error`
+  - `ac0de47 Merge pull request #63 from sahilsharma171098-star/claude/xend-hq-01-integration`
+  - `325633d XEND-HQ-01: refresh ops/HANDOFF.md`
   - `56ed13d XEND-HQ-01: Worker-first HQ integration of PR #46 + PR #57`
-  - `7c04e8f Merge pull request #62 from sahilsharma171098-star/claude/xend-yt-course-videos`
-  - `85e9624 List the Xender channel's YouTube videos on the course page`
-  - `704976a Merge pull request #61 from sahilsharma171098-star/claude/xend-yt-course-english`
-  - `fffa411 Switch faceless YouTube course page to English`
 
 ## Uncommitted changes
-- none — working tree clean
+- ` M PROJECTS.md`
+- ` M docs/CURRENT_STATE.md`
+- ` M docs/HQ_ARCHITECTURE.md`
+- ` M docs/TASKS.md`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22) — REVIEW (branch `claude/xend-hq-01-integration`, draft PR; do not merge without Sahil)
+- XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22) — BLOCKED (code merged/deployed via #63 and #64; importer activation pending)
+- XEND-CLEANUP-20261022 — Back up and retire redundant setups — BLOCKED (specific Cloudflare preview-deletion approval; account/laptop access for other setups)
 - XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21) — UNKNOWN
 - XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11) — REVIEW (branch `chatgpt/xend-agent-reach-001`)
 - XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10) — REVIEW (branch `claude/acq-002-maps-prospects`)
@@ -38,8 +42,9 @@ Generated 2026-10-22 09:17 UTC by **claude** with `npm run ops:handoff`. Everyth
 
 ## Notes from the last agent
 
-- **Task:** XEND-HQ-01 — Worker-first HQ integration (supersedes PR #46 and PR #57)
-- **Done so far:** branch `claude/xend-hq-01-integration`: lead export feed + Apps Script importer, shared outreach policy, #46 ops kit, #57 pipeline/handoff, docs (`docs/HQ_ARCHITECTURE.md`). Tests: unit 92/92, browser 26/26, operations 20/20, worker 4/4, wrangler dry-run OK.
-- **Next step:** ChatGPT review (CQ-022). Sahil decides merge. After merge: `EXPORT_TOKEN` secret, Apps Script install (CQ-023), then close #46 and #57 as superseded.
-- **Watch out for:** do not add `triggers` to `wrangler.jsonc` without Sahil's approval. Do not re-add the `services/amazon-spapi` copy or the n8n workflow. Repo is public: no contacts, tokens or `.env`.
-- **Waiting on Sahil:** merge decision; Apps Script OAuth (blocked); WhatsApp cap decision (25/day vs opt-in rule); laptop folder access for the audit.
+- **Task:** XEND-HQ-01 rollout; YT-03 owner approvals; XEND-CLEANUP-20261022.
+- **Done:** HQ audit #64 merged/deployed as b2151fd; Cloudflare build, live E2E, offline CI and SEO audit passed. AutoTube #3 merged after safety CI; 40 local tests pass. Backup/recovery metadata saved for 34 empty merged-PR previews; two backup previews have auto_build disabled.
+- **Not done:** no preview deletion, no global preview-build suppression, no Apps Script activation, no queued video upload, no laptop/n8n/Render deletion.
+- **Blockers:** automatic approval review requires explicit approval for the 34 permanent remote preview deletions. Global preview suppression was rejected as broader than authorized. Apps Script OAuth and EXPORT_TOKEN are not configured; actual Episode Studio files and owner verification key are pending.
+- **Next:** follow docs/HQ_ROLLOUT_2026-10-22.md; obtain approval for the exact recorded preview set, re-check empty namespaces, then use non-forced deletions. Keep production namespaces and open-PR previews. Finish importer parity and the real laptop bundle/key setup before activation.
+- **Evidence:** website CI on b2151fd; AutoTube safety run 39793183694; saved Xender_Cloudflare_PreCleanup_2026-10-22.json; source branches and all backup refs retained.

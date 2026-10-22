@@ -1,15 +1,24 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22)
-Status: REVIEW (branch `claude/xend-hq-01-integration`, draft PR; do not merge without Sahil)
+Status: BLOCKED (code merged/deployed via #63 and #64; importer activation pending)
 Owner: Claude builds, ChatGPT reviews
 
 - Worker owns website leads; Command Center owns outreach, approvals and suppression; one-way pull export with retry, dedup and audit (`src/lead-export.mjs`, `operations/apps-script/LeadImport.gs`).
 - Carried from #46: Command Center schema, `Queue.gs` lease controller, outreach gate (now with LEAD-02 pacing), SOPs, SEO inventory, operations CI.
 - Carried from #57: `src/pipeline.mjs` daily queue, follow-up touches, "Aaj ka plan" in `/admin`, digest preview/send, `ops/` handoff, `GEMINI.md`, `PROJECTS.md`.
 - Left out on purpose: n8n workflow, `services/amazon-spapi` copy (own repo), Worker cron (needs separate approval), dated reels note.
-- After merge (Sahil): Cloudflare secret `EXPORT_TOKEN`; Apps Script install + OAuth; first manual import; then trigger. PR #46 and #57 can then be closed as superseded.
+- Next activation steps: Cloudflare secret `EXPORT_TOKEN`; Apps Script install + OAuth; first manual import and parity check; then trigger. PR #46 and #57 are superseded. See `docs/HQ_ROLLOUT_2026-10-22.md`.
 - Open decision: WhatsApp cold first-touch cap (25/day) vs the SOP rule that a public business number is not opt-in.
+
+## XEND-CLEANUP-20261022 — Back up and retire redundant setups
+Status: BLOCKED (specific Cloudflare preview-deletion approval; account/laptop access for other setups)
+Owner: ChatGPT
+
+- Backup/configuration recovery file saved for 34 merged-PR previews; their owned namespaces were empty on inspection.
+- Permanent deletion rejected by automatic approval review; no deletions performed. Ask for the explicit 34-resource approval before retrying, and re-check emptiness at action time.
+- Backup-branch auto builds suppressed for exactly two previews. Broad global suppression was rejected and not applied.
+- ThinkPad folders, n8n instances, Render services and production namespaces remain retained pending dependency/data recovery checks.
 
 Operational tasks are in the private `OS Tasks` tab; this file indexes technical work only. Use the same IDs in PRs and handoffs.
 
