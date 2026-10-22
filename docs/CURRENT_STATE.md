@@ -1,5 +1,12 @@
 # Xender Secrets V2 — Current State
 
+## XEND-HQ-01 Worker-first HQ (2026-10-22, Claude, branch `claude/xend-hq-01-integration`, not merged)
+- Architecture decided by Sahil: Worker = source of truth for website leads; Command Center = outreach, approvals, suppression, task queue. One-way export Worker → Sheet. See `docs/HQ_ARCHITECTURE.md`.
+- Reconciles PR #46 (XEND-OS-003) and PR #57 (XEND-HQ-001). Neither PR was merged as-is. Left out: the n8n workflow, the `services/amazon-spapi` copy, the Worker cron, and a dated reels note.
+- New: `src/lead-export.mjs` (`/api/admin/export/leads|ack|status`, optional read-only `EXPORT_TOKEN`), `operations/apps-script/LeadImport.gs`, and `src/outreach-policy.mjs` (email 5/day, 15 minutes apart, from LEAD-02; WhatsApp 25/day unchanged).
+- Nothing deployed. Activation needs merge + `EXPORT_TOKEN` + Apps Script OAuth, which is blocked today.
+- Ops changes on 22 Oct (Claude, via GitHub UI / scheduled tasks): workflows `facebook-novel-series.yml` (this repo) and `shorts_trial.yml` (autotube) disabled. Claude scheduled task "XEND-LI-001 daily LinkedIn post" disabled. All reversible.
+
 ## XEND-YT-COURSE-001 (2026-10-21, Claude, branch `claude/xend-yt-course-001`)
 - New free course page `/faceless-youtube-course` (hand-written, indexable, in sitemap): 9 lessons on making faceless AI YouTube videos with ₹0 tools, plus honest notes on YouTube's inauthentic-content rule and YPP thresholds (incl. the 1 Feb 2027 change).
 - Short links in `_redirects`: `/yt` (302, adds `utm_source=youtube&utm_medium=short_link`) for typing from Shorts, where description links aren't clickable; `/course` (302).

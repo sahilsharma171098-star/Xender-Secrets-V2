@@ -39,6 +39,12 @@ a{color:var(--accent)}
 </section>
 <main id="app" hidden>
   <section class="kpis" id="kpis"></section>
+  <section class="card" id="todayCard"><h2>Aaj ka plan</h2>
+    <p class="muted">Due follow-ups first, then fresh prospects up to the daily cap. Nothing is sent automatically — open WhatsApp, send it yourself, then tap <b>Sent ✓</b> so the next follow-up gets scheduled.</p>
+    <div id="today" class="muted">—</div>
+    <div class="row" style="margin-top:12px"><button class="ghost" id="digestPreview" type="button">Preview morning digest</button><button class="ghost" id="digestSend" type="button">Send digest to Telegram</button><span id="digestMsg" class="muted"></span></div>
+    <pre id="digestText" hidden style="white-space:pre-wrap;margin:12px 0 0"></pre>
+  </section>
   <section class="card" id="scorecardBox" hidden><h2>Daily scorecard</h2><p class="muted">Copied to clipboard — paste into Issue #5 / WhatsApp. Outreach numbers come from the Prospects list below.</p><pre id="scorecardText" style="white-space:pre-wrap;margin:0"></pre></section>
   <section class="card"><h2>Follow-ups due</h2><div id="due" class="muted">—</div></section>
   <section class="card"><h2>Client previews <a href="/preview-builder" style="font-size:12px;font-weight:600">+ build one</a></h2><p class="muted">A view means the prospect (or someone they shared it with) opened the link — a good moment to follow up.</p><div id="previews" class="muted">—</div></section>
@@ -106,6 +112,7 @@ a{color:var(--accent)}
     $("errors").innerHTML = table(rep.errors, [["Error", "label"], ["Page", "path"], ["Count", "n"]]);
     renderLeads(leads.leads || []);
     loadProspects().catch(() => {});
+    loadToday().catch(() => {});
   }
 
   function waHref(l) {
@@ -149,6 +156,43 @@ a{color:var(--accent)}
     } catch (err) { status.textContent = " failed"; }
   });
 
+
+  // ------------------------------------------------ XEND-HQ-001 today's lead plan (src/pipeline.mjs)
+  async function loadToday() {
+    const q = await api("/api/admin/pipeline/today").then((r) => r.json());
+    const late = (p) => (p.overdue_days ? ` · ${p.overdue_days}d late` : "");
+    const parts = [`<p><b>${q.follow_ups.length}</b> follow-ups due · <b>${q.remaining_today}</b> of ${q.cap} first messages left today · <b>${q.close.length}</b> to close${q.new_leads ? ` · <b class="bad">${q.new_leads} new website lead(s) — reply first</b>` : ""}</p>`];
+    if (q.follow_ups.length) {
+      parts.push("<table><tr><th>Business</th><th>Follow-ups sent</th><th></th></tr>" + q.follow_ups.map((p) => `<tr>
+        <td class="prospect"><b>${esc(p.name)}</b><small>${esc(p.stage + late(p))}</small></td>
+        <td>${esc(p.follow_ups)}</td>
+        <td><div class="row">${p.whatsapp ? `<a class="pill" href="${esc(p.whatsapp)}" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>` : '<span class="muted">no phone</span>'}
+          <button class="ghost" type="button" data-act="sent" data-id="${esc(p.id)}">Sent ✓</button></div></td></tr>`).join("") + "</table>");
+    }
+    if (q.close.length) {
+      parts.push("<p style=\"margin-top:12px\"><b>Close these</b> <span class=\"muted\">— no reply after the first message and the follow-ups.</span></p><div class=\"row\">" + q.close.map((p) =>
+        `<span class="pill">${esc(p.name)} <button class="ghost" type="button" data-act="close" data-id="${esc(p.id)}" style="padding:0 6px">close</button></span>`).join("") + "</div>");
+    }
+    if (q.fresh.length) parts.push(`<p class="muted" style="margin-top:12px">Next to message (from the Prospects list below): ${q.fresh.slice(0, 10).map((p) => esc(p.name)).join(", ")}${q.fresh.length > 10 ? "…" : ""}</p>`);
+    $("today").innerHTML = parts.join("");
+  }
+  $("today").addEventListener("click", async (e) => {
+    const b = e.target.closest("button[data-act]");
+    if (!b) return;
+    b.disabled = true;
+    const body = b.dataset.act === "sent" ? { followed_up: true } : { stage: "not_interested" };
+    const j = await api("/api/admin/prospects/" + encodeURIComponent(b.dataset.id), { method: "PATCH", body: JSON.stringify(body) }).then((r) => r.json()).catch(() => ({ ok: false }));
+    if (!j.ok) { b.disabled = false; alert(j.error || "Could not save."); return; }
+    loadToday().catch(() => {}); loadProspects().catch(() => {});
+  });
+  async function digest(send) {
+    $("digestMsg").textContent = send ? "Sending…" : "";
+    const j = await api("/api/admin/pipeline/digest" + (send ? "" : "?dry=1"), { method: "POST" }).then((r) => r.json()).catch(() => ({ ok: false }));
+    $("digestText").hidden = !j.text; $("digestText").textContent = j.text || "";
+    $("digestMsg").textContent = !send ? "" : j.sent ? "Sent to Telegram ✓" : j.reason === "not-configured" ? "Telegram not set up — add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in Cloudflare." : "Telegram did not accept it.";
+  }
+  $("digestPreview").onclick = () => digest(false);
+  $("digestSend").onclick = () => digest(true);
 
   // ------------------------------------------------ XEND-ACQ-002 prospects (no-website businesses)
   const DAILY_CAP = 25;

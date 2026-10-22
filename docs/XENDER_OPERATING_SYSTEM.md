@@ -1,5 +1,23 @@
 # Xender Operating System
 
+## HQ update — XEND-HQ-01, 2026-10-22 (Worker-first)
+
+The six functions below remain the functional model. Since 2026-10-22 the systems behind them are split as follows:
+- Website leads, prospects and the daily lead plan: Worker `/admin`. It is the source of truth.
+- Cold-email outreach, approvals, suppression, touches and the cross-business task queue: the private Command Center ([operations/README.md](operations/README.md)).
+- Website leads reach the Command Center through a one-way export ([HQ_ARCHITECTURE.md](HQ_ARCHITECTURE.md)).
+
+Outreach limits are in `src/outreach-policy.mjs`: email 5/day at least 15 minutes apart with per-email approval (LEAD-02); WhatsApp sent by hand from `/admin`, up to 25 first messages/day; a prospect is closed after two unanswered follow-ups. Cadence and channel-permission rules in `docs/operations/SALES.md` supersede older broad sending targets. Amazon is a reserved lane until Sahil defines its SOP.
+
+| Track | Where it lives | Automation |
+| --- | --- | --- |
+| Development | `public/`, `src/`, `extension/` | `@claude` workflow, live E2E, unit + operations tests |
+| Customer Acquisition | `scripts/prospecting/`, `scripts/seo/`, `/faceless-youtube-course` | prospect finder (laptop), SEO audit + IndexNow (Actions), AutoTube course CTA |
+| Sales | `/admin` prospects + leads, `src/pipeline.mjs`, Command Center outreach tabs | auto follow-up dates, "Aaj ka plan", outreach gate |
+| Revenue Generation | `src/payments.mjs`, `/services` | — |
+| MIS | `/admin` report + scorecard, export status | lead export lag |
+| Admin | `ops/`, `PROJECTS.md`, this file | AI-failover handoff file |
+
 Xender will be run through six execution tracks:
 
 1. Development
