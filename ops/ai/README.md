@@ -7,7 +7,7 @@ Task: XEND-AI-INTEGRATION-001. All agents use the existing HQ and canonical repo
 | Work | Tool | Dated observation or activation blocker |
 | --- | --- | --- |
 | Research, planning, review | Gemini | ChatGPT observed a signed-in browser and Pro/Argon options on 2026-10-22. Current session/quota/inference/API access not rechecked. Standalone xender-hq skill save unconfirmed; use repository instructions meanwhile. |
-| Coding and development | Antigravity | Sahil reports installation on ThinkPad; direct login, checkout sync and health checks pending. The cloud host has no CLI; this says nothing about the laptop. |
+| Coding and development | Antigravity | Sahil supplied a 2026-10-24 check reporting version 2.23.0 running/signed in, Google AI Pro entitlement and a separate workspace on main 9e21348. Original local evidence inspection and fresh model/API execution remain pending. |
 | Images and thumbnails | Nano Banana | ChatGPT observed Nano Banana 2.1, Pro and 2 Lite options in Flow on 2026-10-22. No actual generation or remaining-credit check. |
 | Optional research/review/coding | NVIDIA API Catalog / NIM | Registry entry added on 2026-10-22; provider account, selected model, quota and API access not verified. |
 | Optional research/review/coding | xAI / Grok | Registry entry added on 2026-10-22; provider account, quota, live tools and API access not verified. |
@@ -19,7 +19,7 @@ Open the existing project named **Xender HQ — Images & Video** in the authoriz
 
 ## Evidence and freshness
 
-Each tool has `checked_at`, `checked_by` and `evidence`. A date is the historical date of the **scope described in the evidence**, not a credential or health guarantee. For NVIDIA/Grok it dates the registry entry only. A null date/reviewer means there was no independent direct check of that tool's access; Antigravity's installation is user-reported. `evidence.not_verified` lists the limits.
+Each tool has `checked_at`, `checked_by` and `evidence`. A date is the historical date of the **scope described in the evidence**, not a credential or health guarantee. For NVIDIA/Grok it dates the registry entry only. A null date/reviewer means no tool-access check was recorded. A dated user-supplied report remains attributed to its source; it is not upgraded to an independent check by this reviewer. `evidence.not_verified` lists the limits.
 
 Status values such as `browser_session_observed` and `model_options_observed` describe past observations, never permission to skip preflight. Recheck the actual account, tool/model, live quota/allowance and cost before execution. Update evidence only after observing a result, recording its date, reviewer, scope and safe source. Do not refresh browser/workstation dates from `ai:doctor`: it checks executable presence on the host running it and makes zero provider calls. Detailed review and blockers: [AI_SETUP_REVIEW_2026-10-24.md](../../docs/AI_SETUP_REVIEW_2026-10-24.md).
 
@@ -47,7 +47,7 @@ Use ChatGPT/Codex or Claude for coding while Antigravity is unavailable. Record 
 
 ## Activation still required
 
-- Verify the user-reported Antigravity installation, login and health on the actual ThinkPad; open the canonical checkout and require AGENTS.md, GEMINI.md, BUILD_HOME.md and current handoff. Installation is not presumed missing. Preserve dirty worktrees; check PR state and use current main for new work after merge. Do not duplicate repositories or bypass terminal/browser approvals.
+- Review the original sanitized ThinkPad health-check diff when available; the [2026-10-24 supplied report](../../docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md) reports desktop/login and backup checks passed. Then verify one fresh model result and receipt through the actual workstation, with current account/model/allowance/cost checked. Open the canonical checkout and read AGENTS.md, GEMINI.md, BUILD_HOME.md and current handoff. Preserve dirty worktrees and private backups; do not duplicate repositories or bypass approvals.
 - Confirm the standalone Gemini xender-hq skill save before describing it as installed. Repo-based Gemini instructions are already active on main.
 - Verify each requested generation's live allowance/cost before execution. Subscription access does not itself configure a backend API.
 - The hosted GitHub Claude executor is separate from a local Claude session. Its 2026-10-24 review run failed before invoking Claude because `CLAUDE_CODE_OAUTH_TOKEN` was missing/empty; see XEND-CLAUDE-EXECUTOR-001. A separate Claude review supplied by Sahil does not prove that this executor is active.
