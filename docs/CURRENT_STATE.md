@@ -1,9 +1,16 @@
 # Xender Secrets V2 — Current State
 
+## Shared AI audit remediation (2026-10-24)
+- Sahil supplied Claude's review of Xender `bf42de3` / AutoTube `349b47f`: no Critical/High finding reported; configuration/record issues and unverified provider activation remain distinct.
+- XEND-HQ-REVIEW-002 refreshes the handoff and its generator's branch-resume guidance, dates tool evidence, aligns all agent instructions, removes project-specific Flow pointers from current files, and indexes XEND-YT-01/XEND-YT-03. See `docs/AI_SETUP_REVIEW_2026-10-24.md` for findings, actual checks and activation limits.
+- Gemini/Flow browser and model observations date to 2026-10-22; they do not establish current access, quota, inference or API credentials. Sahil reports Antigravity installed; direct ThinkPad login/health/checkout verification is pending, not a confirmed missing installation.
+- Hosted Claude review [run 40058321043](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions/runs/40058321043) failed on missing/empty `CLAUDE_CODE_OAUTH_TOKEN` before Claude ran. The separate supplied Claude report does not restore that executor.
+- This remediation changes records, local handoff guidance and offline CI coverage, not provider execution or publishing enablement. Local AutoTube changes described by Claude remain preserved pending private backup/comparison on their actual host.
+
 ## NVIDIA and Grok routes (2026-10-22)
 - NVIDIA API Catalog/NIM and xAI/Grok added as optional research/code tools in the shared registry; use ai:prepare --tool nvidia|grok. Existing defaults unchanged.
 - Selected tools must support the task kind; prepared jobs preserve actual access status and do not execute requests.
-- Registration is complete; provider account, model/quota and API activation remain pending. No paid usage, credentials, provider calls or publishing enabled.
+- Registry entries added; provider account registration/access, model/quota and API activation are not verified. No paid usage, credentials, provider calls or publishing enabled.
 
 ## Gemini and Google AI tools (2026-10-22)
 - Sahil added Gemini to the shared HQ workflow and authorized using useful Google AI tools when available through authorized access. Included/free usage preferred; new paid spend still requires approval. No new tool connection or execution is claimed by this documentation update. See BUILD_HOME.md and GEMINI.md.
@@ -24,7 +31,7 @@
 ## Cleanup and AutoTube continuation (2026-10-22)
 - Existing backups verified: website/AutoTube backup refs and the separate 17-tab pre-cleanup Command Center copy.
 - 34 Cloudflare previews tied to merged PRs were audited; their owned Durable Object namespaces contained zero objects. The owner has a saved configuration/source/recovery backup, `Xender_Cloudflare_PreCleanup_2026-10-22.json`.
-- No previews were deleted: automatic approval review rejected permanent deletion because the specific remote resources need explicit approval. Global preview-build suppression was also rejected; the parent preview setting remains enabled.
+- The initial deletion attempt was blocked pending explicit approval. After Sahil approved the recorded set, the 34 previews and 75 freshly checked empty namespaces were deleted on 2026-10-22 (99 → 24 namespaces); backups were retained. Global preview-build suppression was rejected and not applied; the parent preview setting remains enabled.
 - The two backup-branch previews now have `auto_build: false`; production automatic deployment remains on `main`.
 - AutoTube PR #3 implements owner-signed, single-use approvals, signature expiry, thumbnail/rights/privacy binding, a main-only manual publisher, channel verification and a remote uploading reservation before the first YouTube call. Local tests: 40 passed; GitHub safety CI also passed. AutoTube PR #3 merged.
 - Queue activation still needs the owner verification key and the actual ThinkPad Episode Studio bundle/review. No upload was dispatched in this continuation. Laptop audit, n8n retirement and Render deletions remain unperformed.

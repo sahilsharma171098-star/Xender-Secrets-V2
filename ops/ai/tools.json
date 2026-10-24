@@ -13,44 +13,99 @@
       "label": "Gemini",
       "surface": "browser",
       "url": "https://gemini.google.com/app",
-      "status": "signed_in_verified",
+      "status": "browser_session_observed",
       "notes": "Pro and Argon options observed; remaining quota not verified.",
       "kinds": [
         "research"
-      ]
+      ],
+      "checked_at": "2026-10-22",
+      "checked_by": "ChatGPT",
+      "evidence": {
+        "scope": "browser_session_only",
+        "source": "Xender-Secrets-V2 PR #68 setup record (2026-10-22)",
+        "observed": "Signed-in browser and Pro/Argon options; standalone xender-hq skill save unconfirmed.",
+        "not_verified": [
+          "current session",
+          "remaining quota",
+          "model inference",
+          "API access"
+        ],
+        "freshness": "Historical observation only; recheck current access/model/quota/cost before each execution. A host doctor does not refresh this record."
+      }
     },
     {
       "id": "antigravity",
       "label": "Google Antigravity",
       "surface": "desktop",
       "url": "https://www.antigravity.google/",
-      "status": "workstation_setup_pending",
-      "notes": "No Antigravity CLI found in this Work environment. ThinkPad installation/auth not inspected.",
+      "status": "workstation_verification_pending",
+      "notes": "Sahil reports Antigravity installed on ThinkPad. Direct ThinkPad login, canonical checkout sync and health checks are pending; absence from this cloud host does not establish laptop installation state.",
       "kinds": [
         "code"
-      ]
+      ],
+      "checked_at": null,
+      "checked_by": null,
+      "evidence": {
+        "scope": "user_report_only",
+        "source": "Sahil-provided ThinkPad inventory, shared 2026-10-22; not independently inspected",
+        "observed": "Installation reported and origin/main fetch through PR #68 reported.",
+        "not_verified": [
+          "ThinkPad login and health",
+          "current canonical checkout",
+          "all worktrees synced"
+        ],
+        "freshness": "Historical observation only; recheck current access/model/quota/cost before each execution. A host doctor does not refresh this record."
+      }
     },
     {
       "id": "nano-banana",
       "label": "Nano Banana",
       "surface": "flow_image_ui",
-      "url": "https://flow.google.com/project/9a5df5c0-d172-4972-a012-9526d9479743",
-      "status": "model_options_verified",
+      "url": "https://flow.google.com/",
+      "status": "model_options_observed",
       "notes": "Nano Banana 2.1, Pro and 2 Lite options observed in PRO account. Actual generation and remaining credits not tested.",
       "kinds": [
         "image"
-      ]
+      ],
+      "checked_at": "2026-10-22",
+      "checked_by": "ChatGPT",
+      "evidence": {
+        "scope": "flow_ui_options_only",
+        "source": "Xender-Secrets-V2 PR #68 setup record (2026-10-22)",
+        "observed": "Nano Banana 2.1/Pro/2 Lite options; 2.1 default and one output saved.",
+        "not_verified": [
+          "current session",
+          "live credits or quota",
+          "actual image/video generation",
+          "API access"
+        ],
+        "freshness": "Historical observation only; recheck current access/model/quota/cost before each execution. A host doctor does not refresh this record."
+      }
     },
     {
       "id": "veo",
       "label": "Veo / Google Flow",
       "surface": "browser",
-      "url": "https://flow.google.com/project/9a5df5c0-d172-4972-a012-9526d9479743",
-      "status": "model_options_verified",
+      "url": "https://flow.google.com/",
+      "status": "model_options_observed",
       "notes": "Veo 3.1 Lite, Fast and Quality options observed. Shared project and HQ agent instructions saved; no generation or credits spent by this setup.",
       "kinds": [
         "video"
-      ]
+      ],
+      "checked_at": "2026-10-22",
+      "checked_by": "ChatGPT",
+      "evidence": {
+        "scope": "flow_ui_options_only",
+        "source": "Xender-Secrets-V2 PR #68 setup record (2026-10-22)",
+        "observed": "Veo 3.1 Lite/Fast/Quality options; Fast default and one output saved. Shared HQ project instructions saved.",
+        "not_verified": [
+          "current session",
+          "live credits or quota",
+          "actual image/video generation",
+          "API access"
+        ],
+        "freshness": "Historical observation only; recheck current access/model/quota/cost before each execution. A host doctor does not refresh this record."
+      }
     },
     {
       "id": "nvidia",
@@ -62,7 +117,22 @@
         "research",
         "code"
       ],
-      "notes": "Optional model evaluation/prototyping route. Account, selected model, quota and API credentials not verified. Check applicable model/NIM terms before production use; do not assume self-hosting hardware is available."
+      "notes": "Optional model evaluation/prototyping route. Account, selected model, quota and API credentials not verified. Check applicable model/NIM terms before production use; do not assume self-hosting hardware is available.",
+      "checked_at": "2026-10-22",
+      "checked_by": "ChatGPT",
+      "evidence": {
+        "scope": "registry_entry_only",
+        "source": "Xender-Secrets-V2 PR #69 (2026-10-22)",
+        "observed": "Optional research/code route registered; no successful provider inference or API activation recorded.",
+        "not_verified": [
+          "provider account access",
+          "selected model and tools",
+          "quota",
+          "license and cost",
+          "API credentials"
+        ],
+        "freshness": "Historical observation only; recheck current access/model/quota/cost before each execution. A host doctor does not refresh this record."
+      }
     },
     {
       "id": "grok",
@@ -74,7 +144,22 @@
         "research",
         "code"
       ],
-      "notes": "Sahil confirmed xAI/Grok. Optional research/review/coding route. Account, live tools, quota and API billing not verified; no subscription or credit purchase authorized."
+      "notes": "Sahil confirmed xAI/Grok. Optional research/review/coding route. Account, live tools, quota and API billing not verified; no subscription or credit purchase authorized.",
+      "checked_at": "2026-10-22",
+      "checked_by": "ChatGPT",
+      "evidence": {
+        "scope": "registry_entry_only",
+        "source": "Xender-Secrets-V2 PR #69 (2026-10-22)",
+        "observed": "Optional research/code route registered; no successful provider inference or API activation recorded.",
+        "not_verified": [
+          "provider account access",
+          "selected model and tools",
+          "quota",
+          "license and cost",
+          "API credentials"
+        ],
+        "freshness": "Historical observation only; recheck current access/model/quota/cost before each execution. A host doctor does not refresh this record."
+      }
     }
   ],
   "policy": {

@@ -1,5 +1,7 @@
 # HQ rollout and cleanup — 22 October 2026
 
+Cleanup completion update: after the initial approval block described below, Sahil explicitly approved the recorded 34-preview set. All 34 were deleted on 2026-10-22 after fresh emptiness checks, without force, and all returned Preview not found (404). Removing their 75 empty namespaces reduced the recorded count from 99 to 24; production deployment and three production namespaces were unchanged. The pre-cleanup backup and `Xender_Cloudflare_Cleanup_Result_2026-10-22.json` were retained. This is the 22 October completion record, not a new live resource audit. Global preview-build suppression was not applied.
+
 ## Verified production deployment
 
 - Website PR #64 merged as `b2151fd468830f75e1afed20b24d87c5d5217cb9`.
@@ -21,15 +23,15 @@
 - Git refs retained: website `backup/2026-10-22-pre-cleanup` and `backup/2026-10-22-pre-hq-audit-rollout`; AutoTube `backup/2026-10-22-pre-cleanup`, `backup/2026-10-22-post-yt03-safety`, and `backup/2026-10-22-pre-owner-approvals`.
 - The separate Command Center pre-cleanup copy has the same 17-tab structure as the original.
 - `Xender_Cloudflare_PreCleanup_2026-10-22.json` contains the 34-preview metadata, source commit references, empty namespace checks, production build configuration and recovery instructions. It was saved before attempting deletion.
-- **No previews were deleted.** Automatic approval review rejected deletion: the specific permanent remote deletions require explicit authorization. Do not retry via a different interface or indirect execution.
+- The initial attempt was rejected by automatic approval review pending explicit approval of the permanent remote deletions. Sahil subsequently approved the exact recorded set; the completion update above supersedes the earlier no-deletion snapshot. Do not extend that approval to other resources or bypass a rejected action through another interface.
 - Parent preview-build suppression was also rejected as broader than the backup-branch suppression scope. Global preview builds remain enabled.
 - Successful reversible changes: `auto_build: false` on the two backup previews (`backup/2026-10-22-pre-cleanup`, `backup/2026-10-22-pre-hq-audit-rollout`). Production automatic deployment remains enabled on `main`.
 - At inspection there were 99/100 Durable Object namespaces, including 3 production namespaces. This explains the failed non-production preview builds; it did not prevent the successful main deployment.
 - Production namespaces, open-PR previews, laptop files, n8n and Render resources have not been deleted.
 
-## Specific preview deletion set awaiting owner approval
+## Specific preview deletion set approved and completed on 22 October
 
-All listed PRs are merged. Every owned namespace was empty at inspection. Before deleting, re-check emptiness and use a non-forced deletion. Code branches are retained; the backup describes recreation. Deleting a Preview also removes its Preview deployments and associated namespace storage, so these are permanent remote deletions.
+All listed PRs are merged. Every owned namespace was rechecked empty before non-forced deletion. Code branches were retained; the backup describes recreation. This table is a historical completion record, not a deletion queue to rerun. Other Preview deletions require their own authorization and dependency checks.
 
 | Preview branch | Preview id | Merged PR | Source commit | Empty namespaces |
 | --- | --- | --- | --- | --- |

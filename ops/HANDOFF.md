@@ -1,26 +1,30 @@
 # Handoff — read this after AGENTS.md
 
-Updated 22 October 2026 (IST) by Codex for XEND-AI-INTEGRATION-001. Current notes supersede historical task snapshots below.
+Generated 2026-10-24 05:11 UTC by **codex** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `codex/nvidia-grok-hq-20261022` (resume current main after merge)
+- Branch: `codex/hq-review-fixes-20261024`
 - Last commits:
-  - `b2151fd Merge pull request #64 from sahilsharma171098-star/claude/xend-hq-01-audit-fixes`
-  - `2f91e93 XEND-HQ-01 audit fixes: single-use approvals, gap check, cursor-ahead error`
-  - `ac0de47 Merge pull request #63 from sahilsharma171098-star/claude/xend-hq-01-integration`
-  - `325633d XEND-HQ-01: refresh ops/HANDOFF.md`
-  - `56ed13d XEND-HQ-01: Worker-first HQ integration of PR #46 + PR #57`
+  - `457668f XEND-HQ-REVIEW-002: reconcile shared AI evidence and handoff records`
+  - `bf42de3 Merge pull request #69 from sahilsharma171098-star/codex/nvidia-grok-hq-20261022`
+  - `d9066e2 feat: add NVIDIA and Grok task choice in docs/CURRENT_STATE.md`
+  - `bd74078 feat: add NVIDIA and Grok task choice in ops/HANDOFF.md`
+  - `ccf4797 feat: add NVIDIA and Grok task choice in docs/TASKS.md`
 
-## Historical working-tree snapshot (not current remote status)
-- ` M PROJECTS.md`
-- ` M docs/CURRENT_STATE.md`
-- ` M docs/HQ_ARCHITECTURE.md`
+## Working-tree snapshot at generation
+- ` M docs/AI_SETUP_REVIEW_2026-10-24.md`
 - ` M docs/TASKS.md`
+- ` M scripts/ops/handoff.mjs`
 
 ## Open tasks (docs/TASKS.md)
+- XEND-YT-01 — AutoTube canonical queue and Episode Studio handoff — BLOCKED (queue code merged; actual ThinkPad Episode Studio bundle/adapter validation pending)
+- XEND-YT-03 — AutoTube shared quota and signed owner approval — BLOCKED (safety code merged; owner verification key and reviewed Episode Studio bundle pending)
+- XEND-CLAUDE-EXECUTOR-001 — Restore the hosted Claude review executor — BLOCKED (repository OAuth secret missing/empty in the observed run)
+- XEND-AI-NVIDIA-GROK-001 — Add NVIDIA and xAI/Grok (2026-10-22) — BLOCKED (registry and selectable task routing delivered; account/model/quota activation pending)
+- XEND-AI-INTEGRATION-001 — Shared Google AI tool workspace (2026-10-22) — BLOCKED (workspace and routing implemented; Antigravity workstation activation and Gemini skill save unverified)
 - XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22) — BLOCKED (code merged/deployed via #63 and #64; importer activation pending)
-- XEND-CLEANUP-20261022 — Back up and retire redundant setups — BLOCKED (Cloudflare cleanup complete; other account/laptop audits pending)
-- XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21) — UNKNOWN
+- XEND-CLEANUP-20261022 — Back up and retire redundant setups — BLOCKED (Cloudflare preview cleanup complete; account/laptop audit for other setups pending)
+- XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21) — BLOCKED (course page recorded live; channel profile-link completion unverified)
 - XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11) — REVIEW (branch `chatgpt/xend-agent-reach-001`)
 - XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10) — REVIEW (branch `claude/acq-002-maps-prospects`)
 - XEND-SHOWCASE-001 — Showcase catalog rebuild: studio design system, catalog, Studio page (2026-10-09) — REVIEW (branch `claude/xend-showcase-rebuild`)
@@ -36,23 +40,18 @@ Updated 22 October 2026 (IST) by Codex for XEND-AI-INTEGRATION-001. Current note
 
 ## How to resume
 1. Read `AGENTS.md`, then this file, then the task's section in `docs/TASKS.md`.
-2. Check out the branch above. Do not start a new branch for the same task.
-3. Run `node --test tests/unit/*.test.mjs` before and after your change.
+2. Fetch `origin/main` and check the recorded branch/PR's current state. Continue that branch only while its task/PR is still active; after merge or closure, start new work from current main on a new task branch. Preserve local changes and keep one owner per branch.
+3. Run the task's applicable checks before and after your change; handoff changes use `node --test tests/unit/handoff.test.mjs`, and AI workspace changes use `node --test tests/operations/ai-workspace.test.mjs`. Report host limits separately from ThinkPad or provider access.
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
 
-- **Latest task:** XEND-AI-NVIDIA-GROK-001. NVIDIA API Catalog/NIM and xAI/Grok registered as optional research/code routes. Added --tool selection, supported-kind validation and tests; pending access is preserved in receipts. No provider calls, new credentials or spend. Verify account/model/quota and relevant license/cost before activation. See ops/ai/README.md.
-
-- **Current task:** XEND-AI-INTEGRATION-001. Added ops/ai registry/runbook, local task preparation/doctor and 3 passing routing/path-confinement/receipt tests. Gemini signed-in access verified. Shared Flow project created and HQ instructions saved; Nano Banana 2.1 / Veo 3.1 Fast defaults and one-output counts verified after save. No media generation performed.
-- **Activation blockers:** Antigravity installation/login on actual ThinkPad unverified; standalone Gemini xender-hq skill save unconfirmed. Do not claim end-to-end autonomous integration. See ops/ai/README.md. Existing publishing gates stay in force.
-
-
-- **Task:** XEND-HQ-GEMINI-001; branch `codex/gemini-shared-hq-20261022`.
-- **Current change:** Gemini included in the shared HQ workflow; useful authorized Google AI tools may be used with verified access/quota/cost, minimum context and output validation. New paid spend still needs approval. Documentation only; no tool connection or execution claimed. Read BUILD_HOME.md and GEMINI.md. Resume from current main after merge.
-- **Done:** Added docs/BUILD_HOME.md and linked the shared build registration/reuse/handoff policy from AGENTS.md, CLAUDE.md and PROJECTS.md. All future builds must have a canonical source, task ID, owner and deployment record in HQ. Separate private repositories retain private source. No automatic chat synchronization is claimed.
-- **Checks:** Documentation reviewed against HQ_ARCHITECTURE.md and registry; no runtime code changes. Automated gh-review-loop unavailable because gh CLI is not installed.
-- **Cleanup completed:** Sahil approved the exact 34 previews. All deleted without force after fresh emptiness checks; all return 404. 75 empty namespaces removed (99 → 24). Three production namespaces and production deployment unchanged. Saved pre-cleanup backup and cleanup result retained.
-- **Still pending:** EXPORT_TOKEN and Apps Script OAuth/import activation; real ThinkPad Episode Studio bundle and owner verification key; laptop/n8n/Render dependency audit. No queued video upload triggered. Global preview-build setting unchanged.
-- **Next:** Start new build sessions from current main, read docs/BUILD_HOME.md and registry, assign one task owner, reuse existing sources and update handoff before stopping. Verify live PR states before acting on historical task-board entries.
-- **Evidence:** HQ #63/#64/#65; AutoTube #3; Xender_Cloudflare_PreCleanup_2026-10-22.json; Xender_Cloudflare_Cleanup_Result_2026-10-22.json.
+- **Current task / owner:** XEND-HQ-REVIEW-002, ChatGPT/Codex; branch `codex/hq-review-fixes-20261024`, based on main `bf42de3153a2a9000fe150d5e06adfaeaa7cffcf` (PR #69). This single current notes block replaces the old task snapshots.
+- **Done:** Reconciled Claude's supplied audit. Fixed handoff generator/failover resume rules, refreshed blocked tasks, dated and scoped all tool evidence, aligned all three agent instructions, replaced specific Flow workspace pointers with the generic entry point, indexed YT-01/YT-03 and the hosted Claude credential blocker, and corrected test-count/course/registration wording. Also reconciled the stale pre-approval cleanup snapshot with the recorded 22 October completion; no new cleanup was executed.
+- **Checks actually run here:** AI workspace 5/5 and handoff 2/2; full offline unit/operations 120/120 passed. SEO inventory 36 pages/zero problems; syntax, workflow YAML, registry evidence, shared-instruction consistency and whitespace checks passed. Doctor: cloud host only, Gemini/Antigravity CLI absent, zero API calls. This is not a ThinkPad/provider health check.
+- **AutoTube evidence:** #1–#3 merged; PR #3 safety CI run 39793183694 succeeded. Current main at inspection was `349b47f`; only history/two preview images differ from the tested #3 head. Claude's supplied result is 40/40; not rerun by Codex. Reviewed-publishing queue remains disabled; the separate pre-existing daily schedule is untouched and was not dispatched.
+- **Tool activation blockers:** Gemini/Flow UI observations date to 2026-10-22; current session, live allowance and actual generation remain unverified. Sahil reports Antigravity installed; verify ThinkPad login/health/current checkout, do not assume missing installation. Standalone Gemini skill save and NVIDIA/Grok account/model/quota/license/API activation remain pending.
+- **Other blockers:** Hosted Claude run 40058321043 stopped at missing/empty `CLAUDE_CODE_OAUTH_TOKEN` before Claude ran; owner secret setup is required. HQ importer still needs EXPORT_TOKEN and Apps Script OAuth/first import. YT activation needs the actual Episode Studio bundle/review and owner verification key. Private signing keys must stay outside repo/runner.
+- **Preserved work:** No existing dirty cloud-host checkout was reset or overwritten. Claude's reported four local AutoTube changes are on a different host; private backup of tracked/untracked files and comparison with current main are required before retirement. ThinkPad/n8n/Render dependency audits remain open.
+- **Delivery:** [PR #70](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/70) contains the completed repo remediation. Operating-system and offline/browser/workerd CI passed on implementation head `457668f`; inspect the PR for its final head, checks and merge state. No provider/media execution, outreach, upload or manual deployment was initiated; automatic repository builds are separate from provider activation. Detailed findings and activation actions: docs/AI_SETUP_REVIEW_2026-10-24.md.
+- **Next:** After PR #70 merges, fetch current main and start new work on a new task branch. Continue this branch only while its PR is active and handed over. Keep all activation tasks BLOCKED until their own evidence exists; a completed repo audit is not completed provider activation.

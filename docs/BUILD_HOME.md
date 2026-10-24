@@ -57,4 +57,4 @@ ChatGPT, Claude and Gemini do not automatically read each other's conversations.
 
 ## Tool workspace
 
-See [ops/ai/README.md](../ops/ai/README.md) for verified entry points, actual connection status and shared task preparation commands. Gemini and Flow browser access are verified; Flow uses one Xender HQ image/video project. Antigravity workstation setup and standalone Gemini skill save remain pending. Task preparation is local and does not execute model calls.
+See [ops/ai/README.md](../ops/ai/README.md) and its registry for dated observations, evidence scope, activation blockers and shared task preparation commands. Gemini sign-in and Flow project/model options were observed by ChatGPT on 2026-10-22; this is not a current-session, quota, generation or API-access check. Reopen the existing named project after checking access; keep project-specific links in private workspace records. Sahil reports Antigravity installed on ThinkPad; its checkout, login and health remain unverified here. Standalone Gemini skill save remains unconfirmed. Task preparation is local and does not execute model calls. A host doctor run does not refresh these observations.

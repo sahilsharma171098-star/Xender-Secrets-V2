@@ -1,7 +1,7 @@
 name: Operating system checks
 on:
   pull_request:
-    paths: ['operations/**', 'tests/operations/**', 'docs/operations/**', 'src/outreach-policy.mjs', 'src/lead-export.mjs', 'src/growth.mjs', '.github/workflows/operations-checks.yml']
+    paths: ['operations/**', 'ops/ai/**', 'scripts/ops/ai-workspace.mjs', 'scripts/ops/handoff.mjs', 'tests/operations/**', 'tests/unit/handoff.test.mjs', 'docs/operations/**', 'src/outreach-policy.mjs', 'src/lead-export.mjs', 'src/growth.mjs', '.github/workflows/operations-checks.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -13,5 +13,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tests/operations/*.test.mjs
+      - run: node --test tests/unit/handoff.test.mjs tests/operations/*.test.mjs
       - run: node operations/seo-inventory.mjs

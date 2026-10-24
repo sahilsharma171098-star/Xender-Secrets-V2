@@ -32,6 +32,8 @@ test('agent notes survive a refresh; a new file gets the template', () => {
   const html = renderHandoff({ now: 'now', agent: 'codex', branch: 'claude/x', commits: ['abc1234 msg'], dirty: [' M src/a.mjs'], tasks: openTasks(TASKS), notes: keptNotes(old) });
   assert.match(html, /by \*\*codex\*\*/);
   assert.match(html, /Branch: `claude\/x`/);
+  assert.match(html, /Continue that branch only while its task\/PR is still active; after merge or closure, start new work from current main/);
+  assert.doesNotMatch(html, /Check out the branch above\. Do not start a new branch/);
   assert.match(html, /XEND-A-001 — Open thing — REVIEW/);
   assert.match(html, /run the finder/);
   assert.doesNotMatch(html, /stale generated part/);
