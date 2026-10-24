@@ -62,6 +62,14 @@ Generated 2026-10-24 08:00 UTC by **codex** with `npm run ops:handoff`. Everythi
 
 ## Notes from the last agent
 
+### XEND-CATALOG-IMMERSIVE-001 — immersive catalog pilot (2026-10-24)
+- Owner: ChatGPT; draft PR #77 `chatgpt/xend-catalog-immersive-001` from main `32a66622e6b3a9f2d183912484d92bdc0cab375f`.
+- Backup branch: `backup/catalog-pre-immersive-20261024`. Existing 640 templates, 20 FE, 20 BE, 20 FS and 11 portfolio items are unchanged.
+- Added `public/immersive-lab.html`, `.css`, `.js`, a non-destructive directory link and `tests/unit/immersive-lab.test.mjs` for five procedural WebGL concept experiences. No purchases, real bookings, personal data collection, external calls or payments.
+- Observed checks: V8 JavaScript syntax parse succeeded, source code and generator audited. Added regression tests; automated CI and real desktop/mobile WebGL review not yet verified at this handoff.
+- No merge or deploy. Prototype geometry is not photorealistic/production-grade.
+- Next: verify PR #77 CI and WebGL/browser accessibility/performance, fix failures, then improve industry-specific designs one-by-one while preserving deep links; no removals before another verified backup.
+
 - Task: XEND-TASK-WORKSPACE-001; ChatGPT/Codex; codex/shared-task-workspace-20261024 from merged PR #74 main b0e328c. PR #74 published the sanitized supplied ThinkPad report; original local commit 8c13d26 remains unavailable. PR #72 remains outside this change.
 - Delivered: private Command Center OS Workspaces/Formats/Handoffs/Archive, private Drive folders and source snapshots; 28 historical content records (16 YouTube uploads, one Facebook post, eleven drafts including eight Instagram). Creator/model fields preserved without inferred attribution. Existing rows/schedules/publisher gates unchanged.
 - Code: pinned format/profile hashes, ordered stage/artifact checkpoints, immutable revision history, named-owner limit handoff/resume and ai:prepare --workspace-root. Local locks are not distributed leases; OS Tasks and Sahil dispatcher remain canonical until controller authorization.
