@@ -1,7 +1,7 @@
 name: Operating system checks
 on:
   pull_request:
-    paths: ['operations/**', 'ops/ai/**', 'scripts/ops/ai-workspace.mjs', 'scripts/ops/handoff.mjs', 'tests/operations/**', 'tests/unit/handoff.test.mjs', 'docs/operations/**', 'src/outreach-policy.mjs', 'src/lead-export.mjs', 'src/growth.mjs', '.github/workflows/operations-checks.yml']
+    paths: ['operations/**', 'ops/ai/**', 'scripts/ops/ai-workspace.mjs', 'scripts/ops/task-workspace.mjs', 'scripts/ops/handoff.mjs', 'tests/operations/**', 'tests/unit/handoff.test.mjs', 'docs/operations/**', 'src/outreach-policy.mjs', 'src/lead-export.mjs', 'src/growth.mjs', '.github/workflows/operations-checks.yml']
   workflow_dispatch:
 permissions:
   contents: read

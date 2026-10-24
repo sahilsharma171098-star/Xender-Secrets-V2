@@ -200,3 +200,7 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 - Branch `chatgpt/xend-growth-20261014`: adds an original roofing/contractor website guide via the existing commercial article generator, with homepage discovery, Guides hub card/schema and sitemap entry.
 - Build freshness passes; existing SEO suite 17/17 passes with Node test isolation disabled because this sandbox rejects subprocess spawning.
 - Not merged or production-verified at this checkpoint. No Search Console metrics or ranking improvements are asserted.
+
+## Shared task and content workspace (2026-10-24)
+
+See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.

@@ -28,7 +28,8 @@
     "test:ops": "node --test tests/operations/*.test.mjs",
     "ai:list": "node scripts/ops/ai-workspace.mjs list",
     "ai:doctor": "node scripts/ops/ai-workspace.mjs doctor",
-    "ai:prepare": "node scripts/ops/ai-workspace.mjs prepare"
+    "ai:prepare": "node scripts/ops/ai-workspace.mjs prepare",
+    "ai:task": "node scripts/ops/task-workspace.mjs"
   },
   "devDependencies": {
     "playwright": "1.57.0",

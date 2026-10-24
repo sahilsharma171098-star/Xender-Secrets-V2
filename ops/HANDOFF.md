@@ -1,28 +1,38 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-24 06:40 UTC by **codex** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-10-24 08:00 UTC by **codex** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `codex/workstation-health-record-20261024`
+- Branch: `codex/shared-task-workspace-20261024`
 - Last commits:
+  - `b0e328c Merge pull request #74 from sahilsharma171098-star/codex/workstation-health-record-20261024`
+  - `63dacc8 XEND-AI-HEALTH-001: record supplied ThinkPad health evidence`
   - `9e21348 Merge pull request #70 from sahilsharma171098-star/codex/hq-review-fixes-20261024`
   - `9a81b51 XEND-HQ-REVIEW-002: record delivery checks and completed audit scope`
   - `457668f XEND-HQ-REVIEW-002: reconcile shared AI evidence and handoff records`
-  - `bf42de3 Merge pull request #69 from sahilsharma171098-star/codex/nvidia-grok-hq-20261022`
-  - `d9066e2 feat: add NVIDIA and Grok task choice in docs/CURRENT_STATE.md`
 
 ## Working-tree snapshot at generation
+- ` M .github/workflows/operations-checks.yml`
+- ` M AGENTS.md`
+- ` M CLAUDE.md`
+- ` M GEMINI.md`
 - ` M PROJECTS.md`
-- ` M docs/AI_SETUP_REVIEW_2026-10-24.md`
 - ` M docs/BUILD_HOME.md`
 - ` M docs/CURRENT_STATE.md`
 - ` M docs/TASKS.md`
+- ` M docs/operations/CONTENT.md`
+- ` M docs/operations/README.md`
+- ` M operations/schema.json`
 - ` M ops/ai/README.md`
-- ` M ops/ai/tools.json`
-- `?? docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md`
+- ` M package.json`
+- ` M scripts/ops/ai-workspace.mjs`
+- `?? docs/TASK_WORKSPACES.md`
+- `?? ops/ai/profiles/`
+- `?? scripts/ops/task-workspace.mjs`
+- `?? tests/operations/task-workspace.test.mjs`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-AI-HEALTH-001 — Record supplied ThinkPad health results (2026-10-24) — REVIEW (sanitized supplied-report record on codex/workstation-health-record-20261024; draft PR only)
+- XEND-TASK-WORKSPACE-001 — Shared checkpoints, formats and content archive (2026-10-24) — REVIEW (implementation/private indexes saved; publishing tested code via task PR)
 - XEND-YT-01 — AutoTube canonical queue and Episode Studio handoff — BLOCKED (queue code merged; actual ThinkPad Episode Studio bundle/adapter validation pending)
 - XEND-YT-03 — AutoTube shared quota and signed owner approval — BLOCKED (safety code merged; owner verification key and reviewed Episode Studio bundle pending)
 - XEND-CLAUDE-EXECUTOR-001 — Restore the hosted Claude review executor — BLOCKED (repository OAuth secret missing/empty in the observed run)
@@ -52,12 +62,9 @@ Generated 2026-10-24 06:40 UTC by **codex** with `npm run ops:handoff`. Everythi
 
 ## Notes from the last agent
 
-- **Task / owner / branch:** XEND-AI-HEALTH-001, supporting XEND-AI-INTEGRATION-001; ChatGPT/Codex; codex/workstation-health-record-20261024, from main 9e21348 (merged PR #70).
-- **Source and limit:** Sahil supplied a ThinkPad verification summary reporting private backups of nine checkouts plus local AutoTube source, integrity/sample-restore checks, Antigravity 2.23.0 running/signed in with Google AI Pro entitlement, separate workspace on main 9e21348, and 120/120 plus 7/7 local checks. Original local commit 8c13d26 and its full report/private receipt are unavailable here; this is a sanitized supplied-report record, not publication or review of that commit.
-- **Completed:** Added docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md, updated the Antigravity evidence scope/date/source and aligned HQ task/state/project/runbook records. No original footer/backlog or private backup files imported.
-- **Checks actually run here:** AI workspace 5/5 and handoff 2/2 passed; registry comparison confirms routing/capabilities/execution safeguards unchanged. Doctor ran on cloud Linux only, both CLIs absent, zero API calls. Diff/added-content privacy checks are recorded with the draft PR. Reported Windows checks remain separately attributed.
-- **Independent scope check:** PR #72 at af91ccf remains draft/unmerged with 50 files, including Instagram/preview/dependency/QA work beyond the footer. It requires separate scope review; this branch does not merge or alter it.
-- **Explicitly deferred:** Fresh model/API execution and standalone Gemini xender-hq skill save stay pending by Sahil's instruction. Do not initiate a live trial or skill-save action in this batch.
-- **Other blockers retained:** Hosted Claude OAuth secret, NVIDIA/Grok activation, HQ exporter/Apps Script authorization, Episode Studio bundle and owner verification key. Reviewed-publishing queue remains disabled; no existing schedules or publisher configuration changed.
-- **Delivery:** Draft PR only; no merge or manual deployment. Private backups/receipts and Windows/account identifiers excluded; original local checkouts untouched. No provider request, paid usage, generation, outreach, upload, publishing or deletion.
-- **Next:** Review this sanitized record and actual PR CI. Obtain only the original local commit's sanitized diff if its contents need review. Resume this branch only while its PR is active/handed over; after merge/closure start new work from current main. Leave the user-deferred execution/skill tasks pending.
+- Task: XEND-TASK-WORKSPACE-001; ChatGPT/Codex; codex/shared-task-workspace-20261024 from merged PR #74 main b0e328c. PR #74 published the sanitized supplied ThinkPad report; original local commit 8c13d26 remains unavailable. PR #72 remains outside this change.
+- Delivered: private Command Center OS Workspaces/Formats/Handoffs/Archive, private Drive folders and source snapshots; 28 historical content records (16 YouTube uploads, one Facebook post, eleven drafts including eight Instagram). Creator/model fields preserved without inferred attribution. Existing rows/schedules/publisher gates unchanged.
+- Code: pinned format/profile hashes, ordered stage/artifact checkpoints, immutable revision history, named-owner limit handoff/resume and ai:prepare --workspace-root. Local locks are not distributed leases; OS Tasks and Sahil dispatcher remain canonical until controller authorization.
+- Verified: 129/129 unit/operations tests; exact uploaded byte readback for latest demo checkpoint and archive; Sheet indexes read back. Four private profiles saved. Synthetic bakery test resumed with the same profile hash and research; 1080x1920,30fps silent preview is 48.97 seconds, partial edit, not approved/published. Original YouTube source media/scripts and local-only Instagram assets unavailable.
+- Access: SocialClaw history returned plan_required; no paid plan activated. Latest user request authorized fresh Gemini execution/skill save, overriding the earlier deferral. This cloud browser requires Google authentication; no new successful inference/skill-save evidence yet. Hosted Claude credential, NVIDIA/Grok activation, Apps Script/exporter authorization and owner media approval remain separate actual access requirements.
+- Next: verify this task PR CI and merge on unchanged head under Sahil publication authorization. Agents open the private Command Center, inspect archive and latest pinned checkpoint, obtain dispatch and continue exact next action; never infer all-model automatic access or fresh provider publication from saved records.

@@ -48,3 +48,7 @@ Telegram community proposal: “Xender Tech & Website Lab”; purpose: original 
 ## Weekly experiment
 
 Test one variable at a time: first-frame hook, length or storytelling ending. Use different original drafts, not duplicate spam. Compare at equal 72-hour age; report sample size and baseline. Choose the next experiment based on share/save/watch evidence; small samples are directional. Reuse winning structure with new content. Stop factual claims when the official offer changes.
+
+## Shared task and content workspace (2026-10-24)
+
+See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.

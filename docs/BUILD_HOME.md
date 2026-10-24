@@ -58,3 +58,7 @@ ChatGPT, Claude and Gemini do not automatically read each other's conversations.
 ## Tool workspace
 
 See [ops/ai/README.md](../ops/ai/README.md) and its registry for dated observations, evidence scope, activation blockers and shared task preparation commands. Gemini sign-in and Flow project/model options were observed by ChatGPT on 2026-10-22; this is not a current-session, quota, generation or API-access check. Reopen the existing named project after checking access; keep project-specific links in private workspace records. Sahil supplied a 2026-10-24 ThinkPad health check reporting Antigravity running/signed in and a separate current-main workspace; see [the supplied health record](AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md). This reviewer has not inspected its original local commit or private receipts, and fresh model/API execution remains unverified. Standalone Gemini skill save remains unconfirmed. Task preparation is local and does not execute model calls. A host doctor run does not refresh these observations.
+
+## Shared task and content workspace (2026-10-24)
+
+See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.

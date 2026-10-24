@@ -41,3 +41,7 @@ Approvals bind exact recipient/account, channel, content hash, expiry and approv
 09:30 IST: check replies, bounces and opt-outs before due follow-ups; review queue and claims. Research up to five well-qualified prospects per market pilot, not a sending quota. Produce one reel draft and one sales artifact. 18:00: record provider receipts, blockers, cash versus booked revenue and content metrics. Friday: review funnel by country/source, opt-outs, delivery capacity, cost and content experiments; choose next week's priorities.
 
 Start with [sales SOP](SALES.md), [content SOP](CONTENT.md), [SEO checklist](SEO.md), [integration setup](INTEGRATIONS.md) and [access evidence](ACCESS.md). Do not treat older state documents as proof of live account configuration.
+
+## Shared task and content workspace (2026-10-24)
+
+See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.

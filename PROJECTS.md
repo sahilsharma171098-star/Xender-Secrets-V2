@@ -49,3 +49,5 @@ Sahil requires all future ChatGPT/Codex, Claude and Gemini builds to be register
    does, how to run it and where it is deployed.
 2. Run a secret scan on it before the first commit (see `ops/FAILOVER.md` → "Before you commit").
 3. Add a row to the table above and a task to `docs/TASKS.md`.
+
+Shared checkpoint/content workspace: XEND-TASK-WORKSPACE-001, existing HQ code and private Command Center/Drive. See `docs/TASK_WORKSPACES.md`; no parallel deployment or queue.

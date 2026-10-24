@@ -1,7 +1,17 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-TASK-WORKSPACE-001 — Shared checkpoints, formats and content archive (2026-10-24)
+Status: REVIEW (implementation/private indexes saved; publishing tested code via task PR)
+Owner: ChatGPT
+- Extend the existing private Command Center with workspace, versioned format, handoff and historical content indexes; keep OS Tasks canonical.
+- Add dependency-free private task checkpoints, fixed profile hashes, artifact validation and resume after an agent limit. No provider/publisher calls from this engine.
+- Import available historical upload/draft records with explicit source provenance, missing files and verification scope; never infer creator or fresh platform visibility.
+- User authorized execution and publication of this setup. Current Google browser authentication and existing publishing approvals remain actual access boundaries.
+- Validation: 129/129 unit/operations tests; exact Drive byte readback of demo checkpoint and archive; native Sheet indexes read back. 28 historical records and four private profiles saved. Synthetic saved-work resume passed with unchanged profile hash; silent 48.97-second preview is not publication-ready.
+- Runbook: docs/TASK_WORKSPACES.md. Private content and workspace URLs remain outside this public repository.
+
 ## XEND-AI-HEALTH-001 — Record supplied ThinkPad health results (2026-10-24)
-Status: REVIEW (sanitized supplied-report record on codex/workstation-health-record-20261024; draft PR only)
+Status: DONE (sanitized supplied-report record published in merged PR #74; original local commit remains unreviewed)
 Owner: ChatGPT
 - Source: Sahil-supplied workstation summary, reported local commit 8c13d26; original branch/diff and private backup receipt unavailable to this reviewer. This is a scoped summary, not publication of that commit.
 - Record reported desktop/login, backup and test outcomes with dated evidence scope; retain fresh model/API and Gemini skill-save blockers.
@@ -58,7 +68,7 @@ Owner: ChatGPT
 - Shared Flow project created: Xender HQ — Images & Video. HQ agent instruction saved; Nano Banana 2.1 and Veo 3.1 Fast defaults saved, one output per request. No generation performed.
 - Registry, host doctor and local task brief/receipt commands implemented; 5 focused tests pass on the PR #69 setup. Doctor checks this host only and does not revalidate provider access.
 - Follow-up supplied 2026-10-24: Antigravity 2.23.0 running/signed in with Google AI Pro entitlement; nine checkouts plus local AutoTube source backed up with reported integrity/sample-restore checks; a separate workspace verified main 9e21348. Local commit 8c13d26/full report/private receipt are unavailable to this reviewer. See docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md. Do not infer that all old worktrees were synchronized or that a fresh model/API request succeeded. Standalone Gemini skill save remains unconfirmed.
-- Fresh model/API execution and Gemini skill save are explicitly deferred by Sahil; leave both pending and do not initiate them in the health-record review batch.
+- Historical health-record scope deferred fresh execution/skill save. Sahil subsequently authorized execution; current browser authentication is required before a new observation can replace old evidence. No fresh successful inference or skill save is established by the health report.
 - No automatic API calls, topups, background scheduling or publication configured.
 - Details and canonical links: ops/ai/README.md.
 

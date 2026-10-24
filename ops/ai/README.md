@@ -63,3 +63,7 @@ Official references:
 - https://docs.api.nvidia.com/nim/docs/api-quickstart
 - https://docs.api.nvidia.com/nim/docs/product
 - https://docs.x.ai/developers/faq/billing
+
+## Shared task and content workspace (2026-10-24)
+
+See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.

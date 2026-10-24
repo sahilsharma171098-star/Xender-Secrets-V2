@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "example-video",
+  "version": 1,
+  "stages": ["research", "script", "storyboard", "assets", "edit", "review", "publish_handoff"],
+  "format": {
+    "purpose": "Example only; use the canonical project's approved profile in the private workspace",
+    "language": "hi",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "target_seconds": 50,
+    "script_sections": ["hook", "evidence", "explanation", "takeaway"],
+    "voice": "Use the project's approved voice; do not change it during handoff",
+    "caption_policy": "Follow the project's approved caption and CTA rules",
+    "publishing": "Canonical approved publisher only; preserve signed approval and provider-receipt gates"
+  }
+}
