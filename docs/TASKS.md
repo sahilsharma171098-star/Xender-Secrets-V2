@@ -1,5 +1,13 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-IG-CROSSPOST-001 — Publish existing YouTube content to Instagram (2026-10-24)
+Status: IN_PROGRESS
+Owner: ChatGPT
+- Sahil authorized the existing public catalog on Xender Instagram and required the YouTube channel link in every caption.
+- Live owner Studio: 21 public videos/Shorts, one unlisted excluded. Reconcile existing source links before reposting; preserve credits/disclosures and source media.
+- Use the private batch/receipts in Command Center; public code/runbook: docs/operations/YOUTUBE_INSTAGRAM.md. No secret, private batch, unrelated backlog or account permission changes.
+- Two recovered Shorts have source files; remaining source downloads and reviewed parts are tracked separately. Prepared/hosted is not posted.
+
 ## XEND-TASK-WORKSPACE-001 — Shared checkpoints, formats and content archive (2026-10-24)
 Status: REVIEW (implementation/private indexes saved; publishing tested code via task PR)
 Owner: ChatGPT
