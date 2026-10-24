@@ -91,6 +91,15 @@ jobs:
         run: node --test tests/worker/canonical-worker.test.mjs
       - name: Committed novel data is consistent
         run: node scripts/build-novel-data.mjs --check
+      - name: Immersive 3D lab real Chromium WebGL and mobile checks
+        run: node --test tests/immersive-browser.test.mjs
+      - name: Upload immersive QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: immersive-qa-screenshots
+          path: immersive-qa-screenshots/
+          if-no-files-found: ignore
       - name: Reader sources in a real browser (network mocked)
         run: node --test tests/reader-sources.test.mjs
       - name: Commercial funnel in a real browser (lead/event API via src/growth.mjs + SQLite)

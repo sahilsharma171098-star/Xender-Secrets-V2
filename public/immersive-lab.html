@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101114">
+<meta name="description" content="Explore Xender Secrets' interactive 3D prototype lab: gym equipment, a fashion showroom, cinema seat selection, a property walkthrough and restaurant tables. Concept demos, not production bookings.">
+<meta name="robots" content="noindex,follow">
+<title>Interactive 3D Concepts | Xender Secrets</title>
+<link rel="canonical" href="https://www.xendersecrets.com/immersive-lab">
+<link rel="stylesheet" href="/immersive-lab.css">
+<script defer src="/immersive-lab.js"></script>
+</head>
+<body>
+<a class="skip" href="#experience">Skip to the experience</a>
+<header class="topbar">
+  <a href="/" class="logo" aria-label="Xender Secrets home"><span class="symbol">XS</span><span>XENDER <b>SECRETS</b></span></a>
+  <nav aria-label="Site navigation"><a href="/business-templates">Templates</a><a href="/portfolio">Portfolio</a><a href="/contact" class="top-cta">Build with us ↗</a></nav>
+</header>
+<main id="experience">
+  <section class="intro" aria-labelledby="heading">
+    <p class="eyebrow"><span class="pulse"></span> XENDER EXPERIMENTAL STUDIO / 001</p>
+    <div class="intro-grid">
+      <div>
+        <h1 id="heading">Not another <em>template.</em><br>Walk inside it.</h1>
+        <p>Five industry-specific 3D concept scenes. Rotate the space, explore interactive objects and test real interface states. No pre-rendered videos. No paid assets. No external 3D libraries.</p>
+      </div>
+      <div class="intro-aside"><span>CREATIVE DEVELOPMENT</span><strong>REAL-TIME<br>3D LAB</strong><span>PROCEDURAL WEBGL · CONCEPT DEMO</span></div>
+    </div>
+  </section>
+  <section class="lab" aria-label="Interactive three-dimensional showcases">
+    <div class="lab-top">
+      <div class="scene-tabs" role="tablist" aria-label="Choose showcase scene">
+        <button type="button" role="tab" data-scene="gym" aria-selected="true">01 <span>Motion Gym</span></button>
+        <button type="button" role="tab" data-scene="fashion" aria-selected="false">02 <span>Fashion</span></button>
+        <button type="button" role="tab" data-scene="cinema" aria-selected="false">03 <span>Cinema</span></button>
+        <button type="button" role="tab" data-scene="property" aria-selected="false">04 <span>Residence</span></button>
+        <button type="button" role="tab" data-scene="bistro" aria-selected="false">05 <span>Bistro</span></button>
+      </div>
+      <span class="render-status" id="renderStatus">WebGL · initializing</span>
+    </div>
+    <div class="stage-shell">
+      <div class="stage" id="stage">
+        <canvas id="showroom" tabindex="0" aria-label="Interactive 3D showcase. Drag to rotate, scroll to zoom, click highlighted objects to inspect, use arrow keys to orbit." role="img"></canvas>
+        <div class="stage-shade" aria-hidden="true"></div>
+        <div class="stage-meta"><span class="live-dot"></span> INTERACTIVE / LIVE RENDER</div>
+        <div class="stage-center"><span id="sceneIndex">01 / 05</span><h2 id="sceneTitle">Motion Gym</h2><p id="sceneDescription">Move around the equipment. Select the treadmill, lifting station or heavy bag.</p></div>
+        <div class="stage-hint">DRAG TO ORBIT <span>↔</span> SCROLL TO ZOOM <span>↕</span> TAP OBJECT TO EXPLORE</div>
+        <div class="viewer-controls">
+          <button type="button" id="orbitLeft" aria-label="Rotate view left">↶</button>
+          <button type="button" id="resetCamera">Reset view</button>
+          <button type="button" id="orbitRight" aria-label="Rotate view right">↷</button>
+          <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+          <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+        </div>
+        <div class="stage-fallback" id="fallback" hidden>
+          <strong>3D unavailable on this browser</strong>
+          <p>WebGL is required for the real-time scene. You can still read the concept descriptions and request a custom build.</p>
+        </div>
+      </div>
+      <aside class="inspector" aria-label="Selected object details">
+        <p class="eyebrow muted">OBJECT INSPECTOR <span id="inspectorCounter">0 SELECTED</span></p>
+        <div class="inspector-art"><div class="orb"></div><span id="inspectorTag">EXPLORE</span></div>
+        <h3 id="objectTitle">Choose an object</h3>
+        <p id="objectDescription">Select an item inside the space to view its details and try a demo interaction.</p>
+        <div class="inspector-list"><div><span>SHOWCASE</span><b id="objectScene">Motion Gym</b></div><div><span>INTERACTION</span><b id="objectInteraction">Object selection</b></div></div>
+        <button type="button" id="objectAction" disabled>Choose an object first</button>
+        <div id="feedback" role="status" aria-live="polite"></div>
+        <p class="inspector-notice">Simulation only. Nothing here books, purchases or submits personal data.</p>
+      </aside>
+    </div>
+  </section>
+  <section class="next">
+    <div><p class="eyebrow">BUILD SOMETHING BETTER</p><h2>From a proof of concept<br>to your actual business.</h2></div>
+    <div><p>These scenes are prototype-grade geometry built for interaction testing, not photorealistic client websites. Production builds require bespoke art, product data, backend integrations, accessibility and mobile QA.</p><a href="/contact" class="next-link">Request an immersive build <span aria-hidden="true">↗</span></a></div>
+  </section>
+</main>
+<footer><span>© XENDER SECRETS · CONCEPT LAB</span><a href="/website-catalog">Explore the existing catalog ↗</a></footer>
+</body>
+</html>
