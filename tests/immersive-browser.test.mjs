@@ -39,6 +39,8 @@ async function testViewport(browser,url,viewport,deviceLabel){
   });
   await page.goto(url,{waitUntil:"load"});
   await page.waitForFunction(()=>/WEBGL ·/.test(document.getElementById("renderStatus")?.textContent||""),null,{timeout:15000});
+  const sizing=await page.evaluate(()=>({viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth}));
+  assert.ok(sizing.scrollWidth<=sizing.viewport+1,"horizontal overflow: "+JSON.stringify(sizing));
   const canvas=page.locator("#showroom");
   assert.equal(await canvas.count(),1);
   const canvasArea=await canvas.evaluate(x=>{const r=x.getBoundingClientRect();return {width:r.width,height:r.height,pixels:x.width*x.height}});
@@ -55,6 +57,7 @@ async function testViewport(browser,url,viewport,deviceLabel){
     const snapshot=await canvas.evaluate(x=>x.toDataURL("image/png"));
     assert.ok(snapshot.length>2500,scene+" WebGL scene must render nonempty image ("+snapshot.length+")");
     await page.screenshot({path:join(OUT,scene+"-"+deviceLabel+".png"),fullPage:false,animations:"disabled"});
+    await page.locator(".stage-shell").screenshot({path:join(OUT,scene+"-"+deviceLabel+"-stage.png"),animations:"disabled"});
   }
   await page.locator('[data-scene="cinema"]').click();
   await page.locator(".inspector select").selectOption("seat-A1");
