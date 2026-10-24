@@ -12,7 +12,7 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 | Website-lead export to Command Center | Sales / MIS | `src/lead-export.mjs`, `operations/apps-script/LeadImport.gs` | Worker feed + Apps Script trigger | Worker feed deployed via #63/#64; importer inactive (EXPORT_TOKEN + Apps Script OAuth pending) |
 | Command Center (outreach, approvals, suppression, task queue) | Sales / Admin | private Google Sheet; `operations/` schema, `Queue.gs`, outreach gate | Google Sheets + Apps Script | Sheet live; Apps Script OAuth blocked |
 | Free faceless YouTube course | Customer acquisition | `public/faceless-youtube-course.html`, `src/youtube.mjs` | same Worker | live |
-| AutoTube (faceless YouTube channel pipeline) | Content / acquisition | own repo `autotube` | GitHub Actions, 2 runs a day | YT-01 + shared quota merged; owner-signature/reservation guards merged in AutoTube #3; queue disabled |
+| AutoTube (faceless YouTube channel pipeline) | Content / acquisition | own repo `autotube`; HQ tasks XEND-YT-01 and XEND-YT-03 | GitHub Actions, 2 runs a day | queue/quota/owner-signature/reservation code merged in AutoTube #1–#3; reviewed-publishing queue disabled; Episode Studio bundle and owner verification key pending |
 | No-website prospect finder | Customer acquisition | `scripts/prospecting/` | Sahil's laptop (Playwright, manual runs) | ready |
 | Agent-Reach research setup | Customer acquisition | `scripts/prospecting/agent-reach-research.mjs`, `docs/AGENT_REACH_XENDER.md` | Sahil's laptop | in review |
 | Client preview builder (`/p/<id>`) | Sales | `public/preview-builder*`, `src/growth.mjs` | same Worker | live |
@@ -22,8 +22,8 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 | Web novel reader + data build | Content | `public/reader*`, `src/reader/`, `scripts/build-novel-data.mjs` | Worker + static JSON | live (subdomain move pending) |
 | Facebook novel campaign | Marketing | `scripts/facebook-novel-campaign.mjs`, `marketing/novels/` | GitHub Actions | workflow disabled 2026-10-22 (no Facebook credentials; it never posted) |
 | Amazon SP-API connector (Xender Seller Manager) | Commerce | own repo `xender-amazon-spapi` | Render free | live; key check unverified; lane reserved |
-| Claude Code executor (`@claude` on issues/PRs) | Development | `.github/workflows/claude-code.yml` | GitHub Actions | live |
-| Shared Google AI workspace | HQ / Content | `ops/ai/`, `scripts/ops/ai-workspace.mjs` | Gemini browser + shared Flow project; local task briefs | Gemini/Flow access verified, Nano Banana/Veo options verified; Antigravity workstation setup pending |
+| Claude Code executor (`@claude` on issues/PRs) | Development | `.github/workflows/claude-code.yml` | GitHub Actions | installed; 2026-10-24 review run blocked by missing/empty `CLAUDE_CODE_OAUTH_TOKEN` (XEND-CLAUDE-EXECUTOR-001); separate Claude review supplied by Sahil |
+| Shared AI workspace | HQ / Content | `ops/ai/`, `scripts/ops/ai-workspace.mjs` | local task briefs; Gemini, Antigravity, Nano Banana, Veo, NVIDIA and Grok routes | Gemini sign-in/Flow options observed 2026-10-22; no generation/API verification. ThinkPad install user-reported; login/health pending. NVIDIA/Grok access pending |
 | AI failover handoff | HQ | `ops/`, `scripts/ops/handoff.mjs`, `GEMINI.md` | any laptop with git | ready |
 | Laptop projects (trading bots, episode studio, website copies) | — | not in any repo yet | Sahil's laptop | **audit pending** (folder access) |
 

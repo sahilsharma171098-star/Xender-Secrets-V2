@@ -4,18 +4,24 @@ Task: XEND-AI-INTEGRATION-001. All agents use the existing HQ and canonical repo
 
 ## Entry points
 
-| Work | Tool | Verified setup on 22 October 2026 |
+| Work | Tool | Dated observation or activation blocker |
 | --- | --- | --- |
-| Research, planning, review | Gemini | Signed-in browser session; Pro/Argon options observed. Separate xender-hq Gemini skill creation attempted but save unconfirmed; use repository bootstrap instructions meanwhile. |
-| Coding and development | Antigravity | Route registered. Desktop/CLI installation and authorization on ThinkPad remain unverified; no CLI present in this Work host. |
-| Images and thumbnails | Nano Banana | PRO Flow account offers Nano Banana 2.1, Pro and 2 Lite. No generation test. |
-| Optional research/review/coding | NVIDIA API Catalog / NIM | Registered; account, selected model, quota and API access pending. Evaluation/prototyping first. |
-| Optional research/review/coding | xAI / Grok | Registered; account, quota, live research tools and API access pending. |
-| Video shots | Veo / Flow | PRO account offers Veo 3.1 Lite, Fast and Quality. No generation test. |
+| Research, planning, review | Gemini | ChatGPT observed a signed-in browser and Pro/Argon options on 2026-10-22. Current session/quota/inference/API access not rechecked. Standalone xender-hq skill save unconfirmed; use repository instructions meanwhile. |
+| Coding and development | Antigravity | Sahil reports installation on ThinkPad; direct login, checkout sync and health checks pending. The cloud host has no CLI; this says nothing about the laptop. |
+| Images and thumbnails | Nano Banana | ChatGPT observed Nano Banana 2.1, Pro and 2 Lite options in Flow on 2026-10-22. No actual generation or remaining-credit check. |
+| Optional research/review/coding | NVIDIA API Catalog / NIM | Registry entry added on 2026-10-22; provider account, selected model, quota and API access not verified. |
+| Optional research/review/coding | xAI / Grok | Registry entry added on 2026-10-22; provider account, quota, live tools and API access not verified. |
+| Video shots | Veo / Flow | ChatGPT observed Veo 3.1 Lite/Fast/Quality options on 2026-10-22. No actual generation or remaining-credit check. |
 
-Shared media project: https://flow.google.com/project/9a5df5c0-d172-4972-a012-9526d9479743
+Shared media entry point: https://flow.google.com/
 
-The project is named **Xender HQ — Images & Video**. Its active agent instruction links HQ and requires task IDs, authorized references, cost checks and output records. Google model availability can change; read current UI and official docs at use time. Do not hard-code deprecated Veo preview API endpoints.
+Open the existing project named **Xender HQ — Images & Video** in the authorized account; do not create a duplicate when access is missing. ChatGPT observed its HQ instruction saved on 2026-10-22, with task IDs, authorized references, cost checks and output records. Keep project-specific URLs in private workspace records; this public registry contains the generic service entry point only. Removing a pointer here does not remove it from earlier public commits. Google model availability can change; read current UI and official docs at use time. Do not hard-code deprecated Veo preview API endpoints.
+
+## Evidence and freshness
+
+Each tool has `checked_at`, `checked_by` and `evidence`. A date is the historical date of the **scope described in the evidence**, not a credential or health guarantee. For NVIDIA/Grok it dates the registry entry only. A null date/reviewer means there was no independent direct check of that tool's access; Antigravity's installation is user-reported. `evidence.not_verified` lists the limits.
+
+Status values such as `browser_session_observed` and `model_options_observed` describe past observations, never permission to skip preflight. Recheck the actual account, tool/model, live quota/allowance and cost before execution. Update evidence only after observing a result, recording its date, reviewer, scope and safe source. Do not refresh browser/workstation dates from `ai:doctor`: it checks executable presence on the host running it and makes zero provider calls. Detailed review and blockers: [AI_SETUP_REVIEW_2026-10-24.md](../../docs/AI_SETUP_REVIEW_2026-10-24.md).
 
 ## Commands
 
@@ -41,9 +47,10 @@ Use ChatGPT/Codex or Claude for coding while Antigravity is unavailable. Record 
 
 ## Activation still required
 
-- Confirm Antigravity installation/login on the actual ThinkPad; open the canonical checkout and require AGENTS.md, GEMINI.md, BUILD_HOME.md and current handoff. Do not duplicate repositories or bypass terminal/browser approvals.
+- Verify the user-reported Antigravity installation, login and health on the actual ThinkPad; open the canonical checkout and require AGENTS.md, GEMINI.md, BUILD_HOME.md and current handoff. Installation is not presumed missing. Preserve dirty worktrees; check PR state and use current main for new work after merge. Do not duplicate repositories or bypass terminal/browser approvals.
 - Confirm the standalone Gemini xender-hq skill save before describing it as installed. Repo-based Gemini instructions are already active on main.
 - Verify each requested generation's live allowance/cost before execution. Subscription access does not itself configure a backend API.
+- The hosted GitHub Claude executor is separate from a local Claude session. Its 2026-10-24 review run failed before invoking Claude because `CLAUDE_CODE_OAUTH_TOKEN` was missing/empty; see XEND-CLAUDE-EXECUTOR-001. A separate Claude review supplied by Sahil does not prove that this executor is active.
 
 No API credentials, automatic top-ups, background agent scheduler or automatic publishing are configured by this change. Current YouTube queue and owner approvals remain intact.
 

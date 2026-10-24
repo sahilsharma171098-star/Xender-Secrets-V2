@@ -1,5 +1,38 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-HQ-REVIEW-002 — Reconcile Claude's shared AI setup audit (2026-10-24)
+Status: REVIEW (audit fixes implemented on `codex/hq-review-fixes-20261024`; 120/120 offline unit/operations tests passed)
+Owner: ChatGPT
+- Reviewed source: Xender main `bf42de3153a2a9000fe150d5e06adfaeaa7cffcf` (PRs #66–#69); Claude's independent report was supplied by Sahil. No live provider execution was established by that review.
+- Fix stale handoff/resume guidance at its generator; refresh one current notes block and include blocked AI/YouTube tasks.
+- Date tool observations with reviewer and evidence scope; align all agent instructions; replace private Flow project pointers with the generic service entry point.
+- Index YT-01/YT-03, correct ambiguous registration/test-count/course-status wording, and record the hosted Claude credential blocker.
+- Local AutoTube changes described by Claude are outside this host; preserve them pending backup and comparison, not deletion by assumption.
+- Validation: 120/120 unit/operations tests passed; host doctor exit 0 with zero API calls; SEO inventory 36 pages/zero problems; script syntax, workflow YAML, registry/agent consistency and diff checks passed. Details and remaining activation work: `docs/AI_SETUP_REVIEW_2026-10-24.md`. No provider credentials, queue activation, generation, deployment or publication is part of this remediation.
+
+## XEND-YT-01 — AutoTube canonical queue and Episode Studio handoff
+Status: BLOCKED (queue code merged; actual ThinkPad Episode Studio bundle/adapter validation pending)
+Owner: ChatGPT
+- Canonical implementation: `sahilsharma171098-star/autotube`; [PR #1](https://github.com/sahilsharma171098-star/autotube/pull/1) merged 2026-10-22. Producers enqueue; AutoTube owns publishing, duplicate checks and output history.
+- Follow-up safety code in AutoTube #2/#3 is merged; it supersedes the original typed-name approval gate. Do not use the old PR #1 approval flow.
+- Claude reported 40/40 offline tests on AutoTube main `349b47f9ad3ef1d182ba58fdd591b8dbaf117212` on 2026-10-24; current validation is recorded in the review document.
+- Next: preserve and inspect the real Episode Studio bundle on ThinkPad, compare its output with the adapter, review rights/final cut and validate a local dry run. Keep `publish_queue.enabled: false`.
+
+## XEND-YT-03 — AutoTube shared quota and signed owner approval
+Status: BLOCKED (safety code merged; owner verification key and reviewed Episode Studio bundle pending)
+Owner: ChatGPT
+- Canonical implementation: AutoTube [PR #2](https://github.com/sahilsharma171098-star/autotube/pull/2) (shared Shorts quota) and [PR #3](https://github.com/sahilsharma171098-star/autotube/pull/3) (signed, expiring, single-use approvals and durable upload reservation), merged 2026-10-22.
+- Daily, external and queued Shorts share a channel quota; daily/reviewed workflows share `youtube-channel-publisher` concurrency. Reviewed publishing is main-only and manual; the queue is disabled.
+- Claude reported 40/40 offline tests on `349b47f`; validation provenance and activation limits are in the review document. No live upload is implied by offline tests.
+- Next: owner configures only the public verification key in the approved Actions setting, retains the private signing key outside repo/runner, and reviews the actual media bundle. Queue activation/upload needs its explicit owner authorization and signed content approval.
+
+## XEND-CLAUDE-EXECUTOR-001 — Restore the hosted Claude review executor
+Status: BLOCKED (repository OAuth secret missing/empty in the observed run)
+Owner: Sahil
+- [Run 40058321043](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions/runs/40058321043), 2026-10-24: checkout succeeded, `Verify Claude OAuth credential` failed; `Run Claude Code` was skipped.
+- Required owner action: complete the existing Claude Code authorization flow and save its credential as the repository Actions secret `CLAUDE_CODE_OAUTH_TOKEN`; never put the value in chat, files, PRs or logs. Then rerun the failed review and inspect actual results.
+- This is separate from the independent Claude review supplied by Sahil and does not block local repository checks.
+
 ## XEND-AI-NVIDIA-GROK-001 — Add NVIDIA and xAI/Grok (2026-10-22)
 Status: BLOCKED (registry and selectable task routing delivered; account/model/quota activation pending)
 Owner: ChatGPT
@@ -12,10 +45,10 @@ Owner: ChatGPT
 ## XEND-AI-INTEGRATION-001 — Shared Google AI tool workspace (2026-10-22)
 Status: BLOCKED (workspace and routing implemented; Antigravity workstation activation and Gemini skill save unverified)
 Owner: ChatGPT
-- Gemini signed-in access verified; Pro/Argon options observed.
+- ChatGPT observed a signed-in Gemini browser with Pro/Argon options on 2026-10-22. Current session, quota, inference and API access have not been reverified; evidence scope is recorded in ops/ai/tools.json.
 - Shared Flow project created: Xender HQ — Images & Video. HQ agent instruction saved; Nano Banana 2.1 and Veo 3.1 Fast defaults saved, one output per request. No generation performed.
-- Registry, host doctor and local task brief/receipt commands implemented; 3 focused tests pass.
-- Antigravity CLI absent in this Work host; actual ThinkPad installation/auth not inspected. Standalone Gemini xender-hq skill creation attempted, save unconfirmed. Repository instructions remain usable.
+- Registry, host doctor and local task brief/receipt commands implemented; 5 focused tests pass on the PR #69 setup. Doctor checks this host only and does not revalidate provider access.
+- Antigravity CLI absent in the reviewed cloud host. Sahil reports Antigravity installed on ThinkPad; the user-supplied inventory fetched through PR #68, not proof that all worktrees are synced or login/health works. Actual ThinkPad checks remain pending. Standalone Gemini xender-hq skill save is unconfirmed; repository instructions remain usable.
 - No automatic API calls, topups, background scheduling or publication configured.
 - Details and canonical links: ops/ai/README.md.
 
@@ -59,7 +92,9 @@ Owner: ChatGPT
 Operational tasks are in the private `OS Tasks` tab; this file indexes technical work only. Use the same IDs in PRs and handoffs.
 
 ## XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21)
-- Status: done in branch `claude/xend-yt-course-001`.
+Status: BLOCKED (course page recorded live; channel profile-link completion unverified)
+Owner: ChatGPT
+- Course source was delivered on `claude/xend-yt-course-001`; this status tracks the remaining channel-profile CTA, not a missing page deployment.
 - Page: `public/faceless-youtube-course.html`; short links `/yt`, `/course`.
 - Next: add the course link to the YouTube channel's profile links (manual, YouTube Studio → Customization → Basic info → Links).
 

@@ -67,8 +67,8 @@ ${list(tasks.map((t) => `${t.title} — ${t.status}`), "none")}
 
 ## How to resume
 1. Read \`AGENTS.md\`, then this file, then the task's section in \`docs/TASKS.md\`.
-2. Check out the branch above. Do not start a new branch for the same task.
-3. Run \`node --test tests/unit/*.test.mjs\` before and after your change.
+2. Fetch \`origin/main\` and check the recorded branch/PR's current state. Continue that branch only while its task/PR is still active; after merge or closure, start new work from current main on a new task branch. Preserve local changes and keep one owner per branch.
+3. Run the task's applicable checks before and after your change; handoff changes use \`node --test tests/unit/handoff.test.mjs\`, and AI workspace changes use \`node --test tests/operations/ai-workspace.test.mjs\`. Report host limits separately from ThinkPad or provider access.
 4. Before you stop: update the notes below, run \`npm run ops:handoff -- --agent <you>\`, commit.
 
 ${notes}`;

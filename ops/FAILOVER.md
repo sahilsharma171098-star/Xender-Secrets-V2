@@ -27,16 +27,12 @@ put any key or token in this repository.
 
 ## Taking over (Sahil, on the laptop)
 
-```bash
-cd Xender-Secrets-V2
-git fetch && git checkout <branch from ops/HANDOFF.md>
-codex        # or: gemini
-```
+Read `ops/HANDOFF.md`, fetch `origin/main`, and check the recorded task/PR's actual state before choosing a branch. Continue the existing branch only while the task/PR is active and its previous owner has handed it over. After merge or closure, start new work from current main on a new task branch. Preserve local changes; do not reset a dirty checkout or revive a merged branch because an old handoff names it. Use a separate worktree when needed.
 
 First message to the new agent:
 
-> Read AGENTS.md and ops/HANDOFF.md. Continue the task in the notes on this branch.
-> Run the unit tests before and after. Before you stop, update the notes and run
+> Read AGENTS.md and ops/HANDOFF.md. Check the task/PR state and choose the active branch or a new branch from current main after merge. Preserve local changes and keep one owner per branch.
+> Run the task's applicable checks before and after. Before you stop, update the notes and run
 > `npm run ops:handoff -- --agent <your name>`, then commit.
 
 When Claude is back, give it the same message. It picks up from the new notes.
