@@ -1,14 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-HQ-REVIEW-002 — Reconcile Claude's shared AI setup audit (2026-10-24)
-Status: REVIEW (audit fixes implemented on `codex/hq-review-fixes-20261024`; 120/120 offline unit/operations tests passed)
+Status: DONE (repo audit fixes implemented and validated in PR #70; activation tasks below remain BLOCKED)
 Owner: ChatGPT
 - Reviewed source: Xender main `bf42de3153a2a9000fe150d5e06adfaeaa7cffcf` (PRs #66–#69); Claude's independent report was supplied by Sahil. No live provider execution was established by that review.
 - Fix stale handoff/resume guidance at its generator; refresh one current notes block and include blocked AI/YouTube tasks.
 - Date tool observations with reviewer and evidence scope; align all agent instructions; replace private Flow project pointers with the generic service entry point.
 - Index YT-01/YT-03, correct ambiguous registration/test-count/course-status wording, and record the hosted Claude credential blocker.
 - Local AutoTube changes described by Claude are outside this host; preserve them pending backup and comparison, not deletion by assumption.
-- Validation: 120/120 unit/operations tests passed; host doctor exit 0 with zero API calls; SEO inventory 36 pages/zero problems; script syntax, workflow YAML, registry/agent consistency and diff checks passed. Details and remaining activation work: `docs/AI_SETUP_REVIEW_2026-10-24.md`. No provider credentials, queue activation, generation, deployment or publication is part of this remediation.
+- Validation: 120/120 unit/operations tests passed; host doctor exit 0 with zero API calls; SEO inventory 36 pages/zero problems; script syntax, workflow YAML, registry/agent consistency and diff checks passed. PR #70's operating-system and offline/browser/workerd CI checks passed on the implementation head. Details and remaining activation work: `docs/AI_SETUP_REVIEW_2026-10-24.md`. No provider credentials, queue activation, generation, manual deployment or publication is part of this remediation; inspect the PR for the final merge/automatic-build state.
 
 ## XEND-YT-01 — AutoTube canonical queue and Episode Studio handoff
 Status: BLOCKED (queue code merged; actual ThinkPad Episode Studio bundle/adapter validation pending)

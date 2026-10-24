@@ -59,7 +59,7 @@ Generated ${now}${agent ? ` by **${agent}**` : ""} with \`npm run ops:handoff\`.
 - Last commits:
 ${list(commits.map((c) => `\`${c}\``), "none", "  ")}
 
-## Uncommitted changes
+## Working-tree snapshot at generation
 ${list(dirty.map((d) => `\`${d}\``), "none — working tree clean")}
 
 ## Open tasks (docs/TASKS.md)
