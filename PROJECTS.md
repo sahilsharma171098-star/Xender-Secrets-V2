@@ -6,7 +6,7 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 
 | Project | Department | Folder | Runs on | Status |
 | --- | --- | --- | --- | --- |
-| xendersecrets.com website + API | Development | `public/`, `src/`, `scripts/commercial/` | Cloudflare Workers (free) | live; experimental 3D catalog lab in draft PR #77 (not deployed) |
+| xendersecrets.com website + API | Development | `public/`, `src/`, `scripts/commercial/` | Cloudflare Workers (free) | live; experimental 3D catalog lab deployed via merged PR #77 (five concept scenes, not production-grade replacements) |
 | Admin MIS (leads, prospects, previews, today's plan) | Sales / MIS | `public/admin.html`, `src/growth.mjs`, `src/prospects.mjs`, `src/pipeline.mjs` | same Worker, behind `ADMIN_TOKEN` | live |
 | Lead pipeline automation | Sales | `src/pipeline.mjs`, `src/outreach-policy.mjs` | same Worker; digest sent from `/admin` | daily cron not enabled (needs approval) |
 | Website-lead export to Command Center | Sales / MIS | `src/lead-export.mjs`, `operations/apps-script/LeadImport.gs` | Worker feed + Apps Script trigger | Worker feed deployed via #63/#64; importer inactive (EXPORT_TOKEN + Apps Script OAuth pending) |
