@@ -53,11 +53,11 @@ function setup(webgl=true){
 
 test("scene switching draws five distinct WebGL demos and stays keyboard-selectable",()=>{
   const {el,tabs,frames,getDraws}=setup();
-  for(const tab of tabs){
+  for(const [i,tab] of tabs.entries()){
     tab.listeners.click();
     const count=getDraws();
     assert.equal(frames.length,1);
-    frames.shift()(1000);
+    frames.shift()(1000+i*40);
     assert.ok(getDraws()>count,tab.dataset.scene+" should render geometry");
     assert.ok(el("select").options.length>=4,tab.dataset.scene+" should expose objects to keyboard selection");
   }
