@@ -110,6 +110,62 @@
       "activation_needed",
       "owner",
       "checked_at"
+    ],
+    "OS Workspaces": [
+      "Task ID",
+      "Project",
+      "Workspace",
+      "Format ID",
+      "Format SHA-256",
+      "Checkpoint revision",
+      "Current stage",
+      "Resume instructions",
+      "Manifest",
+      "Research",
+      "Script",
+      "Storyboard",
+      "Video / assets",
+      "Publishing receipt",
+      "Last saved (UTC)"
+    ],
+    "OS Formats": [
+      "Format ID",
+      "Version",
+      "Kind",
+      "Language",
+      "Frame size",
+      "Target seconds",
+      "FPS",
+      "Locked profile SHA-256",
+      "Profile file",
+      "Change rule"
+    ],
+    "OS Handoffs": [
+      "Event ID",
+      "Task ID",
+      "From owner",
+      "To owner",
+      "Reason",
+      "Checkpoint revision",
+      "Completed stages",
+      "Next action",
+      "Checkpoint file",
+      "Recorded at (UTC)",
+      "Evidence"
+    ],
+    "OS Archive": [
+      "Content ID",
+      "Platform",
+      "Title / hook",
+      "Recorded status",
+      "Provider ID",
+      "Post link",
+      "Creator recorded",
+      "Format recorded",
+      "Source evidence",
+      "Script / asset reference",
+      "Missing / verification limits",
+      "Imported at (UTC)"
     ]
   },
   "lead_added_columns": [

@@ -3,12 +3,13 @@ import { constants } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import { inspect, handoffText } from './task-workspace.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export async function registry(base = root) {
   return JSON.parse(await readFile(join(base, 'ops/ai/tools.json'), 'utf8'));
 }
-export function plan(config, { kind, task, project, brief, tool: toolId }) {
+export function plan(config, { kind, task, project, brief, tool: toolId, workspace }) {
   if (!Object.hasOwn(config.routes, kind)) throw new Error('kind must be research, code, image or video');
   if (!/^XEND-[A-Z0-9-]+$/.test(task ?? '')) throw new Error('A valid XEND- task ID is required');
   if (!project?.trim() || !brief?.trim()) throw new Error('project and brief are required');
@@ -21,6 +22,7 @@ export function plan(config, { kind, task, project, brief, tool: toolId }) {
     created_at: new Date().toISOString(), tool: tool.id, entrypoint: tool.url,
     status: 'prepared', executed: false, published: false,
     access_status: tool.status, brief,
+    ...(workspace ? {workspace} : {}),
     preflight: ['Read current HQ instructions and canonical source', 'Check current account/model/quota/cost', 'Use only authorized context', 'Review output before integrating'],
     receipt: { model: null, output_location: null, checks: [], deployment_status: 'not_deployed', blockers: [], next_action: 'Execute through the authorized tool after preflight; record observed results' },
   };
@@ -69,10 +71,17 @@ export async function main(args = process.argv.slice(2)) {
   const options = {};
   while (args.length) {
     const key = args.shift();
-    if (!['--kind', '--tool', '--task', '--project', '--brief-file'].includes(key) || !args.length || Object.hasOwn(options, key)) throw new Error('Invalid or duplicate option');
+    if (!['--kind', '--tool', '--task', '--project', '--brief-file','--workspace-root'].includes(key) || !args.length || Object.hasOwn(options, key)) throw new Error('Invalid or duplicate option');
     options[key] = args.shift();
   }
-  if (!options['--brief-file']) throw new Error('--brief-file required; never put credentials in a brief');
+  if (options['--workspace-root']) {
+    if(options['--brief-file'])throw new Error('Use the saved workspace brief; do not override it during handoff');
+    const w=await inspect(resolve(options['--workspace-root']),options['--task']);
+    if(options['--project']&&options['--project']!==w.state.project)throw new Error('Workspace project mismatch');
+    return prepare(config,{kind:options['--kind'],tool:options['--tool'],task:w.state.task_id,project:w.state.project,
+      brief:handoffText(w.state,w.profile,w.brief),workspace:{revision:w.state.revision,profile_sha256:w.state.profile.sha256,current_stage:w.state.current_stage,canonical_url:w.state.workspace_url}});
+  }
+  if (!options['--brief-file']) throw new Error('--brief-file or --workspace-root required; never put credentials in a brief');
   const brief = await readFile(resolve(options['--brief-file']), 'utf8');
   return prepare(config, { kind: options['--kind'], task: options['--task'], project: options['--project'], tool: options['--tool'], brief });
 }
