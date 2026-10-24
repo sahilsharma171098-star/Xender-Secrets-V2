@@ -62,13 +62,11 @@ Generated 2026-10-24 08:00 UTC by **codex** with `npm run ops:handoff`. Everythi
 
 ## Notes from the last agent
 
-### XEND-CATALOG-IMMERSIVE-001 — immersive catalog pilot (2026-10-24)
-- Owner: ChatGPT; draft PR #77 `chatgpt/xend-catalog-immersive-001` from main `32a66622e6b3a9f2d183912484d92bdc0cab375f`.
-- Backup branch: `backup/catalog-pre-immersive-20261024`. Existing 640 templates, 20 FE, 20 BE, 20 FS and 11 portfolio items are unchanged.
-- Added `public/immersive-lab.html`, `.css`, `.js`, a non-destructive directory link and `tests/unit/immersive-lab.test.mjs` for five procedural WebGL concept experiences. No purchases, real bookings, personal data collection, external calls or payments.
-- Observed checks: V8 JavaScript syntax parse succeeded, source code and generator audited. Added regression tests; automated CI and real desktop/mobile WebGL review not yet verified at this handoff.
-- No merge or deploy. Prototype geometry is not photorealistic/production-grade.
-- Next: verify PR #77 CI and WebGL/browser accessibility/performance, fix failures, then improve industry-specific designs one-by-one while preserving deep links; no removals before another verified backup.
+### XEND-CATALOG-IMMERSIVE-001 — 3D catalog prototype deployed (2026-10-24)
+- Owner: ChatGPT; [PR #77](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/77) merged (squash `c3b49845a42c76e24acffbd36520b2ebd7da7857`). Backup branch: `backup/catalog-pre-immersive-20261024` at `32a66622e6b3a9f2d183912484d92bdc0cab375f`.
+- Changes: `/immersive-lab` has 5 procedural WebGL concept scenes, demo interactions, keyboard accessible selection, responsive design and catalog link. Existing 640 business templates, 20 FE, 20 BE, 20 FS and 11 portfolio items unchanged. No booking/payment submission, external service calls or spend.
+- Verified: PR-head CI and real Chromium WebGL/mobile QA PASS, 20 screenshot artifacts saved (run `40108045028`), visual stage inspection confirms **prototype-grade** block geometry. Cloudflare deployed Worker version `bc9fc08f-fb86-456d-87a0-6ec8b7e1f125` at 2026-10-24 15:44 UTC and public lab URL readback succeeded. GitHub main live E2E and SEO workflow results should still be checked independently once completed.
+- Next: XEND-CATALOG-IMMERSIVE-002 in TASKS.md: bespoke art and functional industry-specific designs, mobile/performance/accessibility QA, then replace repeated template directions incrementally. Never claim all templates redesigned or remove them without a new approved backed-up rollout.
 
 - Task: XEND-TASK-WORKSPACE-001; ChatGPT/Codex; codex/shared-task-workspace-20261024 from merged PR #74 main b0e328c. PR #74 published the sanitized supplied ThinkPad report; original local commit 8c13d26 remains unavailable. PR #72 remains outside this change.
 - Delivered: private Command Center OS Workspaces/Formats/Handoffs/Archive, private Drive folders and source snapshots; 28 historical content records (16 YouTube uploads, one Facebook post, eleven drafts including eight Instagram). Creator/model fields preserved without inferred attribution. Existing rows/schedules/publisher gates unchanged.
