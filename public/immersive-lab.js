@@ -64,11 +64,12 @@
         cube(x-.73,1.27,-2,.12,1.9,2.4,"white");
         cube(x+.73,1.27,-2,.12,1.9,2.4,"white");
         interactive("gym-treadmill-"+i,x,.64,-2,1.45,.16,2.3,"gym","Treadmill "+(i+1),"Animated running surface and rotating mechanism. In a production site, equipment can link to classes and membership plans.","equipment",{motion:"run",activeColor:"green"});
+        for(let j=0;j<8;j++)add(null,x,.75,-3.0+j*.255,1.29,.034,.064,"light",null,null,null,{motion:"belt",parent:"gym-treadmill-"+i,beltIndex:j});
       }
       cube(2.5,.5,1.2,2.2,.2,1.25,"iron");
       for(let x of [1.65,3.35])cube(x,1.6,1.2,.14,2.4,.2,"white");
       cube(2.5,2.6,1.2,2.3,.10,.16,"white");
-      interactive("gym-rack",2.5,1.33,1.2,2.2,.22,.24,"gold","Free-weight Station","Select this station to preview the lifting session. Weights and equipment are actual manipulable scene objects.","equipment");
+      interactive("gym-rack",2.5,1.33,1.2,2.2,.22,.24,"gold","Free-weight Station","Select this station to preview the lifting session. Weights and equipment are actual manipulable scene objects.","equipment",{motion:"lift"});
       for(let x of [1.35,1.6,3.4,3.65])cube(x,1.33,1.2,.2,.9,.44,"iron");
       cube(-4.6,3.6,1.7,.07,.85,.1,"light");
       interactive("gym-bag",-4.6,2.4,1.7,.88,1.82,.9,"wine","Heavy Bag","Physics-style sway animates this training bag. Tap to toggle the training motion.","equipment",{motion:"sway"});
@@ -263,6 +264,8 @@
   }
   function objectPosition(o,time){
     const activated=getSaved(current).has(o.id);
+    if(o.motion==="belt"){const active=getSaved(current).has(o.parent);return [o.x,o.y,-3.0+((o.beltIndex*.255+(active?(time*.85)%2.04:0))%2.04)];}
+    if(o.motion==="lift")return [o.x,o.y+(activated?(1-Math.cos(time*3))*.22:0),o.z];
     if(o.motion==="sway")return [o.x+Math.sin(time*2.5)*(activated?.36:.06),o.y,o.z];
     if(o.motion==="float")return [o.x,o.y+Math.sin(time*1.7+o.x)*.07,o.z];
     return [o.x,o.y,o.z];
