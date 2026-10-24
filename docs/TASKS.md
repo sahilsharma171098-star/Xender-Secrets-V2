@@ -1,5 +1,20 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-CONSOLIDATION-20261024 — Multi-project inventory, worktree backup and registry consolidation (2026-10-24)
+Status: REVIEW (PR branch `gemini/hq-consolidation-registry-20261024`)
+Owner: Gemini
+- Primary canonical repo `C:\Users\T14\Xender\Xender-Secrets-V2` synced via fast-forward merge with `origin/main` (`97f559f`). All 93 unit tests passing.
+- Dirty worktrees backed up to private local path `C:\Users\T14\Documents\Codex\backups\2026-10-24_footer_worktrees_backup`.
+- Secrets scan performed on both worktree patches: 0 secrets detected.
+- Preserved useful footer changes in dedicated branches and draft PRs:
+  - PR #71 (`codex/global-footer-production-20261018`): 28 commercial HTML pages + layout.mjs.
+  - PR #72 (`codex/global-footer-20261018`): 26 commercial HTML pages + layout.mjs.
+  Neither merged nor deployed per instruction.
+- Process and health checks completed:
+  - Local AI OS (`xender-hq`): installed (Python 3.12, SQLite `data/xender.db`), running (PID 7284, port 8787), connected (HTTP 200). `claude_sub` and `chatgpt_sub` working; gemini route flagged deprecated model `gemini-2.5-flash`.
+  - Shared AI Hub: installed (Python 3.12, SQLite `archive.sqlite3`), running (PID 4436, port 8765), connected (HTTP 200, 71 chats synced).
+- HQ project registry (`PROJECTS.md`) updated with canonical sources, duplicate copies, and laptop project mapping (Zerodha Swarm, Kite Paper Bot, Episode Studio bundle, Local AI OS, Shared AI Hub). No private code or data committed to public HQ.
+
 ## XEND-AI-INTEGRATION-001 — Shared Google AI tool workspace (2026-10-22)
 Status: BLOCKED (workspace and routing implemented; Antigravity workstation activation and Gemini skill save unverified)
 Owner: ChatGPT

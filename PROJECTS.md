@@ -25,7 +25,25 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 | Claude Code executor (`@claude` on issues/PRs) | Development | `.github/workflows/claude-code.yml` | GitHub Actions | live |
 | Shared Google AI workspace | HQ / Content | `ops/ai/`, `scripts/ops/ai-workspace.mjs` | Gemini browser + shared Flow project; local task briefs | Gemini/Flow access verified, Nano Banana/Veo options verified; Antigravity workstation setup pending |
 | AI failover handoff | HQ | `ops/`, `scripts/ops/handoff.mjs`, `GEMINI.md` | any laptop with git | ready |
-| Laptop projects (trading bots, episode studio, website copies) | — | not in any repo yet | Sahil's laptop | **audit pending** (folder access) |
+| Local AI OS (15-agent Python system) | Operations / AI | laptop `C:\Users\T14\Xender\xender-hq` | local Python service (`127.0.0.1:8787`) | installed, running (PID 7284), connected (HTTP 200); mirror on Desktop |
+| Shared AI Hub (cross-agent conversation archive) | AI / Knowledge | laptop `C:\Users\T14\Documents\Codex\Shared-AI-Hub` | local Python service (`127.0.0.1:8765`) | installed, running (PID 4436), connected (HTTP 200, 71 chats indexed) |
+| Zerodha multi-bot intraday trading swarm | Trading | laptop `C:\Users\T14\Desktop\zerodha-bot` | local Python `.bat` runners | standalone private (NSE/BSE swarm; local private `.env`; not in git) |
+| Kite paper-first intraday bot | Trading | laptop `C:\Users\T14\Documents\kite-paper-bot\kite-paper-bot` | local Python | paper-trading active (live trading blocked; mirrors on Desktop) |
+| Aakhri Aahat Episode Studio v3 | Content / Production | laptop `C:\Users\T14\Downloads\aakhri-aahat-studio-v3.zip` | local Python pipeline | standalone zip bundle (needs extraction & private repo setup) |
+| Global footer updates (worldwide scope + India locations) | Marketing | `public/`, `scripts/commercial/layout.mjs` | Cloudflare Worker | preserved in Draft PR #71 & #72; backed up locally |
+
+## Canonical source and local copies directory (Audited 2026-10-24)
+
+- **HQ Primary Canonical Repo:** `C:\Users\T14\Xender\Xender-Secrets-V2` (origin `main`, synced at `97f559f`).
+- **HQ Secondary Working Clone:** `C:\Users\T14\Documents\ChatGPT\Xender-Secrets-V2` (branch `codex/pending-task-execution`).
+- **HQ Active Worktrees:**
+  - `.../Documents/ChatGPT/Xender-Secrets-V2/.local/reviews/{builder,payment,preview}` (PR review stages).
+  - `.../Documents/Codex/2026-10-17/c/work/xender-admin` (branch `codex/command-center`).
+  - `.../Documents/Codex/2026-10-09/referenced-chatgpt-conversation-this-is-an/work/xender-os` (branch `xend-os-003-operating-system`).
+  - `.../Documents/Codex/2026-10-17/in/work/global-footer` (PR #72) & `global-footer-production` (PR #71) backed up to `C:\Users\T14\Documents\Codex\backups\2026-10-24_footer_worktrees_backup`.
+- **Standalone Private Code (Keep Private):**
+  - AutoTube canonical repo is remote `autotube`; local working directory is at `C:\Users\T14\Documents\autotube`.
+  - Trading bots and Episode Studio contain private logic and credentials; they must stay in private repos or local folders and are never committed to this public HQ.
 
 ## Rules that apply to every project
 
