@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-CANVA-001 — Connect Canva Pro to the existing Xender workflow (2026-10-27)
+Status: REVIEW (connected Canva workspace verified; HQ route implemented and validated on task branch)
+Owner: ChatGPT/Codex
+- Canonical source: this HQ's existing AI workspace; task branch `codex/canva-integration-20261027`. Canva owns editable designs; private task records retain actual design/folder IDs.
+- Sahil reports an existing Canva Pro subscription. Live connector search, folder creation, design copy and readback succeeded. Plan/remaining credits and standalone API credentials are not independently verified.
+- Created one Xender Secrets workspace with YouTube Thumbnails, Instagram and Reels, Website and Client Work, Product Creatives. Copied the existing Xender Instagram launch post into the Instagram folder; original preserved. Source design dataset is empty; no autofill-ready master is claimed.
+- Extended existing `ai:prepare --kind image --tool canva`, preserve the shared YouTube format, export/review receipts and canonical AutoTube publisher. No new service, paid subscription or background scheduler.
+- Validation: 18/18 targeted AI-workspace, task-workspace and handoff tests; Node syntax checks; actual CLI prepared a Canva job with executed:false and published:false. No live rendering/export was performed.
+- Next: review the task PR before any main deployment. Unattended API access still requires separate OAuth configuration; other model account connections and fillable template labels remain unverified.
+
 ## XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27)
 Status: REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 Owner: Claude
@@ -355,3 +365,4 @@ Status: REVIEW · Owner: ChatGPT · PR #32
 - Preserved current prospect prefill and preview-to-prospect linking; added public logo URL and verified-issue input for personalised outreach drafts.
 - Kept escaping, HTTP(S) URL sanitisation, admin-only share creation, expiry and explicit concept/not-official labels.
 - Integrated on top of merged #45, preserving the Windows/local setup fixes and current showcase. CI rerun required; no customer preview or outbound message was automatically created.
+

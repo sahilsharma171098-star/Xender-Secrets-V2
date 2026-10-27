@@ -163,6 +163,33 @@
         ],
         "freshness": "Historical observation only; recheck current access/model/quota/cost before each execution. A host doctor does not refresh this record."
       }
+    },
+    {
+      "id": "canva",
+      "label": "Canva Pro",
+      "surface": "connected_app",
+      "url": "https://www.canva.com/",
+      "status": "connected_app_workspace_verified",
+      "kinds": [
+        "image"
+      ],
+      "notes": "Optional editable-design route for thumbnails, social posts, website/client assets and product creatives. Existing Pro subscription reported by Sahil; connector searches, folder creation, design copying and readback verified. The existing Instagram source has no autofill fields. Use the connected app and native export when necessary; no unattended API credentials or publisher configured.",
+      "checked_at": "2026-10-27",
+      "checked_by": "ChatGPT/Codex",
+      "evidence": {
+        "scope": "connected_app_search_folder_copy_and_readback",
+        "source": "XEND-CANVA-001; docs/operations/CANVA.md",
+        "observed": "Brand-kit listing and Xender design search succeeded. Created Xender Secrets folder with four content folders; copied the existing Instagram launch design into its Instagram folder and verified it. Source dataset was empty.",
+        "not_verified": [
+          "subscription billing and remaining credits",
+          "brand kit identity/content",
+          "generation, rendered output or export",
+          "autofill-ready master",
+          "Claude/Gemini/laptop account connection",
+          "standalone REST API OAuth and unattended operation"
+        ],
+        "freshness": "Dated successful connected-app operations in this ChatGPT session only. Verify account, rights, dimensions, allowance and exposed tools at each execution; ai:doctor does not refresh this evidence."
+      }
     }
   ],
   "policy": {
@@ -173,3 +200,4 @@
     "subscriptions_are_not_api_credentials": true
   }
 }
+

@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Current State
 
+## Canva design integration (2026-10-27; XEND-CANVA-001)
+
+- Canva connected-app search, folder creation, Instagram source-design copy and readback succeeded in ChatGPT. Created the existing HQ's Canva workspace with four content folders. Sahil reports an existing Pro subscription; billing/credits and other assistant authentication are unverified.
+- Added optional `ai:prepare --kind image --tool canva` in the shared AI registry and Canva-specific handoff instructions. Defaults and the current YouTube content format remain intact. Runbook: [operations/CANVA.md](operations/CANVA.md).
+- Source Instagram design has an empty dataset. Working copy is not an autofill-ready brand template; no generation, rendering, export, YouTube/Instagram publication or unattended REST API activation was performed.
+- Local validation: 18/18 AI-workspace, task-workspace and handoff tests passed, plus Node syntax checks. Task branch `codex/canva-integration-20261027` is for review; main merge/deployment and CI status are recorded in the handoff separately.
+
+
+
 ## Supplied ThinkPad health results (2026-10-24; XEND-AI-HEALTH-001)
 - Sahil supplied a local verification summary reporting private backups of nine checkouts plus local AutoTube source, integrity/sample-restore checks, main 9e21348 in a separate workspace, Antigravity 2.23.0 running/signed in with Google AI Pro, and 120/120 offline plus 7/7 evidence/handoff tests.
 - These are supplied local results, not direct Windows checks by this cloud reviewer. The original local commit 8c13d26/full report/private receipt are not accessible here. Safe record: docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md. Historical snapshots below predate this supplied follow-up.
@@ -204,3 +213,4 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 ## Shared task and content workspace (2026-10-24)
 
 See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.
+

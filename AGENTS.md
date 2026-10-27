@@ -66,5 +66,8 @@ Use `ops/ai/README.md` and `ops/ai/tools.json` for the current Gemini, Antigravi
 
 NVIDIA and Grok are optional tools selected with `ai:prepare --tool nvidia|grok` for research or code. They share the same HQ context, output receipts and validation rules. Registry entries do not establish account/API access; honor their pending status and verify model, quota, license and cost before use. Do not replace another agent's authentication/backend with a third-party provider without explicit configuration.
 
+Canva design work uses the optional `ai:prepare --kind image --tool canva` route and `docs/operations/CANVA.md`. Reuse the existing Canva workspace, preserve the task's pinned format and save actual design/export evidence privately. A prepared job or this session's Canva connection does not configure Claude/Gemini, an unattended API or publishing.
+
 ## Saved work across models (2026-10-24)
 Follow `docs/TASK_WORKSPACES.md` for every task. Open its private Command Center workspace, latest checkpoint and pinned format; inspect the content archive before creating or repurposing media. Save partial research/scripts/assets before long calls or a limit, upload immutable revisions and hand off the exact next action with verified file links. Preserve format hashes and completed stages across agents. Authorized Drive access or an explicit attached handoff is required; this does not synchronize chats or activate automatic dispatch. OS Tasks retains ownership/status, with Sahil dispatching until the existing controller is installed.
+

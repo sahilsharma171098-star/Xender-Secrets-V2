@@ -23,6 +23,7 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 | Facebook novel campaign | Marketing | `scripts/facebook-novel-campaign.mjs`, `marketing/novels/` | GitHub Actions | workflow disabled 2026-10-22 (no Facebook credentials; it never posted) |
 | Amazon SP-API connector (Xender Seller Manager) | Commerce | own repo `xender-amazon-spapi` | Render free | live; key check unverified; lane reserved |
 | Claude Code executor (`@claude` on issues/PRs) | Development | `.github/workflows/claude-code.yml` | GitHub Actions | installed; 2026-10-24 review run blocked by missing/empty `CLAUDE_CODE_OAUTH_TOKEN` (XEND-CLAUDE-EXECUTOR-001); separate Claude review supplied by Sahil |
+| Canva design workspace | HQ / Marketing | `ops/ai/tools.json`, `docs/operations/CANVA.md`; private designs in Canva | connected Canva app; existing HQ task preparation | XEND-CANVA-001; owner ChatGPT/Codex; connected workspace and Instagram working copy verified 2026-10-27; selectable image route in review; unattended API/export publishing not activated |
 | Shared AI workspace | HQ / Content | `ops/ai/`, `scripts/ops/ai-workspace.mjs` | local task briefs; Gemini, Antigravity, Nano Banana, Veo, NVIDIA and Grok routes | Gemini sign-in/Flow options observed 2026-10-22; no fresh inference/API verification. ThinkPad health check supplied 2026-10-24; original local evidence review and Gemini skill save pending. NVIDIA/Grok access pending |
 | AI failover handoff | HQ | `ops/`, `scripts/ops/handoff.mjs`, `GEMINI.md` | any laptop with git | ready |
 | Laptop projects (trading bots, episode studio, website copies) | — | not in any repo yet | Sahil's laptop | **audit pending** (folder access) |
@@ -51,3 +52,4 @@ Sahil requires all future ChatGPT/Codex, Claude and Gemini builds to be register
 3. Add a row to the table above and a task to `docs/TASKS.md`.
 
 Shared checkpoint/content workspace: XEND-TASK-WORKSPACE-001, existing HQ code and private Command Center/Drive. See `docs/TASK_WORKSPACES.md`; no parallel deployment or queue.
+
