@@ -1,37 +1,23 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-24 08:00 UTC by **codex** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `codex/shared-task-workspace-20261024`
+- Branch: `claude/youtube-format-shared`
 - Last commits:
-  - `b0e328c Merge pull request #74 from sahilsharma171098-star/codex/workstation-health-record-20261024`
-  - `63dacc8 XEND-AI-HEALTH-001: record supplied ThinkPad health evidence`
-  - `9e21348 Merge pull request #70 from sahilsharma171098-star/codex/hq-review-fixes-20261024`
-  - `9a81b51 XEND-HQ-REVIEW-002: record delivery checks and completed audit scope`
-  - `457668f XEND-HQ-REVIEW-002: reconcile shared AI evidence and handoff records`
+  - `3415d23 XEND-YT-FORMAT-001: one YouTube format for Claude, ChatGPT and Gemini`
+  - `7d3f925 docs(hq): record Xender 3D lab live QA and follow-on phase (#78)`
+  - `c3b4984 feat(catalog): launch experimental interactive 3D WebGL lab (#77)`
+  - `32a6662 Merge pull request #76 from sahilsharma171098-star/codex/youtube-instagram-crosspost-20261024`
+  - `9e55615 XEND-IG-CROSSPOST-001: prepare public-video Instagram handoff with channel captions`
 
 ## Working-tree snapshot at generation
-- ` M .github/workflows/operations-checks.yml`
-- ` M AGENTS.md`
-- ` M CLAUDE.md`
-- ` M GEMINI.md`
-- ` M PROJECTS.md`
-- ` M docs/BUILD_HOME.md`
-- ` M docs/CURRENT_STATE.md`
 - ` M docs/TASKS.md`
-- ` M docs/operations/CONTENT.md`
-- ` M docs/operations/README.md`
-- ` M operations/schema.json`
-- ` M ops/ai/README.md`
-- ` M package.json`
-- ` M scripts/ops/ai-workspace.mjs`
-- `?? docs/TASK_WORKSPACES.md`
-- `?? ops/ai/profiles/`
-- `?? scripts/ops/task-workspace.mjs`
-- `?? tests/operations/task-workspace.test.mjs`
 
 ## Open tasks (docs/TASKS.md)
+- XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
+- XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
+- XEND-IG-CROSSPOST-001 — Publish existing YouTube content to Instagram (2026-10-24) — IN_PROGRESS
 - XEND-TASK-WORKSPACE-001 — Shared checkpoints, formats and content archive (2026-10-24) — REVIEW (implementation/private indexes saved; publishing tested code via task PR)
 - XEND-YT-01 — AutoTube canonical queue and Episode Studio handoff — BLOCKED (queue code merged; actual ThinkPad Episode Studio bundle/adapter validation pending)
 - XEND-YT-03 — AutoTube shared quota and signed owner approval — BLOCKED (safety code merged; owner verification key and reviewed Episode Studio bundle pending)
@@ -74,3 +60,9 @@ Generated 2026-10-24 08:00 UTC by **codex** with `npm run ops:handoff`. Everythi
 - Verified: 129/129 unit/operations tests; exact uploaded byte readback for latest demo checkpoint and archive; Sheet indexes read back. Four private profiles saved. Synthetic bakery test resumed with the same profile hash and research; 1080x1920,30fps silent preview is 48.97 seconds, partial edit, not approved/published. Original YouTube source media/scripts and local-only Instagram assets unavailable.
 - Access: SocialClaw history returned plan_required; no paid plan activated. Latest user request authorized fresh Gemini execution/skill save, overriding the earlier deferral. This cloud browser requires Google authentication; no new successful inference/skill-save evidence yet. Hosted Claude credential, NVIDIA/Grok activation, Apps Script/exporter authorization and owner media approval remain separate actual access requirements.
 - Next: verify this task PR CI and merge on unchanged head under Sahil publication authorization. Agents open the private Command Center, inspect archive and latest pinned checkpoint, obtain dispatch and continue exact next action; never infer all-model automatic access or fresh provider publication from saved records.
+
+### XEND-YT-FORMAT-001 — One YouTube format + existing videos fixed (2026-10-27)
+- Owner: Claude. HQ draft [PR #80](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/80) (`claude/youtube-format-shared`): `docs/YOUTUBE_FORMAT.md` + links in AGENTS/CLAUDE/GEMINI/BUILD_HOME/PROJECTS, `ai:prepare` format line, TASKS entry, CQ-024. AutoTube draft [PR #8](https://github.com/sahilsharma171098-star/autotube/pull/8) (format in the daily pipeline) and draft [PR #9](https://github.com/sahilsharma171098-star/autotube/pull/9) (retrofit tool, stacked on #8).
+- Live change (owner asked to fix every existing video): run 40460762967 applied 30/30. Backup of all 30 videos (snippet, status, thumbnail) in AutoTube `data/retrofit/backup.json` + `thumbs_before/`. Checked on public pages: 27 new titles, horror unlisted, test upload private, 15 live thumbnails match the reviewed covers. Plan locked (`apply: false`).
+- Checks: AutoTube 83/83 unit tests; HQ `node --test tests/operations/ai-workspace.test.mjs` 6/6.
+- Not done / next: Sahil merges AutoTube #8 (until then new daily uploads keep the old packaging), then #9 and HQ #80. Sahil pastes the YOUTUBE_FORMAT block into the ChatGPT Project and Gemini Gem; ChatGPT registers the v2 format profile (CQ-024). Watch CTR/AVD in YouTube Studio for 7 days before changing topics. Rollback if needed: `rollback: true` in AutoTube `data/retrofit/plan.json`.
