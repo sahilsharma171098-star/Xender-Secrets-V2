@@ -187,3 +187,10 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 - Pre-condition: HQ-01 merged by Sahil; Cloudflare secret `EXPORT_TOKEN` set by Sahil in the dashboard (never in chat).
 - Action: follow `docs/operations/INTEGRATIONS.md` → "Install the website lead import": install `LeadImport.gs`, set Script Properties, run `importWebsiteLeads` once, compare the "Website Leads" tab row count with `/admin` (non-test leads), then `installLeadImportTrigger`.
 - MIS: record first import time, rows imported, and `GET /api/admin/export/status` lag in OS Audit.
+
+## Added by Claude — 2026-10-27 (XEND-YT-FORMAT-001)
+### CQ-024 — Make ChatGPT and Gemini use the YouTube format (P0, Sahil 2 min + ChatGPT)
+- Sahil: paste the block under "Paste into a ChatGPT Project or a Gemini Gem" in `docs/YOUTUBE_FORMAT.md` into the Xender ChatGPT Project instructions and the Xender Gemini Gem instructions (both are UI settings no agent can change).
+- ChatGPT: in the private Command Center `OS Formats` tab, add profile `autotube-economics-v2` (owner decision 27 Oct 2026) pointing to AutoTube `docs/CONTENT_FORMAT.md` at the commit where it lands on `main`; mark the pre-27-Oct YouTube profile superseded for new work (keep it for history). Re-pin open YouTube task workspaces to v2 per `docs/TASK_WORKSPACES.md`.
+- Rule for every agent: titles must pass `python -m autotube.packaging`; existing videos change only through AutoTube `data/retrofit/plan.json` + the "Retrofit existing videos" workflow, never by hand in YouTube Studio.
+- Expected: the next title/cover any agent proposes already passes the check. MIS: OS Formats row + OS Handoffs note.

@@ -53,7 +53,11 @@ ChatGPT, Claude and Gemini do not automatically read each other's conversations.
 
 ## Bootstrap for a fresh session
 
-> Work from https://github.com/sahilsharma171098-star/Xender-Secrets-V2 as the shared HQ. First read AGENTS.md, docs/BUILD_HOME.md, PROJECTS.md, docs/TASKS.md and ops/HANDOFF.md on current main. Find and reuse the canonical existing project. Register new work with a task ID and one owner. Keep private source/data private. Before stopping, update task/project status and handoff with branch/PR, actual checks, deployment status and next action. Do not create a duplicate setup or assume chat synchronization.
+> Work from https://github.com/sahilsharma171098-star/Xender-Secrets-V2 as the shared HQ. First read AGENTS.md, docs/BUILD_HOME.md, PROJECTS.md, docs/TASKS.md and ops/HANDOFF.md on current main (for YouTube work also docs/YOUTUBE_FORMAT.md). Find and reuse the canonical existing project. Register new work with a task ID and one owner. Keep private source/data private. Before stopping, update task/project status and handoff with branch/PR, actual checks, deployment status and next action. Do not create a duplicate setup or assume chat synchronization.
+
+## YouTube content format
+
+All YouTube work uses [YOUTUBE_FORMAT.md](YOUTUBE_FORMAT.md): title, cover, story, description and how to fix existing videos. It includes a paste-ready block for ChatGPT Projects and Gemini Gems.
 
 ## Tool workspace
 

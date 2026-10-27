@@ -58,6 +58,9 @@ A handoff should contain:
 
 ChatGPT reviews implementation/PRs; Claude should address review findings on the same task branch where practical.
 
+## YouTube content format (2026-10-27)
+Every Xender YouTube title, cover, script or edit to an existing video follows `docs/YOUTUBE_FORMAT.md` (full spec in AutoTube `docs/CONTENT_FORMAT.md`). Check titles with `python -m autotube.packaging`. Change live videos only through AutoTube's retrofit plan + workflow (backup first; Sahil approves apply).
+
 ## Shared tool execution
 Use `ops/ai/README.md` and `ops/ai/tools.json` for the current Gemini, Antigravity, Nano Banana, Veo, NVIDIA and Grok routes, dated observations and activation blockers. `npm run ai:doctor` checks this host only; it does not refresh browser, ThinkPad, provider authentication or quota evidence. `npm run ai:prepare -- --kind <research|code|image|video> --task XEND-... --project <name> --brief-file <path>` creates a local prompt and receipt. Prepared is not executed. Recheck access and quota before using the existing Flow project named **Xender HQ — Images & Video**; keep project-specific workspace links in private records. Record actual outputs in the canonical project and preserve current publishing/owner-approval safeguards. An unavailable route may be handed to another authorized agent, with the real tool recorded. Never mark desktop/API access as connected from a browser observation.
 
