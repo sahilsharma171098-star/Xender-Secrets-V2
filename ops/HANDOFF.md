@@ -1,20 +1,17 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-10-27 14:46 UTC by **codex** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/youtube-format-shared`
+- Branch: `codex/canva-integration-20261027`
 - Last commits:
-  - `3415d23 XEND-YT-FORMAT-001: one YouTube format for Claude, ChatGPT and Gemini`
-  - `7d3f925 docs(hq): record Xender 3D lab live QA and follow-on phase (#78)`
-  - `c3b4984 feat(catalog): launch experimental interactive 3D WebGL lab (#77)`
-  - `32a6662 Merge pull request #76 from sahilsharma171098-star/codex/youtube-instagram-crosspost-20261024`
-  - `9e55615 XEND-IG-CROSSPOST-001: prepare public-video Instagram handoff with channel captions`
+  - `9f986eb XEND-CANVA-001: add Canva to the shared design workflow`
 
 ## Working-tree snapshot at generation
-- ` M docs/TASKS.md`
+- `Handoff metadata update prepared after opening draft PR #81`
 
 ## Open tasks (docs/TASKS.md)
+- XEND-CANVA-001 — Connect Canva Pro to the existing Xender workflow (2026-10-27) — REVIEW (connected Canva workspace verified; HQ route implemented and validated on task branch)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
 - XEND-IG-CROSSPOST-001 — Publish existing YouTube content to Instagram (2026-10-24) — IN_PROGRESS
@@ -47,6 +44,16 @@ Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everyth
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+### XEND-CANVA-001 — Canva connected workspace and optional HQ route (2026-10-27)
+- Owner: ChatGPT/Codex; branch codex/canva-integration-20261027, [draft PR #81](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/81), implementation commit 9f986eb714e75ed23c0afcdc4f58a5d78553ac9c, based on observed main a94136ab2c1ce65aaf91de45718115b0dbbcc74f. Existing canonical HQ and AutoTube publisher retained.
+- Live Canva checks: brand-kit listing, Xender design search, project folder/four subfolders, Instagram design copy, move and metadata/folder readbacks succeeded. IDs and editor links remain private. Pro subscription is user-reported; credits and brand-kit identity are unverified. Source dataset is empty; copied reference is not autofill-ready.
+- Code: explicit image provider canva in the existing registry; provider-specific prepared prompt; runbook and shared entry-point records. No new dependencies, services, OAuth credentials, publisher, schedule or paid usage.
+- Checks actually run: Node syntax checks; 18/18 AI-workspace, task-workspace and handoff regressions; CLI preparation preserved tool=canva, executed:false and published:false. Provider rendering/export and other assistant account auth were not tested.
+- Review-loop availability: this host returned gh: command not found. The skill requires an authenticated gh CLI, so its automated review loop was not run; no bot review or approval is claimed.
+- Deployment: task branch only; no main merge or production deploy performed. Connected Canva folders/copied asset exist now independently of the code PR.
+- Next: review this task branch/PR. Execute an approved design task through the connected account, follow preview/save approval requirements, verify actual export bytes/hash privately and hand to the existing publisher. Unattended REST API requires its own OAuth configuration.
+
 
 ### XEND-CATALOG-IMMERSIVE-001 — 3D catalog prototype deployed (2026-10-24)
 - Owner: ChatGPT; [PR #77](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/77) merged (squash `c3b49845a42c76e24acffbd36520b2ebd7da7857`). Backup branch: `backup/catalog-pre-immersive-20261024` at `32a66622e6b3a9f2d183912484d92bdc0cab375f`.

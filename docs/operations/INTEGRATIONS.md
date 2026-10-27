@@ -53,3 +53,8 @@ Task ID; scope; resource key; lease token/version (private runner context only);
 
 - [Google ScriptLock](https://developers.google.com/apps-script/reference/lock/lock-service)
 - [Google Lock and flush](https://developers.google.com/apps-script/reference/lock/lock)
+
+## Canva designs (XEND-CANVA-001)
+
+Use the connected Canva app through the existing shared image preparation route (`--tool canva`), with [the Canva runbook](CANVA.md). Workspace folders and a copied Instagram working reference were created and read back on 27 October 2026. The source design has no autofill fields. Keep actual IDs, editor links and exports in the private task workspace. This does not configure an unattended OAuth backend or alter the existing AutoTube/Instagram publishing workflows.
+

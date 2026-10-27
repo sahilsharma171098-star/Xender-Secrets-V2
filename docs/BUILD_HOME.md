@@ -66,3 +66,8 @@ See [ops/ai/README.md](../ops/ai/README.md) and its registry for dated observati
 ## Shared task and content workspace (2026-10-24)
 
 See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.
+
+## Canva design work
+
+Use the existing shared AI workspace with `--kind image --tool canva`; follow [the Canva runbook](operations/CANVA.md). Connected-app workspace operations were verified 27 October 2026. Actual generation/export, other assistant authentication and unattended API access require their own evidence. Preserve the YouTube format and the existing private task checkpoint/publisher flow.
+

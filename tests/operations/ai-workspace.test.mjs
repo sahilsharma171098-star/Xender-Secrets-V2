@@ -64,3 +64,28 @@ test('YouTube/AutoTube jobs carry the shared content format; other projects do n
   const other = prompt(plan(config, {kind:'research', task:'XEND-RES-001', project:'HQ', brief:'Research'}));
   assert.doesNotMatch(other, /YOUTUBE_FORMAT/);
 });
+
+test('Canva is an explicit image route with format and export evidence in its handoff', async () => {
+  const config = await registry();
+  const input = {kind:'image',tool:'canva',task:'XEND-DESIGN-001',project:'AutoTube',brief:'Make a cover from the saved video facts'};
+  const job = plan(config, input);
+  assert.equal(job.tool, 'canva');
+  assert.equal(job.access_status, 'connected_app_workspace_verified');
+  assert.equal(job.executed, false);
+  assert.equal(job.published, false);
+  assert.equal(job.receipt.output_location, null);
+  const brief = prompt(job);
+  assert.match(brief, /docs\/operations\/CANVA\.md/);
+  assert.match(brief, /docs\/YOUTUBE_FORMAT\.md/);
+  assert.match(brief, /empty dataset is not autofill-ready/);
+  assert.match(brief, /Canva native Download/);
+  assert.match(brief, /private task workspace/);
+  assert.match(brief, /grants no publishing approval/);
+  for (const kind of ['video','code','research']) {
+    assert.throws(() => plan(config, {...input,kind}), /does not support/);
+  }
+  const defaultImage = plan(config, {...input,tool:undefined});
+  assert.equal(defaultImage.tool, 'nano-banana');
+  assert.doesNotMatch(prompt(defaultImage), /Canva work:/);
+});
+

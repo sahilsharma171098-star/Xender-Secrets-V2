@@ -8,6 +8,7 @@ Task: XEND-AI-INTEGRATION-001. All agents use the existing HQ and canonical repo
 | --- | --- | --- |
 | Research, planning, review | Gemini | ChatGPT observed a signed-in browser and Pro/Argon options on 2026-10-22. Current session/quota/inference/API access not rechecked. Standalone xender-hq skill save unconfirmed; use repository instructions meanwhile. |
 | Coding and development | Antigravity | Sahil supplied a 2026-10-24 check reporting version 2.23.0 running/signed in, Google AI Pro entitlement and a separate workspace on main 9e21348. Original local evidence inspection and fresh model/API execution remain pending. |
+| Editable thumbnails, social posts, website/client and product creatives | Canva Pro (optional) | Connected-app search, folder creation, source-design copy and readback verified 2026-10-27; source has no autofill labels. Credits, rendering/export and unattended API not verified. [Workflow](../../docs/operations/CANVA.md). |
 | Images and thumbnails | Nano Banana | ChatGPT observed Nano Banana 2.1, Pro and 2 Lite options in Flow on 2026-10-22. No actual generation or remaining-credit check. |
 | Optional research/review/coding | NVIDIA API Catalog / NIM | Registry entry added on 2026-10-22; provider account, selected model, quota and API access not verified. |
 | Optional research/review/coding | xAI / Grok | Registry entry added on 2026-10-22; provider account, quota, live tools and API access not verified. |
@@ -32,6 +33,7 @@ npm run ai:list
 npm run ai:doctor
 npm run ai:prepare -- --kind research --tool grok --task XEND-REVIEW-001 --project HQ --brief-file /path/to/brief.md
 npm run ai:prepare -- --kind code --tool nvidia --task XEND-CODE-001 --project HQ --brief-file /path/to/brief.md
+npm run ai:prepare -- --kind image --tool canva --task XEND-DESIGN-001 --project AutoTube --brief-file /path/to/brief.md
 npm run ai:prepare -- --kind image --task XEND-THUMBNAIL-001 --project AutoTube --brief-file /path/to/brief.md
 ```
 
@@ -52,6 +54,8 @@ Use ChatGPT/Codex or Claude for coding while Antigravity is unavailable. Record 
 - Verify each requested generation's live allowance/cost before execution. Subscription access does not itself configure a backend API.
 - The hosted GitHub Claude executor is separate from a local Claude session. Its 2026-10-24 review run failed before invoking Claude because `CLAUDE_CODE_OAUTH_TOKEN` was missing/empty; see XEND-CLAUDE-EXECUTOR-001. A separate Claude review supplied by Sahil does not prove that this executor is active.
 
+Canva is an explicit `--tool canva` image route in the same workspace. The command prepares a brief; the authorized session executes it through its connected Canva app. See [the Canva runbook](../../docs/operations/CANVA.md) for workspace discovery, copied masters, dataset checks, export evidence and the OAuth boundary. Canva video generation is not registered by this route.
+
 No API credentials, automatic top-ups, background agent scheduler or automatic publishing are configured by this change. Current YouTube queue and owner approvals remain intact.
 
 Official references:
@@ -67,3 +71,4 @@ Official references:
 ## Shared task and content workspace (2026-10-24)
 
 See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.
+
