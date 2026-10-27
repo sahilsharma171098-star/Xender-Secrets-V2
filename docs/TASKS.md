@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27)
+Status: IN_PROGRESS
+Owner: Claude
+- Why: channel CTR 1.7% and ~1:03 average view on 3.3K impressions (YouTube Studio, 27 Oct). Same-niche channels win with "X वाला महीने का कितना कमाता है? | The Economics of X" titles and light covers with one picture and one number. Topics were fine; packaging was not.
+- Format: `docs/YOUTUBE_FORMAT.md` (public summary) → AutoTube `docs/CONTENT_FORMAT.md` (full spec) and `autotube/packaging.py` (code checks: `python -m autotube.packaging --format long|short "<title>"`). AGENTS.md, CLAUDE.md and GEMINI.md here and in AutoTube point to it; `ai:prepare` adds the format line for AutoTube/YouTube projects.
+- New videos: AutoTube [PR #8](https://github.com/sahilsharma171098-star/autotube/pull/8) (draft) turns the format on in the daily pipeline. **Needs Sahil's merge**; until then new uploads keep the old packaging.
+- Existing videos: AutoTube branch `claude/yt-retrofit-old-videos`, workflow "Retrofit existing videos". Backs up all 30 public/unlisted videos (snippet, status, thumbnail) before any change, renders covers for review, applies only with `apply: true` + approved cover sha256, idempotent, `rollback: true` restores the backup. Plan: 15 long videos (14 new titles + 15 covers + search lines), 13 Hindi Shorts retitled, horror story → unlisted, 2-second test upload → private, English pilot Short untouched. Nothing deleted.
+- Next: ChatGPT/Sahil CQ-024 (format profile + paste block). Sahil merges AutoTube #8 when happy.
+
 ## XEND-CATALOG-IMMERSIVE-001 — Differentiated 3D concept lab (2026-10-24)
 Status: DONE (phase 1: experimental lab only; phase 2 high-quality redesign remains separate)
 Owner: ChatGPT

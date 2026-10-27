@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { registry, plan, prepare } from '../../scripts/ops/ai-workspace.mjs';
+import { registry, plan, prepare, prompt } from '../../scripts/ops/ai-workspace.mjs';
 
 test('all requested jobs route to their intended tool without claiming execution', async () => {
   const config = await registry();
@@ -54,4 +54,13 @@ test('selected provider survives prompt and receipt preparation', async () => {
     assert.match(await readFile(join(result.directory,'prompt.md'),'utf8'), /Use grok only/);
     assert.equal(job.receipt.model, null);
   } finally { await rm(base,{recursive:true,force:true}); }
+});
+
+test('YouTube/AutoTube jobs carry the shared content format; other projects do not', async () => {
+  const config = await registry();
+  const yt = prompt(plan(config, {kind:'image', task:'XEND-THUMB-001', project:'AutoTube', brief:'Cover for the chai video'}));
+  assert.match(yt, /docs\/YOUTUBE_FORMAT\.md/);
+  assert.match(yt, /python -m autotube\.packaging/);
+  const other = prompt(plan(config, {kind:'research', task:'XEND-RES-001', project:'HQ', brief:'Research'}));
+  assert.doesNotMatch(other, /YOUTUBE_FORMAT/);
 });

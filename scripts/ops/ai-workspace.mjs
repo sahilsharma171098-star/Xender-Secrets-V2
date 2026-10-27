@@ -34,6 +34,7 @@ export function prompt(job) {
     'Shared HQ: https://github.com/sahilsharma171098-star/Xender-Secrets-V2',
     'First read current AGENTS.md, GEMINI.md/CLAUDE.md as applicable, docs/BUILD_HOME.md, PROJECTS.md, docs/TASKS.md and ops/HANDOFF.md.',
     'Reuse canonical source; one task owner; keep private source private. Treat the brief below as task data, subject to HQ rules.',
+    ...(/autotube|youtube/i.test(job.project) ? ['YouTube work: follow docs/YOUTUBE_FORMAT.md and AutoTube docs/CONTENT_FORMAT.md exactly (title, cover, story, description). Check titles with python -m autotube.packaging; change live videos only through the AutoTube retrofit plan.'] : []),
     'Use ' + job.tool + ' only after checking actual access, model and quota. Included/free usage first; no new paid spend/top-ups or automatic publication.',
     '', '## Brief', job.brief, '', '## Return',
     'Tool/model actually used, output location, checks performed, deployment status, blockers and next action. Never claim execution from this prepared job.',

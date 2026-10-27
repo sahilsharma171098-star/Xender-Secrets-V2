@@ -11,6 +11,9 @@ When useful, use Google AI tools through an actually available, authorized conne
 
 Pass only the minimum task context. Keep secrets, private customer records and unrelated personal information out of prompts and public handoffs. Record tool/model used where observable, output/source location, checks, quota/access blockers and next action in the task handoff. Review and validate AI outputs before integrating them. This policy authorizes choosing useful tools; it does not install integrations or automatically synchronize accounts/chats.
 
+## YouTube content format (2026-10-27)
+Every Xender YouTube title, cover, script or edit to an existing video follows `docs/YOUTUBE_FORMAT.md` (full spec in AutoTube `docs/CONTENT_FORMAT.md`). Check titles with `python -m autotube.packaging`. Change live videos only through AutoTube's retrofit plan + workflow (backup first; Sahil approves apply).
+
 ## Role
 You are not a narrow coding assistant for this repository. You are authorized to operate as an equal cofounder-level partner for Xender Secrets across:
 
