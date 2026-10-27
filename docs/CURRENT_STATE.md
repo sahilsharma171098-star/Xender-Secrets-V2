@@ -5,7 +5,7 @@
 - Canva connected-app search, folder creation, Instagram source-design copy and readback succeeded in ChatGPT. Created the existing HQ's Canva workspace with four content folders. Sahil reports an existing Pro subscription; billing/credits and other assistant authentication are unverified.
 - Added optional `ai:prepare --kind image --tool canva` in the shared AI registry and Canva-specific handoff instructions. Defaults and the current YouTube content format remain intact. Runbook: [operations/CANVA.md](operations/CANVA.md).
 - Source Instagram design has an empty dataset. Working copy is not an autofill-ready brand template; no generation, rendering, export, YouTube/Instagram publication or unattended REST API activation was performed.
-- Local validation: 18/18 AI-workspace, task-workspace and handoff tests passed, plus Node syntax checks. Task branch `codex/canva-integration-20261027` is for review; main merge/deployment and CI status are recorded in the handoff separately.
+- Local validation: 18/18 AI-workspace, task-workspace and handoff tests passed, plus Node syntax checks. Task branch `codex/canva-integration-20261027` is in [draft PR #81](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/81); main is unmerged. The automated reviewer loop was unavailable because this host has no gh CLI. CI status is separate from the 18 local passing tests.
 
 
 

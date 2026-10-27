@@ -3,11 +3,12 @@
 ## XEND-CANVA-001 — Connect Canva Pro to the existing Xender workflow (2026-10-27)
 Status: REVIEW (connected Canva workspace verified; HQ route implemented and validated on task branch)
 Owner: ChatGPT/Codex
-- Canonical source: this HQ's existing AI workspace; task branch `codex/canva-integration-20261027`. Canva owns editable designs; private task records retain actual design/folder IDs.
+- Canonical source: this HQ's existing AI workspace; task branch `codex/canva-integration-20261027`; [draft PR #81](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/81), implementation commit `9f986eb714e75ed23c0afcdc4f58a5d78553ac9c`. Canva owns editable designs; private task records retain actual design/folder IDs.
 - Sahil reports an existing Canva Pro subscription. Live connector search, folder creation, design copy and readback succeeded. Plan/remaining credits and standalone API credentials are not independently verified.
 - Created one Xender Secrets workspace with YouTube Thumbnails, Instagram and Reels, Website and Client Work, Product Creatives. Copied the existing Xender Instagram launch post into the Instagram folder; original preserved. Source design dataset is empty; no autofill-ready master is claimed.
 - Extended existing `ai:prepare --kind image --tool canva`, preserve the shared YouTube format, export/review receipts and canonical AutoTube publisher. No new service, paid subscription or background scheduler.
 - Validation: 18/18 targeted AI-workspace, task-workspace and handoff tests; Node syntax checks; actual CLI prepared a Canva job with executed:false and published:false. No live rendering/export was performed.
+- Automated reviewer loop could not start: this host returned `gh: command not found`. No reviewer feedback or approval is claimed.
 - Next: review the task PR before any main deployment. Unattended API access still requires separate OAuth configuration; other model account connections and fillable template labels remain unverified.
 
 ## XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27)

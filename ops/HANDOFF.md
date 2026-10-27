@@ -5,10 +5,10 @@ Generated 2026-10-27 14:46 UTC by **codex** with `npm run ops:handoff`. Everythi
 ## Where the work is
 - Branch: `codex/canva-integration-20261027`
 - Last commits:
-  - `a94136a observed main snapshot used for this task`
+  - `9f986eb XEND-CANVA-001: add Canva to the shared design workflow`
 
 ## Working-tree snapshot at generation
-- `Task changes prepared against the observed GitHub main snapshot`
+- `Handoff metadata update prepared after opening draft PR #81`
 
 ## Open tasks (docs/TASKS.md)
 - XEND-CANVA-001 — Connect Canva Pro to the existing Xender workflow (2026-10-27) — REVIEW (connected Canva workspace verified; HQ route implemented and validated on task branch)
@@ -46,10 +46,11 @@ Generated 2026-10-27 14:46 UTC by **codex** with `npm run ops:handoff`. Everythi
 ## Notes from the last agent
 
 ### XEND-CANVA-001 — Canva connected workspace and optional HQ route (2026-10-27)
-- Owner: ChatGPT/Codex; branch codex/canva-integration-20261027, based on observed main a94136ab2c1ce65aaf91de45718115b0dbbcc74f. Existing canonical HQ and AutoTube publisher retained.
+- Owner: ChatGPT/Codex; branch codex/canva-integration-20261027, [draft PR #81](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/81), implementation commit 9f986eb714e75ed23c0afcdc4f58a5d78553ac9c, based on observed main a94136ab2c1ce65aaf91de45718115b0dbbcc74f. Existing canonical HQ and AutoTube publisher retained.
 - Live Canva checks: brand-kit listing, Xender design search, project folder/four subfolders, Instagram design copy, move and metadata/folder readbacks succeeded. IDs and editor links remain private. Pro subscription is user-reported; credits and brand-kit identity are unverified. Source dataset is empty; copied reference is not autofill-ready.
 - Code: explicit image provider canva in the existing registry; provider-specific prepared prompt; runbook and shared entry-point records. No new dependencies, services, OAuth credentials, publisher, schedule or paid usage.
 - Checks actually run: Node syntax checks; 18/18 AI-workspace, task-workspace and handoff regressions; CLI preparation preserved tool=canva, executed:false and published:false. Provider rendering/export and other assistant account auth were not tested.
+- Review-loop availability: this host returned gh: command not found. The skill requires an authenticated gh CLI, so its automated review loop was not run; no bot review or approval is claimed.
 - Deployment: task branch only; no main merge or production deploy performed. Connected Canva folders/copied asset exist now independently of the code PR.
 - Next: review this task branch/PR. Execute an approved design task through the connected account, follow preview/save approval requirements, verify actual export bytes/hash privately and hand to the existing publisher. Unattended REST API requires its own OAuth configuration.
 
