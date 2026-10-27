@@ -33,6 +33,7 @@ Owner: ChatGPT
 - Live owner Studio: 21 public videos/Shorts, one unlisted excluded. Reconcile existing source links before reposting; preserve credits/disclosures and source media.
 - Use the private batch/receipts in Command Center; public code/runbook: docs/operations/YOUTUBE_INSTAGRAM.md. No secret, private batch, unrelated backlog or account permission changes.
 - Two recovered Shorts have source files; remaining source downloads and reviewed parts are tracked separately. Prepared/hosted is not posted.
+- 2026-10-27: new Shorts get their Reel (cover as first frame) from AutoTube, off until Sahil adds the Instagram token secret and sets `instagram.publish: true` (AutoTube draft PR #14). Once on, ChatGPT stops posting new videos; Windsor posts must pass `cover_url`/`thumb_offset`.
 
 ## XEND-TASK-WORKSPACE-001 — Shared checkpoints, formats and content archive (2026-10-24)
 Status: REVIEW (implementation/private indexes saved; publishing tested code via task PR)
