@@ -15,6 +15,7 @@ Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everyth
 - ` M docs/TASKS.md`
 
 ## Open tasks (docs/TASKS.md)
+- XEND-YT-QUALITY-001 — Voice and script quality for the Hindi long videos (2026-10-29) — REVIEW (nothing merged or enabled; voice go-live and script PR need Sahil)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
 - XEND-IG-CROSSPOST-001 — Publish existing YouTube content to Instagram (2026-10-24) — IN_PROGRESS
@@ -60,6 +61,12 @@ Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Verified: 129/129 unit/operations tests; exact uploaded byte readback for latest demo checkpoint and archive; Sheet indexes read back. Four private profiles saved. Synthetic bakery test resumed with the same profile hash and research; 1080x1920,30fps silent preview is 48.97 seconds, partial edit, not approved/published. Original YouTube source media/scripts and local-only Instagram assets unavailable.
 - Access: SocialClaw history returned plan_required; no paid plan activated. Latest user request authorized fresh Gemini execution/skill save, overriding the earlier deferral. This cloud browser requires Google authentication; no new successful inference/skill-save evidence yet. Hosted Claude credential, NVIDIA/Grok activation, Apps Script/exporter authorization and owner media approval remain separate actual access requirements.
 - Next: verify this task PR CI and merge on unchanged head under Sahil publication authorization. Agents open the private Command Center, inspect archive and latest pinned checkpoint, obtain dispatch and continue exact next action; never infer all-model automatic access or fresh provider publication from saved records.
+
+### XEND-YT-QUALITY-001 — Voice and script quality (2026-10-29)
+- Owner: Claude. AutoTube draft [PR #16](https://github.com/sahilsharma171098-star/autotube/pull/16) (`claude/script-quality`: code checks + targeted repairs + read-only lab). Voice work is on AutoTube branch `claude/voice-music-lab` (no PR yet; Gemini voice off).
+- Checks: AutoTube 139/139 (script branch) and 146/146 (voice branch) unit tests; script lab runs on GitHub Actions. Deployed: nothing. Published: nothing.
+- Blockers: Sahil's listening verdict on the energy fix, music mood/volume, billing decision for Kore (free tier 10 requests/day per model), PR #16 review.
+- Next: see docs/TASKS.md XEND-YT-QUALITY-001. Phase 2 (figures verified before the story is written) only after Sahil agrees the scope.
 
 ### XEND-YT-FORMAT-001 — One YouTube format + existing videos fixed (2026-10-27)
 - Owner: Claude. HQ draft [PR #80](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/80) (`claude/youtube-format-shared`): `docs/YOUTUBE_FORMAT.md` + links in AGENTS/CLAUDE/GEMINI/BUILD_HOME/PROJECTS, `ai:prepare` format line, TASKS entry, CQ-024. AutoTube draft [PR #8](https://github.com/sahilsharma171098-star/autotube/pull/8) (format in the daily pipeline) and draft [PR #9](https://github.com/sahilsharma171098-star/autotube/pull/9) (retrofit tool, stacked on #8).
