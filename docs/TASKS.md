@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
+Status: IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
+Owner: Claude
+- What: home, studio, catalog (/portfolio), pricing (/services), about, FAQ, contact and a new /media page share one HUD shell: dark "story" chapters over a single three.js world (`public/xs/world.js`, scenes core/blueprint/build/ring/launch/globe), then white "paper" with the same content blocks as before. Generator: `scripts/commercial/hud.mjs` (shell), `scripts/commercial/media.mjs` + `media.json` (videos/Shorts/Reels snapshot, 27 Oct), page stories in `pages.mjs`.
+- Kept: every lead form and its `data-cta`/offer contract (`xs-growth.js`), catalog filters/search/deep links/share (`portfolio.js`), JSON-LD, canonicals, sitemap, internal links to all industry/location/guide pages, GST display rules, US$299 note for international visitors, honest demo labels. Retired: the light/dark theme toggle (test replaced by a HUD test).
+- Self-hosted: three.js r160 (MIT) at `/xs/vendor/`, Geist, Geist Mono, Instrument Serif, Noto Sans Devanagari (OFL, licences in `/fonts`). No third-party requests except lazy YouTube thumbnails on /media (same pattern as /faceless-youtube-course).
+- Fallbacks: reduced motion, Save-Data, no WebGL or no JS → chapters render as static sections with screenshot collage; phones/low-power devices get "lite" 3D (no blur over canvas, 30fps cap, smaller textures).
+- Not in this change: industry, location, guide, legal, tool, /hire and 404 pages keep the previous design until they move to the shell.
+
 ## XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27)
 Status: REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 Owner: Claude

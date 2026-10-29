@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Studio: Custom Design-Led Websites for Brands | Xender Secrets</title>
   <meta name="description" content="Custom, design-led websites, stores and web products for brands, D2C labels and agencies — built from your brand, engineered to load fast and convert.">
   <link rel="canonical" href="https://www.xendersecrets.com/studio">
   <meta name="robots" content="index,follow">
-  <meta name="theme-color" content="#0f0f0e">
+  <meta name="theme-color" content="#04070C">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Xender Secrets">
   <meta property="og:title" content="Xender Secrets Studio — custom, design-led websites for brands">
@@ -15,113 +15,71 @@
   <meta property="og:url" content="https://www.xendersecrets.com/studio">
   <meta property="og:image" content="https://www.xendersecrets.com/og-xender.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script>try{if(localStorage.getItem("xs-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
-  <link rel="preload" href="/fonts/playfair-display-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/home.css">
+  <link rel="preload" href="/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/xs/xs.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://www.xendersecrets.com/#business","name":"Xender Secrets","url":"https://www.xendersecrets.com/","image":"https://www.xendersecrets.com/og-xender.png","logo":{"@type":"ImageObject","url":"https://www.xendersecrets.com/og-xender.png"},"email":"Sahilsharma171098@gmail.com","description":"Business websites, landing pages and website redesigns for small businesses.","founder":{"@type":"Person","name":"Sahil Kumar Sharma"},"areaServed":["IN","GB","US","CA"],"telephone":"+91-9821941814","address":{"@type":"PostalAddress","addressLocality":"Gurugram","addressRegion":"Haryana","addressCountry":"IN"},"priceRange":"₹999–₹4,999+ (+18% GST)"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How is a studio project priced?","acceptedAnswer":{"@type":"Answer","text":"After a short brief we send a written scope with a fixed price and delivery date. Nothing starts, and nothing is paid, until you've agreed it. Larger builds can be split into phases so you approve each one."}},{"@type":"Question","name":"Can you work from our brand guidelines or with our designer?","acceptedAnswer":{"@type":"Answer","text":"Yes. We can build from your existing identity, typography and assets, or work alongside your designer or agency as the build partner — including white-label builds delivered under your agency's brand."}},{"@type":"Question","name":"What do you need from us?","acceptedAnswer":{"@type":"Answer","text":"Your brand assets, the content you already have and a person who can approve decisions. We help shape copy and structure, and flag anything missing early."}},{"@type":"Question","name":"Who owns the result?","acceptedAnswer":{"@type":"Answer","text":"You do — code, content, design files and accounts are handed over at launch. No lock-in and no compulsory monthly fee."}},{"@type":"Question","name":"Is the work in your catalog client work?","acceptedAnswer":{"@type":"Answer","text":"No. The catalog shows concept demos, working demos and products we designed and built ourselves, each labelled that way. We don't publish invented clients or testimonials."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.xendersecrets.com/"},{"@type":"ListItem","position":2,"name":"Studio","item":"https://www.xendersecrets.com/studio"}]}</script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
-      <nav class="nav" id="nav" aria-label="Main">
-        <a href="/portfolio">Catalog</a>
-        <a href="/studio" aria-current="page">Studio</a>
-        <a href="/services">Pricing</a>
-        <a href="/articles">Guides</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
-      </nav>
-      <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to light mode">◐</button>
-        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Start a project</a>
-        <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
-      </div>
-    </div>
-  </header>
+  <canvas id="world" aria-hidden="true"></canvas>
+  <div class="hud2d boot" id="hud2d" aria-hidden="true">
+  <div class="reticle" id="reticle"><svg viewBox="0 0 1000 1000">
+    <defs><radialGradient id="sw" cx="500" cy="500" r="400" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5ED8FF" stop-opacity="0"/><stop offset="1" stop-color="#5ED8FF" stop-opacity=".22"/></radialGradient></defs>
+    <circle class="draw" cx="500" cy="500" r="400" fill="none" stroke="#5ED8FF" stroke-opacity=".5" stroke-width="1.4"/>
+    <g class="spin fadein" id="ticks" stroke="#5ED8FF" stroke-opacity=".55"></g>
+    <g class="fadein" id="degs" fill="#5ED8FF" fill-opacity=".55" font-family="Geist Mono, ui-monospace, monospace" font-size="15" text-anchor="middle"></g>
+    <g class="a1 fadein"><circle cx="500" cy="500" r="345" fill="none" stroke="#5ED8FF" stroke-width="2.4" stroke-dasharray="190 50 40 60 320 2000" stroke-linecap="round"/></g>
+    <g class="a2 fadein"><circle cx="500" cy="500" r="305" fill="none" stroke="#F2B24F" stroke-width="2" stroke-dasharray="70 420 30 1400" stroke-linecap="round"/></g>
+    <g class="a3 fadein"><circle cx="500" cy="500" r="268" fill="none" stroke="#5ED8FF" stroke-opacity=".3" stroke-width="12" stroke-dasharray="2 9"/></g>
+    <g class="sweep fadein" id="sweep"><path d="M500 500 L500 100 A400 400 0 0 1 757 194 Z" fill="url(#sw)"/></g>
+    <g class="draw" stroke="#5ED8FF" stroke-opacity=".6" stroke-width="1.4"><line x1="500" y1="40" x2="500" y2="88"/><line x1="500" y1="912" x2="500" y2="960"/><line x1="40" y1="500" x2="88" y2="500"/><line x1="912" y1="500" x2="960" y2="500"/></g>
+  </svg></div>
+  <div class="brk" id="brk"><i></i><i></i><i></i><i></i><b id="brkLbl"></b></div>
+</div>
+  <div class="ro" id="ro" aria-hidden="true"><div class="code" id="roCode"></div><div id="roLines"></div></div>
+  
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <header class="top" id="top"><div class="top__in">
+  <a class="mark" href="/" aria-label="Xender Secrets home"><b>XENDER SECRETS</b><span>Studio</span></a>
+  <nav class="top__links" aria-label="Primary"><a href="/portfolio">Catalog</a><a href="/studio" aria-current="page">Studio</a><a href="/services">Pricing</a><a href="/media">Media</a><a href="/about">About</a></nav>
+  <div class="top__cta"><a class="btn btn--sm mag top__start" href="#start" data-offer="custom-build" data-cta="header-quote">Start a project</a><button class="menu-btn" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><i aria-hidden="true"></i>Menu</button></div>
+</div></header>
+<nav class="nav" id="nav" aria-label="Site menu"><div class="nav__in">
+  <div class="nav__bar"><span class="mark"><b>XENDER SECRETS</b><span>Every page, one story</span></span><button class="menu-btn" id="menuClose" type="button">Close</button></div>
+  <ol><li><a href="/"><span class="n">01</span><span class="t">Home</span><span class="d">The story so far</span></a></li><li><a href="/studio" aria-current="page"><span class="n">02</span><span class="t">Studio</span><span class="d">For brands, D2C labels and agencies</span></a></li><li><a href="/portfolio"><span class="n">03</span><span class="t">Catalog</span><span class="d">11 live builds, labelled</span></a></li><li><a href="/services"><span class="n">04</span><span class="t">Pricing</span><span class="d">Local packages from ₹999 + GST</span></a></li><li><a href="/media"><span class="n">05</span><span class="t">Media</span><span class="d">Videos, Shorts and Reels</span></a></li><li><a href="/articles"><span class="n">06</span><span class="t">Guides</span><span class="d">Plain-language website guides</span></a></li><li><a href="/about"><span class="n">07</span><span class="t">About</span><span class="d">One person accountable</span></a></li><li><a href="/faq"><span class="n">08</span><span class="t">FAQ</span><span class="d">Straight answers</span></a></li><li><a href="/contact"><span class="n">09</span><span class="t">Contact</span><span class="d">WhatsApp, email or the form</span></a></li></ol>
+  <p class="nav__contact"><a href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website." data-cta="menu-whatsapp" target="_blank" rel="noopener">WhatsApp +91 98219 41814</a><a href="mailto:Sahilsharma171098@gmail.com" data-cta="menu-email">sahilsharma171098@gmail.com</a></p>
+</div></nav>
+  <nav class="rail" id="rail" aria-label="Chapters on this page"><button type="button" data-go="0"><span class="lbl">Studio</span>00<span class="tick"></span></button><button type="button" data-go="1"><span class="lbl">Work</span>01<span class="tick"></span></button><button type="button" data-go="2"><span class="lbl">Process</span>02<span class="tick"></span></button></nav>
+  <div class="hud" id="hud" aria-hidden="true"><span class="l">28.4595° N &nbsp;77.0266° E &nbsp;· Gurugram</span><span class="r">Chapter <b id="hudN">00</b> / 02 · <b id="hudT">Studio</b></span></div>
 
   <main id="main">
-    <section class="sx-hero" aria-labelledby="st-title">
-      <div class="wrap">
-        <div class="sx-hero-top"><p class="eyebrow">Studio · for brands</p><span>Design · Build · Launch</span></div>
-        <h1 id="st-title">Websites for brands that care how they <em>look.</em></h1>
-        <div class="sx-hero-foot">
-          <p class="lede">Custom, design-led websites, stores and web products for D2C brands, agencies and founders — built from your brand and your customers, not a template, and engineered to load fast and convert.</p>
-          <div class="actions">
-            <a class="btn primary lg" href="#start" data-offer="custom-build" data-cta="studio-hero-start">Start a project</a>
-            <a class="btn ghost lg" href="/portfolio" data-cta="studio-hero-catalog">See the catalog</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="work" aria-labelledby="st-work">
-      <div class="wrap">
-        <div class="sx-work-head">
-          <div class="section-head">
-            <p class="kicker">Selected work</p>
-            <h2 id="st-work">Craft you can <span>click through.</span></h2>
-            <p>Fictional brands, real interfaces — each one a live build by Xender Secrets, labelled honestly.</p>
-          </div>
-          <div class="actions"><a class="btn ghost" href="/portfolio" data-cta="studio-catalog">Full catalog</a></div>
-        </div>
-        <div class="sx-grid">
-          <a class="sx-tile" href="/portfolio#p-north-store" data-cta="studio-work-north-store">
-            <div class="sx-shot"><img src="/work/north-store-1200.webp" srcset="/work/north-store-640.webp 640w, /work/north-store-1200.webp 1200w" sizes="(max-width: 900px) 100vw, 50vw" width="1200" height="750" alt="Screenshot of North Store, a concept demo by Xender Secrets" loading="lazy" decoding="async"><span class="pf-kind pf-kind-concept">Concept demo</span></div>
-            <div class="sx-meta"><h3><span class="sx-num">01</span>North Store</h3><span>E-commerce · Frontend apps</span></div>
-            <p>Storefront with search, filters and a real cart.</p>
-          </a>
-          <a class="sx-tile" href="/portfolio#p-forge-fitness" data-cta="studio-work-forge-fitness">
-            <div class="sx-shot"><img src="/work/forge-fitness-1200.webp" srcset="/work/forge-fitness-640.webp 640w, /work/forge-fitness-1200.webp 1200w" sizes="(max-width: 900px) 100vw, 50vw" width="1200" height="750" alt="Screenshot of Forge Fitness, a concept demo by Xender Secrets" loading="lazy" decoding="async"><span class="pf-kind pf-kind-concept">Concept demo</span></div>
-            <div class="sx-meta"><h3><span class="sx-num">02</span>Forge Fitness</h3><span>Business websites</span></div>
-            <p>Membership website for a gym or studio.</p>
-          </a>
-          <a class="sx-tile" href="/portfolio#p-pulse-analytics" data-cta="studio-work-pulse-analytics">
-            <div class="sx-shot"><img src="/work/pulse-analytics-1200.webp" srcset="/work/pulse-analytics-640.webp 640w, /work/pulse-analytics-1200.webp 1200w" sizes="(max-width: 900px) 100vw, 50vw" width="1200" height="750" alt="Screenshot of Pulse Analytics, a concept demo by Xender Secrets" loading="lazy" decoding="async"><span class="pf-kind pf-kind-concept">Concept demo</span></div>
-            <div class="sx-meta"><h3><span class="sx-num">03</span>Pulse Analytics</h3><span>SaaS dashboards · Frontend apps</span></div>
-            <p>Interactive analytics dashboard.</p>
-          </a>
-          <a class="sx-tile" href="/portfolio#p-slotly-booking" data-cta="studio-work-slotly-booking">
-            <div class="sx-shot"><img src="/work/slotly-booking-1200.webp" srcset="/work/slotly-booking-640.webp 640w, /work/slotly-booking-1200.webp 1200w" sizes="(max-width: 900px) 100vw, 50vw" width="1200" height="750" alt="Screenshot of Slotly appointment booking, a working demo by Xender Secrets" loading="lazy" decoding="async"><span class="pf-kind pf-kind-working">Working demo</span></div>
-            <div class="sx-meta"><h3><span class="sx-num">04</span>Slotly appointment booking</h3><span>Full-stack apps · Business websites</span></div>
-            <p>Live slot booking for clinics, salons and consultants.</p>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section alt" id="services" aria-labelledby="st-caps">
+    <section class="ch ch--wide ch--sub" id="ch0" data-ch="0" style="--h:160vh" aria-label="Studio"><div class="ch__stick"><div class="hero-fallback" aria-hidden="true"><img src="/work/slotly-booking-640.webp" alt="" width="640" height="400" loading="lazy" decoding="async"><img src="/work/north-store-640.webp" alt="" width="640" height="400" loading="lazy" decoding="async"><img src="/work/forge-fitness-640.webp" alt="" width="640" height="400" loading="lazy" decoding="async"></div><div class="ch__copy"><p class="eyebrow" data-reveal>Studio · for brands</p><h1 data-reveal>Websites for brands that care how they <em>look</em>.</h1><p class="lead" data-reveal>Custom, design-led websites, stores and web products for D2C brands, agencies and founders — built from your brand and your customers, not a template, and engineered to load fast and convert.</p><div class="ctas" data-reveal><a class="btn mag" href="#start" data-offer="custom-build" data-cta="studio-hero-start">Start a project</a><a class="btn btn--ghost mag" href="/portfolio" data-cta="studio-hero-catalog">See the catalog <span class="arr">→</span></a></div></div></div></section>
+    <section class="ch " id="ch1" data-ch="1" style="--h:290vh" aria-label="Work"><div class="ch__stick"><div class="ch__copy"><p class="eyebrow" data-reveal>01 · Selected work</p><h2 data-reveal>Craft you can <em>click</em> through.</h2><p class="lead" data-reveal>Fictional brands, real interfaces — each one a live build by Xender Secrets, labelled honestly.</p><ol class="proj" data-ring-list data-reveal><li class="on"><a href="/demo-frontend-store" data-k="0" data-cta="studio-ring-north-store"><span class="n">01</span><span class="nm">North Store</span><span class="meta"><span class="badge">Concept demo</span></span><span class="ds">Storefront with search, filters and a real cart. <span class="go">Open live demo ↗</span></span></a></li><li><a href="/demo-gym" data-k="1" data-cta="studio-ring-forge-fitness"><span class="n">02</span><span class="nm">Forge Fitness</span><span class="meta"><span class="badge">Concept demo</span></span><span class="ds">Membership website for a gym or studio. <span class="go">Open live demo ↗</span></span></a></li><li><a href="/demo-frontend-dashboard" data-k="2" data-cta="studio-ring-pulse-analytics"><span class="n">03</span><span class="nm">Pulse Analytics</span><span class="meta"><span class="badge">Concept demo</span></span><span class="ds">Interactive analytics dashboard. <span class="go">Open live demo ↗</span></span></a></li><li><a href="/demo-fullstack-booking" data-k="3" data-cta="studio-ring-slotly-booking"><span class="n">04</span><span class="nm">Slotly booking</span><span class="meta"><span class="badge live">Working demo</span></span><span class="ds">Live slot booking for clinics, salons and consultants. <span class="go">Open live demo ↗</span></span></a></li></ol></div></div></section>
+    <section class="ch " id="ch2" data-ch="2" style="--h:220vh" aria-label="Process"><div class="ch__stick"><div class="ch__copy"><p class="eyebrow" data-reveal>02 · Process</p><h2 data-reveal>Four phases, each one <em>approved</em>.</h2><ol class="hsteps" data-reveal><li><span>01</span><span><b>Discover</b><small>Your brand, customers and the one action the site must drive. Ends with a written scope and fixed quote.</small></span></li><li><span>02</span><span><b>Direction</b><small>Structure, type, colour and motion explored and agreed before any page is designed in full.</small></span></li><li><span>03</span><span><b>Design &amp; build</b><small>Pages designed and built together, reviewed on a live preview link on your own devices.</small></span></li><li><span>04</span><span><b>Launch</b><small>Speed, mobile, keyboard and form checks, then domain, analytics and complete handover.</small></span></li></ol></div></div></section>
+    <div class="paper" id="paper">
+    <section class="section" id="services" aria-labelledby="st-caps">
       <div class="wrap">
         <div class="section-head">
           <p class="kicker">What we make</p>
           <h2 id="st-caps">From brand site <span>to product.</span></h2>
         </div>
         <div class="sx-caps">
-          <div class="card"><span class="sx-cap-n">01</span><h3>Brand websites</h3><p>Editorial, story-led sites with considered typography, motion and a clear path to enquiry.</p></div>
-          <div class="card"><span class="sx-cap-n">02</span><h3>E-commerce</h3><p>Storefronts with search, filters and carts that feel premium on a phone, without a heavy theme.</p></div>
-          <div class="card"><span class="sx-cap-n">03</span><h3>Landing pages</h3><p>Launch and campaign pages that explain the offer in seconds and are measured from day one.</p></div>
-          <div class="card"><span class="sx-cap-n">04</span><h3>Web apps</h3><p>Dashboards, booking flows and internal tools on a fast edge backend that saves real data.</p></div>
-          <div class="card"><span class="sx-cap-n">05</span><h3>Design systems</h3><p>Reusable type, colour and components so every new page stays on-brand.</p></div>
+          <div class="card"><span class="sx-cap-n">01</span><h3>Brand websites</h3><p>Editorial, story-led sites with considered typography, motion and a clear path to enquiry.</p><a href="/demo-frontend-saas" data-cta="studio-cap-1">See a demo →</a></div>
+          <div class="card"><span class="sx-cap-n">02</span><h3>E-commerce</h3><p>Storefronts with search, filters and carts that feel premium on a phone, without a heavy theme.</p><a href="/demo-frontend-store" data-cta="studio-cap-2">See a demo →</a></div>
+          <div class="card"><span class="sx-cap-n">03</span><h3>Landing pages</h3><p>Launch and campaign pages that explain the offer in seconds and are measured from day one.</p><a href="/demo-frontend-saas" data-cta="studio-cap-3">See a demo →</a></div>
+          <div class="card"><span class="sx-cap-n">04</span><h3>Web apps</h3><p>Dashboards, booking flows and internal tools on a fast edge backend that saves real data.</p><a href="/demo-fullstack-booking" data-cta="studio-cap-4">See a demo →</a></div>
+          <div class="card"><span class="sx-cap-n">05</span><h3>Design systems</h3><p>Reusable type, colour and components so every new page stays on-brand.</p><a href="/portfolio" data-cta="studio-cap-5">See the catalog →</a></div>
         </div>
-      </div>
-    </section>
-
-    <section class="section" id="process" aria-labelledby="st-process">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="kicker">How a studio project runs</p>
-          <h2 id="st-process">Four phases, <span>each one approved.</span></h2>
-        </div>
-        <ol class="steps">
-          <li><h3>Discover</h3><p>Your brand, customers and the one action the site must drive. Ends with a written scope and fixed quote.</p></li>
-          <li><h3>Direction</h3><p>Structure, type, colour and motion explored and agreed before any page is designed in full.</p></li>
-          <li><h3>Design &amp; build</h3><p>Pages designed and built together, reviewed on a live preview link on your own devices.</p></li>
-          <li><h3>Launch</h3><p>Speed, mobile, keyboard and form checks, then domain, analytics and complete handover.</p></li>
-        </ol>
+        <ul class="terms">
+          <li><b>Fixed quote, in writing</b><span>Nothing starts and nothing is paid until you agree it.</span></li>
+          <li><b>You own everything</b><span>Code, content, design files and accounts at launch.</span></li>
+          <li><b>No lock-in</b><span>No compulsory monthly fee.</span></li>
+          <li><b>White-label for agencies</b><span>We build under your brand; you keep the client.</span></li>
+        </ul>
       </div>
     </section>
 
@@ -197,55 +155,28 @@
         </form>
       </div>
     </section>
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <div>
-        <strong>XENDER SECRETS</strong><br>
-        Founded by Sahil Kumar Sharma · Gurugram, Haryana, India<br>
-        GSTIN: 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a>
-      </div>
-      <nav class="footer-links" aria-label="Footer">
-        <a href="/portfolio">Catalog</a>
-        <a href="/studio">Studio</a>
-        <a href="/services">Pricing</a>
-        <a href="/website-catalog">All demos</a>
-        <a href="/business-templates">Templates</a>
-        <a href="/website-cost-calculator">Cost calculator</a>
-        <a href="/sitecheck">SiteCheck extension</a>
-        <a href="/articles">Articles</a>
-        <a href="/novels">Novels</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
-        <a href="/refund">Refunds</a>
-      </nav>
-    </div>
-    <div class="wrap footer-industries">
-      <span>Websites for:</span>
-      <a href="/accountant-website-development">CA firms</a>
-      <a href="/clinic-website-development">Clinics &amp; dentists</a>
-      <a href="/real-estate-website-development">Real estate</a>
-      <a href="/recruitment-agency-website-development">Recruitment</a>
-      <a href="/consultant-website-development">Consultants</a>
-      <a href="/coaching-website-development">Coaching</a>
-      <a href="/gym-website-development">Gyms</a>
-      <a href="/restaurant-website-development">Restaurants</a>
-    </div>
-    <div class="wrap footer-industries">
-      <span>Website development in:</span>
-      <a href="/website-development-gurugram">Gurgaon (Gurugram)</a>
-      <a href="/website-development-delhi">Delhi NCR</a>
-      <a href="/website-development-noida">Noida</a>
-      <a href="/small-business-website-india">All of India</a>
-    </div>
-  </footer>
+  <footer id="foot" class="site-foot">
+  <a class="next" href="/portfolio" data-cta="footer-next"><span><small>Next chapter</small><strong>The catalog</strong></span><span class="arr" aria-hidden="true">→</span></a>
+  <div class="fgrid">
+    <div class="fabout"><h2 class="fh">Xender Secrets</h2><p>Founded by Sahil Kumar Sharma · Gurugram, Haryana, India. One person accountable for your build, from written scope to handover.</p>
+      <div class="social"><a href="https://www.youtube.com/@Xender-s7y" target="_blank" rel="noopener" aria-label="Xender Secrets on YouTube" data-cta="footer-youtube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9L15.5 12z"/></svg></a><a href="https://www.instagram.com/xande_r5955/" target="_blank" rel="noopener" aria-label="Xender Secrets on Instagram" data-cta="footer-instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.3A4.7 4.7 0 1 0 16.7 12 4.7 4.7 0 0 0 12 7.3zm0 7.8A3.1 3.1 0 1 1 15.1 12 3.1 3.1 0 0 1 12 15.1zm6-8a1.1 1.1 0 1 1-1.1-1.1A1.1 1.1 0 0 1 18 7.1zM21.9 8a6 6 0 0 0-1.6-4.3A6 6 0 0 0 16 2.1C14.3 2 9.7 2 8 2.1a6 6 0 0 0-4.3 1.6A6 6 0 0 0 2.1 8C2 9.7 2 14.3 2.1 16a6 6 0 0 0 1.6 4.3A6 6 0 0 0 8 21.9c1.7.1 6.3.1 8 0a6 6 0 0 0 4.3-1.6 6 6 0 0 0 1.6-4.3c.1-1.7.1-6.3 0-8zm-2.2 9.9a3.2 3.2 0 0 1-1.8 1.8c-1.3.5-4.3.4-5.9.4s-4.6.1-5.9-.4a3.2 3.2 0 0 1-1.8-1.8C3.8 16.6 3.9 13.6 3.9 12s-.1-4.6.4-5.9a3.2 3.2 0 0 1 1.8-1.8C7.4 3.8 10.4 3.9 12 3.9s4.6-.1 5.9.4a3.2 3.2 0 0 1 1.8 1.8c.5 1.3.4 4.3.4 5.9s.1 4.6-.4 5.9z"/></svg></a></div></div>
+    <div><h2 class="fh">Work</h2><ul><li><a href="/portfolio">Catalog</a></li><li><a href="/website-catalog">All demos</a></li><li><a href="/business-templates">Templates</a></li><li><a href="/website-cost-calculator">Cost calculator</a></li><li><a href="/sitecheck">SiteCheck extension</a></li><li><a href="/media">Media</a></li></ul></div>
+    <div><h2 class="fh">Company</h2><ul><li><a href="/studio">Studio</a></li><li><a href="/services">Pricing</a></li><li><a href="/articles">Guides</a></li><li><a href="/novels">Novels</a></li><li><a href="/about">About</a></li><li><a href="/faq">FAQ</a></li><li><a href="/contact">Contact</a></li></ul></div>
+    <div><h2 class="fh">Websites for</h2><ul><li><a href="/accountant-website-development">CA firms</a></li><li><a href="/clinic-website-development">Clinics &amp; dentists</a></li><li><a href="/real-estate-website-development">Real estate</a></li><li><a href="/recruitment-agency-website-development">Recruitment</a></li><li><a href="/consultant-website-development">Consultants</a></li><li><a href="/coaching-website-development">Coaching</a></li><li><a href="/gym-website-development">Gyms</a></li><li><a href="/restaurant-website-development">Restaurants</a></li></ul></div>
+    <div><h2 class="fh">Website development in</h2><ul><li><a href="/website-development-gurugram">Gurgaon (Gurugram)</a></li><li><a href="/website-development-delhi">Delhi NCR</a></li><li><a href="/website-development-noida">Noida</a></li><li><a href="/small-business-website-india">All of India</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li><li><a href="/refund">Refunds</a></li></ul></div>
+  </div>
+  <div class="legal"><span>GSTIN 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a></span><span>Live demos, labelled · No invented clients</span></div>
+  <p class="word" id="word" aria-hidden="true">XENDER <em>secrets</em></p>
+</footer>
 
   <a class="wa-float" href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20custom%20website%20for%20my%20brand." data-cta="float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
 
-  <script src="/home.js" defer></script>
+  <script type="application/json" id="xs-page">{"route":"/studio","three":"/xs/vendor/three.module.min.js","img":"/work/","boot":null,"globe":null,"panels":[{"slug":"north-store","name":"North Store","badge":"Concept demo","one":"Storefront with search, filters and a real cart","href":"/demo-frontend-store","cta":"Open live demo ↗"},{"slug":"forge-fitness","name":"Forge Fitness","badge":"Concept demo","one":"Membership website for a gym or studio","href":"/demo-gym","cta":"Open live demo ↗"},{"slug":"pulse-analytics","name":"Pulse Analytics","badge":"Concept demo","one":"Interactive analytics dashboard","href":"/demo-frontend-dashboard","cta":"Open live demo ↗"},{"slug":"slotly-booking","name":"Slotly booking","badge":"Working demo","one":"Live slot booking for clinics, salons and consultants","href":"/demo-fullstack-booking","cta":"Open live demo ↗"}],"chapters":[{"name":"Studio","scene":"core","code":"XS/ST · Studio online","lines":[["For","Brands · D2C · agencies"],["Quote","Fixed, in writing"],["Ownership","Yours at launch"],["Lock-in","None"]],"ticks":false,"focus":null,"bracket":null},{"name":"Work","scene":"ring","code":"XS/ST-01 · Selected work","lines":[["Shown","4 builds"],["Working","1 demo"],["Concept","3 demos"],["Labelled","Always"]],"ticks":false,"focus":null,"bracket":null},{"name":"Process","scene":"blueprint","code":"XS/ST-02 · Four phases","lines":[["Discover","Written scope"],["Direction","Agreed first"],["Build","Live preview"],["Launch","Full handover"]],"ticks":false,"focus":null,"bracket":"Scope · studio brief"}]}</script>
+  <script src="/xs/shell.js"></script>
   <script src="/xs-growth.js" defer></script>
+  <script type="module" src="/xs/world.js"></script>
 </body>
 </html>

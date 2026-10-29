@@ -141,22 +141,26 @@ const INDUSTRY_DIRECTIONS = [
   ["PERS", "Freelancers &amp; personal brands"], ["HOSP", "Hospitals"],
 ];
 
-export function portfolioBody({ leadForm }) {
+const legend = () => `<ul class="pf-legend" aria-label="How projects are labelled">
+            ${Object.entries(KINDS).map(([k, v]) => `<li><span class="pf-kind pf-kind-${k}">${v.label}</span> ${esc(v.note)}</li>`).join("\n            ")}
+          </ul>`;
+
+/** `hero: false` when the page supplies its own opening (the HUD story on /portfolio); the label legend then opens the project list. */
+export function portfolioBody({ leadForm, hero = true }) {
   const counts = Object.fromEntries(CATEGORIES.map(([c]) => [c, PROJECTS.filter((p) => p.cats.includes(c)).length]));
-  return `<section class="pf-hero" aria-labelledby="pf-title">
+  return `${hero ? `<section class="pf-hero" aria-labelledby="pf-title">
       <div class="wrap">
         <p class="eyebrow">Catalog · ${PROJECTS.length} live builds</p>
         <h1 id="pf-title">The work, <em>live.</em></h1>
         <div class="pf-hero-foot">
           <p class="lede">Websites, stores, dashboards, booking apps, APIs and a browser extension — all designed and built by Xender Secrets. Open any of them on your phone, then ask for one built around your business.</p>
-          <ul class="pf-legend" aria-label="How projects are labelled">
-            ${Object.entries(KINDS).map(([k, v]) => `<li><span class="pf-kind pf-kind-${k}">${v.label}</span> ${esc(v.note)}</li>`).join("\n            ")}
-          </ul>
+          ${legend()}
         </div>
       </div>
     </section>
 
-    <section class="pf-projects" id="projects" aria-labelledby="pf-projects-title">
+    ` : ""}<section class="pf-projects" id="projects" aria-labelledby="pf-projects-title">
+      ${hero ? "" : `<div class="wrap pf-intro"><div class="section-head"><p class="kicker">All ${PROJECTS.length} builds</p><h2>Filter it. Open it. <span>Test it.</span></h2></div>${legend()}</div>`}
       <div class="pf-toolbar">
         <div class="wrap pf-toolbar-inner">
           <h2 id="pf-projects-title" class="pf-sr">Projects</h2>
