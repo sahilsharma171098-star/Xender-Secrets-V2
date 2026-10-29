@@ -15,7 +15,7 @@ Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everyth
 - ` M docs/TASKS.md`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-YT-QUALITY-001 — Voice and script quality for the Hindi long videos (2026-10-29) — REVIEW (script gate + deleted-video fix merged 29 Oct; voice unmerged, Gemini voice off)
+- XEND-YT-QUALITY-001 — Voice and script quality for the Hindi long videos (2026-10-29) — REVIEW (script gate + deleted-video fix merged 29 Oct; ledger phase 2 = draft AutoTube PR #18, unmerged; voice unmerged, Gemini voice off)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
 - XEND-IG-CROSSPOST-001 — Publish existing YouTube content to Instagram (2026-10-24) — IN_PROGRESS
@@ -64,9 +64,10 @@ Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everyth
 
 ### XEND-YT-QUALITY-001 — Voice and script quality (2026-10-29)
 - Owner: Claude. AutoTube [PR #16](https://github.com/sahilsharma171098-star/autotube/pull/16) (code checks + targeted repairs + read-only lab) and [PR #17](https://github.com/sahilsharma171098-star/autotube/pull/17) (deleted-video list) merged into main on Sahil's word, 29 Oct. Voice work is on AutoTube branch `claude/voice-music-lab` (no PR yet; Gemini voice off).
-- Checks: AutoTube 145/145 unit tests on merged main, 146/146 on the voice branch; script lab runs on GitHub Actions. Deployed: the daily pipeline now uses the new script gate from its next run. Published by this work: nothing.
+- Phase 2: AutoTube draft [PR #18](https://github.com/sahilsharma171098-star/autotube/pull/18) (`claude/script-ledger`): sheet filled by the model, all maths in code (`autotube/ledger.py`), story limited to the verified table, new checks incl. `foreign_script`. 168/168 unit tests; 2 lab runs (GitHub Actions, read-only) accepted, sums checked by hand. Not deployed; merge needs Sahil's word.
+- Checks: AutoTube 145/145 unit tests on merged main, 146/146 on the voice branch; script lab runs on GitHub Actions. Deployed: the daily pipeline now uses the phase-1 script gate from its next run. Published by this work: nothing.
 - Blockers: Sahil's listening verdict on the energy fix, music mood/volume, billing decision for Kore (free tier 10 requests/day per model).
-- Next: see docs/TASKS.md XEND-YT-QUALITY-001. Phase 2 (figures verified before the story is written) only after Sahil agrees the scope.
+- Next: see docs/TASKS.md XEND-YT-QUALITY-001. Next action: Sahil decides on AutoTube #18; watch the first daily long video (a day with no accepted script publishes nothing by design) and its render time.
 
 ### XEND-YT-FORMAT-001 — One YouTube format + existing videos fixed (2026-10-27)
 - Owner: Claude. HQ draft [PR #80](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/80) (`claude/youtube-format-shared`): `docs/YOUTUBE_FORMAT.md` + links in AGENTS/CLAUDE/GEMINI/BUILD_HOME/PROJECTS, `ai:prepare` format line, TASKS entry, CQ-024. AutoTube draft [PR #8](https://github.com/sahilsharma171098-star/autotube/pull/8) (format in the daily pipeline) and draft [PR #9](https://github.com/sahilsharma171098-star/autotube/pull/9) (retrofit tool, stacked on #8).
