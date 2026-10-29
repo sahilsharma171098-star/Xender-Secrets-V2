@@ -15,7 +15,7 @@ Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everyth
 - ` M docs/TASKS.md`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-YT-QUALITY-001 — Voice and script quality for the Hindi long videos (2026-10-29) — REVIEW (nothing merged or enabled; voice go-live and script PR need Sahil)
+- XEND-YT-QUALITY-001 — Voice and script quality for the Hindi long videos (2026-10-29) — REVIEW (script gate + deleted-video fix merged 29 Oct; voice unmerged, Gemini voice off)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
 - XEND-IG-CROSSPOST-001 — Publish existing YouTube content to Instagram (2026-10-24) — IN_PROGRESS
@@ -63,9 +63,9 @@ Generated 2026-10-27 06:30 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Next: verify this task PR CI and merge on unchanged head under Sahil publication authorization. Agents open the private Command Center, inspect archive and latest pinned checkpoint, obtain dispatch and continue exact next action; never infer all-model automatic access or fresh provider publication from saved records.
 
 ### XEND-YT-QUALITY-001 — Voice and script quality (2026-10-29)
-- Owner: Claude. AutoTube draft [PR #16](https://github.com/sahilsharma171098-star/autotube/pull/16) (`claude/script-quality`: code checks + targeted repairs + read-only lab). Voice work is on AutoTube branch `claude/voice-music-lab` (no PR yet; Gemini voice off).
-- Checks: AutoTube 139/139 (script branch) and 146/146 (voice branch) unit tests; script lab runs on GitHub Actions. Deployed: nothing. Published: nothing.
-- Blockers: Sahil's listening verdict on the energy fix, music mood/volume, billing decision for Kore (free tier 10 requests/day per model), PR #16 review.
+- Owner: Claude. AutoTube [PR #16](https://github.com/sahilsharma171098-star/autotube/pull/16) (code checks + targeted repairs + read-only lab) and [PR #17](https://github.com/sahilsharma171098-star/autotube/pull/17) (deleted-video list) merged into main on Sahil's word, 29 Oct. Voice work is on AutoTube branch `claude/voice-music-lab` (no PR yet; Gemini voice off).
+- Checks: AutoTube 145/145 unit tests on merged main, 146/146 on the voice branch; script lab runs on GitHub Actions. Deployed: the daily pipeline now uses the new script gate from its next run. Published by this work: nothing.
+- Blockers: Sahil's listening verdict on the energy fix, music mood/volume, billing decision for Kore (free tier 10 requests/day per model).
 - Next: see docs/TASKS.md XEND-YT-QUALITY-001. Phase 2 (figures verified before the story is written) only after Sahil agrees the scope.
 
 ### XEND-YT-FORMAT-001 — One YouTube format + existing videos fixed (2026-10-27)
