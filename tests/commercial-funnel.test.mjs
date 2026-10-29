@@ -214,16 +214,26 @@ test('whatsapp clicks are measured; GPC visitors send no events', async () => {
   await gpc.context.close();
 });
 
-test('theme: dark by default, light persists across reloads', async () => {
-  const { page, context } = await newPage();
+// XEND-HUD-001: the theme toggle was retired with the HUD redesign (one dark story + white details).
+test('HUD shell: self-hosted 3D story, static and readable when motion is reduced', async () => {
+  const { page, log, context } = await newPage();
   await page.goto(ORIGIN + '/');
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme || 'dark'), 'dark');
-  await page.click('#themeToggle');
-  await page.reload();
-  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
+  const cfg = JSON.parse(await page.locator('#xs-page').textContent());
+  assert.ok(cfg.chapters.length >= 2, 'homepage tells its story in chapters');
+  assert.equal(await page.locator('main .ch').count(), cfg.chapters.length);
+  assert.ok(fs.existsSync(path.join(PUBLIC, cfg.three)), 'three.js is served from this site');
+  for (const p of cfg.panels) assert.ok(fs.existsSync(path.join(PUBLIC, 'work', p.slug + '-1200.webp')), p.slug + ' panel texture');
+  for (const p of cfg.panels) assert.match(p.badge, /^(Concept demo|Working demo|Xender product)$/, p.slug + ' is labelled honestly');
+  assert.deepEqual(log.external, [], 'fonts and 3D are self-hosted');
+  assert.deepEqual(log.errors, []);
   await context.close();
-});
 
+  const { page: rp, context: rc } = await newPage({ contextOptions: { reducedMotion: 'reduce' } });
+  await rp.goto(ORIGIN + '/');
+  assert.equal(await rp.evaluate(() => document.documentElement.classList.contains('no-webgl')), true, 'no 3D with reduced motion');
+  assert.notEqual(await rp.locator('.ch__stick').first().evaluate((e) => getComputedStyle(e).position), 'sticky', 'chapters are plain sections');
+  await rc.close();
+});
 test('services and contact forms submit through the same pipeline', async () => {
   const { page, db, log, context } = await newPage();
   await page.goto(ORIGIN + '/services.html');
