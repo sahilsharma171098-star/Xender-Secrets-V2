@@ -1,13 +1,21 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
-Status: IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
+Status: REVIEW (live since 29 Oct 2026 via [PR #84](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/84), merge `ebc6646`; Sahil said "live kar" after reviewing the 8-page preview)
 Owner: Claude
 - What: home, studio, catalog (/portfolio), pricing (/services), about, FAQ, contact and a new /media page share one HUD shell: dark "story" chapters over a single three.js world (`public/xs/world.js`, scenes core/blueprint/build/ring/launch/globe), then white "paper" with the same content blocks as before. Generator: `scripts/commercial/hud.mjs` (shell), `scripts/commercial/media.mjs` + `media.json` (videos/Shorts/Reels snapshot, 27 Oct), page stories in `pages.mjs`.
 - Kept: every lead form and its `data-cta`/offer contract (`xs-growth.js`), catalog filters/search/deep links/share (`portfolio.js`), JSON-LD, canonicals, sitemap, internal links to all industry/location/guide pages, GST display rules, US$299 note for international visitors, honest demo labels. Retired: the light/dark theme toggle (test replaced by a HUD test).
 - Self-hosted: three.js r160 (MIT) at `/xs/vendor/`, Geist, Geist Mono, Instrument Serif, Noto Sans Devanagari (OFL, licences in `/fonts`). No third-party requests except lazy YouTube thumbnails on /media (same pattern as /faceless-youtube-course).
 - Fallbacks: reduced motion, Save-Data, no WebGL or no JS → chapters render as static sections with screenshot collage; phones/low-power devices get "lite" 3D (no blur over canvas, 30fps cap, smaller textures).
 - Not in this change: industry, location, guide, legal, tool, /hire and 404 pages keep the previous design until they move to the shell.
+- Deployed: Cloudflare Workers Builds success on `ebc6646`; production readback shows the new homepage (7 chapters, doors, six builds, FAQ, lead form), `/media` (14 videos · 10 Shorts · 46 Reels) and `/xs/vendor/three.module.min.js` r160. Main CI: offline checks, SEO audit and IndexNow submit passed. Xender Live E2E: every site check passed (homepage, catalog filter, commercial pages + lead forms); the only failure, twice, is `reader_xh_and_translation_ui` (XH chapter not loaded in 120 s) — chapters come live from the partner site's WordPress API, which returned server errors on 29 Oct while its homepage loaded. Not caused by this change (no reader or Worker files touched); tracked as XEND-READER-XH-002.
+- Next: move industry, location, guide, legal, tool, /hire (no contact/social links) and 404 pages into the shell; LinkedIn company and Facebook page URLs from Sahil for the footer.
+
+## XEND-READER-XH-002 — XH reader chapters time out in live E2E (2026-10-29)
+Status: READY
+Owner: Unassigned
+- Live E2E `reader_xh_and_translation_ui` failed on main runs 40931560050 (attempts 1 and 2): `/reader.html?xh=billionaire-god-of-war&chapter=1` showed no text within 120 s. Last passing main run: 27 Oct.
+- The Worker fetches chapter text from xperimentalhamid.com `/wp-json/wp/v2/posts/{id}` (`src/reader/xh.mjs`); on 29 Oct that endpoint returned a server error to an outside fetch while the site's homepage loaded. Check the partner API (rate limit / bot rule / plugin change) before changing reader code; Render fallback status unverified.
 
 ## XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27)
 Status: REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
