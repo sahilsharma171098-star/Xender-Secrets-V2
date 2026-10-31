@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0",
+  "campaign_id": "xender_shopify_nov2026_week1",
+  "generated_at_ist": "2026-10-31",
+  "timezone": "Asia/Kolkata",
+  "workflow_status": "hold_for_launch_gates",
+  "description": "Cross-tool content queue for ChatGPT, Claude, Gemini, and AutoTube; planning only, never auto-publish without go gates",
+  "source_of_truth": "docs/marketing/shopify/2026-11-acquisition/README.md",
+  "collection": "https://xendersecrets.myshopify.com/collections/everyday-tech-video-picks",
+  "platform_access": {
+    "socialclaw": "blocked_requires_paid_plan",
+    "autotube": "unverified_not_reenabled"
+  },
+  "posts": [
+    {
+      "id": "IN-MOON-01",
+      "date_ist": "2026-11-03",
+      "market": "india",
+      "platform": "instagram",
+      "product_id": "gid://shopify/Product/15452823552226",
+      "destination": "https://xendersecrets.myshopify.com/products/d5-starry-moon-lamp-8cm-led-night-light-with-stand-perfect-for-bedroom-decor-and-gifts?utm_source=instagram&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=in_moon_01",
+      "creative_brief": "Before/after room scene showing this exact lamp; three documented color options",
+      "caption": "Bedside setup mein ek chhota change ✨ 8 cm moon-style light, variant dekh kar choose karo. Product details link par; shipping at checkout.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "IN-STAND-01",
+      "date_ist": "2026-11-03",
+      "market": "india",
+      "platform": "instagram",
+      "product_id": "gid://shopify/Product/15452823781602",
+      "destination": "https://xendersecrets.myshopify.com/products/metal-expansion-phone-stand-for-laptop-and-tesla-vehicles-magnetic-folding-phone-holder-with-15w-fast-charger?utm_source=instagram&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=in_stand_01",
+      "creative_brief": "Phone mounted on desk, camera close-up, color-choice card",
+      "caption": "Desk setup ko simple rakho. Folding magnetic phone stand ke colors aur fit details check karo. Charging model alag variant hai.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "IN-MOON-02",
+      "date_ist": "2026-11-03",
+      "market": "india",
+      "platform": "youtube",
+      "product_id": "gid://shopify/Product/15452823552226",
+      "destination": "https://xendersecrets.myshopify.com/products/d5-starry-moon-lamp-8cm-led-night-light-with-stand-perfect-for-bedroom-decor-and-gifts?utm_source=youtube&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=in_moon_02",
+      "creative_brief": "Authentic lamp footage with simple lighting options",
+      "caption": "Ek compact moon-style lamp ka desk look. RGB, Warm White ya White? Details description ke link par.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "IN-STAND-02",
+      "date_ist": "2026-11-03",
+      "market": "india",
+      "platform": "youtube",
+      "product_id": "gid://shopify/Product/15452823781602",
+      "destination": "https://xendersecrets.myshopify.com/products/metal-expansion-phone-stand-for-laptop-and-tesla-vehicles-magnetic-folding-phone-holder-with-15w-fast-charger?utm_source=youtube&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=in_stand_02",
+      "creative_brief": "Differentiate plain-color stand vs charger variant without misrepresenting capability",
+      "caption": "Stand ya charger? Magnetic stand ke variants select karne se pehle compare karo.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "US-HEAD-01",
+      "date_ist": "2026-11-04",
+      "market": "us",
+      "platform": "youtube",
+      "product_id": "gid://shopify/Product/15452823584994",
+      "destination": "https://xendersecrets.myshopify.com/products/bluetooth-sleep-headband-wireless-headphones-built-in-speakers-comfortable-fabric-10-hour-battery-life?utm_source=youtube&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=us_head_01",
+      "creative_brief": "Actual product and verified phone pairing; no sleep claims",
+      "caption": "Headband-style audio for podcasts and playlists. Check device compatibility and shipping options.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "US-MOON-01",
+      "date_ist": "2026-11-04",
+      "market": "us",
+      "platform": "instagram",
+      "product_id": "gid://shopify/Product/15452823552226",
+      "destination": "https://xendersecrets.myshopify.com/products/d5-starry-moon-lamp-8cm-led-night-light-with-stand-perfect-for-bedroom-decor-and-gifts?utm_source=instagram&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=us_moon_01",
+      "creative_brief": "Authentic lamp on desk, macro shot, dimensions",
+      "caption": "A small lighting accent for a cozy desk setup. Explore the Moon Lamp variants.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "US-HEAD-02",
+      "date_ist": "2026-11-04",
+      "market": "us",
+      "platform": "instagram",
+      "product_id": "gid://shopify/Product/15452823584994",
+      "destination": "https://xendersecrets.myshopify.com/products/bluetooth-sleep-headband-wireless-headphones-built-in-speakers-comfortable-fabric-10-hour-battery-life?utm_source=instagram&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=us_head_02",
+      "creative_brief": "Gray/black variants and real product footage",
+      "caption": "Would you try headband-style headphones for podcasts? Explore the colors and specs.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "US-MOON-02",
+      "date_ist": "2026-11-04",
+      "market": "us",
+      "platform": "youtube",
+      "product_id": "gid://shopify/Product/15452823552226",
+      "destination": "https://xendersecrets.myshopify.com/products/d5-starry-moon-lamp-8cm-led-night-light-with-stand-perfect-for-bedroom-decor-and-gifts?utm_source=youtube&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=us_moon_02",
+      "creative_brief": "Before/after with same actual lamp and safe no-fake transition",
+      "caption": "An 8 cm moon-style lamp for a simple room refresh. Compare lighting variants.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "IN-HEAD-01",
+      "date_ist": "2026-11-06",
+      "market": "india",
+      "platform": "instagram",
+      "product_id": "gid://shopify/Product/15452823584994",
+      "destination": "https://xendersecrets.myshopify.com/products/bluetooth-sleep-headband-wireless-headphones-built-in-speakers-comfortable-fabric-10-hour-battery-life?utm_source=instagram&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=in_head_01",
+      "creative_brief": "Demonstrate genuine fabric band product and functions if confirmed",
+      "caption": "Podcast sunne ke liye headband-style speakers ka option. Fit, connectivity aur shipping details listing par.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "IN-MOON-03",
+      "date_ist": "2026-11-06",
+      "market": "india",
+      "platform": "youtube",
+      "product_id": "gid://shopify/Product/15452823552226",
+      "destination": "https://xendersecrets.myshopify.com/products/d5-starry-moon-lamp-8cm-led-night-light-with-stand-perfect-for-bedroom-decor-and-gifts?utm_source=youtube&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=in_moon_03",
+      "creative_brief": "Three documented variants on-screen using honest footage",
+      "caption": "RGB, Warm White, ya White? Apne room ke hisaab se moon lamp ka variant choose karo.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "US-STAND-01",
+      "date_ist": "2026-11-06",
+      "market": "us",
+      "platform": "youtube",
+      "product_id": "gid://shopify/Product/15452823781602",
+      "destination": "https://xendersecrets.myshopify.com/products/metal-expansion-phone-stand-for-laptop-and-tesla-vehicles-magnetic-folding-phone-holder-with-15w-fast-charger?utm_source=youtube&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=us_stand_01",
+      "creative_brief": "Product demonstration on a stationary desk",
+      "caption": "Keep your phone in view on a compact desk setup. Check fit and mounting compatibility.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    },
+    {
+      "id": "US-STAND-02",
+      "date_ist": "2026-11-06",
+      "market": "us",
+      "platform": "instagram",
+      "product_id": "gid://shopify/Product/15452823781602",
+      "destination": "https://xendersecrets.myshopify.com/products/metal-expansion-phone-stand-for-laptop-and-tesla-vehicles-magnetic-folding-phone-holder-with-15w-fast-charger?utm_source=instagram&utm_medium=organic_social&utm_campaign=xender_shopify_nov2026_week1&utm_content=us_stand_02",
+      "creative_brief": "Closeup of each variant; prominent warning about charging variant",
+      "caption": "Not every stand variant includes charging. Choose the feature you need.",
+      "media_status": "not_created_or_rights_unverified",
+      "publishing_status": "blocked_pending_supplier_checkout_and_public_access",
+      "requires": [
+        "supplier_approval",
+        "market_shipping",
+        "payment_test",
+        "contribution_margin_positive",
+        "public_storefront_access",
+        "media_usage_rights"
+      ]
+    }
+  ]
+}
