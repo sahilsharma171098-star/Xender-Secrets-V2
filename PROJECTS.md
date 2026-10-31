@@ -4,22 +4,24 @@ This file is the map of everything Xender Secrets builds and runs (XEND-HQ-001, 
 Most projects live in this repository; a few keep their own repo on purpose (listed below). Every change
 goes through a branch + PR. Start with `AGENTS.md`, then the project's own README. Architecture: `docs/HQ_ARCHITECTURE.md`.
 
+**Recovery audit (2026-10-31):** [Verified statuses, open PR triage and freeze decisions](docs/XENDER_RECOVERY_2026-10-31.md). This dated review takes precedence over stale PR labels below, but is not an external/live service test.
+
 | Project | Department | Folder | Runs on | Status |
 | --- | --- | --- | --- | --- |
-| xendersecrets.com website + API | Development | `public/`, `src/`, `scripts/commercial/` | Cloudflare Workers (free) | live; experimental 3D catalog lab deployed via merged PR #77 (five concept scenes, not production-grade replacements) |
+| xendersecrets.com website + API | Development | `public/`, `src/`, `scripts/commercial/` | Cloudflare Workers (free) | core HUD redesign merged PR #84; production deployment recorded in open PR #85; live reader E2E incident unresolved. Experimental five-scene lab from PR #77 is prototype-grade |
 | Admin MIS (leads, prospects, previews, today's plan) | Sales / MIS | `public/admin.html`, `src/growth.mjs`, `src/prospects.mjs`, `src/pipeline.mjs` | same Worker, behind `ADMIN_TOKEN` | live |
 | Lead pipeline automation | Sales | `src/pipeline.mjs`, `src/outreach-policy.mjs` | same Worker; digest sent from `/admin` | daily cron not enabled (needs approval) |
 | Website-lead export to Command Center | Sales / MIS | `src/lead-export.mjs`, `operations/apps-script/LeadImport.gs` | Worker feed + Apps Script trigger | Worker feed deployed via #63/#64; importer inactive (EXPORT_TOKEN + Apps Script OAuth pending) |
 | Command Center (outreach, approvals, suppression, task queue) | Sales / Admin | private Google Sheet; `operations/` schema, `Queue.gs`, outreach gate | Google Sheets + Apps Script | Sheet live; Apps Script OAuth blocked |
 | Free faceless YouTube course | Customer acquisition | `public/faceless-youtube-course.html`, `src/youtube.mjs` | same Worker | live |
-| AutoTube (faceless YouTube channel pipeline) | Content / acquisition | own repo `autotube`; HQ tasks XEND-YT-01 and XEND-YT-03 | GitHub Actions, 2 runs a day | queue/quota/owner-signature/reservation code merged in AutoTube #1–#3; reviewed-publishing queue disabled; Episode Studio bundle and owner verification key pending. Content format: [docs/YOUTUBE_FORMAT.md](docs/YOUTUBE_FORMAT.md) (27 Oct) |
+| AutoTube (faceless YouTube channel pipeline) | Content / acquisition | own repo `autotube`; HQ tasks XEND-YT-01 and XEND-YT-03 | GitHub Actions, 2 runs a day | AutoTube PRs #1–#12 and #14–#20 merged as of 2026-10-31, #13 draft; code ≠ verified live publishing. Reviewed-publishing queue, Episode Studio bundle and owner verification key still need fresh checks. Format: [docs/YOUTUBE_FORMAT.md](docs/YOUTUBE_FORMAT.md) |
 | No-website prospect finder | Customer acquisition | `scripts/prospecting/` | Sahil's laptop (Playwright, manual runs) | ready |
 | Agent-Reach research setup | Customer acquisition | `scripts/prospecting/agent-reach-research.mjs`, `docs/AGENT_REACH_XENDER.md` | Sahil's laptop | in review |
 | Client preview builder (`/p/<id>`) | Sales | `public/preview-builder*`, `src/growth.mjs` | same Worker | live |
 | Xender SiteCheck browser extension | Product | `extension/` | Chrome / Edge / Firefox stores | in review |
 | Xender Screen Recorder (Firefox add-on, built with ChatGPT) | Product | `projects/screen-recorder/` (pending — CQ-021) | addons.mozilla.org (`xender-screen-recorder`) | submitted 2026-10-16, awaiting AMO review |
 | SEO tooling (link normaliser, live audit, IndexNow) | Marketing | `scripts/seo/`, `.github/workflows/seo-live-audit.yml`, `indexnow.yml` | GitHub Actions | live |
-| Web novel reader + data build | Content | `public/reader*`, `src/reader/`, `scripts/build-novel-data.mjs` | Worker + static JSON | live (subdomain move pending) |
+| Web novel reader + data build | Content | `public/reader*`, `src/reader/`, `scripts/build-novel-data.mjs` | Worker + static JSON | live in earlier records; 2026-10-29 partner WordPress API server errors caused reader Live E2E timeout (XEND-READER-XH-002); subdomain move pending |
 | Facebook novel campaign | Marketing | `scripts/facebook-novel-campaign.mjs`, `marketing/novels/` | GitHub Actions | workflow disabled 2026-10-22 (no Facebook credentials; it never posted) |
 | Amazon SP-API connector (Xender Seller Manager) | Commerce | own repo `xender-amazon-spapi` | Render free | live; key check unverified; lane reserved |
 | Claude Code executor (`@claude` on issues/PRs) | Development | `.github/workflows/claude-code.yml` | GitHub Actions | installed; 2026-10-24 review run blocked by missing/empty `CLAUDE_CODE_OAUTH_TOKEN` (XEND-CLAUDE-EXECUTOR-001); separate Claude review supplied by Sahil |
