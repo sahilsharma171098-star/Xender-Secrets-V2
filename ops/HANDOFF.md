@@ -71,3 +71,11 @@ Generated 2026-10-29 18:28 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Live change (owner asked to fix every existing video): run 40460762967 applied 30/30. Backup of all 30 videos (snippet, status, thumbnail) in AutoTube `data/retrofit/backup.json` + `thumbs_before/`. Checked on public pages: 27 new titles, horror unlisted, test upload private, 15 live thumbnails match the reviewed covers. Plan locked (`apply: false`).
 - Checks: AutoTube 83/83 unit tests; HQ `node --test tests/operations/ai-workspace.test.mjs` 6/6.
 - Not done / next: Sahil merges AutoTube #8 (until then new daily uploads keep the old packaging), then #9 and HQ #80. Sahil pastes the YOUTUBE_FORMAT block into the ChatGPT Project and Gemini Gem; ChatGPT registers the v2 format profile (CQ-024). Watch CTR/AVD in YouTube Studio for 7 days before changing topics. Rollback if needed: `rollback: true` in AutoTube `data/retrofit/plan.json`.
+
+### XEND-AUTOTUBE-MEL-001 — Midnight Evidence Lab integrated safely (2026-11-01)
+- Owner: ChatGPT/Codex; source: private AutoTube `main`; [AutoTube PR #21](https://github.com/sahilsharma171098-star/autotube/pull/21) squash-merged as `0024ed34af37605c204d3d841763a062b59f86f0`.
+- Design: one AutoTube codebase with isolated draft-only English US/UK mystery profile; separate calendar, source-tracked episodes, history/output path and manual preview. Original Xender Hindi uploads and same-channel US/UK business pilot untouched.
+- Verified: [safety workflow run 41274923815](https://github.com/sahilsharma171098-star/autotube/actions/runs/41274923815) passed **177 tests**, including mystery profile validation. No actual MP4 rendered/listened to, no external publish.
+- Safety: profile upload/Instagram/Facebook/publish queue disabled, no cron, no new secret, no account impersonation, no spending.
+- Next: create the actual separate YouTube channel and identify its immutable ID; then add distinct OAuth credentials and channel lock, finish case-specific factual and rights reviews, render/inspect final video(s), design own publishing guards and seek owner launch authorization.
+- Source of truth: private AutoTube `docs/MIDNIGHT_EVIDENCE_LAB.md`; public task pointer `docs/TASKS.md` XEND-AUTOTUBE-MEL-001. Do not treat this as a live YouTube channel.
