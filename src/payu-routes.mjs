@@ -51,7 +51,8 @@ export async function handlePayuLedger(request,sql) {
     if(!/^[a-zA-Z0-9_-]{8,25}$/.test(String(b.txnid||"")))return json({ok:false},400);
     const order=sql.exec("SELECT * FROM payu_orders WHERE txnid=?",b.txnid).toArray()[0];
     if(!order)return json({ok:false},404);
-    if(order.status!=="captured"&&order.status!=="refunded"&&order.status!=="chargeback")return json({ok:false},409);
+    if(order.status==="refunded"||order.status==="chargeback")return json({ok:true,status:order.status,duplicate:true});
+    if(order.status!=="captured")return json({ok:false},409);
     const next=b.reason==="chargeback"?"chargeback":"refunded",now=new Date().toISOString();
     sql.exec("UPDATE payu_orders SET status=?,updated_at=? WHERE txnid=? AND status='captured'",next,now,b.txnid);
     sql.exec("UPDATE extension_entitlements SET status='revoked',revoked_at=? WHERE txnid=? AND status='active'",now,b.txnid);
