@@ -56,3 +56,10 @@ test("SiteCheck INR price is advertised separately, but not charged before relea
   const payload=await checkout.json();
   assert.ok(/awaiting/i.test(payload.error));
 });
+
+test("server-to-server PayU webhook fails closed on malformed or unauthenticated messages",async()=>{
+ const absent=await handlePayu(request("/api/payu/webhook","POST",{status:"success"}),env);
+ assert.equal(absent.status,415);
+ const forged=new Request("https://www.xendersecrets.com/api/payu/webhook",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:"status=success&key=test-key&hash=notvalid"});
+ assert.equal((await handlePayu(forged,env)).status,400);
+});
