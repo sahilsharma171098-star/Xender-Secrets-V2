@@ -15,6 +15,8 @@ export function ensurePayuSchema(sql) {
   sql.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_payu_payment_id ON payu_orders(payu_payment_id) WHERE payu_payment_id IS NOT NULL");
   sql.exec("CREATE TABLE IF NOT EXISTS payu_events (id INTEGER PRIMARY KEY AUTOINCREMENT,txnid TEXT NOT NULL,event TEXT NOT NULL,status TEXT NOT NULL,created_at TEXT NOT NULL)");
   sql.exec("CREATE TABLE IF NOT EXISTS extension_entitlements (id TEXT PRIMARY KEY, email TEXT NOT NULL, product_id TEXT NOT NULL, txnid TEXT NOT NULL UNIQUE, status TEXT NOT NULL, issued_at TEXT NOT NULL, revoked_at TEXT)");
+  sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_order_accounts (txnid TEXT PRIMARY KEY,user_id TEXT NOT NULL)");
+  sql.exec("CREATE INDEX IF NOT EXISTS idx_sitecheck_order_user ON sitecheck_order_accounts(user_id)");
   sql.exec("CREATE INDEX IF NOT EXISTS idx_entitlement_email ON extension_entitlements(email,product_id,status)");
 }
 export async function handlePayuLedger(request,sql) {
@@ -25,7 +27,9 @@ export async function handlePayuLedger(request,sql) {
   if(path.endsWith("/create")) {
     const o=b.order;
     if(!o||!PAYMENT_OFFERS[o.offerId]||o.amountPaise!==PAYMENT_OFFERS[o.offerId].amountPaise)return json({ok:false},400);
+    if(o.offerId==="sitecheck-pro-onetime"&&!/^[a-f0-9-]{36}$/i.test(String(o.accountId||"")))return json({ok:false,error:"Signed-in account required"},400);
     sql.exec("INSERT INTO payu_orders (txnid,offer_id,amount_paise,customer_name,email,phone,quote_reference,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,'pending',?,?)",o.txnid,o.offerId,o.amountPaise,o.name,o.email,o.phone,o.reference,o.createdAt,o.createdAt);
+    if(o.offerId==="sitecheck-pro-onetime") sql.exec("INSERT INTO sitecheck_order_accounts(txnid,user_id) VALUES (?,?)",o.txnid,o.accountId);
     return json({ok:true});
   }
   if(path.endsWith("/get"))return json({ok:true,order:sql.exec("SELECT * FROM payu_orders WHERE txnid=?",b.txnid).toArray()[0]||null});
@@ -74,10 +78,20 @@ export async function handlePayu(request,env) {
     const offer=PAYMENT_OFFERS[clean(b.offer,80)],name=clean(b.name,60),email=clean(b.email,100).toLowerCase(),phone=clean(b.phone,25);
     if(!offer||name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[+0-9() -]{8,25}$/.test(phone))return json({ok:false,error:"Valid package, name, email and phone required"},400);
     if(offer.id==="sitecheck-pro-onetime"&&env.SITECHECK_PRO_CHECKOUT_ENABLED!=="true")return json({ok:false,error:"SiteCheck Pro checkout is awaiting payment and fulfillment verification."},503);
+    let accountId=null;
+    if(offer.id==="sitecheck-pro-onetime"){
+      const sessionHeaders=new Headers();
+      const cookie=request.headers.get("Cookie");
+      if(cookie)sessionHeaders.set("Cookie",cookie);
+      const who=await state(env).fetch(new Request(url.origin+"/api/auth/me",{method:"GET",headers:sessionHeaders}));
+      const auth=await who.json().catch(()=>({}));
+      if(!who.ok||!auth.user?.id||auth.user.email?.toLowerCase()!==email)return json({ok:false,error:"Sign in to your Xender account with the purchase email before paying"},401);
+      accountId=auth.user.id;
+    }
     const txnid="XS"+crypto.randomUUID().replace(/-/g,"").slice(0,20).toUpperCase();
     const fields=createPayuCheckoutFields({key:env.PAYU_KEY,txnid,offerId:offer.id,name,email,phone,siteOrigin:url.origin});
     const now=new Date().toISOString();
-    await ledger(env,"create",{order:{txnid,offerId:offer.id,amountPaise:offer.amountPaise,name,email,phone,reference:clean(b.reference,80),createdAt:now}});
+    await ledger(env,"create",{order:{txnid,offerId:offer.id,amountPaise:offer.amountPaise,name,email,phone,reference:clean(b.reference,80),createdAt:now,accountId}});
     return json({ok:true,provider:"payu",url:PAYU_PRODUCTION_PAYMENT_URL,fields:await signedPayuCheckoutFields(fields,env.PAYU_SALT)},201);
   }
   if((path==="/api/payu/callback"||path==="/api/payu/webhook")&&method==="POST") {
