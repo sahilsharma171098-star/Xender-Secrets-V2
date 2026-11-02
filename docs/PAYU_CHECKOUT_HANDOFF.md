@@ -1,59 +1,53 @@
-## Further implementation — 2026-11-02
+# SiteCheck Pro (India INR) — PayU release handoff
 
-- Added extension entitlement SQLite storage keyed by transaction and email. No paid extension SKU is enabled or granted yet.
-- Added authenticated operator-only POST /api/payu/admin/reconcile, allowing already verified refunds/chargebacks to revoke matching entitlements and mark the transaction reversed. This does not call PayU refund API or automatically detect refunds.
-- Added idempotent refund handling and SQLite ledger tests, including unauthenticated reconciliation checks.
-- The four accessible GitHub repositories (autotube, autotube-legal, Xender-Secrets-V2, xender-amazon-spapi) do not reveal a canonical GridSnip source repository. Need original source or release package before responsibly shipping GridSnip paid gating.
-- Newest commits have no confirmed test run yet; earlier Xender Live E2E success was not an end-to-end payment test.
+Scope: Xender SiteCheck only. GridSnip OCR is explicitly Phase 2. Branch: PR #92, linked issue #90. All changes are draft and must not be deployed or paid checkout enabled before release gates pass.
 
-Mandatory remaining gates: PayU real captured checkout, automated refund reconciliation, authenticated entitlement restore API and extension UI, price/benefit definition for both products, GridSnip source, Chrome Web Store review, bank settlement confirmation. Keep PR draft; do not deploy.
+## Product and payment implementation
 
-## Implementation update — 2026-11-02
+- SiteCheck Pro SKU: \`sitecheck-pro-onetime\`, **₹499 inclusive of 18% GST**, one-time purchase. Free 49-check audit and plain text copy stay free.
+- Website: \`/sitecheck-pro\` shows pricing, an optional PayU purchase form (disabled by default), and authenticated license-key generation/recovery for a user signed in with the **same email used to purchase**.
+- Server-generated, signed PayU hosted checkout fields and transaction/order ledger in \`APP_STATE\` (Durable Object SQLite); PayU Salt stays in Worker secrets.
+- PayU callback and \`/api/payu/webhook\`: validate PayU reverse SHA-512, exact persisted txnid/email/offer/amount, and authoritative \`verify_payment\` with \`success/captured\` before idempotent settlement and SiteCheck entitlement issuance.
+- \`/api/sitecheck/license/issue\`: same-origin, authenticated account POST; rotates a random 256-bit bearer key and stores only its SHA-256 hash. Old key is invalidated by rotation; no key is sent to the user except on issuance.
+- \`/api/sitecheck/license/verify\`: scoped extension origin/host; checks live paid, captured and non-revoked entitlements; never returns customer email/PayU ID, only \`{ok,product,pro}\`.
+- \`getAllRefundsFromTxnIds\`: a **read-only, PayU-authoritative** refund query on license verification at most once per 15 minutes per transaction; successful **full refunds** revoke Pro idempotently. A partial refund alone does not revoke. If PayU is unavailable, the license check fails closed (free auditing remains available).
+- Admin-only manual reconciliation route remains for independently verified refund/chargeback events; it does not initiate financial transactions.
+- Existing Razorpay website package endpoints remain; SiteCheck SKU is explicitly excluded from Razorpay checkout.
+- \`SITECHECK_PRO_CHECKOUT_ENABLED\` Worker environment flag defaults to **OFF**. It must stay off until final verification.
 
-On this draft branch, PayU INR website package checkout is now wired in code (not deployed):
-- POST /api/payu/initiate generates server-priced transaction, persists to APP_STATE SQLite ledger and returns signed PayU fields.
-- Browser /pay submits a normal HTML form to PayU; existing Razorpay API endpoints remain untouched.
-- POST /api/payu/callback checks reverse SHA-512, ledger order/email/SKU/amount, and PayU verify_payment captured status before updating ledger.
-- Public direct ledger access blocked in Worker; /api/payu/status requires authentication and is not yet implemented.
-- Static success page no longer claims verification based solely on visiting a URL.
-- Unit tests added but CI status for latest commit not yet confirmed.
+## Extension 2.0.0 (not published)
 
-**NOT RELEASE-READY:**
-- PayU documentation/merchant-specific callback payload and live verify_payment response still need an end-to-end sandbox/nominal transaction check.
-- Need authenticated customer order lookup, refund/chargeback reconciliation, real GST invoice delivery and operational alerts.
-- SiteCheck and GridSnip OCR paid SKUs, actual gated features, entitlement restore/revoke, Chrome Web Store updates, and GridSnip source integration are NOT implemented. Do not sell Pro licenses yet.
-- Need comprehensive failure/replay/concurrency tests, static page build consistency, local tests, and manual captured payment proof before any merge/deploy.
-- Existing PayU keys are Cloudflare secrets; no secret values copied into GitHub.
+- Retains all local free checks/text exports. Optional paid feature: local priority CSV export (no report upload), with spreadsheet-formula-injection protection.
+- Enters/saves an activation key to browser **local** extension storage and verifies against the Xender HTTPS license endpoint; a restart rechecks current entitlement, and refund locks the paid feature.
+- New permissions: \`activeTab\`, \`scripting\`, \`storage\`, \`host_permissions\` restricted to \`https://www.xendersecrets.com/*\`. Update store reviewers' notes and Firefox optional authentication information disclosure.
+- \`/sitecheck\` and \`/sitecheck-privacy\` are now maintained independently of the legacy generated commercial templates to avoid overwriting Pro disclosures.
 
-# PayU India hosted checkout — implementation gate (2026-11-02)
+## Automated verification
 
-Issue: #90 — XEND-EXT-PAY-001. This branch establishes hashing and authoritative verification primitives ONLY. **It does not enable or deploy payment collection or extension Pro entitlements.**
+Required checks on PR HEAD:
+- \`npm test\`
+- \`npm run check:pages\`
+- \`npm run extension:lint\`
+- \`npm run extension:test\`
+- \`npm run extension:package\`
+- Worker/real-browser tests where configured.
+- Dedicated unit tests: payment ledger idempotency, server-side PayU signing, spoofed webhook rejection, paid SKU authorization, hashed key rotation, no unpaid access, CSV safety, full refund revocation, partial refund preservation.
+- The automated CI is **not** proof of a real merchant payment or Chrome Web Store approval. Check GitHub workflow results for the latest commit; do not rely on results for earlier commits.
 
-## Verified live configuration
-- Cloudflare Worker: xender-secrets-v2.
-- Secret binding NAMES verified through Cloudflare (values never retrieved): PAYU_KEY and PAYU_SALT.
-- Existing /pay website checkout uses Razorpay, and /api/payments/* routes currently use RAZORPAY_* credentials. These are not replaced or disabled by this branch.
-- PayU merchant account activation and a ₹20 **payment-handle** transaction have been observed; **this is not evidence of a captured website checkout transaction**.
-- International PayU approval / multicurrency is separate and not complete.
+## Manual real-payment and deployment gates (still REQUIRED)
 
-## New code
-- src/payu-gateway.mjs — canonical SHA-512 request signing; constant-time reverse-hash validation including additional-charge callback; verify_payment API request; captured/amount/txnid comparison.
-- tests/unit/payu-gateway.test.mjs — hash, tampering, amount matching, verification request tests.
-- No browser code or route invokes these helpers yet, hence no traffic or billing impact.
+1. Configure **PayU payment webhooks** in the merchant dashboard for successful (and optionally failed) payments, using \`https://www.xendersecrets.com/api/payu/webhook\`. A valid reverse-hashed webhook is only a trigger; the server still calls \`verify_payment\`. PayU may require merchant-side webhook configuration.
+2. On an isolated, authorized verification deployment/configuration (not production sales), turn on the SiteCheck checkout flag **only** for the test. Complete an explicitly authorized INR ₹499 test purchase using the same signed-in account email. Confirm transaction captured in merchant dashboard, ledger captured, one entitlement issued, and no duplicate grants on webhook replay.
+3. Restore across popup restart/reinstall using generated license; download a safe CSV from a real audited page. Confirm free features continue without a license.
+4. Issue an authorized **full refund through PayU** for that purchase; confirm PayU refund query returns success and Pro revokes at next reconciliation. Also test a partial refund and failed/pending status without inappropriate revocation.
+5. Verify GST receipt/invoice handling, bank settlement, support instructions, checkout retry/error handling, and refund/chargeback escalation. A chargeback webhook with merchant-verified signature is **not yet configured**; admin manual verification applies for now.
+6. Only then merge PR #92, deploy Cloudflare Worker after confirming production secrets and no regressions, explicitly enable \`SITECHECK_PRO_CHECKOUT_ENABLED=true\`, build Chrome extension v2.0.0 zip, submit to Chrome Web Store, and verify **actual approval** and live purchase activation. A GitHub merge alone does not deploy this Worker.
+7. Monitor first captured orders, licensing 5xx and refund events. Roll back checkout flag if fulfillment fails. Do not claim international acceptance; PayU USD/GBP approval is separate.
 
-## Safe rollout plan (not yet complete)
-1. Persist a server-authoritative order and generated **unique txnid** in the existing APP_STATE SQLite-backed Durable Object before issuing a signed checkout form. Prevent duplicate orders/fulfillment. Never trust a browser-provided amount or SKU price.
-2. Add POST /api/payu/initiate with same-origin CSRF policy. It must require the existing quote/scope-confirmed package, valid name, email and phone. Use only approved domestic INR SKUs.
-3. In /pay front-end, detect PayU as the intended provider and browser-POST a hidden form to https://secure.payu.in/_payment using server-signed fields. Never send PAYU_SALT to the browser, and never use fetch/XHR to submit to PayU.
-4. POST /api/payu/callback must accept PayU form-encoded return; verify reverse hash, look up the persisted txnid, validate matching amount/merchant key/SKU/email, and reconcile with PayU's authoritative verify_payment endpoint. Do NOT fulfill when verification is unavailable or status is only authorized/pending.
-5. Persist payment-id and captured state transactionally with idempotency; do not re-issue licenses on webhook retries. Add refund/chargeback handling and invoice/receipt workflow.
-6. Define **real** GridSnip and SiteCheck paid SKUs + free/paid feature differences before granting extension entitlements. Their existing v1.0.0 packages are free. Restore entitlements across browsers/reinstall; update privacy disclosures for identity and network calls.
-7. Tests: forged hash, reused txnid, price tampering, duplicate callback, wrong merchant, PayU API 5xx, partial payment, currency mismatch, expired pending, refund/revoke, fallback behavior.
-8. Run local tests and manual real checkout (nominal amount) in a gated environment. Verify PayU dashboard shows CAPTURED, record issued, returning user can access entitlement, and bank settlement completes. Only after that explicitly deploy the Worker and submit extension updates.
+No real payment, refund, merchant webhook setup, merchant dashboard settlement, GitHub merge, Worker deploy, or Chrome Web Store publication has been performed by this PR implementation.
 
-## Safety notes
-- Secrets must stay in Cloudflare encrypted bindings, never in repo, browser code, logs, issue, or PR.
-- A public PAYU_KEY is normal for the browser POST; PAYU_SALT is never public.
-- Do not remove or alter unrecognized Cloudflare secret bindings without tracing their owner first.
-- Do not claim checkout/revenue is live from mere secret presence.
-- PayU reference: https://docs.payu.in/docs/hashing-request-and-response and https://docs.payu.in/reference/verify_payment_api.
+Official PayU references:
+- https://docs.payu.in/reference/verify_payment_api
+- https://docs.payu.in/reference/get_all_refunds_from_transaction_ids_api
+- https://docs.payu.in/docs/create-a-new-webhook
+- https://docs.payu.in/docs/hashing-request-and-response
