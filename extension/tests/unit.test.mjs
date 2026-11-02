@@ -8,6 +8,7 @@ import { CHECKS, CHECK_BY_ID, CATEGORIES } from "../src/lib/checks.js";
 import { scoreReport, band } from "../src/lib/score.js";
 import { restrictionFor, messageForError, PROTECTED_MESSAGE } from "../src/lib/restricted.js";
 import { reportText } from "../src/lib/report.js";
+import { prioritizedCsv } from "../src/lib/pro-export.js";
 import { build, manifestFor } from "../../scripts/extension/build.mjs";
 import { zip } from "../../scripts/extension/zip.mjs";
 import { AUDIT_JS, EXT } from "./helpers.mjs";
@@ -132,4 +133,21 @@ test("icons exist at every declared size", () => {
     assert.equal(buf.readUInt32BE(16), Number(size), rel + " width");
     assert.equal(buf.readUInt32BE(20), Number(size), rel + " height");
   }
+});
+
+test("SiteCheck Pro CSV export prioritizes severity, escapes cells and blocks spreadsheet formulas",()=>{
+ const result={url:"https://example.test/",host:"example.test"};
+ const scored={overall:75,band:{label:"Needs work"},issues:[
+   {severity:"recommendation",category:"seo",title:"=HYPERLINK(\"https://evil.test\")",count:1,detail:"Line 1\nLine 2",fix:"Add link labels"},
+   {severity:"critical",category:"technical",title:"Missing HTTPS",count:2,detail:"danger",fix:"Use HTTPS"},
+   {severity:"warning",category:"a11y",title:"Text contrast",count:1,detail:"",fix:"Fix contrast"}
+ ]};
+ const csv=prioritizedCsv(result,scored,new Date("2026-11-02T00:00:00Z"));
+ assert.ok(csv.startsWith("\uFEFF"));
+ assert.ok(csv.indexOf("1 - Critical")<csv.indexOf("2 - Warning"));
+ assert.ok(csv.indexOf("2 - Warning")<csv.indexOf("3 - Recommendation"));
+ assert.match(csv,/'=HYPERLINK/);
+ assert.doesNotMatch(csv,/^"=HYPERLINK/m);
+ assert.ok(csv.includes('""https://evil.test""'));
+ assert.ok(csv.includes('"Line 1\nLine 2"'));
 });
