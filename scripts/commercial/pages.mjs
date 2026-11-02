@@ -813,12 +813,12 @@ function contactPage() {
 // ---------------------------------------------------------------- SiteCheck extension (CLAUDE-EXT-001)
 /**
  * Store availability. Set `url` only once the listing is LIVE — until then the page says "Coming soon".
- * Chrome stays "Coming soon" until the US$5 registration is approved (₹0-spend rule).
+ * Official Chrome and Firefox listings were confirmed published in October 2026.
  */
 export const SITECHECK_STORES = [
   { id: "edge", name: "Microsoft Edge", store: "Edge Add-ons", url: null },
-  { id: "firefox", name: "Firefox", store: "Firefox Add-ons", url: null },
-  { id: "chrome", name: "Chrome", store: "Chrome Web Store", url: null },
+  { id: "firefox", name: "Firefox", store: "Firefox Add-ons", url: "https://addons.mozilla.org/addon/xender-sitecheck/" },
+  { id: "chrome", name: "Chrome", store: "Chrome Web Store", url: "https://chrome.google.com/webstore/detail/egkpcmgkfakclaooopabcmffdmaldkhe" },
 ];
 
 const SITECHECK_FAQ = [
@@ -826,7 +826,7 @@ const SITECHECK_FAQ = [
   ["Does it send my website or browsing data to Xender?", "No. The analysis runs inside your browser when you click the button, and the extension makes no network requests. Nothing is sent unless you choose to copy the report or contact us yourself. Read the <a href=\"/sitecheck-privacy.html\">SiteCheck privacy policy</a>."],
   ["Is the score a Google or Lighthouse score?", "No. It is a Xender SiteCheck heuristic score with a published formula (below). It does not measure page speed or Core Web Vitals, and it isn't a full accessibility (WCAG) audit."],
   ["Does it check broken links?", "It verifies same-page links (for example <code>#pricing</code>) and flags empty, javascript: or mistyped link addresses. It does not request external links over the network, so it never claims an external page is broken without testing it."],
-  ["Which browsers are supported?", "Microsoft Edge, Firefox and Google Chrome on desktop. Store listings are being prepared for submission; until a store link appears above, that store's listing isn't live yet."],
+  ["Which browsers are supported?", "Chrome and Firefox desktop listings are published. An Edge Add-ons listing is not yet confirmed live."],
 ];
 
 function sitecheckPage() {
@@ -865,12 +865,12 @@ function sitecheckPage() {
         <div class="section-head">
           <p class="kicker">Supported browsers</p>
           <h2>Get SiteCheck <span>for your browser.</span></h2>
-          <p>Store listings are being prepared for submission. A store appears as installable here only once its listing is live.</p>
+          <p>Install directly from the official Chrome or Firefox stores. An Edge listing is not yet confirmed live.</p>
         </div>
         <div class="contact-grid">
           ${storeCards}
         </div>
-        <p class="fine center">Want to try it before the store listings go live? <a href="${esc(wa("Hi Xender Secrets, I'd like to try the SiteCheck browser extension beta."))}" target="_blank" rel="noopener" data-cta="sitecheck-beta-whatsapp">Ask us on WhatsApp</a> and we'll send the package with install steps.</p>
+        <p class="fine center">Try another Xender browser tool: <a href="/gridsnip" data-cta="sitecheck-grid-crosslink">GridSnip OCR for copying tables from images and video</a>.</p>
       </div>
     </section>`,
     cardsBlock({ kicker: "What it checks", id: "checks", alt: true, heading: "49 checks across <span>five areas.</span>", intro: "Everything runs on the page as your browser shows it — including pages built with JavaScript.", items: [
