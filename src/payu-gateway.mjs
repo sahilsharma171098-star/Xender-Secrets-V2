@@ -125,3 +125,34 @@ export function isCapturedMatchingOrder(order, payment) {
   const amountPaise = Math.round(Number(payment.amount) * 100);
   return Number.isSafeInteger(amountPaise) && amountPaise === order.amountPaise;
 }
+
+
+/** Read-only PayU refund history; only full successful refunds revoke SiteCheck Pro.
+ * PayU docs: getAllRefundsFromTxnIds, sha512(key|command|txnid|salt).
+ * This does not create a refund or request a payment.
+ */
+export async function queryPayuRefunds(txnid,paymentId,{key,salt,testMode=false},request=fetch){
+  const id=required(txnid,25),payuId=required(paymentId,100);
+  if(!/^[a-zA-Z0-9_-]{8,25}$/.test(id))throw new Error("Invalid original transaction ID");
+  const merchantKey=required(key,100),merchantSalt=required(salt,256),command="getAllRefundsFromTxnIds";
+  const hash=await sha512Hex([merchantKey,command,id,merchantSalt].join("|"));
+  const body=new URLSearchParams({key:merchantKey,command,var1:id,hash});
+  const response=await request(testMode?PAYU_TEST_VERIFY_URL:PAYU_PRODUCTION_VERIFY_URL,{
+    method:"POST",headers:{"content-type":"application/x-www-form-urlencoded","accept":"application/json"},body
+  });
+  if(!response.ok)throw new Error("PayU refund verification unavailable");
+  const data=await response.json();
+  if(Number(data?.status)!==1)throw new Error("PayU did not confirm refund query");
+  const details=data["Refund Details"];
+  const entries=details&&typeof details==="object"?Object.values(details).flatMap(a=>Array.isArray(a)?a:[]):[];
+  let totalPaise=0;const seen=new Set();
+  for(const refund of entries){
+    if(String(refund?.PayuID||"")!==payuId || String(refund?.Status||"").toLowerCase()!=="success")continue;
+    const requestId=String(refund.RequestID||refund.RefundToken||"");
+    if(!requestId || seen.has(requestId))continue;
+    const amount=Number(refund.Amount),paise=Math.round(amount*100);
+    if(!Number.isSafeInteger(paise)||paise<0)throw new Error("Invalid refund amount");
+    seen.add(requestId);totalPaise+=paise;
+  }
+  return {ok:true,totalPaise};
+}
