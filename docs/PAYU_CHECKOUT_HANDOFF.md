@@ -1,6 +1,6 @@
 # SiteCheck Pro (India INR) — PayU release handoff
 
-Scope: Xender SiteCheck only. GridSnip OCR is explicitly Phase 2. Branch: PR #92, linked issue #90. All changes are draft and must not be deployed or paid checkout enabled before release gates pass.
+Scope: Xender SiteCheck only. GridSnip OCR is explicitly Phase 2. Backend PR #92 is already in main; private-canary follow-up is PR #96, linked issue #90. Public checkout must remain OFF; merge, production deploy, real payment/refund and store publication are separate release decisions.
 
 ## Product and payment implementation
 
@@ -40,17 +40,17 @@ Required checks on PR HEAD:
 - PayU Payments/Successful webhook has been created by the merchant for `https://www.xendersecrets.com/api/payu/webhook`. This alone does **not** demonstrate delivery, authentication, or capture.
 - Added `SITECHECK_PRO_CANARY_EMAIL` Worker **secret** (optional): when set to a valid email, only an authenticated Xender account with that exact email may see and initiate the ₹499 PayU purchase while global `SITECHECK_PRO_CHECKOUT_ENABLED` remains OFF. All other accounts and anonymous visitors remain blocked. Do not store this user's email in GitHub or source.
 - Configure the canary email for a signed-in merchant-owned Xender account after deploying the updated Worker; leave global checkout unset. The merchant must personally authorize and complete the real ₹499 transaction and eventual refund.
-- Public read-only inspection observed `/api/payu/config` and `/sitecheck-pro` returning HTTP **404** on the www domain and PayU config also 404 on workers.dev despite the bundled JS containing the handler. Existing `/api/payments/config` returned 200. **Deploy full Worker + public/ static assets from the release branch and inspect actual assets routing before attempting payment**. A compiled code presence alone does not prove public API reachability.
+- Historical inspection before main freshness fix `c4a7049` observed `/api/payu/config` and `/sitecheck-pro` returning HTTP **404** on the www domain and PayU config also 404 on workers.dev despite the bundled JS containing the handler. Existing `/api/payments/config` returned 200. **Deploy full Worker + public/ static assets from the release branch and inspect actual assets routing before attempting payment**. A compiled code presence alone does not prove public API reachability.
 - Gate after deployment: `GET https://www.xendersecrets.com/api/payu/config` must respond 200 with `sitecheck.amountPaise===49900`, `checkoutEnabled===false` to anonymous visitors; `GET /sitecheck-pro` must serve HTML 200. Sign in with the canary Xender account and confirm config reports `checkoutEnabled===true`. Then run the explicitly authorized paid flow and verify captured, one entitlement, license issue/restore, webhook replay, refund revocation. Never turn public flag ON until all gates clear.
 
 ## Manual real-payment and deployment gates (still REQUIRED)
 
 1. Configure **PayU payment webhooks** in the merchant dashboard for successful (and optionally failed) payments, using \`https://www.xendersecrets.com/api/payu/webhook\`. A valid reverse-hashed webhook is only a trigger; the server still calls \`verify_payment\`. PayU may require merchant-side webhook configuration.
-2. On an isolated, authorized verification deployment/configuration (not production sales), turn on the SiteCheck checkout flag **only** for the test. Complete an explicitly authorized INR ₹499 test purchase using the same signed-in account. Confirm transaction captured in merchant dashboard, ledger captured, one entitlement issued, and no duplicate grants on webhook replay.
+2. On an isolated, authorized verification deployment/configuration, use either the optional canary email secret or main's existing `SITECHECK_PRO_OWNER_PILOT=true` plus `WORKSPACE_OWNER_EMAIL` gate. They are additive: an account matching either configured gate can test. Prefer configuring only one. Keep the global checkout flag OFF, including during testing. Complete an explicitly authorized INR ₹499 test purchase using the same signed-in account. Confirm transaction captured in merchant dashboard, ledger captured, one entitlement issued, and no duplicate grants on webhook replay.
 3. Restore across popup restart/reinstall using generated license; download a safe CSV from a real audited page. Confirm free features continue without a license.
 4. Issue an authorized **full refund through PayU** for that purchase; confirm PayU refund query returns success and Pro revokes at next reconciliation. Also test a partial refund and failed/pending status without inappropriate revocation.
 5. Verify GST receipt/invoice handling, bank settlement, support instructions, checkout retry/error handling, and refund/chargeback escalation. A chargeback webhook with merchant-verified signature is **not yet configured**; admin manual verification applies for now.
-6. Only then merge PR #92, deploy Cloudflare Worker after confirming production secrets and no regressions, explicitly enable \`SITECHECK_PRO_CHECKOUT_ENABLED=true\`, build Chrome extension v2.0.0 zip, submit to Chrome Web Store, and verify **actual approval** and live purchase activation. A GitHub merge alone does not deploy this Worker.
+6. After separately authorized review/merge of PR #96, deploy the full Worker and assets with production secrets and freshness checks. Only after all payment/fulfillment gates pass and explicit launch authorization, enable \`SITECHECK_PRO_CHECKOUT_ENABLED=true\`, build Chrome extension v2.0.0 zip, submit to Chrome Web Store, and verify **actual approval** and live purchase activation. A GitHub merge alone does not deploy this Worker.
 7. Monitor first captured orders, licensing 5xx and refund events. Roll back checkout flag if fulfillment fails. Do not claim international acceptance; PayU USD/GBP approval is separate.
 
 No real payment, refund, merchant webhook setup, merchant dashboard settlement, GitHub merge, Worker deploy, or Chrome Web Store publication has been performed by this PR implementation.
@@ -60,3 +60,14 @@ Official PayU references:
 - https://docs.payu.in/reference/get_all_refunds_from_transaction_ids_api
 - https://docs.payu.in/docs/create-a-new-webhook
 - https://docs.payu.in/docs/hashing-request-and-response
+
+
+## PR #96 conflict/build investigation (2 November 2026)
+
+- Merged main `1faa0a4` into the PR branch without rewriting history. Preserved main's owner pilot, `sitecheck-pro-v2.0.0` API release marker, frontend/privacy assets, freshness gate and Worker configuration. Retained optional canary access and regression tests for both private paths.
+- Exact failed build: `ab36ba2b-365d-4ad0-abe0-50e02ee29797`, original PR head `1a1a969`. Command `npx wrangler preview`; build command empty. Dependency install and 279-asset discovery completed; preview deployment failed with API code **10067**: "This account has reached the Workers Free limit of 100 Durable Object namespaces per account."
+- Read-only namespace inventory returned **99 namespaces**. This preview declares three isolated Durable Object classes, so one remaining slot is insufficient. This is an account-capacity blocker, not a compiler failure. Re-running unchanged cannot resolve capacity.
+- Keep preview Durable Objects isolated. Do not bind previews to production state, remove authentication, drop bindings, replace preview with production deploy, or suppress the failed check to claim success.
+- Remaining preview recovery: independently audit obsolete previews and each namespace's ownership/data, obtain explicit cleanup authorization, preserve recovery evidence, then free enough verified disposable capacity (at least two slots from the observed 99, with headroom preferable). A paid-plan upgrade is an alternative requiring spending authorization. Neither cleanup nor upgrade was performed here.
+- After capacity is available, retry the branch preview build and verify its check at the current PR head. PR pushes may trigger the existing isolated preview build; they do not authorize main merge or production publishing.
+- Production release remains separate: review current PR CI, authorize merge/deployment, leave global checkout OFF, deploy full Worker + assets, then run the repository's read-only production freshness gate. Only then authorize a merchant-owned payment/license/refund test. No customer charge or store publication is authorized by this fix.

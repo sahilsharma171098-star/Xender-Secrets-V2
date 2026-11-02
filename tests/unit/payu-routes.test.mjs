@@ -54,6 +54,7 @@ test("SiteCheck INR price is advertised separately, but not charged before relea
   const config=await (await handlePayu(request("/api/payu/config"),env)).json();
   assert.equal(config.sitecheck.amountPaise,49900);
   assert.equal(config.sitecheck.currency,"INR");
+  assert.equal(config.sitecheck.release,"sitecheck-pro-v2.0.0");
   assert.equal(config.sitecheck.checkoutEnabled,false);
   assert.ok(config.offers.every(o=>o.id!=="sitecheck-pro-onetime"));
   const body={offer:"sitecheck-pro-onetime",name:"SiteCheck Buyer",email:"buyer@example.com",phone:"9876543210"};
@@ -98,4 +99,54 @@ test("isolated SiteCheck canary requires signed-in allowlisted account without o
   assert.equal(response.fields.amount,"499.00");
   assert.equal(response.fields.email,canaryEmail);
   assert.equal(response.url,"https://secure.payu.in/_payment");
+});
+
+test("merchant-only pilot is isolated to the authenticated owner; public checkout stays off",async()=>{
+  const origin="https://www.xendersecrets.com";
+  const stub={fetch:async req=>{
+    const path=new URL(req.url).pathname;
+    if(path==="/api/auth/me"){
+      const email=req.headers.get("Cookie")==="xs_session=owner"?"merchant@example.com":"someone@example.com";
+      return new Response(JSON.stringify({user:{id:"11111111-1111-4111-8111-111111111111",email,name:"Pilot Buyer"}}),{headers:{"content-type":"application/json"}});
+    }
+    if(path==="/api/payu-ledger/create")return new Response(JSON.stringify({ok:true}),{headers:{"content-type":"application/json"}});
+    return new Response("not found",{status:404});
+  }};
+  const pilotEnv={...env,SITECHECK_PRO_OWNER_PILOT:"true",WORKSPACE_OWNER_EMAIL:"merchant@example.com",APP_STATE:{idFromName:()=>({}),get:()=>stub}};
+  const anonymous=await (await handlePayu(request("/api/payu/config"),pilotEnv)).json();
+  assert.equal(anonymous.sitecheck.checkoutEnabled,false);
+  const other=await (await handlePayu(request("/api/payu/config","GET",undefined,{Cookie:"xs_session=other"}),pilotEnv)).json();
+  assert.equal(other.sitecheck.checkoutEnabled,false);
+  const owner=await (await handlePayu(request("/api/payu/config","GET",undefined,{Cookie:"xs_session=owner"}),pilotEnv)).json();
+  assert.equal(owner.sitecheck.checkoutEnabled,true);
+  assert.deepEqual(owner.offers,[]);
+  const body={offer:"sitecheck-pro-onetime",name:"Pilot Buyer",email:"merchant@example.com",phone:"9876543210"};
+  const denied=await handlePayu(request("/api/payu/initiate","POST",body,{Origin:origin,Cookie:"xs_session=other"}),pilotEnv);
+  assert.equal(denied.status,503);
+  const allowed=await handlePayu(request("/api/payu/initiate","POST",body,{Origin:origin,Cookie:"xs_session=owner"}),pilotEnv);
+  assert.equal(allowed.status,201);
+  const checkout=await allowed.json();
+  assert.equal(checkout.fields.amount,"499.00");
+  assert.equal(checkout.fields.udf1,"sitecheck-pro-onetime");
+});
+
+
+test("private checkout fails closed for broken auth and mismatched purchase email",async()=>{
+  const body={offer:"sitecheck-pro-onetime",name:"Test Owner",email:"owner@example.com",phone:"9876543210"};
+  for(const mode of ["unavailable","malformed","missing-id","other-account","mismatched-purchase"]){
+    let writes=0;
+    const stub={fetch:async req=>{
+      if(new URL(req.url).pathname!=="/api/auth/me"){writes++;throw new Error("Unexpected ledger write");}
+      if(mode==="unavailable")throw new Error("Auth unavailable");
+      if(mode==="malformed")return new Response("invalid JSON");
+      return Response.json({user:{...(mode!=="missing-id"?{id:"11111111-1111-4111-8111-111111111111"}:{}),email:mode==="other-account"?"other@example.com":"owner@example.com"}});
+    }};
+    const privateEnv={...env,SITECHECK_PRO_CHECKOUT_ENABLED:"false",SITECHECK_PRO_CANARY_EMAIL:"owner@example.com",APP_STATE:{idFromName:()=>({}),get:()=>stub}};
+    const config=await(await handlePayu(request("/api/payu/config","GET",null,{Cookie:"xs_session=test"}),privateEnv)).json();
+    assert.equal(config.sitecheck.checkoutEnabled,mode==="mismatched-purchase",mode);
+    const purchase=mode==="mismatched-purchase"?{...body,email:"different@example.com"}:body;
+    const result=await handlePayu(request("/api/payu/initiate","POST",purchase,{Origin:"https://www.xendersecrets.com",Cookie:"xs_session=test"}),privateEnv);
+    assert.equal(result.status,mode==="mismatched-purchase"?401:503,mode);
+    assert.equal(writes,0,mode);
+  }
 });
