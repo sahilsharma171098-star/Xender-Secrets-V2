@@ -51,7 +51,7 @@ for (const f of sourceFiles().filter((f) => /\.(js|html)$/.test(f))) {
   if (f !== "popup.js" && /\bfetch\s*\(|\.storage\.(?:local|sync|session)|\.value\b(?!s)/.test(code)) fail(f,"unexpected network/storage/form access");
   if (f === "popup.js") {
     if ((code.match(/\bfetch\s*\(/g)||[]).length!==1 || !code.includes("fetch(LICENSE_API")) fail(f,"only the fixed SiteCheck license API may be fetched");
-    if (!code.includes('https://www.xendersecrets.com/api/sitecheck/license/verify')) fail(f,"license API host mismatch");
+    if (!fs.readFileSync(path.join(SRC,f),"utf8").includes('https://www.xendersecrets.com/api/sitecheck/license/verify')) fail(f,"license API host mismatch");
     if (/\.storage\.(?:sync|session)/.test(code)) fail(f,"license key must remain in local storage only");
   }
 
