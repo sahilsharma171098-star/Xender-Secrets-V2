@@ -1,6 +1,7 @@
 const enc = new TextEncoder();
 
 export const PAYMENT_OFFERS = Object.freeze({
+  "sitecheck-pro-onetime": { id: "sitecheck-pro-onetime", name: "SiteCheck Pro — One-time License", basePaise: 42288, gstPaise: 7612, amountPaise: 49900 },
   "founding-website-999": { id: "founding-website-999", name: "Founding Website", basePaise: 99900, gstPaise: 17982, amountPaise: 117882 },
   "business-starter-1999": { id: "business-starter-1999", name: "Business Starter", basePaise: 199900, gstPaise: 35982, amountPaise: 235882 },
   "business-pro-3499": { id: "business-pro-3499", name: "Business Pro", basePaise: 349900, gstPaise: 62982, amountPaise: 412882 }
