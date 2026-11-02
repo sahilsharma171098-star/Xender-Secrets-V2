@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Secure Payment | Xender Secrets</title>
-  <meta name="description" content="Securely pay Xender Secrets for an agreed website package using PayU checkout.">
+  <meta name="description" content="Securely pay Xender Secrets for an agreed website package using Razorpay checkout.">
   <meta name="robots" content="noindex,follow">
   <meta name="theme-color" content="#0f0f0e">
   <script>try{if(localStorage.getItem("xs-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
@@ -29,7 +29,7 @@
       <div class="wrap narrow">
         <p class="eyebrow">Secure payment</p>
         <h1>Pay for your <em>confirmed Xender project.</em></h1>
-        <p class="lede">Use this page only after your scope, package and delivery terms have been confirmed in writing by Xender Secrets. Payments are processed through PayU.</p>
+        <p class="lede">Use this page only after your scope, package and delivery terms have been confirmed in writing by Xender Secrets. Payments are processed through Razorpay.</p>
       </div>
     </section>
 
@@ -54,21 +54,21 @@
           <div class="field-row">
             <div class="field">
               <label for="pay-email">Email</label>
-              <input id="pay-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+              <input id="pay-email" name="email" type="email" autocomplete="email" maxlength="254">
             </div>
             <div class="field">
               <label for="pay-phone">Phone / WhatsApp</label>
-              <input id="pay-phone" name="phone" type="tel" autocomplete="tel" maxlength="24" required>
+              <input id="pay-phone" name="phone" type="tel" autocomplete="tel" maxlength="24">
             </div>
           </div>
-          <p class="hint">Both email and phone number are required for PayU checkout.</p>
+          <p class="hint">Enter at least one: email or phone number.</p>
 
           <div class="field">
             <label for="pay-reference">Quote / project reference <span class="opt">(optional)</span></label>
             <input id="pay-reference" name="reference" maxlength="80" placeholder="e.g. XS-2026-001">
           </div>
 
-          <button class="btn primary block lg" type="submit" data-pay-button disabled>Pay securely with PayU</button>
+          <button class="btn primary block lg" type="submit" data-pay-button disabled>Pay securely with Razorpay</button>
           <p class="status" data-payment-status role="status" aria-live="polite">Checking payment availability…</p>
           <p class="fine">Payment does not change the written project scope. A GST-compliant invoice is issued for accepted project payments. For custom work or a different amount, contact us first.</p>
         </form>
