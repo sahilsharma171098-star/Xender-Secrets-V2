@@ -72,11 +72,25 @@ export async function handlePayuLedger(request,sql) {
   }
   return json({ok:false},404);
 }
+// Merchant-only live checkout pilot: public SiteCheck checkout stays off until a captured
+// payment and license have been verified. This does not change any Razorpay package route.
+async function ownerPilotAllowed(request,env) {
+  if(env.SITECHECK_PRO_OWNER_PILOT!=="true"||!env.WORKSPACE_OWNER_EMAIL)return false;
+  const cookie=request.headers.get("Cookie");
+  if(!cookie)return false;
+  try{
+    const who=await state(env).fetch(new Request(new URL(request.url).origin+"/api/auth/me",{method:"GET",headers:{Cookie:cookie}}));
+    if(!who.ok)return false;
+    const auth=await who.json().catch(()=>({}));
+    return Boolean(auth.user?.id&&auth.user?.email&&
+      auth.user.email.toLowerCase()===String(env.WORKSPACE_OWNER_EMAIL).trim().toLowerCase());
+  }catch{return false;}
+}
 export async function handlePayu(request,env) {
   const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
   if(!path.startsWith("/api/payu/"))return null;
   if(!env.PAYU_KEY||!env.PAYU_SALT)return json({ok:false,error:"PayU unavailable"},503);
-  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:[],sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,release:"sitecheck-pro-v2.0.0",checkoutEnabled:env.SITECHECK_PRO_CHECKOUT_ENABLED==="true"}});
+  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:[],sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,release:"sitecheck-pro-v2.0.0",checkoutEnabled:env.SITECHECK_PRO_CHECKOUT_ENABLED==="true"||await ownerPilotAllowed(request,env)}});
   if(path==="/api/payu/initiate"&&method==="POST") {
     if(request.headers.get("Origin")!==url.origin)return json({ok:false,error:"Origin mismatch"},403);
     if(!String(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
@@ -84,7 +98,7 @@ export async function handlePayu(request,env) {
     const offer=PAYMENT_OFFERS[clean(b.offer,80)],name=clean(b.name,60),email=clean(b.email,100).toLowerCase(),phone=clean(b.phone,25);
     if(!offer||name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[+0-9() -]{8,25}$/.test(phone))return json({ok:false,error:"Valid package, name, email and phone required"},400);
     if(offer.id!=="sitecheck-pro-onetime")return json({ok:false,error:"PayU website-package checkout is not enabled; use Razorpay."},503);
-    if(offer.id==="sitecheck-pro-onetime"&&env.SITECHECK_PRO_CHECKOUT_ENABLED!=="true")return json({ok:false,error:"SiteCheck Pro checkout is awaiting payment and fulfillment verification."},503);
+    if(offer.id==="sitecheck-pro-onetime"&&env.SITECHECK_PRO_CHECKOUT_ENABLED!=="true"&&!(await ownerPilotAllowed(request,env)))return json({ok:false,error:"SiteCheck Pro checkout is awaiting payment and fulfillment verification."},503);
     let accountId=null;
     if(offer.id==="sitecheck-pro-onetime"){
       const sessionHeaders=new Headers();
