@@ -73,6 +73,7 @@ export async function handlePayu(request,env) {
     const b=await request.json().catch(()=>({}));
     const offer=PAYMENT_OFFERS[clean(b.offer,80)],name=clean(b.name,60),email=clean(b.email,100).toLowerCase(),phone=clean(b.phone,25);
     if(!offer||name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[+0-9() -]{8,25}$/.test(phone))return json({ok:false,error:"Valid package, name, email and phone required"},400);
+    if(offer.id==="sitecheck-pro-onetime"&&env.SITECHECK_PRO_CHECKOUT_ENABLED!=="true")return json({ok:false,error:"SiteCheck Pro checkout is awaiting payment and fulfillment verification."},503);
     const txnid="XS"+crypto.randomUUID().replace(/-/g,"").slice(0,20).toUpperCase();
     const fields=createPayuCheckoutFields({key:env.PAYU_KEY,txnid,offerId:offer.id,name,email,phone,siteOrigin:url.origin});
     const now=new Date().toISOString();
