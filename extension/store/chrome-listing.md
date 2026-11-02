@@ -1,6 +1,6 @@
 # Chrome Web Store listing — Xender SiteCheck
 
-Status: **package and listing ready; not submitted.** Publishing on the Chrome Web Store requires a one-time US$5 developer registration fee. Under the ₹0-spend rule this is intentionally **not** paid until Xender Secrets has its first revenue. Everything below is ready to paste once Sahil approves the fee.
+Status: **v1.0.0 is published; v2.0.0 Pro update is not submitted.** Publishing on the Chrome Web Store requires a one-time US$5 developer registration fee. Under the ₹0-spend rule this is intentionally **not** paid until Xender Secrets has its first revenue. Everything below is ready to paste once Sahil approves the fee.
 
 | Field | Value |
 |---|---|
@@ -27,7 +27,7 @@ Website QA & conversion audit. Check the current page for SEO basics, accessibil
 <!-- field:description max:16000 -->
 Check the current webpage for SEO basics, accessibility issues, usability problems and conversion friction — directly in your browser.
 
-Xender SiteCheck is a website checker for business owners, marketers and web teams. Open any normal web page, click the SiteCheck button, and in about a second you get a clear list of what to fix, why it matters and how to fix it. No sign-up, no account, no data leaves your browser.
+Xender SiteCheck is a website checker for business owners, marketers and web teams. Open any normal web page, click the SiteCheck button, and in about a second you get a clear list of what to fix, why it matters and how to fix it. Free checks need no account. Audited page data stays local. Optional Pro verifies a license key with Xender Secrets.
 
 WHAT IT CHECKS (49 checks)
 
