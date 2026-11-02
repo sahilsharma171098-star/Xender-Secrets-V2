@@ -6,7 +6,7 @@ const hash=async value=>Array.from(new Uint8Array(await crypto.subtle.digest("SH
 const tokenPattern=/^sc1_[A-Za-z0-9_-]{40,80}$/;
 const cleanEmail=s=>String(s||"").trim().toLowerCase();
 export function ensureSitecheckLicenseSchema(sql){
-  sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_license_keys (email TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, issued_at TEXT NOT NULL)");
+  sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_license_keys (user_id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, issued_at TEXT NOT NULL)");
   sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_refund_checks (txnid TEXT PRIMARY KEY,checked_at TEXT NOT NULL)");
 }
 export async function handleSitecheckLicenseInternal(request,sql,sessionUser){
@@ -19,20 +19,21 @@ export async function handleSitecheckLicenseInternal(request,sql,sessionUser){
   if(path==="/internal/sitecheck-license/issue"){
     const user=await sessionUser(request);
     if(!user?.email)return json({ok:false,error:"Sign in to your Xender account"},401);
-    const email=cleanEmail(user.email);
-    const entitlement=sql.exec("SELECT 1 FROM extension_entitlements WHERE product_id='sitecheck' AND email=? AND status='active' LIMIT 1",email).toArray()[0];
+    const userId=String(user.id||"");
+    if(!userId)return json({ok:false,error:"Account identity unavailable"},401);
+    const entitlement=sql.exec("SELECT 1 FROM sitecheck_order_accounts a JOIN extension_entitlements e ON e.txnid=a.txnid AND e.product_id='sitecheck' AND e.status='active' JOIN payu_orders p ON p.txnid=e.txnid AND p.status='captured' WHERE a.user_id=? LIMIT 1",userId).toArray()[0];
     if(!entitlement)return json({ok:false,error:"No active SiteCheck Pro purchase on this account"},403);
     const bytes=crypto.getRandomValues(new Uint8Array(32));
     const token="sc1_"+Array.from(bytes,v=>v.toString(16).padStart(2,"0")).join("");
     const digest=await hash(token);
-    sql.exec("INSERT INTO sitecheck_license_keys(email,token_hash,issued_at) VALUES (?,?,?) ON CONFLICT(email) DO UPDATE SET token_hash=excluded.token_hash,issued_at=excluded.issued_at",email,digest,new Date().toISOString());
+    sql.exec("INSERT INTO sitecheck_license_keys(user_id,token_hash,issued_at) VALUES (?,?,?) ON CONFLICT(user_id) DO UPDATE SET token_hash=excluded.token_hash,issued_at=excluded.issued_at",userId,digest,new Date().toISOString());
     return json({ok:true,licenseKey:token,note:"Copy this key now. Generating a new key deactivates the old one."});
   }
   if(path==="/internal/sitecheck-license/verify"){
     const token=body.licenseKey;
     if(typeof token!=="string"||!tokenPattern.test(token))return json({ok:false,pro:false,error:"Invalid license key"},400);
     const digest=await hash(token);
-    const valid=sql.exec("SELECT p.txnid, p.payu_payment_id AS paymentId,p.amount_paise AS amountPaise, r.checked_at AS checkedAt FROM sitecheck_license_keys l JOIN extension_entitlements e ON e.email=l.email AND e.product_id='sitecheck' AND e.status='active' JOIN payu_orders p ON p.txnid=e.txnid AND p.status='captured' LEFT JOIN sitecheck_refund_checks r ON r.txnid=p.txnid WHERE l.token_hash=? LIMIT 1",digest).toArray()[0];
+    const valid=sql.exec("SELECT p.txnid, p.payu_payment_id AS paymentId,p.amount_paise AS amountPaise, r.checked_at AS checkedAt FROM sitecheck_license_keys l JOIN sitecheck_order_accounts a ON a.user_id=l.user_id JOIN extension_entitlements e ON e.txnid=a.txnid AND e.product_id='sitecheck' AND e.status='active' JOIN payu_orders p ON p.txnid=e.txnid AND p.status='captured' LEFT JOIN sitecheck_refund_checks r ON r.txnid=p.txnid WHERE l.token_hash=? LIMIT 1",digest).toArray()[0];
     // Transaction metadata is returned only across the internal Durable Object binding.
     // The public Worker must strip it before returning the Pro yes/no response.
     return json({ok:true,pro:Boolean(valid),product:"sitecheck",transaction:valid||null});
