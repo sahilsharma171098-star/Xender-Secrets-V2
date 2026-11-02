@@ -48,7 +48,7 @@ test("Pro purchase issues hash-only key; rotation, refund and invalid key fail c
  assert.match(key,/^sc1_[a-f0-9]{64}$/);
  assert.equal(db.prepare("SELECT token_hash FROM sitecheck_license_keys WHERE user_id=?").get(userId).token_hash===key,false);
  assert.equal((await invoke(sql,"verify",{licenseKey:key})).data.pro,true);
- assert.equal((await invoke(sql,"verify",{licenseKey:key.slice(0,-1)+"0"})).data.pro,false);
+ assert.equal((await invoke(sql,"verify",{licenseKey:key.slice(0,-1)+(key.endsWith("0")?"1":"0")})).data.pro,false);
  const next=(await invoke(sql,"issue",{}, user)).data.licenseKey;
  assert.notEqual(next,key);
  assert.equal((await invoke(sql,"verify",{licenseKey:key})).data.pro,false);
