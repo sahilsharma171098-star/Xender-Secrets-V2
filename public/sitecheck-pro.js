@@ -3,6 +3,21 @@
   const buy=$("sitecheckBuy"),buyForm=$("sitecheckPurchase");
   const status=(id,text)=>{ $(id).textContent=text; };
   let enabled=false, account=null;
+  // The URL query is only a prompt to check the server; never proof of a payment.
+  if(new URLSearchParams(location.search).get("payment")==="verified"){
+    status("licenseStatus","Checking the captured payment and your account entitlement…");
+    fetch("/api/sitecheck/entitlement",{credentials:"same-origin",cache:"no-store"})
+      .then(async response=>{
+        if(response.status===401)throw new Error("Sign in to your purchasing Xender account to restore your Pro license.");
+        if(!response.ok)throw new Error("License lookup unavailable; use the same account email and retry.");
+        const result=await response.json();
+        if(result.ok===true&&result.pro===true){
+          status("licenseStatus","Payment confirmed for this Xender account. Select Generate a license key, then activate it in SiteCheck.");
+          $("sitecheckLicenseIssue").focus();
+        }else status("licenseStatus","Your payment is still being verified. No license has been issued yet. Please check again or contact support.");
+      })
+      .catch(error=>status("licenseStatus",error.message||"Unable to verify entitlement right now."));
+  }
   Promise.all([
     fetch("/api/payu/config",{headers:{accept:"application/json"},credentials:"same-origin"})
       .then(async r=>{if(!r.ok)throw Error("Payment gateway unavailable");return r.json()}),
