@@ -54,8 +54,11 @@ test("captured ₹499 SiteCheck purchase activates Pro exactly once, refund revo
   const db=new DatabaseSync(":memory:");
   ensurePayuSchema(db);
   const txnid="XS20261102SC1234567";
-  const order={txnid,offerId:"sitecheck-pro-onetime",amountPaise:49900,name:"Buyer",email:"buyer@example.com",phone:"9876543210",reference:"",createdAt:new Date().toISOString()};
+  const accountId="11111111-1111-4111-8111-111111111111";
+  const order={txnid,offerId:"sitecheck-pro-onetime",amountPaise:49900,name:"Buyer",email:"buyer@example.com",phone:"9876543210",reference:"",createdAt:new Date().toISOString(),accountId};
+  assert.equal((await send(db,"/api/payu-ledger/create",{order:{...order,txnid:"XS20261102NOACCOUNT",accountId:undefined}})).status,400);
   assert.equal((await send(db,"/api/payu-ledger/create",{order})).status,200);
+  assert.equal(db.prepare("SELECT user_id FROM sitecheck_order_accounts WHERE txnid=?").get(txnid).user_id,accountId);
   assert.deepEqual((await send(db,"/api/payu-ledger/entitlements",{email:order.email})).body.entitlements,[]);
   const settled=await send(db,"/api/payu-ledger/settle",{txnid,paymentId:"pay_sitecheck",verifiedStatus:"captured"});
   assert.equal(settled.body.status,"captured");
