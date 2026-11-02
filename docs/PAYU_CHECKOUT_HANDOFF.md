@@ -5,7 +5,7 @@ Scope: Xender SiteCheck only. GridSnip OCR is explicitly Phase 2. Branch: PR #92
 ## Product and payment implementation
 
 - SiteCheck Pro SKU: \`sitecheck-pro-onetime\`, **₹499 inclusive of 18% GST**, one-time purchase. Free 49-check audit and plain text copy stay free.
-- Website: \`/sitecheck-pro\` shows pricing, an optional PayU purchase form (disabled by default), and authenticated license-key generation/recovery for a user signed in with the **same email used to purchase**.
+- Website: \`/sitecheck-pro\` shows pricing, an optional PayU purchase form (disabled by default), and authenticated license-key generation/recovery for the **same Xender account ID that initiated the purchase**. The user must be signed in before checkout; the buyer email is locked to the account email.
 - Server-generated, signed PayU hosted checkout fields and transaction/order ledger in \`APP_STATE\` (Durable Object SQLite); PayU Salt stays in Worker secrets.
 - PayU callback and \`/api/payu/webhook\`: validate PayU reverse SHA-512, exact persisted txnid/email/offer/amount, and authoritative \`verify_payment\` with \`success/captured\` before idempotent settlement and SiteCheck entitlement issuance.
 - \`/api/sitecheck/license/issue\`: same-origin, authenticated account POST; rotates a random 256-bit bearer key and stores only its SHA-256 hash. Old key is invalidated by rotation; no key is sent to the user except on issuance.
@@ -37,7 +37,7 @@ Required checks on PR HEAD:
 ## Manual real-payment and deployment gates (still REQUIRED)
 
 1. Configure **PayU payment webhooks** in the merchant dashboard for successful (and optionally failed) payments, using \`https://www.xendersecrets.com/api/payu/webhook\`. A valid reverse-hashed webhook is only a trigger; the server still calls \`verify_payment\`. PayU may require merchant-side webhook configuration.
-2. On an isolated, authorized verification deployment/configuration (not production sales), turn on the SiteCheck checkout flag **only** for the test. Complete an explicitly authorized INR ₹499 test purchase using the same signed-in account email. Confirm transaction captured in merchant dashboard, ledger captured, one entitlement issued, and no duplicate grants on webhook replay.
+2. On an isolated, authorized verification deployment/configuration (not production sales), turn on the SiteCheck checkout flag **only** for the test. Complete an explicitly authorized INR ₹499 test purchase using the same signed-in account. Confirm transaction captured in merchant dashboard, ledger captured, one entitlement issued, and no duplicate grants on webhook replay.
 3. Restore across popup restart/reinstall using generated license; download a safe CSV from a real audited page. Confirm free features continue without a license.
 4. Issue an authorized **full refund through PayU** for that purchase; confirm PayU refund query returns success and Pro revokes at next reconciliation. Also test a partial refund and failed/pending status without inappropriate revocation.
 5. Verify GST receipt/invoice handling, bank settlement, support instructions, checkout retry/error handling, and refund/chargeback escalation. A chargeback webhook with merchant-verified signature is **not yet configured**; admin manual verification applies for now.
