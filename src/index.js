@@ -927,9 +927,9 @@ export default {
 
     if(path==="/api/sitecheck/entitlement" && method==="GET"){
       const user=await appUser(request,env);
-      if(!user?.email)return json({ok:false,error:"Sign in required"},401);
+      if(!user?.id)return json({ok:false,error:"Sign in required"},401);
       const id=env.APP_STATE.idFromName("xender-secrets");
-      const result=await env.APP_STATE.get(id).fetch(new Request("https://internal.invalid/api/payu-ledger/entitlements",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email:user.email})}));
+      const result=await env.APP_STATE.get(id).fetch(new Request("https://internal.invalid/api/payu-ledger/entitlements-for-account",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({accountId:user.id})}));
       if(!result.ok)return json({ok:false,error:"Entitlement lookup unavailable"},503);
       const data=await result.json();
       const active=Boolean(data.entitlements?.some(e=>e.product_id==="sitecheck"&&e.status==="active"));
