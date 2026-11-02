@@ -80,7 +80,8 @@ export async function handlePayu(request,env) {
     await ledger(env,"create",{order:{txnid,offerId:offer.id,amountPaise:offer.amountPaise,name,email,phone,reference:clean(b.reference,80),createdAt:now}});
     return json({ok:true,provider:"payu",url:PAYU_PRODUCTION_PAYMENT_URL,fields:await signedPayuCheckoutFields(fields,env.PAYU_SALT)},201);
   }
-  if(path==="/api/payu/callback"&&method==="POST") {
+  if((path==="/api/payu/callback"||path==="/api/payu/webhook")&&method==="POST") {
+    const isWebhook=path==="/api/payu/webhook";
     if(!(request.headers.get("content-type")||"").includes("application/x-www-form-urlencoded"))return json({ok:false,error:"Invalid callback"},415);
     const raw=await request.text();
     if(raw.length>16000)return json({ok:false},413);
@@ -88,12 +89,12 @@ export async function handlePayu(request,env) {
     if(data.key!==env.PAYU_KEY||!await verifyPayuCallbackHash(data,env.PAYU_SALT))return json({ok:false,error:"Invalid callback signature"},400);
     const txnid=clean(data.txnid,25),{order}=await ledger(env,"get",{txnid});
     if(!order||order.email!==data.email.toLowerCase()||order.offer_id!==data.udf1||order.amount_paise!==Math.round(Number(data.amount)*100)||PAYMENT_OFFERS[order.offer_id]?.name!==data.productinfo)return json({ok:false,error:"Order mismatch"},400);
-    if(data.status!=="success")return Response.redirect(url.origin+"/payment-failed?txnid="+encodeURIComponent(txnid),303);
+    if(data.status!=="success")return isWebhook?json({ok:true,captured:false}):Response.redirect(url.origin+"/payment-failed?txnid="+encodeURIComponent(txnid),303);
     let payment;
     try{payment=await queryPayuTransaction(txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{return json({ok:false,error:"Payment verification pending"},503);}
     if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)return json({ok:false,error:"Not captured"},409);
     await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});
-    return Response.redirect(url.origin+"/payment-success?txnid="+encodeURIComponent(txnid),303);
+    return isWebhook?json({ok:true,captured:true,fulfilled:true}):Response.redirect(url.origin+"/payment-success?txnid="+encodeURIComponent(txnid),303);
   }
   if(path==="/api/payu/admin/reconcile"&&method==="POST") {
     const auth=request.headers.get("authorization")||"";
