@@ -1,0 +1,40 @@
+name: SiteCheck Pro Release Candidate
+on:
+  pull_request:
+    paths:
+      - "extension/**"
+      - "src/sitecheck-license.mjs"
+      - "src/payu-*.mjs"
+      - "src/payments.mjs"
+      - "tests/unit/sitecheck-license.test.mjs"
+      - "tests/unit/payu-*.test.mjs"
+      - ".github/workflows/sitecheck-pro-rc.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sitecheck-rc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Unit tests (including payment, refund and license)
+        run: npm test
+      - name: Store policy and permissions checks
+        run: npm run extension:lint
+      - name: SiteCheck real browser tests
+        run: npm run extension:test
+      - name: Build release candidate ZIPs
+        run: npm run extension:package
+      - name: Upload unsigned store submission candidates
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitecheck-pro-v2-candidates
+          path: extension/dist/xender-sitecheck-*.zip
+          if-no-files-found: error
+          retention-days: 14
