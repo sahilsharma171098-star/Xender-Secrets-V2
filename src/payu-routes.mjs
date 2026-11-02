@@ -45,6 +45,12 @@ export async function handlePayuLedger(request,sql) {
     sql.exec("INSERT INTO payu_events (txnid,event,status,created_at) VALUES (?,'verified','captured',?)",b.txnid,now);
     return json({ok:true,status:"captured"});
   }
+  if(path.endsWith("/entitlements-for-account")) {
+    const userId=String(b.accountId||"");
+    if(!/^[a-f0-9-]{36}$/i.test(userId))return json({ok:false,error:"Invalid account"},400);
+    const rows=sql.exec("SELECT e.product_id,e.status,e.issued_at,e.revoked_at FROM extension_entitlements e JOIN sitecheck_order_accounts a ON a.txnid=e.txnid JOIN payu_orders p ON p.txnid=e.txnid WHERE a.user_id=? AND p.status='captured' ORDER BY e.issued_at DESC",userId).toArray();
+    return json({ok:true,entitlements:rows});
+  }
   if(path.endsWith("/entitlements")) {
     // Internal-only read: never expose this route directly on the public Worker.
     if(!validEmail(clean(b.email,100)))return json({ok:false},400);
