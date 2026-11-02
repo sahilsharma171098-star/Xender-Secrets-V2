@@ -114,7 +114,7 @@ export async function handlePayu(request,env) {
     try{payment=await queryPayuTransaction(txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{return json({ok:false,error:"Payment verification pending"},503);}
     if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)return json({ok:false,error:"Not captured"},409);
     await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});
-    return isWebhook?json({ok:true,captured:true,fulfilled:true}):Response.redirect(url.origin+"/payment-success?txnid="+encodeURIComponent(txnid),303);
+    return isWebhook?json({ok:true,captured:true,fulfilled:true}):Response.redirect(order.offer_id==="sitecheck-pro-onetime"?url.origin+"/sitecheck-pro?payment=verified":url.origin+"/payment-success?txnid="+encodeURIComponent(txnid),303);
   }
   if(path==="/api/payu/admin/reconcile"&&method==="POST") {
     const auth=request.headers.get("authorization")||"";
