@@ -62,6 +62,15 @@
         <button class="btn primary" id="exportCsv" type="button" hidden>Export priority CSV (Pro)</button>
         <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
       </div>
+      <section id="baselinePanel" class="pro-compare" aria-label="SiteCheck Pro before-and-after comparison" hidden>
+        <h3>Before / after comparison (Pro)</h3>
+        <p>Save a baseline for this exact page, then rerun the audit after making improvements. Only scores and issue counts stay on your device.</p>
+        <div class="pro-compare-actions">
+          <button class="btn" id="saveBaseline" type="button">Save baseline</button>
+          <button class="btn" id="compareBaseline" type="button" disabled>Compare with saved</button>
+        </div>
+        <p id="baselineStatus" class="pro-compare-status" role="status" aria-live="polite"></p>
+      </section>
     </section>
 
     <section class="pro-license" aria-label="SiteCheck Pro">
@@ -78,6 +87,7 @@
       <div class="pro-actions">
         <a href="https://www.xendersecrets.com/sitecheck-pro" target="_blank" rel="noopener">Buy / retrieve a license</a>
         <button id="deactivatePro" class="pro-text-button" type="button" hidden>Remove saved key</button>
+        <button id="clearBaselines" class="pro-text-button" type="button">Delete saved comparisons</button>
       </div>
     </section>
     <aside class="cta" id="cta" hidden>

@@ -22,7 +22,7 @@ When you click the SiteCheck button, the extension runs its bundled audit script
 - computed colours of text (for contrast), element sizes and positions (for sideways-scroll detection), and the number of elements on the page;
 - the page address (scheme, host and path) so the report can say which page was checked. The query string and fragment are not included in the result.
 
-The results are shown in the extension popup. They are held only in the popup's memory and disappear when the popup closes. Page audit results are not saved or synced. A Pro user who activates saves a license key in local extension storage (never browser sync).
+The results are shown in the extension popup. They are held only in the popup's memory and disappear when the popup closes. Free scans are not saved automatically or synced. With active Pro, the user may explicitly save a minimal before/after baseline for the exact page checked. This keeps only its origin and path (never query parameters), heuristic score, issue identifiers/counts and a timestamp in local extension storage, capped at 20 pages. No page content, DOM, issue samples or forms are stored. The customer can delete saved comparisons at any time, even after Pro expires. A Pro user also saves a license key locally (never browser sync).
 
 The extension does not run in the background, does not read other tabs, and cannot see pages you have not clicked it on.
 
@@ -32,7 +32,7 @@ The extension does not run in the background, does not read other tabs, and cann
 - Pro purchase/account details are handled separately on the Xender website under its website privacy and refund policies.
 - If a user voluntarily activates Pro, the extension sends **only** their entered license key to `https://www.xendersecrets.com/api/sitecheck/license/verify` via HTTPS. The server looks up a SHA-256 hash of the key and returns a boolean status. It receives **no audited URL, page contents, scores, or reports**.
 - The key is saved in browser **local** extension storage, not sync. The user can remove it from the popup. Refunded/charged-back purchases lose Pro on successful online revalidation. If validation cannot reach the server, free capabilities remain available.
-- The CSV report is generated and downloaded locally; it is not uploaded.
+- CSV exports and user-saved before/after comparisons stay locally on the device. Neither is uploaded.
 
 ## What leaves your browser
 
@@ -48,8 +48,10 @@ The audited page's data stays local. Optional Pro sends only the license key for
 |---|---|
 | `activeTab` | Gives SiteCheck temporary access to the current tab only after you click the toolbar button. |
 | `scripting` | Lets SiteCheck run its own bundled audit script in that tab. No remote code is loaded or executed. |
+| `storage` (Pro release) | Stores optional local license key and manually saved minimal comparisons, not browser sync. |
+| `https://www.xendersecrets.com/*` (Pro release) | Checks optional Pro entitlement with the first-party Xender HTTPS service. Audited data is never sent. |
 
-SiteCheck does not request access to all websites, your tabs list, history, cookies, downloads, storage or any other permission.
+SiteCheck does not request access to all websites, browsing history, cookies or downloads. The planned Pro release adds only local extension storage and first-party Xender HTTPS access for license verification. No background tracking or browser sync.
 
 ## Data sharing and sale
 

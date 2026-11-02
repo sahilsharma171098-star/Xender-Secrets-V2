@@ -5,6 +5,7 @@ import { scoreReport } from "./lib/score.js";
 import { restrictionFor, messageForError } from "./lib/restricted.js";
 import { reportText } from "./lib/report.js";
 import { prioritizedCsv } from "./lib/pro-export.js";
+import { BASELINE_STORAGE_KEY, snapshotOf, withSavedBaseline, findSavedBaseline, compareWithBaseline } from "./lib/baseline.js";
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = (id) => document.getElementById(id);
@@ -119,6 +120,7 @@ function render() {
   $("passedBox").hidden = scored.passed.length === 0;
   $("exportCsv").hidden = !proActive;
   show("report");
+  refreshBaselineControls();
 }
 
 function issueCard(i) {
@@ -155,7 +157,8 @@ function showLicenseState(active) {
   proActive = Boolean(active);
   $("exportCsv").hidden = !proActive || !current;
   $("deactivatePro").hidden = !active;
-  proStatus(active ? "Pro active · Priority CSV export enabled" : "Free edition · Pro export locked");
+  proStatus(active ? "Pro active · CSV export and before/after comparison enabled" : "Free edition · Pro tools locked");
+  refreshBaselineControls();
 }
 async function validateKey(key) {
   if (!/^sc1_[a-f0-9]{64}$/.test(key)) throw new Error("Invalid SiteCheck license key format");
@@ -215,6 +218,68 @@ $("exportCsv").addEventListener("click", () => {
   link.remove();
   setTimeout(() => URL.revokeObjectURL(objectUrl), 2000);
 });
+// Only a deliberate click stores a minimal local page snapshot. Saved snapshots are
+// never sent to Xender or to the website under audit.
+async function readSavedBaselines() {
+  const result = await api.storage.local.get(BASELINE_STORAGE_KEY);
+  return Array.isArray(result[BASELINE_STORAGE_KEY]) ? result[BASELINE_STORAGE_KEY] : [];
+}
+async function refreshBaselineControls() {
+  $("baselinePanel").hidden = !proActive || !current;
+  if (!proActive || !current) return;
+  const report = current.result;
+  try {
+    const saved = findSavedBaseline(await readSavedBaselines(), report.url);
+    if (!proActive || current?.result !== report) return;
+    $("compareBaseline").disabled = !saved;
+    $("baselineStatus").textContent = saved
+      ? "Baseline saved on " + saved.savedAt.slice(0, 10) + ". Rerun this exact page after making fixes."
+      : "No baseline saved for this page yet.";
+  } catch {
+    $("compareBaseline").disabled = true;
+    $("baselineStatus").textContent = "Saved comparisons unavailable on this browser.";
+  }
+}
+$("saveBaseline").addEventListener("click", async () => {
+  if (!proActive || !current) return;
+  try {
+    const baseline = snapshotOf(current.result, current.scored);
+    const updated = withSavedBaseline(await readSavedBaselines(), baseline);
+    if (!proActive) return;
+    await api.storage.local.set({ [BASELINE_STORAGE_KEY]: updated });
+    await refreshBaselineControls();
+  } catch {
+    $("baselineStatus").textContent = "Could not save baseline on this device.";
+  }
+});
+$("compareBaseline").addEventListener("click", async () => {
+  if (!proActive || !current) return;
+  try {
+    const latest = snapshotOf(current.result, current.scored);
+    const original = findSavedBaseline(await readSavedBaselines(), latest.url);
+    const diff = compareWithBaseline(original, latest);
+    if (!proActive) return;
+    const score = diff.delta == null ? "Score difference unavailable" :
+      "Score " + diff.before + " → " + diff.after + " (" +
+      (diff.delta > 0 ? "+" : "") + diff.delta + ")";
+    $("baselineStatus").textContent = score + " · " + diff.resolved +
+      " issue types resolved · " + diff.introduced + " new issue types · " +
+      diff.fewerOccurrences + " fewer issue instances · " +
+      diff.moreOccurrences + " more issue instances. Same-page heuristic only.";
+  } catch {
+    $("baselineStatus").textContent = "Save a baseline for this exact page first.";
+  }
+});
+$("clearBaselines").addEventListener("click", async () => {
+  try {
+    await api.storage.local.remove(BASELINE_STORAGE_KEY);
+    $("baselineStatus").textContent = "Saved comparisons deleted from this browser.";
+    await refreshBaselineControls();
+  } catch {
+    $("baselineStatus").textContent = "Couldn't delete saved comparisons on this device.";
+  }
+});
+
 refreshLicense();
 
 $("rerun").addEventListener("click", run);
