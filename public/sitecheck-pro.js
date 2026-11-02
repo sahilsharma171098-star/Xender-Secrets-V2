@@ -2,20 +2,33 @@
   const $=id=>document.getElementById(id);
   const buy=$("sitecheckBuy"),buyForm=$("sitecheckPurchase");
   const status=(id,text)=>{ $(id).textContent=text; };
-  let enabled=false;
-  fetch("/api/payu/config",{headers:{accept:"application/json"},credentials:"same-origin"})
-    .then(async r=>{if(!r.ok)throw Error("Payment gateway unavailable");return r.json()})
-    .then(data=>{
-      if(data.sitecheck?.amountPaise!==49900||data.sitecheck.currency!=="INR")throw Error("SiteCheck price mismatch");
-      enabled=data.sitecheck.checkoutEnabled===true;
-      buy.disabled=!enabled;
-      buy.textContent=enabled?"Pay ₹499 securely with PayU":"SiteCheck Pro checkout not yet available";
-      status("checkoutStatus",enabled?"PayU is ready. Only pay using the verified secure checkout.":"Live payments remain disabled until fulfillment verification is complete.");
-    }).catch(()=>{buy.disabled=true;status("checkoutStatus","Secure checkout is not available right now. No payment was attempted.")});
+  let enabled=false, account=null;
+  Promise.all([
+    fetch("/api/payu/config",{headers:{accept:"application/json"},credentials:"same-origin"})
+      .then(async r=>{if(!r.ok)throw Error("Payment gateway unavailable");return r.json()}),
+    fetch("/api/auth/me",{credentials:"same-origin"})
+      .then(async r=>r.ok?(await r.json()).user:null)
+      .catch(()=>null)
+  ]).then(([data,user])=>{
+    if(data.sitecheck?.amountPaise!==49900||data.sitecheck.currency!=="INR")throw Error("SiteCheck price mismatch");
+    account=user?.id&&user.email?user:null;
+    enabled=data.sitecheck.checkoutEnabled===true&&Boolean(account);
+    buy.disabled=!enabled;
+    buy.textContent=enabled?"Pay ₹499 securely with PayU":"SiteCheck Pro checkout not yet available";
+    if(account){
+      $("buyerName").value=String(account.name||"").slice(0,60);
+      $("buyerEmail").value=String(account.email||"").toLowerCase();
+      $("buyerEmail").readOnly=true;
+    }
+    status("checkoutStatus",!account?
+      "Sign in to your Xender account first. Payments require a signed-in account to protect your Pro license.":
+      enabled?"Secure PayU checkout is available for your signed-in account.":"Payments remain disabled until fulfillment verification is complete.");
+  }).catch(()=>{buy.disabled=true;enabled=false;status("checkoutStatus","Secure checkout is not available right now. No payment was attempted.")});
   buyForm.addEventListener("submit",async ev=>{
-    ev.preventDefault();if(!enabled)return;
+    ev.preventDefault();if(!enabled||!account?.id)return;
     buy.disabled=true;status("checkoutStatus","Creating secure PayU transaction…");
     const b=Object.fromEntries(new FormData(buyForm).entries());
+    b.email=String(account.email).toLowerCase();
     try{
       const resp=await fetch("/api/payu/initiate",{method:"POST",headers:{"content-type":"application/json"},credentials:"same-origin",body:JSON.stringify({...b,offer:"sitecheck-pro-onetime"})});
       const data=await resp.json();
