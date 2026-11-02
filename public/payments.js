@@ -18,22 +18,6 @@
     minimumFractionDigits: 2
   }).format(Number(paise || 0) / 100);
 
-  const loadCheckout = () => new Promise((resolve, reject) => {
-    if (window.Razorpay) return resolve();
-    const existing = document.querySelector('script[data-razorpay-checkout]');
-    if (existing) {
-      existing.addEventListener("load", resolve, { once: true });
-      existing.addEventListener("error", reject, { once: true });
-      return;
-    }
-    const s = document.createElement("script");
-    s.src = "https://checkout.razorpay.com/v1/checkout.js";
-    s.async = true;
-    s.dataset.razorpayCheckout = "1";
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
 
   let config = null;
   fetch("/api/payu/config", { headers: { accept: "application/json" } })
