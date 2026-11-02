@@ -1,9 +1,10 @@
 // Xender SiteCheck popup. Runs src/audit.js in the active tab (activeTab + scripting),
-// scores the result locally and renders it. No network requests, no storage.
+// scores locally. Optional Pro sends only a license key to Xender for verification.
 import { CATEGORIES } from "./lib/checks.js";
 import { scoreReport } from "./lib/score.js";
 import { restrictionFor, messageForError } from "./lib/restricted.js";
 import { reportText } from "./lib/report.js";
+import { prioritizedCsv } from "./lib/pro-export.js";
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = (id) => document.getElementById(id);
@@ -116,6 +117,7 @@ function render() {
   $("passedLabel").textContent = `Passed checks (${scored.passed.length})`;
   $("passedList").replaceChildren(...scored.passed.map((p) => h("li", {}, p.passTitle, p.detail ? h("span", { class: "pd", text: " — " + p.detail }) : null)));
   $("passedBox").hidden = scored.passed.length === 0;
+  $("exportCsv").hidden = !proActive;
   show("report");
 }
 
@@ -143,6 +145,77 @@ async function copyReport() {
   }
   setTimeout(() => { $("copyStatus").textContent = ""; }, 2500);
 }
+
+// License keys are stored only on this device and only sent to the Xender license API.
+// Audited URLs, page content and reports are never sent to the license service.
+const LICENSE_API = "https://www.xendersecrets.com/api/sitecheck/license/verify";
+let proActive = false;
+const proStatus = (message) => { $("proStatus").textContent = message; };
+function showLicenseState(active) {
+  proActive = Boolean(active);
+  $("exportCsv").hidden = !proActive || !current;
+  $("deactivatePro").hidden = !active;
+  proStatus(active ? "Pro active · Priority CSV export enabled" : "Free edition · Pro export locked");
+}
+async function validateKey(key) {
+  if (!/^sc1_[a-f0-9]{64}$/.test(key)) throw new Error("Invalid SiteCheck license key format");
+  const response = await fetch(LICENSE_API, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ licenseKey: key }),
+    credentials: "omit",
+    cache: "no-store"
+  });
+  if (!response.ok) throw new Error("License server unavailable or key invalid");
+  const data = await response.json();
+  return data.ok === true && data.product === "sitecheck" && data.pro === true;
+}
+async function refreshLicense() {
+  try {
+    const saved = await api.storage.local.get("sitecheckLicenseKey");
+    if (!saved.sitecheckLicenseKey) { showLicenseState(false); return; }
+    showLicenseState(await validateKey(saved.sitecheckLicenseKey));
+  } catch {
+    showLicenseState(false);
+    proStatus("Unable to verify Pro. Free audit remains available; reconnect to retry.");
+  }
+}
+$("proForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const key = $("licenseKey").value.trim();
+  $("activatePro").disabled = true;
+  proStatus("Verifying your Pro license…");
+  try {
+    if (!await validateKey(key)) throw new Error("No active purchase for this key");
+    await api.storage.local.set({ sitecheckLicenseKey: key });
+    $("licenseKey").value = "";
+    showLicenseState(true);
+  } catch (error) {
+    showLicenseState(false);
+    proStatus(error?.message || "License could not be verified.");
+  } finally {
+    $("activatePro").disabled = false;
+  }
+});
+$("deactivatePro").addEventListener("click", async () => {
+  await api.storage.local.remove("sitecheckLicenseKey");
+  showLicenseState(false);
+});
+$("exportCsv").addEventListener("click", () => {
+  if (!proActive || !current) return;
+  const csv = prioritizedCsv(current.result, current.scored);
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  const host = String(current.result.host || "website").replace(/[^a-z0-9.-]/gi, "-").slice(0, 80);
+  link.download = "xender-sitecheck-" + host + ".csv";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 2000);
+});
+refreshLicense();
 
 $("rerun").addEventListener("click", run);
 $("copy").addEventListener("click", copyReport);
