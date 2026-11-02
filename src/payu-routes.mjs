@@ -37,6 +37,7 @@ export async function handlePayuLedger(request,sql) {
     if(b.verifiedStatus!=="captured"||!b.paymentId)return json({ok:false},400);
     const now=new Date().toISOString();
     sql.exec("UPDATE payu_orders SET status='captured',payu_payment_id=?,updated_at=? WHERE txnid=? AND status='pending'",b.paymentId,now,b.txnid);
+    if(o.offer_id==="sitecheck-pro-onetime") sql.exec("INSERT OR IGNORE INTO extension_entitlements (id,email,product_id,txnid,status,issued_at,revoked_at) VALUES (?,?,?,?,'active',?,NULL)",crypto.randomUUID(),o.email,"sitecheck",b.txnid,now);
     sql.exec("INSERT INTO payu_events (txnid,event,status,created_at) VALUES (?,'verified','captured',?)",b.txnid,now);
     return json({ok:true,status:"captured"});
   }
