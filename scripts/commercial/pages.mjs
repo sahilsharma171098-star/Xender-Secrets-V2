@@ -1135,8 +1135,8 @@ export function allPages() {
     { file: "media.html", html: mediaPage() },
     ...INDUSTRIES.map((i) => ({ file: i.file, html: industryPage(i) })),
     ...LOCATIONS.map((l) => ({ file: l.file, html: locationPage(l) })),
-    { file: "sitecheck.html", html: sitecheckPage() },
-    { file: "sitecheck-privacy.html", html: sitecheckPrivacyPage() },
+    // SiteCheck public pages are maintained as static HTML for optional Pro and privacy disclosures.
+    // Do not regenerate them from legacy free-only commercial templates.
     ...ARTICLES.map((a) => ({ file: a.file, html: articlePage(a) })),
   ];
 }
