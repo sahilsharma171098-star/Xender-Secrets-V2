@@ -37,3 +37,21 @@ test("Admin refund reconciliation rejects missing credentials and invalid reason
   assert.equal((await handlePayu(request({authorization:"Bearer admin-secret"},"not-a-reason"),env)).status,400);
   assert.equal((await handlePayu(request({authorization:"Bearer admin-secret",Origin:"https://evil.test"},"refunded"),env)).status,403);
 });
+
+test("SiteCheck Pro entitlement is unique and revoked on verified refund",async()=>{
+  const db=new DatabaseSync(":memory:");
+  ensurePayuSchema(db);
+  const txnid="XS20261102SC1234567";
+  const order={txnid,offerId:"founding-website-999",amountPaise:117882,name:"Buyer",email:"buyer@example.com",phone:"9876543210",reference:"",createdAt:new Date().toISOString()};
+  assert.equal((await send(db,"/api/payu-ledger/create",{order})).status,200);
+  // SiteCheck SKU is not for sale yet. Simulate a previously captured entitlement.
+  db.prepare("INSERT INTO extension_entitlements (id,email,product_id,txnid,status,issued_at) VALUES (?,?,?,?,?,?)").run("ent-1",order.email,"sitecheck",txnid,"active",order.createdAt);
+  const before=await send(db,"/api/payu-ledger/entitlements",{email:order.email});
+  assert.equal(before.body.entitlements[0].status,"active");
+  await send(db,"/api/payu-ledger/settle",{txnid,paymentId:"pay_sitecheck",verifiedStatus:"captured"});
+  await send(db,"/api/payu-ledger/revoke",{txnid,reason:"refunded"});
+  const after=await send(db,"/api/payu-ledger/entitlements",{email:order.email});
+  assert.equal(after.body.entitlements[0].status,"revoked");
+  assert.equal(db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements WHERE txnid=?").get(txnid).n,1);
+  db.close();
+});
