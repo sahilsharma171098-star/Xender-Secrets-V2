@@ -98,8 +98,9 @@ test("manifests: MV3, minimum permissions, no remote code surface", () => {
   for (const t of ["chrome", "edge", "firefox"]) {
     const m = manifestFor(t);
     assert.equal(m.manifest_version, 3);
-    assert.deepEqual(m.permissions, ["activeTab", "scripting"]);
-    for (const k of ["host_permissions", "optional_permissions", "optional_host_permissions", "content_scripts", "background", "web_accessible_resources", "externally_connectable", "content_security_policy", "update_url"]) {
+    assert.deepEqual(m.permissions, ["activeTab", "scripting", "storage"]);
+    assert.deepEqual(m.host_permissions, ["https://www.xendersecrets.com/*"]);
+    for (const k of ["optional_permissions", "optional_host_permissions", "content_scripts", "background", "web_accessible_resources", "externally_connectable", "content_security_policy", "update_url"]) {
       assert.equal(m[k], undefined, `${t}: ${k} must not be set`);
     }
     assert.ok(m.description.length <= 132, "Chrome description limit");
@@ -107,7 +108,7 @@ test("manifests: MV3, minimum permissions, no remote code surface", () => {
   }
   const ff = manifestFor("firefox").browser_specific_settings.gecko;
   assert.equal(ff.id, "sitecheck@xendersecrets.com");
-  assert.deepEqual(ff.data_collection_permissions, { required: ["none"] });
+  assert.deepEqual(ff.data_collection_permissions, { required: ["none"], optional: ["authenticationInfo"] });
   assert.equal(manifestFor("chrome").browser_specific_settings, undefined);
 });
 
