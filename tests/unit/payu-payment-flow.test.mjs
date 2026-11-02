@@ -76,7 +76,8 @@ test("signed ₹499 PayU webhook is independently verified, fulfills SiteCheck o
     assert.equal((await response.json()).fulfilled,true);
     assert.equal(payuCalls.length,1);
     const entitlement=db.prepare("SELECT product_id,status FROM extension_entitlements WHERE txnid=?").get(f.txnid);
-    assert.deepEqual(entitlement,{product_id:"sitecheck",status:"active"});
+    assert.equal(entitlement.product_id,"sitecheck");
+    assert.equal(entitlement.status,"active");
     const replay=await handlePayu(validPayuCallback(f),env);
     assert.equal((await replay.json()).fulfilled,true);
     assert.equal(db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements WHERE txnid=?").get(f.txnid).n,1);
