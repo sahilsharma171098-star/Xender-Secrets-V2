@@ -38,6 +38,8 @@ export async function handleSitecheckLicenseInternal(request,sql,sessionUser){
 }
 export const sitecheckLicenseCors=(origin)=>{
   // Only the first-party published Chrome extension may read the verification response.
-  const allowed="chrome-extension://egkpcmgkfakclaooopabcmffdmaldkhe";
-  return origin===allowed?{"access-control-allow-origin":allowed,"access-control-allow-methods":"POST, OPTIONS","access-control-allow-headers":"content-type","vary":"Origin"}:{};
+  const chromeOrigin="chrome-extension://egkpcmgkfakclaooopabcmffdmaldkhe";
+  // Firefox uses a random per-install moz-extension origin; keys remain 256-bit bearer secrets.
+  const allowed=origin===chromeOrigin||/^moz-extension:\/\/[a-f0-9-]{20,80}$/i.test(String(origin||""));
+  return allowed?{"access-control-allow-origin":origin,"access-control-allow-methods":"POST, OPTIONS","access-control-allow-headers":"content-type","vary":"Origin"}:{};
 };
