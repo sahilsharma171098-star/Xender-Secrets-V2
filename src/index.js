@@ -3,6 +3,7 @@ import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 import { handlePayments } from "./payments.mjs";
+import { ensurePayuSchema, handlePayuLedger, handlePayu } from "./payu-routes.mjs";
 import { handleYouTubeVideos } from "./youtube.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
@@ -330,6 +331,7 @@ export class AppState extends DurableObject {
         CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date,slot);
       `);
       ensureGrowthSchema(this.sql);
+      ensurePayuSchema(this.sql);
       const now=new Date().toISOString();
       for(const p of CATALOG_PRODUCTS){
         this.sql.exec("INSERT OR IGNORE INTO products (id,name,category,category_label,price,rating,active,updated_at) VALUES (?,?,?,?,?,?,1,?)",p.id,p.name,p.category,p.categoryLabel,p.price,p.rating,now);
@@ -377,6 +379,8 @@ export class AppState extends DurableObject {
     if(method!=="GET" && !this.sameOrigin(request)) return json({ok:false,error:"Invalid request origin."},403);
 
     // XEND-WARROOM-001: lead capture v2, funnel events and private admin MIS (src/growth.mjs).
+    const payuLedger=await handlePayuLedger(request,this.sql);
+    if(payuLedger)return payuLedger;
     const growth=await handleGrowth(request,{sql:this.sql,env:this.env});
     if(growth)return growth;
 
@@ -867,6 +871,9 @@ export default {
     if(canonical)return canonical;
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
+    if(path.startsWith("/api/payu-ledger/"))return json({ok:false,error:"Not found"},404);
+    const payu=await handlePayu(request,env);
+    if(payu)return payu;
     const payment=await handlePayments(request,env);
     if(payment)return payment;
 
