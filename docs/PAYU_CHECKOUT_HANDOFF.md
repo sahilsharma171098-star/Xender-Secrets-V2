@@ -34,6 +34,15 @@ Required checks on PR HEAD:
 - Dedicated unit tests: payment ledger idempotency, server-side PayU signing, spoofed webhook rejection, paid SKU authorization, hashed key rotation, no unpaid access, CSV safety, full refund revocation, partial refund preservation.
 - The automated CI is **not** proof of a real merchant payment or Chrome Web Store approval. Check GitHub workflow results for the latest commit; do not rely on results for earlier commits.
 
+
+## Live webhook created; isolated owner payment test gate (2 November)
+
+- PayU Payments/Successful webhook has been created by the merchant for `https://www.xendersecrets.com/api/payu/webhook`. This alone does **not** demonstrate delivery, authentication, or capture.
+- Added `SITECHECK_PRO_CANARY_EMAIL` Worker **secret** (optional): when set to a valid email, only an authenticated Xender account with that exact email may see and initiate the ₹499 PayU purchase while global `SITECHECK_PRO_CHECKOUT_ENABLED` remains OFF. All other accounts and anonymous visitors remain blocked. Do not store this user's email in GitHub or source.
+- Configure the canary email for a signed-in merchant-owned Xender account after deploying the updated Worker; leave global checkout unset. The merchant must personally authorize and complete the real ₹499 transaction and eventual refund.
+- Public read-only inspection observed `/api/payu/config` and `/sitecheck-pro` returning HTTP **404** on the www domain and PayU config also 404 on workers.dev despite the bundled JS containing the handler. Existing `/api/payments/config` returned 200. **Deploy full Worker + public/ static assets from the release branch and inspect actual assets routing before attempting payment**. A compiled code presence alone does not prove public API reachability.
+- Gate after deployment: `GET https://www.xendersecrets.com/api/payu/config` must respond 200 with `sitecheck.amountPaise===49900`, `checkoutEnabled===false` to anonymous visitors; `GET /sitecheck-pro` must serve HTML 200. Sign in with the canary Xender account and confirm config reports `checkoutEnabled===true`. Then run the explicitly authorized paid flow and verify captured, one entitlement, license issue/restore, webhook replay, refund revocation. Never turn public flag ON until all gates clear.
+
 ## Manual real-payment and deployment gates (still REQUIRED)
 
 1. Configure **PayU payment webhooks** in the merchant dashboard for successful (and optionally failed) payments, using \`https://www.xendersecrets.com/api/payu/webhook\`. A valid reverse-hashed webhook is only a trigger; the server still calls \`verify_payment\`. PayU may require merchant-side webhook configuration.
