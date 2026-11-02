@@ -1,6 +1,6 @@
 # Xender SiteCheck — Privacy Policy
 
-Last updated: 6 October 2026 · Applies to Xender SiteCheck version 1.0.0 for Chrome, Microsoft Edge and Firefox.
+Updated for planned SiteCheck 2.0.0 release, 2 November 2026. SiteCheck 1.0.0 remains free and local-only until the update is published.
 Published at: https://www.xendersecrets.com/sitecheck-privacy
 
 Xender SiteCheck ("SiteCheck", "the extension") is made by Xender Secrets, a proprietorship of Sahil Kumar Sharma, Gurugram, Haryana, India. This policy explains exactly what the extension reads, when, and what happens to it.
@@ -8,8 +8,8 @@ Xender SiteCheck ("SiteCheck", "the extension") is made by Xender Secrets, a pro
 ## Summary
 
 - SiteCheck analyses a web page **only when you click its toolbar button**, and only the tab you are looking at.
-- The analysis runs **locally in your browser**. The extension makes **no network requests** of its own and sends **nothing** to Xender Secrets or anyone else.
-- We do **not** collect browsing history, form contents, passwords, cookies, payment details, messages, or personal information.
+- The page analysis runs **locally in your browser**. Optional Pro activation sends only a license key (not page contents, scores or URLs) to Xender Secrets for verification.
+- We do **not** collect browsing history, audited page contents, form values, cookies, payment-card details, or messages from the extension. Optional Pro uses an account-bound license key.
 - There are **no analytics, no tracking and no advertising** in the extension.
 
 ## What the extension reads, and when
@@ -22,13 +22,21 @@ When you click the SiteCheck button, the extension runs its bundled audit script
 - computed colours of text (for contrast), element sizes and positions (for sideways-scroll detection), and the number of elements on the page;
 - the page address (scheme, host and path) so the report can say which page was checked. The query string and fragment are not included in the result.
 
-The results are shown in the extension popup. They are held only in the popup's memory and disappear when the popup closes. Nothing is saved to disk, browser storage, or sync.
+The results are shown in the extension popup. They are held only in the popup's memory and disappear when the popup closes. Page audit results are not saved or synced. A Pro user who activates saves a license key in local extension storage (never browser sync).
 
 The extension does not run in the background, does not read other tabs, and cannot see pages you have not clicked it on.
 
+## Optional SiteCheck Pro activation
+
+- Free audits and the free text report require no account or network request.
+- Pro purchase/account details are handled separately on the Xender website under its website privacy and refund policies.
+- If a user voluntarily activates Pro, the extension sends **only** their entered license key to `https://www.xendersecrets.com/api/sitecheck/license/verify` via HTTPS. The server looks up a SHA-256 hash of the key and returns a boolean status. It receives **no audited URL, page contents, scores, or reports**.
+- The key is saved in browser **local** extension storage, not sync. The user can remove it from the popup. Refunded/charged-back purchases lose Pro on successful online revalidation. If validation cannot reach the server, free capabilities remain available.
+- The CSV report is generated and downloaded locally; it is not uploaded.
+
 ## What leaves your browser
 
-Nothing, unless you choose to send it:
+The audited page's data stays local. Optional Pro sends only the license key for verification:
 
 - **"Copy report"** puts a plain-text summary on your clipboard. Where you paste it is up to you.
 - **"Get a free website audit"** opens `https://www.xendersecrets.com/sitecheck` in a new tab. The link carries `utm_source=sitecheck_extension`, `utm_medium=extension` and `utm_campaign=human_audit` so we know the visit came from the extension. It does **not** include the address of the page you checked, its score or any audit result. The Xender Secrets website then works under its own [privacy policy](https://www.xendersecrets.com/privacy), and anything you submit there (for example the enquiry form) is sent only when you press its submit button.
@@ -45,7 +53,7 @@ SiteCheck does not request access to all websites, your tabs list, history, cook
 
 ## Data sharing and sale
 
-We do not sell, rent, share or transfer any data from the extension, because the extension does not collect any. Firefox users will see this declared in the add-on's data-collection settings ("no data collected").
+We do not sell browsing or audit data. Optional Pro license keys are sent to our first-party license service solely for verifying paid access. Firefox marks authentication information as optional. Firefox users will see this declared in the add-on's data-collection settings ("no data collected").
 
 ## Children
 
@@ -54,7 +62,7 @@ The extension is a professional website tool and does not knowingly collect info
 ## Your choices
 
 - Don't click the button on pages you don't want analysed — the extension only runs when you click it.
-- You can remove the extension at any time from your browser's extensions page; it leaves no stored data behind.
+- You can remove the extension at any time from your browser's extensions page; it removes locally saved license keys with the extension.
 
 ## Changes
 
