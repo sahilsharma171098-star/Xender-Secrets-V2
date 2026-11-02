@@ -1,3 +1,20 @@
+## Implementation update — 2026-11-02
+
+On this draft branch, PayU INR website package checkout is now wired in code (not deployed):
+- POST /api/payu/initiate generates server-priced transaction, persists to APP_STATE SQLite ledger and returns signed PayU fields.
+- Browser /pay submits a normal HTML form to PayU; existing Razorpay API endpoints remain untouched.
+- POST /api/payu/callback checks reverse SHA-512, ledger order/email/SKU/amount, and PayU verify_payment captured status before updating ledger.
+- Public direct ledger access blocked in Worker; /api/payu/status requires authentication and is not yet implemented.
+- Static success page no longer claims verification based solely on visiting a URL.
+- Unit tests added but CI status for latest commit not yet confirmed.
+
+**NOT RELEASE-READY:**
+- PayU documentation/merchant-specific callback payload and live verify_payment response still need an end-to-end sandbox/nominal transaction check.
+- Need authenticated customer order lookup, refund/chargeback reconciliation, real GST invoice delivery and operational alerts.
+- SiteCheck and GridSnip OCR paid SKUs, actual gated features, entitlement restore/revoke, Chrome Web Store updates, and GridSnip source integration are NOT implemented. Do not sell Pro licenses yet.
+- Need comprehensive failure/replay/concurrency tests, static page build consistency, local tests, and manual captured payment proof before any merge/deploy.
+- Existing PayU keys are Cloudflare secrets; no secret values copied into GitHub.
+
 # PayU India hosted checkout — implementation gate (2026-11-02)
 
 Issue: #90 — XEND-EXT-PAY-001. This branch establishes hashing and authoritative verification primitives ONLY. **It does not enable or deploy payment collection or extension Pro entitlements.**
