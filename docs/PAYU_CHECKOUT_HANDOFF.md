@@ -1,3 +1,13 @@
+## Further implementation — 2026-11-02
+
+- Added extension entitlement SQLite storage keyed by transaction and email. No paid extension SKU is enabled or granted yet.
+- Added authenticated operator-only POST /api/payu/admin/reconcile, allowing already verified refunds/chargebacks to revoke matching entitlements and mark the transaction reversed. This does not call PayU refund API or automatically detect refunds.
+- Added idempotent refund handling and SQLite ledger tests, including unauthenticated reconciliation checks.
+- The four accessible GitHub repositories (autotube, autotube-legal, Xender-Secrets-V2, xender-amazon-spapi) do not reveal a canonical GridSnip source repository. Need original source or release package before responsibly shipping GridSnip paid gating.
+- Newest commits have no confirmed test run yet; earlier Xender Live E2E success was not an end-to-end payment test.
+
+Mandatory remaining gates: PayU real captured checkout, automated refund reconciliation, authenticated entitlement restore API and extension UI, price/benefit definition for both products, GridSnip source, Chrome Web Store review, bank settlement confirmation. Keep PR draft; do not deploy.
+
 ## Implementation update — 2026-11-02
 
 On this draft branch, PayU INR website package checkout is now wired in code (not deployed):
