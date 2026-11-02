@@ -76,13 +76,14 @@ export async function handlePayu(request,env) {
   const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
   if(!path.startsWith("/api/payu/"))return null;
   if(!env.PAYU_KEY||!env.PAYU_SALT)return json({ok:false,error:"PayU unavailable"},503);
-  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:Object.values(PAYMENT_OFFERS).filter(o=>o.id!=="sitecheck-pro-onetime"),sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,checkoutEnabled:env.SITECHECK_PRO_CHECKOUT_ENABLED==="true"}});
+  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:[],sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,checkoutEnabled:env.SITECHECK_PRO_CHECKOUT_ENABLED==="true"}});
   if(path==="/api/payu/initiate"&&method==="POST") {
     if(request.headers.get("Origin")!==url.origin)return json({ok:false,error:"Origin mismatch"},403);
     if(!String(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
     const b=await request.json().catch(()=>({}));
     const offer=PAYMENT_OFFERS[clean(b.offer,80)],name=clean(b.name,60),email=clean(b.email,100).toLowerCase(),phone=clean(b.phone,25);
     if(!offer||name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[+0-9() -]{8,25}$/.test(phone))return json({ok:false,error:"Valid package, name, email and phone required"},400);
+    if(offer.id!=="sitecheck-pro-onetime")return json({ok:false,error:"PayU website-package checkout is not enabled; use Razorpay."},503);
     if(offer.id==="sitecheck-pro-onetime"&&env.SITECHECK_PRO_CHECKOUT_ENABLED!=="true")return json({ok:false,error:"SiteCheck Pro checkout is awaiting payment and fulfillment verification."},503);
     let accountId=null;
     if(offer.id==="sitecheck-pro-onetime"){
