@@ -71,9 +71,9 @@ You get a Website Health Score from 0 to 100 plus scores for SEO, Accessibility,
 PRIVATE BY DESIGN
 
 • Runs only when you click the button, only on the tab you're looking at
-• The analysis happens locally in your browser; nothing is sent to us or anyone else
+• Audit results stay on your device; optional Pro sends only a license key for access validation
 • No browsing history, no form values, no cookies, no passwords, no analytics, no tracking
-• Two permissions only: activeTab and scripting
+• Only activeTab and scripting for page checks; optional Pro uses local storage and scoped Xender HTTPS access
 • No remote code; everything the extension runs is inside the package you install
 
 WANT A HUMAN REVIEW?
