@@ -69,3 +69,33 @@ test("server-to-server PayU webhook fails closed on malformed or unauthenticated
  const forged=new Request("https://www.xendersecrets.com/api/payu/webhook",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:"status=success&key=test-key&hash=notvalid"});
  assert.equal((await handlePayu(forged,env)).status,400);
 });
+
+test("isolated SiteCheck canary requires signed-in allowlisted account without opening public checkout",async()=>{
+  const url="https://www.xendersecrets.com";
+  const canaryEmail="owner@example.com";
+  const appState={idFromName:()=>({}),get:()=>({fetch:async req=>{
+    const path=new URL(req.url).pathname;
+    if(path==="/api/auth/me"){
+      const hasValidCookie=req.headers.get("Cookie")==="xs_session=valid";
+      return new Response(JSON.stringify(hasValidCookie?{ok:true,user:{id:"11111111-1111-4111-8111-111111111111",email:canaryEmail}}:{ok:false}),{status:hasValidCookie?200:401,headers:{"content-type":"application/json"}});
+    }
+    if(path==="/api/payu-ledger/create")return new Response(JSON.stringify({ok:true}),{headers:{"content-type":"application/json"}});
+    return new Response(JSON.stringify({ok:false}),{status:404});
+  }})};
+  const canaryEnv={...env,SITECHECK_PRO_CANARY_EMAIL:canaryEmail,APP_STATE:appState};
+  const open=await(await handlePayu(request("/api/payu/config","GET",null,{Cookie:"xs_session=valid"}),canaryEnv)).json();
+  const anonymous=await(await handlePayu(request("/api/payu/config"),canaryEnv)).json();
+  const other=await(await handlePayu(request("/api/payu/config","GET",null,{Cookie:"xs_session=other"}),canaryEnv)).json();
+  assert.equal(open.sitecheck.checkoutEnabled,true);
+  assert.equal(anonymous.sitecheck.checkoutEnabled,false);
+  assert.equal(other.sitecheck.checkoutEnabled,false);
+  const order={offer:"sitecheck-pro-onetime",name:"Owner",email:canaryEmail,phone:"9876543210"};
+  const req=(cookie)=>request("/api/payu/initiate","POST",order,{Origin:url,Cookie:cookie});
+  assert.equal((await handlePayu(req("xs_session=other"),canaryEnv)).status,503);
+  const signed=await handlePayu(req("xs_session=valid"),canaryEnv);
+  assert.equal(signed.status,201);
+  const response=await signed.json();
+  assert.equal(response.fields.amount,"499.00");
+  assert.equal(response.fields.email,canaryEmail);
+  assert.equal(response.url,"https://secure.payu.in/_payment");
+});
