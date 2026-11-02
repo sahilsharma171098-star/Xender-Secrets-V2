@@ -59,10 +59,27 @@
 
       <div class="tools">
         <button class="btn" id="copy" type="button">Copy report</button>
+        <button class="btn primary" id="exportCsv" type="button" hidden>Export priority CSV (Pro)</button>
         <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
       </div>
     </section>
 
+    <section class="pro-license" aria-label="SiteCheck Pro">
+      <h2>SiteCheck Pro <span class="pro-price">₹499 one-time (GST included)</span></h2>
+      <p id="proStatus" class="pro-status" role="status" aria-live="polite">Free edition · Checking license…</p>
+      <p>Pro adds a downloadable, prioritized CSV issue report. Free page checks and text reports remain available.</p>
+      <form id="proForm">
+        <label for="licenseKey">Pro license key</label>
+        <div class="pro-form-row">
+          <input id="licenseKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your SiteCheck Pro key" maxlength="90">
+          <button class="btn" id="activatePro" type="submit">Activate</button>
+        </div>
+      </form>
+      <div class="pro-actions">
+        <a href="https://www.xendersecrets.com/sitecheck-pro" target="_blank" rel="noopener">Buy / retrieve a license</a>
+        <button id="deactivatePro" class="pro-text-button" type="button" hidden>Remove saved key</button>
+      </div>
+    </section>
     <aside class="cta" id="cta" hidden>
       <p class="cta-title">Want a human review?</p>
       <p class="cta-text">Get a free website audit from Xender Secrets — a person checks your site and sends specific fixes.</p>
@@ -71,7 +88,7 @@
   </main>
 
   <footer class="foot">
-    <span>Analysed locally in your browser. Nothing is sent anywhere.</span>
+    <span>Page audit stays local. Only a Pro license key is sent for optional verification.</span>
     <a href="https://www.xendersecrets.com/sitecheck-privacy" target="_blank" rel="noopener">Privacy</a>
   </footer>
 </body>
