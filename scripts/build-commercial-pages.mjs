@@ -35,7 +35,8 @@ const EXCLUDE = new Set(["reader.html", "demo-gym.html", "demo-local.html", "dem
 const sitemapPath = path.join(PUBLIC, "sitemap.xml");
 const oldSitemap = fs.existsSync(sitemapPath) ? fs.readFileSync(sitemapPath, "utf8") : "";
 const oldLastmod = Object.fromEntries([...oldSitemap.matchAll(/<loc>([^<]+)<\/loc><lastmod>([^<]+)<\/lastmod>/g)].map((m) => [m[1].replace(/\.html$/, ""), m[2]]));
-const generated = new Set([...allPages().map((p) => p.file), ...Object.keys(HUBS)]);
+// Preserve canonical sitemap ordering and lastmod for now manually maintained SiteCheck pages.
+const generated = new Set([...allPages().map((p) => p.file), "sitecheck.html", "sitecheck-privacy.html", ...Object.keys(HUBS)]);
 const priority = (f) => f === "index.html" ? "1.0" : ["services.html", "contact.html"].includes(f) ? "0.9" : generated.has(f) ? "0.8" : null;
 const files = fs.readdirSync(PUBLIC).filter((f) => f.endsWith(".html") && !EXCLUDE.has(f)).filter((f) => {
   const robots = (fs.readFileSync(path.join(PUBLIC, f), "utf8").match(/<meta name="robots" content="([^"]*)"/) || [])[1];
