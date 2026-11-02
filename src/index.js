@@ -5,6 +5,7 @@ import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 import { handlePayments } from "./payments.mjs";
 import { ensurePayuSchema, handlePayuLedger, handlePayu } from "./payu-routes.mjs";
 import { ensureSitecheckLicenseSchema, handleSitecheckLicenseInternal, sitecheckLicenseCors } from "./sitecheck-license.mjs";
+import { queryPayuRefunds } from "./payu-gateway.mjs";
 import { handleYouTubeVideos } from "./youtube.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
@@ -898,8 +899,30 @@ export default {
       if(raw.length>1024)return json({ok:false,error:"Payload too large"},413);
       const id=env.APP_STATE.idFromName("xender-secrets");
       const target=new URL(request.url);target.pathname="/internal/sitecheck-license/verify";
-      const response=await env.APP_STATE.get(id).fetch(new Request(target,{method:"POST",headers:{"content-type":"application/json"},body:raw}));
-      return new Response(response.body,{status:response.status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...cors}});
+      const stub=env.APP_STATE.get(id);
+      const response=await stub.fetch(new Request(target,{method:"POST",headers:{"content-type":"application/json"},body:raw}));
+      const state=await response.json().catch(()=>({ok:false,pro:false}));
+      if(!response.ok)return json({ok:false,pro:false,error:"License verification failed"},response.status,cors);
+      if(state.pro&&state.transaction){
+        const txn=state.transaction;
+        const age=Date.now()-new Date(txn.checkedAt||0).getTime();
+        if(!Number.isFinite(age)||age>=15*60*1000){
+          if(!env.PAYU_KEY||!env.PAYU_SALT||!txn.paymentId)return json({ok:false,pro:false,error:"License verification temporarily unavailable"},503,cors);
+          let refunds;
+          try{refunds=await queryPayuRefunds(txn.txnid,txn.paymentId,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}
+          catch{return json({ok:false,pro:false,error:"PayU refund verification unavailable"},503,cors);}
+          if(refunds.totalPaise>=Number(txn.amountPaise)){
+            const revoke=await stub.fetch(new Request("https://internal.invalid/api/payu-ledger/revoke",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({txnid:txn.txnid,reason:"refunded"})}));
+            if(!revoke.ok)return json({ok:false,pro:false,error:"Refund reconciliation unavailable"},503,cors);
+            state.pro=false;
+          }else{
+            const checked=await stub.fetch(new Request("https://internal.invalid/internal/sitecheck-license/mark-checked",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({txnid:txn.txnid})}));
+            if(!checked.ok)return json({ok:false,pro:false,error:"Refund reconciliation unavailable"},503,cors);
+          }
+        }
+      }
+      // Never return transaction metadata, customer email or PayU IDs to extensions.
+      return json({ok:true,product:"sitecheck",pro:state.pro===true},200,cors);
     }
 
     if(path==="/api/sitecheck/entitlement" && method==="GET"){
