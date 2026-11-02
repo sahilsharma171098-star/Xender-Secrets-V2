@@ -103,3 +103,61 @@ test("browser-protected pages get the friendly message, not an error", async () 
 test("no console errors in the popup", () => {
   assert.deepEqual(consoleErrors, []);
 });
+
+
+test("Pro CSV export unlocks only while a valid server-verified key is active",async()=>{
+ const key="sc1_"+"a".repeat(64);
+ const {popup,target}=await openPopupFor("https://fixtures.test/healthy.html");
+ await popup.waitForSelector("#report:not([hidden])");
+ assert.equal(await popup.isVisible("#exportCsv"),false,"free report remains usable");
+ await context.route("https://www.xendersecrets.com/api/sitecheck/license/verify",async route=>{
+   const body=route.request().postDataJSON();
+   assert.equal(body.licenseKey,key);
+   await route.fulfill({status:200,contentType:"application/json",headers:{"access-control-allow-origin":"*"},body:JSON.stringify({ok:true,product:"sitecheck",pro:true})});
+ });
+ await popup.evaluate(async token=>chrome.storage.local.set({sitecheckLicenseKey:token}),key);
+ await popup.reload();
+ await popup.waitForSelector("#report:not([hidden])");
+ await popup.waitForSelector("#exportCsv:not([hidden])");
+ assert.match(await popup.textContent("#proStatus"),/Pro active/);
+ await popup.click("#deactivatePro");
+ await popup.locator("#exportCsv").waitFor({state:"hidden"});
+ assert.equal((await popup.evaluate(async()=>chrome.storage.local.get("sitecheckLicenseKey"))).sitecheckLicenseKey,undefined);
+ await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
+ await popup.close();await target.close();
+});
+
+
+test("Pro can explicitly save local before/after snapshots and delete them even after deactivation", async () => {
+  const key = "sc1_" + "b".repeat(64);
+  const {popup, target} = await openPopupFor("https://fixtures.test/insecure.html");
+  await context.route("https://www.xendersecrets.com/api/sitecheck/license/verify", async route => {
+    await route.fulfill({status:200,contentType:"application/json",
+      headers:{"access-control-allow-origin":"*"},
+      body:JSON.stringify({ok:true,product:"sitecheck",pro:true})});
+  });
+  await popup.evaluate(async token => chrome.storage.local.set({sitecheckLicenseKey:token}),key);
+  await popup.reload();
+  await popup.waitForSelector("#baselinePanel:not([hidden])");
+  await popup.waitForSelector("#report:not([hidden])");
+  assert.equal(await popup.isEnabled("#compareBaseline"),false);
+  await popup.click("#saveBaseline");
+  await popup.waitForFunction(() => !document.getElementById("compareBaseline").disabled);
+  const stored=await popup.evaluate(async()=>chrome.storage.local.get("sitecheckProBaselines"));
+  assert.equal(stored.sitecheckProBaselines.length,1);
+  const baseline=stored.sitecheckProBaselines[0];
+  assert.equal(baseline.url,"https://fixtures.test/insecure.html");
+  assert.ok(baseline.issues.every(x=>Object.keys(x).sort().join(",")==="count,id"));
+  assert.ok(!JSON.stringify(baseline).includes("Recommended fix"));
+
+  await popup.click("#compareBaseline");
+  assert.match(await popup.textContent("#baselineStatus"),/Score .* issue types resolved/);
+
+  await popup.click("#deactivatePro");
+  await popup.locator("#baselinePanel").waitFor({state:"hidden"});
+  await popup.click("#clearBaselines");
+  const cleared=await popup.evaluate(async()=>chrome.storage.local.get("sitecheckProBaselines"));
+  assert.equal(cleared.sitecheckProBaselines,undefined);
+  await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
+  await popup.close();await target.close();
+});

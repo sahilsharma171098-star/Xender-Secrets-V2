@@ -1,6 +1,7 @@
 const enc = new TextEncoder();
 
 export const PAYMENT_OFFERS = Object.freeze({
+  "sitecheck-pro-onetime": { id: "sitecheck-pro-onetime", name: "SiteCheck Pro — One-time License", basePaise: 42288, gstPaise: 7612, amountPaise: 49900 },
   "founding-website-999": { id: "founding-website-999", name: "Founding Website", basePaise: 99900, gstPaise: 17982, amountPaise: 117882 },
   "business-starter-1999": { id: "business-starter-1999", name: "Business Starter", basePaise: 199900, gstPaise: 35982, amountPaise: 235882 },
   "business-pro-3499": { id: "business-pro-3499", name: "Business Pro", basePaise: 349900, gstPaise: 62982, amountPaise: 412882 }
@@ -40,7 +41,7 @@ function sameOrigin(request) {
 }
 
 function publicOffers() {
-  return Object.values(PAYMENT_OFFERS).map((o) => ({
+  return Object.values(PAYMENT_OFFERS).filter((o) => o.id !== "sitecheck-pro-onetime").map((o) => ({
     id: o.id,
     name: o.name,
     currency: "INR",
@@ -77,7 +78,7 @@ export async function handlePayments(request, env) {
 
     const body = await request.json().catch(() => ({}));
     const offer = PAYMENT_OFFERS[clean(body.offer, 80)];
-    if (!offer) return json({ ok: false, error: "Choose a valid package." }, 400);
+    if (!offer || offer.id === "sitecheck-pro-onetime") return json({ ok: false, error: "Choose a valid website package." }, 400);
 
     const name = clean(body.name, 80);
     const email = clean(body.email, 254).toLowerCase();

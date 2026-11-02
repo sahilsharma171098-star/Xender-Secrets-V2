@@ -7,7 +7,7 @@ Status: **ready to submit (second store).** AMO is free. Submission needs Sahil'
 | Package | `extension/dist/xender-sitecheck-firefox.zip` (`npm run extension:package`) |
 | Add-on ID | `sitecheck@xendersecrets.com` (in manifest) |
 | Minimum Firefox | 140 (required for the built-in data-collection declaration) |
-| Data collection | Declared in manifest: `data_collection_permissions: { required: ["none"] }` |
+| Data collection | Optional Pro license verification declared: `required:["none"], optional:["authenticationInfo"]` |
 | Source code | Not required: the package contains plain, unminified source; no build step transforms code (the build only merges manifest JSON and copies files) |
 | Categories | Web Development (primary), Other |
 | Tags | accessibility, seo, web development, website audit, qa |
@@ -33,7 +33,7 @@ Check the current webpage for SEO basics, accessibility issues, usability proble
 <!-- field:description max:15000 -->
 Check the current webpage for SEO basics, accessibility issues, usability problems and conversion friction — directly in your browser.
 
-Xender SiteCheck is a website checker for business owners, marketers and web teams. Open any normal web page, click the SiteCheck button, and in about a second you get a clear list of what to fix, why it matters and how to fix it. No sign-up, no account, no data leaves your browser.
+Xender SiteCheck is a website checker for business owners, marketers and web teams. Open any normal web page, click the SiteCheck button, and in about a second you get a clear list of what to fix, why it matters and how to fix it. Free checks need no account. Audited page data stays local. Optional Pro offers priority CSV export and manual before/after comparisons for up to 20 pages, saved locally, with license verification by Xender Secrets.
 
 WHAT IT CHECKS (49 checks)
 
@@ -77,9 +77,9 @@ You get a Website Health Score from 0 to 100 plus scores for SEO, Accessibility,
 PRIVATE BY DESIGN
 
 • Runs only when you click the button, only on the tab you're looking at
-• The analysis happens locally in your browser; nothing is sent to us or anyone else
+• Audit results stay on your device; optional Pro sends only a license key for access validation
 • No browsing history, no form values, no cookies, no passwords, no analytics, no tracking
-• Two permissions only: activeTab and scripting
+• Only activeTab and scripting for page checks; optional Pro uses local storage and scoped Xender HTTPS access
 • No remote code; everything the extension runs is inside the package you install
 
 WANT A HUMAN REVIEW?

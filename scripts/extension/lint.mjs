@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // Static checks for Xender SiteCheck (no dependencies):
 // - every shipped JS file parses;
-// - policy rules: no eval/new Function/HTML-string injection, no network APIs, no storage,
-//   no remote scripts, only xendersecrets.com links;
-// - manifests: MV3, exactly activeTab + scripting, nothing that widens access;
+// - policy rules: no eval/new Function/HTML injection or remote code;
+//   only popup.js may send the voluntary Pro license key to our own API;
+// - manifests: MV3, least-privilege access to the Xender license endpoint;
 // - store copy fits each store's length limits;
 // - privacy policy and permission docs mention every permission the manifest requests.
 // Usage: node scripts/extension/lint.mjs
@@ -38,15 +38,23 @@ const BANNED = [
   [/\bset(?:Timeout|Interval)\s*\(\s*["'`]/, "string timers"],
   [/\.(?:innerHTML|outerHTML)\s*=/, "HTML string injection (innerHTML/outerHTML)"],
   [/insertAdjacentHTML|document\.write/, "HTML string injection"],
-  [/\bfetch\s*\(|XMLHttpRequest|sendBeacon|new\s+WebSocket|EventSource\s*\(/, "network request API"],
-  [/\b(?:localStorage|sessionStorage|indexedDB)\b|\.storage\.(?:local|sync|session)/, "storage API"],
+  [/XMLHttpRequest|sendBeacon|new\s+WebSocket|EventSource\s*\(/, "unexpected network request API"],
+  [/\b(?:localStorage|sessionStorage|indexedDB)\b/, "unexpected storage API"],
   [/document\.cookie|\.cookies\./, "cookie access"],
   [/importScripts|\bimport\s*\(\s*["'`]https?:/, "remote code loading"],
-  [/\.value\b(?!s)/, "reading form values (.value)"],
+
 ];
 for (const f of sourceFiles().filter((f) => /\.(js|html)$/.test(f))) {
   const code = fs.readFileSync(path.join(SRC, f), "utf8").replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\//g, "");
   for (const [re, what] of BANNED) if (re.test(code)) fail(f, "banned: " + what);
+  // The only allowed fetch is voluntary license validation, not page auditing.
+  if (f !== "popup.js" && /\bfetch\s*\(|\.storage\.(?:local|sync|session)|\.value\b(?!s)/.test(code)) fail(f,"unexpected network/storage/form access");
+  if (f === "popup.js") {
+    if ((code.match(/\bfetch\s*\(/g)||[]).length!==1 || !code.includes("fetch(LICENSE_API")) fail(f,"only the fixed SiteCheck license API may be fetched");
+    if (!fs.readFileSync(path.join(SRC,f),"utf8").includes('https://www.xendersecrets.com/api/sitecheck/license/verify')) fail(f,"license API host mismatch");
+    if (/\.storage\.(?:sync|session)/.test(code)) fail(f,"license key must remain in local storage only");
+  }
+
   for (const m of code.matchAll(/https?:\/\/[^\s"'`)<>]+/g)) {
     const u = m[0];
     if (/^https:\/\/www\.xendersecrets\.com\//.test(u) || /^http:\/\/www\.w3\.org\//.test(u)) continue;
@@ -59,12 +67,13 @@ for (const f of sourceFiles().filter((f) => /\.(js|html)$/.test(f))) {
 }
 
 // 3. Manifests
-const ALLOWED = ["activeTab", "scripting"];
+const ALLOWED = ["activeTab", "scripting", "storage"];
 for (const t of ["chrome", "edge", "firefox"]) {
   const m = manifestFor(t);
   if (m.manifest_version !== 3) fail(t, "manifest_version must be 3");
   if (JSON.stringify(m.permissions) !== JSON.stringify(ALLOWED)) fail(t, "permissions must be exactly " + ALLOWED.join(", "));
-  for (const k of ["host_permissions", "optional_permissions", "optional_host_permissions", "content_scripts", "background", "web_accessible_resources", "externally_connectable", "content_security_policy", "update_url", "key"]) {
+  if (JSON.stringify(m.host_permissions) !== JSON.stringify(["https://www.xendersecrets.com/*"])) fail(t,"host permission must cover only Xender licensing");
+  for (const k of ["optional_permissions", "optional_host_permissions", "content_scripts", "background", "web_accessible_resources", "externally_connectable", "content_security_policy", "update_url", "key"]) {
     if (m[k] !== undefined) fail(t, `"${k}" is not allowed`);
   }
   if (!/^\d+\.\d+\.\d+$/.test(m.version)) fail(t, "version must be MAJOR.MINOR.PATCH");
@@ -74,7 +83,7 @@ for (const t of ["chrome", "edge", "firefox"]) {
   if (!fs.existsSync(path.join(SRC, m.action.default_popup))) fail(t, "missing popup");
 }
 const ff = manifestFor("firefox").browser_specific_settings?.gecko;
-if (!ff?.id || JSON.stringify(ff.data_collection_permissions) !== JSON.stringify({ required: ["none"] })) fail("firefox", "gecko id and data_collection_permissions {required:[\"none\"]} are required by AMO");
+if (!ff?.id || JSON.stringify(ff.data_collection_permissions) !== JSON.stringify({ required: ["none"], optional:["authenticationInfo"] })) fail("firefox", "declare optional authenticationInfo for Pro license verification");
 
 // 4. Store copy limits. Each listing marks fields as <!-- field:NAME max:N --> … <!-- /field -->.
 const STORE = path.join(ROOT, "store");

@@ -3,6 +3,9 @@ import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 import { handlePayments } from "./payments.mjs";
+import { ensurePayuSchema, handlePayuLedger, handlePayu } from "./payu-routes.mjs";
+import { ensureSitecheckLicenseSchema, handleSitecheckLicenseInternal, sitecheckLicenseCors } from "./sitecheck-license.mjs";
+import { queryPayuRefunds } from "./payu-gateway.mjs";
 import { handleYouTubeVideos } from "./youtube.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
@@ -330,6 +333,8 @@ export class AppState extends DurableObject {
         CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date,slot);
       `);
       ensureGrowthSchema(this.sql);
+      ensurePayuSchema(this.sql);
+    ensureSitecheckLicenseSchema(this.sql);
       const now=new Date().toISOString();
       for(const p of CATALOG_PRODUCTS){
         this.sql.exec("INSERT OR IGNORE INTO products (id,name,category,category_label,price,rating,active,updated_at) VALUES (?,?,?,?,?,?,1,?)",p.id,p.name,p.category,p.categoryLabel,p.price,p.rating,now);
@@ -377,6 +382,10 @@ export class AppState extends DurableObject {
     if(method!=="GET" && !this.sameOrigin(request)) return json({ok:false,error:"Invalid request origin."},403);
 
     // XEND-WARROOM-001: lead capture v2, funnel events and private admin MIS (src/growth.mjs).
+    const sitecheckInternal=await handleSitecheckLicenseInternal(request,this.sql,(req)=>this.sessionUser(req));
+    if(sitecheckInternal)return sitecheckInternal;
+    const payuLedger=await handlePayuLedger(request,this.sql);
+    if(payuLedger)return payuLedger;
     const growth=await handleGrowth(request,{sql:this.sql,env:this.env});
     if(growth)return growth;
 
@@ -867,6 +876,68 @@ export default {
     if(canonical)return canonical;
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
+    if(path.startsWith("/internal/sitecheck-license/"))return json({ok:false,error:"Not found"},404);
+    if(path.startsWith("/api/payu-ledger/"))return json({ok:false,error:"Not found"},404);
+    if(path==="/api/sitecheck/license/issue" && method==="POST"){
+      if(request.headers.get("Origin")!==url.origin)return json({ok:false,error:"Invalid origin"},403);
+      if(!(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
+      const id=env.APP_STATE.idFromName("xender-secrets");
+      const target=new URL(request.url);target.pathname="/internal/sitecheck-license/issue";
+      return env.APP_STATE.get(id).fetch(new Request(target,{method:"POST",headers:request.headers,body:"{}"}));
+    }
+    if(path==="/api/sitecheck/license/verify" && method==="OPTIONS"){
+      const headers=sitecheckLicenseCors(request.headers.get("Origin"));
+      if(!headers["access-control-allow-origin"])return json({ok:false},403);
+      return new Response(null,{status:204,headers});
+    }
+    if(path==="/api/sitecheck/license/verify" && method==="POST"){
+      const origin=request.headers.get("Origin");
+      const cors=sitecheckLicenseCors(origin);
+      if(origin && !cors["access-control-allow-origin"])return json({ok:false,error:"Origin not allowed"},403);
+      if(!(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
+      const raw=await request.text();
+      if(raw.length>1024)return json({ok:false,error:"Payload too large"},413);
+      const id=env.APP_STATE.idFromName("xender-secrets");
+      const target=new URL(request.url);target.pathname="/internal/sitecheck-license/verify";
+      const stub=env.APP_STATE.get(id);
+      const response=await stub.fetch(new Request(target,{method:"POST",headers:{"content-type":"application/json"},body:raw}));
+      const state=await response.json().catch(()=>({ok:false,pro:false}));
+      if(!response.ok)return json({ok:false,pro:false,error:"License verification failed"},response.status,cors);
+      if(state.pro&&state.transaction){
+        const txn=state.transaction;
+        const age=Date.now()-new Date(txn.checkedAt||0).getTime();
+        if(!Number.isFinite(age)||age>=15*60*1000){
+          if(!env.PAYU_KEY||!env.PAYU_SALT||!txn.paymentId)return json({ok:false,pro:false,error:"License verification temporarily unavailable"},503,cors);
+          let refunds;
+          try{refunds=await queryPayuRefunds(txn.txnid,txn.paymentId,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}
+          catch{return json({ok:false,pro:false,error:"PayU refund verification unavailable"},503,cors);}
+          if(refunds.totalPaise>=Number(txn.amountPaise)){
+            const revoke=await stub.fetch(new Request("https://internal.invalid/api/payu-ledger/revoke",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({txnid:txn.txnid,reason:"refunded"})}));
+            if(!revoke.ok)return json({ok:false,pro:false,error:"Refund reconciliation unavailable"},503,cors);
+            state.pro=false;
+          }else{
+            const checked=await stub.fetch(new Request("https://internal.invalid/internal/sitecheck-license/mark-checked",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({txnid:txn.txnid})}));
+            if(!checked.ok)return json({ok:false,pro:false,error:"Refund reconciliation unavailable"},503,cors);
+          }
+        }
+      }
+      // Never return transaction metadata, customer email or PayU IDs to extensions.
+      return json({ok:true,product:"sitecheck",pro:state.pro===true},200,cors);
+    }
+
+    if(path==="/api/sitecheck/entitlement" && method==="GET"){
+      const user=await appUser(request,env);
+      if(!user?.id)return json({ok:false,error:"Sign in required"},401);
+      const id=env.APP_STATE.idFromName("xender-secrets");
+      const result=await env.APP_STATE.get(id).fetch(new Request("https://internal.invalid/api/payu-ledger/entitlements-for-account",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({accountId:user.id})}));
+      if(!result.ok)return json({ok:false,error:"Entitlement lookup unavailable"},503);
+      const data=await result.json();
+      const active=Boolean(data.entitlements?.some(e=>e.product_id==="sitecheck"&&e.status==="active"));
+      return json({ok:true,product:"sitecheck",pro:active});
+    }
+
+    const payu=await handlePayu(request,env);
+    if(payu)return payu;
     const payment=await handlePayments(request,env);
     if(payment)return payment;
 

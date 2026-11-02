@@ -6,6 +6,12 @@ Versioning: MAJOR.MINOR.PATCH (semver), single source of truth in `extension/man
 - MAJOR: anything that changes permissions or data handling — requires a privacy-policy update first.
 Every store gets the same version number; rebuild all three packages for every release.
 
+## 2.0.0 — pending payment verification and Chrome Web Store review
+- Free 49-check audit unchanged; optional priority CSV export with a ₹499 one-time Pro license.
+- Account-bound SHA-256-hashed license check, manual account-key activation and refund revocation.
+- New permissions: local storage plus scoped first-party HTTPS host. Privacy/store disclosures updated.
+- Do not release until real payment-to-license and refund validation passes.
+
 ## 1.0.0 — 2026-10-06 (initial release, CLAUDE-EXT-001)
 - 49 local checks across SEO, Accessibility, Usability, Conversion (heuristics) and Technical/security basics.
 - Website Health Score 0–100 with five category scores; deterministic, documented formula.

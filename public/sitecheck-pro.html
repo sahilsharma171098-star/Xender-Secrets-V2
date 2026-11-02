@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SiteCheck Pro — ₹499 one-time | Xender Secrets</title>
+  <meta name="description" content="Xender SiteCheck Pro: optional priority CSV exports and local before/after comparisons for a one-time ₹499 price, GST included. All free checks remain free.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://www.xendersecrets.com/sitecheck-pro">
+  <link rel="stylesheet" href="/home.css">
+  <script src="/sitecheck-pro.js" defer></script>
+</head>
+<body>
+ <main class="wrap" id="main" style="max-width:840px;margin:4rem auto;padding:1rem;">
+  <p><a href="/sitecheck">← Back to SiteCheck</a></p>
+  <h1>SiteCheck <em>Pro</em></h1>
+  <p>Keep all 49 free page checks and free text reports. Pro adds downloadable priority CSV audits and before/after score and issue comparisons for up to 20 pages. Saved baselines remain only on your device and can be deleted anytime.</p>
+  <div class="card" style="padding:1.5rem;margin:1.5rem 0;">
+   <h2>₹499 <small>one-time · includes 18% GST</small></h2>
+   <p>No subscription. India INR checkout through PayU. Payments and the Pro release are enabled only after verified live purchase and license fulfillment testing.</p>
+   <form id="sitecheckPurchase">
+    <div class="field"><label for="buyerName">Your name *</label><input id="buyerName" name="name" required maxlength="60" autocomplete="name"></div>
+    <div class="field"><label for="buyerEmail">Xender account email *</label><input id="buyerEmail" name="email" type="email" required maxlength="100" autocomplete="email"></div>
+    <div class="field"><label for="buyerPhone">Phone *</label><input id="buyerPhone" name="phone" type="tel" required maxlength="25" autocomplete="tel"></div>
+    <p class="fine">Use the exact same email for checkout and your Xender account, so you can recover your license.</p>
+    <button id="sitecheckBuy" class="btn primary" type="submit" disabled>Checking secure payment availability…</button>
+    <p id="checkoutStatus" role="status" aria-live="polite">Checking PayU readiness…</p>
+   </form>
+  </div>
+  <section class="card" style="padding:1.5rem;margin:1.5rem 0;" aria-labelledby="restoreTitle">
+   <h2 id="restoreTitle">Activate or restore SiteCheck Pro</h2>
+   <p>After a captured payment, <a href="/account">sign in to Xender Secrets</a> using your payment email. Generate a new key and paste it into SiteCheck's Pro panel. Regenerating a key disables the previous key.</p>
+   <button id="sitecheckLicenseIssue" class="btn" type="button">Generate a license key for my account</button>
+   <p id="licenseStatus" role="status" aria-live="polite"></p>
+   <label for="issuedKey">Your private Pro key (shown only once)</label>
+   <input id="issuedKey" readonly autocomplete="off" aria-label="Your private SiteCheck Pro activation key" style="width:100%;margin:.5rem 0;">
+   <button id="copyIssuedKey" class="btn" type="button" disabled>Copy key</button>
+   <p class="fine">Never share your key. If a purchase was refunded, the key will not activate Pro. An internet connection is required when verifying Pro. Free audits continue to work offline.</p>
+  </section>
+  <p><a href="/sitecheck-privacy">SiteCheck privacy</a> · <a href="/refund">Refund policy</a> · <a href="/contact">Support</a></p>
+ </main>
+</body>
+</html>
