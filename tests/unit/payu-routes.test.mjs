@@ -43,3 +43,16 @@ test("PayU missing credentials fail closed",async()=>{
   const r=await handlePayu(request("/api/payu/config"),{PAYU_KEY:"test-key"});
   assert.equal(r.status,503);
 });
+
+test("SiteCheck INR price is advertised separately, but not charged before release",async()=>{
+  const config=await (await handlePayu(request("/api/payu/config"),env)).json();
+  assert.equal(config.sitecheck.amountPaise,49900);
+  assert.equal(config.sitecheck.currency,"INR");
+  assert.equal(config.sitecheck.checkoutEnabled,false);
+  assert.ok(config.offers.every(o=>o.id!=="sitecheck-pro-onetime"));
+  const body={offer:"sitecheck-pro-onetime",name:"SiteCheck Buyer",email:"buyer@example.com",phone:"9876543210"};
+  const checkout=await handlePayu(request("/api/payu/initiate","POST",body,{Origin:"https://www.xendersecrets.com"}),env);
+  assert.equal(checkout.status,503);
+  const payload=await checkout.json();
+  assert.ok(/awaiting/i.test(payload.error));
+});
