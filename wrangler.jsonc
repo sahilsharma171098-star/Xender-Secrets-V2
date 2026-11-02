@@ -3,6 +3,9 @@
   "name": "xender-secrets-v2",
   "main": "./src/index.js",
   "compatibility_date": "2026-10-03",
+  "vars": {
+    "SITECHECK_PRO_OWNER_PILOT": "true"
+  },
   "ai": {
     "binding": "AI"
   },

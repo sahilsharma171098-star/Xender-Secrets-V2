@@ -70,3 +70,32 @@ test("server-to-server PayU webhook fails closed on malformed or unauthenticated
  const forged=new Request("https://www.xendersecrets.com/api/payu/webhook",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:"status=success&key=test-key&hash=notvalid"});
  assert.equal((await handlePayu(forged,env)).status,400);
 });
+
+test("merchant-only pilot is isolated to the authenticated owner; public checkout stays off",async()=>{
+  const origin="https://www.xendersecrets.com";
+  const stub={fetch:async req=>{
+    const path=new URL(req.url).pathname;
+    if(path==="/api/auth/me"){
+      const email=req.headers.get("Cookie")==="xs_session=owner"?"merchant@example.com":"someone@example.com";
+      return new Response(JSON.stringify({user:{id:"11111111-1111-4111-8111-111111111111",email,name:"Pilot Buyer"}}),{headers:{"content-type":"application/json"}});
+    }
+    if(path==="/api/payu-ledger/create")return new Response(JSON.stringify({ok:true}),{headers:{"content-type":"application/json"}});
+    return new Response("not found",{status:404});
+  }};
+  const pilotEnv={...env,SITECHECK_PRO_OWNER_PILOT:"true",WORKSPACE_OWNER_EMAIL:"merchant@example.com",APP_STATE:{idFromName:()=>({}),get:()=>stub}};
+  const anonymous=await (await handlePayu(request("/api/payu/config"),pilotEnv)).json();
+  assert.equal(anonymous.sitecheck.checkoutEnabled,false);
+  const other=await (await handlePayu(request("/api/payu/config","GET",undefined,{Cookie:"xs_session=other"}),pilotEnv)).json();
+  assert.equal(other.sitecheck.checkoutEnabled,false);
+  const owner=await (await handlePayu(request("/api/payu/config","GET",undefined,{Cookie:"xs_session=owner"}),pilotEnv)).json();
+  assert.equal(owner.sitecheck.checkoutEnabled,true);
+  assert.deepEqual(owner.offers,[]);
+  const body={offer:"sitecheck-pro-onetime",name:"Pilot Buyer",email:"merchant@example.com",phone:"9876543210"};
+  const denied=await handlePayu(request("/api/payu/initiate","POST",body,{Origin:origin,Cookie:"xs_session=other"}),pilotEnv);
+  assert.equal(denied.status,503);
+  const allowed=await handlePayu(request("/api/payu/initiate","POST",body,{Origin:origin,Cookie:"xs_session=owner"}),pilotEnv);
+  assert.equal(allowed.status,201);
+  const checkout=await allowed.json();
+  assert.equal(checkout.fields.amount,"499.00");
+  assert.equal(checkout.fields.udf1,"sitecheck-pro-onetime");
+});
