@@ -17,7 +17,7 @@ test("config advertises server-priced domestic packages only",async()=>{
   assert.equal(j.available,true);
   assert.equal(j.provider,"payu");
   assert.equal(j.currency,"INR");
-  assert.ok(j.offers.every(x=>x.amountPaise>0));
+  assert.deepEqual(j.offers,[],"Unverified website PayU offers stay hidden; Razorpay remains on /pay");
   assert.equal(JSON.stringify(j).includes("test-salt"),false);
 });
 test("initiate rejects missing origin and forged cross-site origin",async()=>{
@@ -26,6 +26,12 @@ test("initiate rejects missing origin and forged cross-site origin",async()=>{
   const b=await handlePayu(request("/api/payu/initiate","POST",body,{Origin:"https://attacker.invalid"}),env);
   assert.equal(a.status,403);
   assert.equal(b.status,403);
+});
+test("PayU website packages cannot initiate transactions while Razorpay remains available",async()=>{
+  const b={offer:"founding-website-999",name:"Example Buyer",email:"buyer@example.com",phone:"9876543210"};
+  const r=await handlePayu(request("/api/payu/initiate","POST",b,{Origin:"https://www.xendersecrets.com"}),env);
+  assert.equal(r.status,503);
+  assert.match((await r.json()).error,/Razorpay/);
 });
 test("invalid offer and contact data never reaches payment ledger",async()=>{
   const body={offer:"not-real",name:"Example Buyer",email:"buyer@example.com",phone:"9876543210"};
