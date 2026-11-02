@@ -143,7 +143,18 @@ jobs:
             if [ "$GOT" = "$WANT" ]; then echo "Production serves this commit's $URLPATH"; exit 0; fi
             sleep 15
           done
-          echo "::warning::$URLPATH did not match after 10 minutes; testing anyway"
+          echo "::error::$URLPATH did not match latest main commit after 10 minutes; aborting live tests to prevent false green"
+          exit 1
+      - name: Verify SiteCheck Pro route, release and checkout safety
+        if: github.event_name == 'push'
+        env:
+          BASE: https://www.xendersecrets.com
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 -H 'cache-control: no-cache' "$BASE/api/payu/config?deploycheck=$GITHUB_SHA" > /tmp/sitecheck-payu.json
+          node -e 'const fs=require("node:fs");const d=JSON.parse(fs.readFileSync("/tmp/sitecheck-payu.json","utf8"));if(d?.sitecheck?.release!=="sitecheck-pro-v2.0.0"||d.sitecheck.checkoutEnabled!==false){console.error("SiteCheck release missing or checkout unexpectedly enabled");process.exit(1)}console.log("Verified SiteCheck Pro API live with checkout OFF")'
+          curl -fsSL --retry 3 -H 'cache-control: no-cache' "$BASE/sitecheck-pro?deploycheck=$GITHUB_SHA" | grep -F 'name="x-sitecheck-release" content="sitecheck-pro-v2.0.0-20261102"'
+          curl -fsSL --retry 3 -H 'cache-control: no-cache' "$BASE/sitecheck-privacy?deploycheck=$GITHUB_SHA" | grep -F 'local baselines remain on-device'
       - name: Run live Xender E2E
         env:
           XENDER_BASE_URL: https://www.xendersecrets.com
