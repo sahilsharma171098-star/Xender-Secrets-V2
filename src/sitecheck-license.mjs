@@ -7,6 +7,7 @@ const tokenPattern=/^sc1_[A-Za-z0-9_-]{40,80}$/;
 const cleanEmail=s=>String(s||"").trim().toLowerCase();
 export function ensureSitecheckLicenseSchema(sql){
   sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_license_keys (email TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, issued_at TEXT NOT NULL)");
+  sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_refund_checks (txnid TEXT PRIMARY KEY,checked_at TEXT NOT NULL)");
 }
 export async function handleSitecheckLicenseInternal(request,sql,sessionUser){
   const path=new URL(request.url).pathname;
@@ -31,8 +32,16 @@ export async function handleSitecheckLicenseInternal(request,sql,sessionUser){
     const token=body.licenseKey;
     if(typeof token!=="string"||!tokenPattern.test(token))return json({ok:false,pro:false,error:"Invalid license key"},400);
     const digest=await hash(token);
-    const valid=sql.exec("SELECT 1 FROM sitecheck_license_keys l WHERE l.token_hash=? AND EXISTS (SELECT 1 FROM extension_entitlements e WHERE e.email=l.email AND e.product_id='sitecheck' AND e.status='active') LIMIT 1",digest).toArray()[0];
-    return json({ok:true,pro:Boolean(valid),product:"sitecheck"});
+    const valid=sql.exec("SELECT p.txnid, p.payu_payment_id AS paymentId,p.amount_paise AS amountPaise, r.checked_at AS checkedAt FROM sitecheck_license_keys l JOIN extension_entitlements e ON e.email=l.email AND e.product_id='sitecheck' AND e.status='active' JOIN payu_orders p ON p.txnid=e.txnid AND p.status='captured' LEFT JOIN sitecheck_refund_checks r ON r.txnid=p.txnid WHERE l.token_hash=? LIMIT 1",digest).toArray()[0];
+    // Transaction metadata is returned only across the internal Durable Object binding.
+    // The public Worker must strip it before returning the Pro yes/no response.
+    return json({ok:true,pro:Boolean(valid),product:"sitecheck",transaction:valid||null});
+  }
+  if(path==="/internal/sitecheck-license/mark-checked"){
+    const txnid=String(body.txnid||"");
+    if(!/^[a-zA-Z0-9_-]{8,25}$/.test(txnid))return json({ok:false},400);
+    sql.exec("INSERT INTO sitecheck_refund_checks(txnid,checked_at) VALUES(?,?) ON CONFLICT(txnid) DO UPDATE SET checked_at=excluded.checked_at",txnid,new Date().toISOString());
+    return json({ok:true});
   }
   return json({ok:false,error:"Unknown endpoint"},404);
 }
