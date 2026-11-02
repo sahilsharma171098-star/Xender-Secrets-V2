@@ -41,7 +41,7 @@ function sameOrigin(request) {
 }
 
 function publicOffers() {
-  return Object.values(PAYMENT_OFFERS).map((o) => ({
+  return Object.values(PAYMENT_OFFERS).filter((o) => o.id !== "sitecheck-pro-onetime").map((o) => ({
     id: o.id,
     name: o.name,
     currency: "INR",
@@ -78,7 +78,7 @@ export async function handlePayments(request, env) {
 
     const body = await request.json().catch(() => ({}));
     const offer = PAYMENT_OFFERS[clean(body.offer, 80)];
-    if (!offer) return json({ ok: false, error: "Choose a valid package." }, 400);
+    if (!offer || offer.id === "sitecheck-pro-onetime") return json({ ok: false, error: "Choose a valid website package." }, 400);
 
     const name = clean(body.name, 80);
     const email = clean(body.email, 254).toLowerCase();
