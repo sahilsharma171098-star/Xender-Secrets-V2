@@ -9,9 +9,9 @@ const jsonRequest=(path,data)=>new Request("https://internal.invalid"+path,{meth
 // changing production queries to suit a test-only database.
 const doStorageSql=db=>({
   exec(query,...args){
-    if(!args.length && /^\\s*CREATE\\s/i.test(query)){db.exec(query);return {toArray:()=>[]};}
+    if(!args.length && /^\s*CREATE\s/i.test(query)){db.exec(query);return {toArray:()=>[]};}
     const statement=db.prepare(query);
-    if(/^\\s*SELECT\\s/i.test(query))return {toArray:()=>statement.all(...args)};
+    if(/^\s*SELECT\s/i.test(query))return {toArray:()=>statement.all(...args)};
     statement.run(...args);
     return {toArray:()=>[]};
   }
