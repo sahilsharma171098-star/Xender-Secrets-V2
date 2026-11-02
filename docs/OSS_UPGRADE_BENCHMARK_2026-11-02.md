@@ -1,7 +1,7 @@
 # XEND-OSS-UPGRADE-001 — Open-source benchmark & safe adoption plan
 
 > Evidence date: 2026-11-02. This is a **read-only architecture comparison**, not a production deployment or a claim that an upstream project is superior on Xender workloads.
-> Task: [#undefined](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/issues/undefined). Owner: ChatGPT. Canonical deployment remains unchanged.
+> Task: [#93](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/issues/93). Owner: ChatGPT. Canonical deployment remains unchanged.
 
 ## Decision summary
 
@@ -47,7 +47,7 @@ Repository license metadata alone is not sufficient permission for copied module
 - An offline benchmark can be reproduced with a pinned candidate revision and assets, and records **before vs after** objective metrics.
 - No extra permissions, production access tokens, unlicensed footage, duplicated YouTube uploads, or claims of verified public content without evidence.
 - First feature pilot has passing tests, a rollback plan and explicit owner go-live gate. Production payments are not described as active until captured/fulfilled purchase is verified.
-- Progress is recorded under [issue #undefined](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/issues/undefined) and canonical project PRs. Public HQ only contains non-sensitive technical metadata.
+- Progress is recorded under [issue #93](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/issues/93) and canonical project PRs. Public HQ only contains non-sensitive technical metadata.
 
 ## Source pointers inspected on 2026-11-02
 
