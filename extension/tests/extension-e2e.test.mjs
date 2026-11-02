@@ -121,7 +121,7 @@ test("Pro CSV export unlocks only while a valid server-verified key is active",a
  await popup.waitForSelector("#exportCsv:not([hidden])");
  assert.match(await popup.textContent("#proStatus"),/Pro active/);
  await popup.click("#deactivatePro");
- await popup.waitForSelector("#exportCsv[hidden]");
+ await popup.locator("#exportCsv").waitFor({state:"hidden"});
  assert.equal((await popup.evaluate(async()=>chrome.storage.local.get("sitecheckLicenseKey"))).sitecheckLicenseKey,undefined);
  await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
  await popup.close();await target.close();
