@@ -36,7 +36,7 @@
   });
 
   let config = null;
-  fetch("/api/payments/config", { headers: { accept: "application/json" } })
+  fetch("/api/payu/config", { headers: { accept: "application/json" } })
     .then((r) => r.json())
     .then((j) => {
       config = j;
@@ -45,7 +45,8 @@
         setStatus("Online payments are being activated. You can still confirm your project on WhatsApp.", "pending");
       } else {
         button.disabled = false;
-        setStatus("Secure checkout is ready.", "ready");
+        setStatus("PayU secure checkout is ready. Email and phone are required.", "ready");
+        button.textContent = "Pay securely with PayU";
       }
     })
     .catch(() => {
@@ -68,63 +69,30 @@
     setStatus("Starting secure checkout…", "working");
 
     try {
-      const orderResponse = await fetch("/api/payments/order", {
+      if (!data.email || !data.phone) throw new Error("PayU requires both email and phone.");
+      const orderResponse = await fetch("/api/payu/initiate", {
         method: "POST",
         headers: { "content-type": "application/json", accept: "application/json" },
         body: JSON.stringify(data)
       });
       const order = await orderResponse.json().catch(() => ({}));
-      if (!orderResponse.ok || !order.ok) throw new Error(order.error || "Could not start payment.");
-
-      await loadCheckout();
-
-      const checkout = new window.Razorpay({
-        key: order.keyId,
-        amount: order.amount,
-        currency: order.currency,
-        name: "Xender Secrets",
-        description: order.offer?.name || "Website project payment",
-        order_id: order.orderId,
-        prefill: {
-          name: String(data.name || ""),
-          email: String(data.email || ""),
-          contact: String(data.phone || "")
-        },
-        notes: {
-          offer: String(data.offer || ""),
-          quote_reference: String(data.reference || "")
-        },
-        handler: async (response) => {
-          setStatus("Payment received. Verifying…", "working");
-          const verifyResponse = await fetch("/api/payments/verify", {
-            method: "POST",
-            headers: { "content-type": "application/json", accept: "application/json" },
-            body: JSON.stringify(response)
-          });
-          const verified = await verifyResponse.json().catch(() => ({}));
-          if (!verifyResponse.ok || !verified.ok) {
-            setStatus("Payment was received but automatic verification failed. Please contact us with your payment ID.", "error");
-            button.disabled = false;
-            return;
-          }
-          const q = new URLSearchParams({
-            payment_id: verified.paymentId,
-            order_id: verified.orderId
-          });
-          location.href = "/payment-success?" + q.toString();
-        },
-        modal: {
-          ondismiss: () => {
-            button.disabled = false;
-            setStatus("Checkout closed. No payment was made.", "pending");
-          }
-        }
-      });
-      checkout.on("payment.failed", (response) => {
-        button.disabled = false;
-        setStatus(response?.error?.description || "Payment failed. You can retry safely.", "error");
-      });
-      checkout.open();
+      if (!orderResponse.ok || !order.ok || !order.fields || order.url !== "https://secure.payu.in/_payment") {
+        throw new Error(order.error || "Could not start PayU checkout.");
+      }
+      const checkoutForm = document.createElement("form");
+      checkoutForm.method = "POST";
+      checkoutForm.action = order.url;
+      checkoutForm.style.display = "none";
+      for (const [key, value] of Object.entries(order.fields)) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = String(value ?? "");
+        checkoutForm.append(input);
+      }
+      document.body.append(checkoutForm);
+      setStatus("Redirecting to PayU secure checkout…", "working");
+      checkoutForm.submit();
     } catch (error) {
       button.disabled = false;
       setStatus(error?.message || "Could not start payment. Please try again.", "error");
