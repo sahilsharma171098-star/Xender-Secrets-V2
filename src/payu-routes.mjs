@@ -76,7 +76,7 @@ export async function handlePayu(request,env) {
   const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
   if(!path.startsWith("/api/payu/"))return null;
   if(!env.PAYU_KEY||!env.PAYU_SALT)return json({ok:false,error:"PayU unavailable"},503);
-  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:[],sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,checkoutEnabled:env.SITECHECK_PRO_CHECKOUT_ENABLED==="true"}});
+  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:[],sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,release:"sitecheck-pro-v2.0.0",checkoutEnabled:env.SITECHECK_PRO_CHECKOUT_ENABLED==="true"}});
   if(path==="/api/payu/initiate"&&method==="POST") {
     if(request.headers.get("Origin")!==url.origin)return json({ok:false,error:"Origin mismatch"},403);
     if(!String(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
