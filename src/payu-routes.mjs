@@ -14,6 +14,8 @@ export function ensurePayuSchema(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS payu_orders (txnid TEXT PRIMARY KEY,offer_id TEXT NOT NULL,amount_paise INTEGER NOT NULL,customer_name TEXT NOT NULL,email TEXT NOT NULL,phone TEXT NOT NULL,quote_reference TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',payu_payment_id TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL)");
   sql.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_payu_payment_id ON payu_orders(payu_payment_id) WHERE payu_payment_id IS NOT NULL");
   sql.exec("CREATE TABLE IF NOT EXISTS payu_events (id INTEGER PRIMARY KEY AUTOINCREMENT,txnid TEXT NOT NULL,event TEXT NOT NULL,status TEXT NOT NULL,created_at TEXT NOT NULL)");
+  sql.exec("CREATE TABLE IF NOT EXISTS extension_entitlements (id TEXT PRIMARY KEY, email TEXT NOT NULL, product_id TEXT NOT NULL, txnid TEXT NOT NULL UNIQUE, status TEXT NOT NULL, issued_at TEXT NOT NULL, revoked_at TEXT)");
+  sql.exec("CREATE INDEX IF NOT EXISTS idx_entitlement_email ON extension_entitlements(email,product_id,status)");
 }
 export async function handlePayuLedger(request,sql) {
   const path=new URL(request.url).pathname;
@@ -37,6 +39,24 @@ export async function handlePayuLedger(request,sql) {
     sql.exec("UPDATE payu_orders SET status='captured',payu_payment_id=?,updated_at=? WHERE txnid=? AND status='pending'",b.paymentId,now,b.txnid);
     sql.exec("INSERT INTO payu_events (txnid,event,status,created_at) VALUES (?,'verified','captured',?)",b.txnid,now);
     return json({ok:true,status:"captured"});
+  }
+  if(path.endsWith("/entitlements")) {
+    // Internal-only read: never expose this route directly on the public Worker.
+    if(!validEmail(clean(b.email,100)))return json({ok:false},400);
+    const rows=sql.exec("SELECT product_id,status,issued_at,revoked_at FROM extension_entitlements WHERE email=? ORDER BY issued_at DESC",clean(b.email,100).toLowerCase()).toArray();
+    return json({ok:true,entitlements:rows});
+  }
+  if(path.endsWith("/revoke")) {
+    // Only called from the authenticated admin API, never by PayU's untrusted callback.
+    if(!/^[a-zA-Z0-9_-]{8,25}$/.test(String(b.txnid||"")))return json({ok:false},400);
+    const order=sql.exec("SELECT * FROM payu_orders WHERE txnid=?",b.txnid).toArray()[0];
+    if(!order)return json({ok:false},404);
+    if(order.status!=="captured"&&order.status!=="refunded"&&order.status!=="chargeback")return json({ok:false},409);
+    const next=b.reason==="chargeback"?"chargeback":"refunded",now=new Date().toISOString();
+    sql.exec("UPDATE payu_orders SET status=?,updated_at=? WHERE txnid=? AND status='captured'",next,now,b.txnid);
+    sql.exec("UPDATE extension_entitlements SET status='revoked',revoked_at=? WHERE txnid=? AND status='active'",now,b.txnid);
+    sql.exec("INSERT INTO payu_events (txnid,event,status,created_at) VALUES (?,?,?,?)",b.txnid,"admin_reconciliation",next,now);
+    return json({ok:true,status:next});
   }
   return json({ok:false},404);
 }
@@ -71,6 +91,17 @@ export async function handlePayu(request,env) {
     if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)return json({ok:false,error:"Not captured"},409);
     await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});
     return Response.redirect(url.origin+"/payment-success?txnid="+encodeURIComponent(txnid),303);
+  }
+  if(path==="/api/payu/admin/reconcile"&&method==="POST") {
+    const auth=request.headers.get("authorization")||"";
+    if(!env.ADMIN_TOKEN||auth!=="Bearer "+env.ADMIN_TOKEN)return json({ok:false,error:"Unauthorized"},401);
+    if(request.headers.get("Origin")&&request.headers.get("Origin")!==url.origin)return json({ok:false},403);
+    const body=await request.json().catch(()=>({}));
+    if(!["refunded","chargeback"].includes(body.reason))return json({ok:false,error:"Reason required"},400);
+    // This endpoint records externally VERIFIED refund/chargeback only.
+    // The operator must reconcile with PayU dashboard first; no refund is initiated here.
+    try{return json(await ledger(env,"revoke",{txnid:body.txnid,reason:body.reason}));}
+    catch{return json({ok:false,error:"Reconciliation unavailable"},503);}
   }
   if(path==="/api/payu/status"&&method==="GET")return json({ok:false,error:"Authentication required"},401);
   return json({ok:false,error:"Not found"},404);
