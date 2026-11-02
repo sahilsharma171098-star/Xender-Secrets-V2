@@ -4,6 +4,7 @@ import { handleReaderApi } from "./reader/api.mjs";
 import { ensureGrowthSchema, handleGrowth, notifyLead } from "./growth.mjs";
 import { handlePayments } from "./payments.mjs";
 import { ensurePayuSchema, handlePayuLedger, handlePayu } from "./payu-routes.mjs";
+import { ensureSitecheckLicenseSchema, handleSitecheckLicenseInternal, sitecheckLicenseCors } from "./sitecheck-license.mjs";
 import { handleYouTubeVideos } from "./youtube.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
@@ -332,6 +333,7 @@ export class AppState extends DurableObject {
       `);
       ensureGrowthSchema(this.sql);
       ensurePayuSchema(this.sql);
+    ensureSitecheckLicenseSchema(this.sql);
       const now=new Date().toISOString();
       for(const p of CATALOG_PRODUCTS){
         this.sql.exec("INSERT OR IGNORE INTO products (id,name,category,category_label,price,rating,active,updated_at) VALUES (?,?,?,?,?,?,1,?)",p.id,p.name,p.category,p.categoryLabel,p.price,p.rating,now);
@@ -379,6 +381,8 @@ export class AppState extends DurableObject {
     if(method!=="GET" && !this.sameOrigin(request)) return json({ok:false,error:"Invalid request origin."},403);
 
     // XEND-WARROOM-001: lead capture v2, funnel events and private admin MIS (src/growth.mjs).
+    const sitecheckInternal=await handleSitecheckLicenseInternal(request,this.sql,(req)=>this.sessionUser(req));
+    if(sitecheckInternal)return sitecheckInternal;
     const payuLedger=await handlePayuLedger(request,this.sql);
     if(payuLedger)return payuLedger;
     const growth=await handleGrowth(request,{sql:this.sql,env:this.env});
@@ -871,7 +875,33 @@ export default {
     if(canonical)return canonical;
     const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
 
+    if(path.startsWith("/internal/sitecheck-license/"))return json({ok:false,error:"Not found"},404);
     if(path.startsWith("/api/payu-ledger/"))return json({ok:false,error:"Not found"},404);
+    if(path==="/api/sitecheck/license/issue" && method==="POST"){
+      if(request.headers.get("Origin")!==url.origin)return json({ok:false,error:"Invalid origin"},403);
+      if(!(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
+      const id=env.APP_STATE.idFromName("xender-secrets");
+      const target=new URL(request.url);target.pathname="/internal/sitecheck-license/issue";
+      return env.APP_STATE.get(id).fetch(new Request(target,{method:"POST",headers:request.headers,body:"{}"}));
+    }
+    if(path==="/api/sitecheck/license/verify" && method==="OPTIONS"){
+      const headers=sitecheckLicenseCors(request.headers.get("Origin"));
+      if(!headers["access-control-allow-origin"])return json({ok:false},403);
+      return new Response(null,{status:204,headers});
+    }
+    if(path==="/api/sitecheck/license/verify" && method==="POST"){
+      const origin=request.headers.get("Origin");
+      const cors=sitecheckLicenseCors(origin);
+      if(origin && !cors["access-control-allow-origin"])return json({ok:false,error:"Origin not allowed"},403);
+      if(!(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
+      const raw=await request.text();
+      if(raw.length>1024)return json({ok:false,error:"Payload too large"},413);
+      const id=env.APP_STATE.idFromName("xender-secrets");
+      const target=new URL(request.url);target.pathname="/internal/sitecheck-license/verify";
+      const response=await env.APP_STATE.get(id).fetch(new Request(target,{method:"POST",headers:{"content-type":"application/json"},body:raw}));
+      return new Response(response.body,{status:response.status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...cors}});
+    }
+
     if(path==="/api/sitecheck/entitlement" && method==="GET"){
       const user=await appUser(request,env);
       if(!user?.email)return json({ok:false,error:"Sign in required"},401);
