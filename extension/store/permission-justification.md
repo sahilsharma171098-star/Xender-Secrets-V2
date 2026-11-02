@@ -1,28 +1,14 @@
-# Permission justification — Xender SiteCheck
+# Permission justification — SiteCheck 2.0.0 (draft)
 
-The extension requests exactly two permissions in every build (enforced by `npm run extension:lint` and the unit tests):
+## Requested permissions
 
 ```json
-"permissions": ["activeTab", "scripting"]
+{"permissions":["activeTab","scripting","storage"],"host_permissions":["https://www.xendersecrets.com/*"]}
 ```
 
-| Permission | Why it is needed | What it can't do |
-|---|---|---|
-| `activeTab` | When the user clicks the toolbar button, the browser grants SiteCheck temporary access to that one tab so it can audit the page the user is looking at. | No access to other tabs, no access before the click, no access after the tab navigates away. No "Read and change all your data on all websites" warning at install. |
-| `scripting` | Needed to call `scripting.executeScript` and run the extension's own packaged `audit.js` in the active tab. The script returns findings to the popup and exits. | Cannot load code from the internet (MV3 forbids remote code; the lint step also bans eval/new Function/network APIs). |
+- `activeTab`: temporary access to the visible page only when clicked; audits remain local.
+- `scripting`: injects bundled `audit.js` after user action; no remote code.
+- `storage`: stores only an optional Pro license key locally. No scores, page URLs or reports are stored.
+- `host_permissions`: scoped to Xender Secrets HTTPS, only for optional license validation. No all-sites access.
 
-## Permissions deliberately **not** requested
-
-| Not requested | Consequence / trade-off |
-|---|---|
-| `host_permissions` / `<all_urls>` | No broad-site access. Trade-off: SiteCheck cannot fetch external links to test their status codes, so it never claims an external link is "broken". Same-page `#section` links are verified locally. |
-| `tabs` | Not needed; `activeTab` already exposes the URL of the clicked tab. |
-| `storage` | No preferences are stored. Theme follows the system light/dark setting. |
-| `background` / service worker | Not needed — all logic runs in the popup while it is open. |
-| `content_scripts` | Nothing is injected into pages automatically. |
-| `clipboardWrite` | "Copy report" uses `navigator.clipboard.writeText` from a user click in the popup, which browsers allow without the permission. |
-| `webRequest`, `cookies`, `history`, `downloads`, `identity` | Not used. |
-
-## File URLs
-
-Chrome and Edge only allow extensions on `file://` pages if the user switches on "Allow access to file URLs" for the extension. SiteCheck explains this in the popup instead of requesting extra permissions.
+No `tabs`, `cookies`, `history`, `downloads`, `webRequest`, `identity`, `background` or content script permission is requested. CSV export uses a local Blob and user click. The website handles payment. Firefox declares optional `authenticationInfo` because a Pro buyer may voluntarily submit a license key.
