@@ -108,3 +108,11 @@ main{flex:1;overflow:auto;padding:14px}
 .pro-actions a{color:var(--accent);font-weight:650}
 .pro-text-button{background:transparent;border:0;text-decoration:underline;color:var(--muted);font:inherit;cursor:pointer}
 .tools{flex-wrap:wrap}
+
+/* Optional Pro: local before/after comparisons. */
+.pro-compare{border:1px solid var(--line);border-radius:12px;background:var(--bg-alt);padding:10px;margin-bottom:14px}
+.pro-compare h3{margin:0 0 4px;font-size:13px}
+.pro-compare p{margin:0 0 7px;font-size:11.5px;color:var(--ink-2)}
+.pro-compare-actions{display:flex;gap:7px;flex-wrap:wrap}
+.pro-compare .btn:disabled{opacity:.55;cursor:not-allowed}
+.pro-compare .pro-compare-status{margin:7px 0 0;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
