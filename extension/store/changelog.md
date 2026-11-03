@@ -8,6 +8,7 @@ Every store gets the same version number; rebuild all three packages for every r
 
 ## 2.1.0 — unreleased (ship as an update after 2.0.0 is approved; bump the manifest version then)
 - Page load on this device: LCP, INP, CLS, FCP and TTFB read from the browser's own timing entries for the current page load, rated with Google's published good/poor limits. Measured locally; never sent; not part of the Health Score. INP shows "Interact first" until the user clicks or types, and "Under 104 ms" when no slow interaction was recorded. CLS is unavailable in Firefox (no layout-shift API).
+- Pro: white-label PDF report (score, category scores, page-load metrics, every issue with why/fix and examples, passed checks) built locally with the standard PDF fonts; no Xender branding in the file or its name. Characters outside the PDF font set are replaced.
 - Show on page: outlines the elements an issue refers to (up to 5 per issue), scrolls to the first, clears on Esc / "Clear outlines" / re-check. No page content or style changes.
 - No new permissions. Privacy policy updated — publish the matching text on /sitecheck-privacy before releasing.
 

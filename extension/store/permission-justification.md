@@ -11,4 +11,4 @@
 - `storage`: local only, never sync — an optional Pro license key, Pro baselines the user saves on purpose (origin + path, heuristic score, issue ids/counts, timestamp; max 20 pages) and the time the user clicked "Not now" on the human-review suggestion. No page content, issue samples or reports are stored.
 - `host_permissions`: scoped to Xender Secrets HTTPS, only for optional license validation. No all-sites access.
 
-No `tabs`, `cookies`, `history`, `downloads`, `webRequest`, `identity`, `background` or content script permission is requested. CSV export uses a local Blob and user click. The website handles payment. Firefox declares optional `authenticationInfo` because a Pro buyer may voluntarily submit a license key.
+No `tabs`, `cookies`, `history`, `downloads`, `webRequest`, `identity`, `background` or content script permission is requested. CSV export (and, from 2.1.0, the PDF report) uses a local Blob and a user click. The website handles payment. Firefox declares optional `authenticationInfo` because a Pro buyer may voluntarily submit a license key.

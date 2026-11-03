@@ -9,6 +9,7 @@ import { BASELINE_STORAGE_KEY, snapshotOf, withSavedBaseline, findSavedBaseline,
 import { CTA_DISMISS_KEY, ctaVisible } from "./lib/cta.js";
 import { vitalsRows, vitalsNotes, ratingLabel } from "./lib/vitals-rate.js";
 import { highlightOnPage, clearPageHighlights } from "./lib/highlight.js";
+import { pdfReport } from "./lib/pdf-report.js";
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = (id) => document.getElementById(id);
@@ -85,6 +86,7 @@ async function run() {
     const restriction = restrictionFor(tab.url);
     if (restriction) return blocked(restriction.message);
   }
+  $("clearOutlines").hidden = true;
   // Remove any outline left by "Show on page" so it is never part of the audited page.
   try { await api.scripting.executeScript({ target: { tabId: tab.id }, func: clearPageHighlights }); } catch (e) { /* audit below reports real errors */ }
   let result;
@@ -153,6 +155,7 @@ function render() {
   $("passedList").replaceChildren(...scored.passed.map((p) => h("li", {}, p.passTitle, p.detail ? h("span", { class: "pd", text: " — " + p.detail }) : null)));
   $("passedBox").hidden = scored.passed.length === 0;
   $("exportCsv").hidden = !proActive;
+  $("exportPdf").hidden = !proActive;
   show("report");
   refreshBaselineControls();
 }
@@ -202,6 +205,7 @@ async function showOnPage(issue, targets, status) {
     if (!r || !r.shown) { status.textContent = "Not found on the page any more — it may have changed. Check again."; return; }
     const partial = issue.count > r.shown ? ` (first ${r.shown} of ${issue.count})` : "";
     status.textContent = `Outlined ${r.shown} on the page${partial}. Press Esc on the page to clear.`;
+    $("clearOutlines").hidden = false;
   } catch (e) {
     status.textContent = "Couldn't draw on this page. Check again.";
   }
@@ -211,6 +215,7 @@ async function clearOutlines() {
   if (!current || current.tabId === undefined) return;
   try { await api.scripting.executeScript({ target: { tabId: current.tabId }, func: clearPageHighlights }); } catch (e) { /* tab gone or navigated */ }
   for (const el of document.querySelectorAll(".show-status")) el.textContent = "";
+  $("clearOutlines").hidden = true;
 }
 
 async function copyReport() {
@@ -233,8 +238,9 @@ const proStatus = (message) => { $("proStatus").textContent = message; };
 function showLicenseState(active) {
   proActive = Boolean(active);
   $("exportCsv").hidden = !proActive || !current;
+  $("exportPdf").hidden = !proActive || !current;
   $("deactivatePro").hidden = !active;
-  proStatus(active ? "Pro active · CSV export and before/after comparison enabled" : "Free edition · Pro tools locked");
+  proStatus(active ? "Pro active · PDF and CSV reports and before/after comparison enabled" : "Free edition · Pro tools locked");
   refreshBaselineControls();
   updateCta();
 }
@@ -282,19 +288,31 @@ $("deactivatePro").addEventListener("click", async () => {
   await api.storage.local.remove("sitecheckLicenseKey");
   showLicenseState(false);
 });
-$("exportCsv").addEventListener("click", () => {
-  if (!proActive || !current) return;
-  const csv = prioritizedCsv(current.result, current.scored);
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+// Pro exports are built locally and handed to the browser as a download; nothing is uploaded.
+// White-label: neither the file nor its name carries the Xender name.
+function downloadLocal(data, type, extension) {
+  const blob = new Blob([data], { type });
   const objectUrl = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = objectUrl;
   const host = String(current.result.host || "website").replace(/[^a-z0-9.-]/gi, "-").slice(0, 80);
-  link.download = "website-qa-" + host + ".csv"; // white-label: no Xender name in the file either
+  link.download = "website-qa-" + host + "." + extension;
   document.body.append(link);
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(objectUrl), 2000);
+}
+$("exportCsv").addEventListener("click", () => {
+  if (!proActive || !current) return;
+  downloadLocal(prioritizedCsv(current.result, current.scored), "text/csv;charset=utf-8", "csv");
+});
+$("exportPdf").addEventListener("click", () => {
+  if (!proActive || !current) return;
+  try {
+    downloadLocal(pdfReport({ result: current.result, scored: current.scored, vitalRows: vitalsRows(current.vitals) }), "application/pdf", "pdf");
+  } catch (e) {
+    $("copyStatus").textContent = "Couldn't build the PDF — try Copy report or CSV.";
+  }
 });
 // Only a deliberate click stores a minimal local page snapshot. Saved snapshots are
 // never sent to Xender or to the website under audit.

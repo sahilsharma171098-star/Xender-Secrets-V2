@@ -35,7 +35,7 @@ The extension does not run in the background, does not read other tabs, and cann
 - Pro purchase/account details are handled separately on the Xender website under its website privacy and refund policies.
 - If a user voluntarily activates Pro, the extension sends **only** their entered license key to `https://www.xendersecrets.com/api/sitecheck/license/verify` via HTTPS. The server looks up a SHA-256 hash of the key and returns a boolean status. It receives **no audited URL, page contents, scores, or reports**.
 - The key is saved in browser **local** extension storage, not sync. The user can remove it from the popup. Refunded/charged-back purchases lose Pro on successful online revalidation. If validation cannot reach the server, free capabilities remain available.
-- CSV exports and user-saved before/after comparisons stay locally on the device. Neither is uploaded.
+- CSV and (from 2.1.0) PDF reports are built inside the extension and saved through a normal browser download; user-saved before/after comparisons stay locally on the device. None of these is uploaded.
 
 ## What leaves your browser
 
