@@ -37,3 +37,28 @@ Not done (and why)
   P0 and on repo access).
 
 Resume from: `docs/MASTER_PENDING_TASKS.md` → MT-002 (push recovery branch), then MT-001/MT-004/MT-005.
+
+## 2026-11-04 — Claude — SiteCheck payment-flow fixes, white-label, v2.1 features, QA checklist
+
+Access unchanged (no GitHub write; Sahil pushed the 2026-11-03 branches from the laptop bundle).
+
+Done
+- Found while writing the QA checklist: a failed/cancelled PayU payment redirected to `/payment-failed`,
+  which does not exist (404). A signed success callback that was not yet captured, failed verification,
+  hit a ledger error, or whose echoed fields mismatched returned raw JSON in the customer's tab. Fixed on
+  `claude/sitecheck-payu-recovery-20261103` (`6fa5fc6`): browser callback always redirects to
+  `/sitecheck-pro?payment=failed|pending|verified`; the page re-checks entitlement; webhook keeps status
+  codes so PayU retries; forged signatures still 400; mismatch never grants. Unit 138/138; merges with PR #96
+  (140/140).
+- `docs/SITECHECK_PRO_QA_CHECKLIST.md` (`616b565`, same branch): owner canary checklist with evidence fields.
+- `claude/sitecheck-whitelabel-cta-20261104` (`a39fdaa`, `31b04e8`, from main): copied report/CSV carry no
+  sales pitch; Pro copy, CSV and CSV file name are white-label; "Not now" hides the human-review suggestion
+  for 30 days; never shown to Pro. Extension 31/31 at the time, lint ✓.
+- `claude/sitecheck-v21-local-ux-20261104` (stacked: `5f2816d`, `ace9bdc`): page-load metrics measured
+  on the device (LCP/INP/CLS/FCP/TTFB), "Show on page" outlines, Pro white-label PDF report (dependency-free
+  writer; validated with qpdf/pdftotext and rendered pages). Extension 46/46, unit 135/135, lint ✓. No
+  new permissions. Hold until 2.0.0 is approved, then bump to 2.1.0.
+
+Not done
+- Push/PR/merge/deploy, real payment, refund, store submission — same reasons as 2026-11-03.
+- `/sitecheck-privacy` and `/sitecheck-pro` page copy for v2.1 (must change at v2.1 release, not before).

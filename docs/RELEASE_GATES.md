@@ -23,6 +23,10 @@ Configuration that must stay true until G12: `SITECHECK_PRO_CHECKOUT_ENABLED` un
 | G12 | GST receipt/invoice, refund terms on `/sitecheck-pro` and `/refund`, support contact | TESTING PENDING | pages exist (`public/sitecheck-pro.html`, `refund.html`, `sitecheck-privacy.html`); content not re-reviewed this session |
 | G13 | Chrome Web Store: v2.0.0 zip from `npm run extension:package`, permissions/privacy disclosures match code, listing approved and public | BLOCKED behind G9–G12 | record item version + approval date |
 | G14 | Launch: owner authorizes `SITECHECK_PRO_CHECKOUT_ENABLED=true`; first-order monitoring; rollback = unset flag | NOT STARTED | — |
+| G15 | Promotion (Product Hunt, Reddit, communities) only after G13 approval and G9 pass; review requests without incentives | NOT STARTED | — |
+
+Customer-facing callback pages (failed / pending / verified) are fixed on `claude/sitecheck-payu-recovery-20261103`
+(`6fa5fc6`). Run the owner canary with `docs/SITECHECK_PRO_QA_CHECKLIST.md` (same branch).
 
 Watch item for G9: `productinfo` is `SiteCheck Pro — One-time License` (contains an em dash). The callback
 compares PayU's echoed `productinfo` byte-for-byte. If PayU alters non-ASCII text, a captured payment would be

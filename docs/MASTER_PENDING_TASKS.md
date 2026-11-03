@@ -9,10 +9,11 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
 | ID | Task | Status | Depends on | Evidence | Next action | Links |
 | --- | --- | --- | --- | --- | --- | --- |
 | MT-001 | Decide owner-only gate: main's owner pilot vs PR #96 canary email | CODE COMPLETE | — | both paths tested; #96 clean + CI green at `12c2f2c` | **[Sahil]** either set `WORKSPACE_OWNER_EMAIL` secret (no merge needed) or merge #96 and set `SITECHECK_PRO_CANARY_EMAIL`. Use one, not both | PR #96 |
-| MT-002 | Push lost-callback recovery (`/api/payu/admin/verify`) and open PR | CODE COMPLETE | write access or Sahil push | `708e876`; unit 136/136; merges with #96 | push branch `claude/sitecheck-payu-recovery-20261103`, open PR, merge before the canary | G6 |
+| MT-002 | Merge payment fixes: lost-callback recovery (`708e876`) + customer-safe callback pages (`6fa5fc6`) + QA checklist (`616b565`) | CODE COMPLETE | write access or Sahil push | unit 138/138; merges with #96 → 140/140 | open PR from `claude/sitecheck-payu-recovery-20261103`, merge before the canary | G6, MT-014 |
+| MT-014 | Failed PayU payment landed on a 404 (`/payment-failed` missing); ambiguous callbacks showed raw JSON | CODE COMPLETE | MT-002 | fixed in `6fa5fc6` | merge with MT-002 | G9 |
 | MT-003 | Free Durable Object namespace capacity (99/100) so PR previews build | BLOCKED | Sahil authorization | PR #96 handoff, build `ab36ba2b…` error 10067 | list namespaces in Cloudflare dashboard, identify ones left by deleted previews, back up, **[Sahil]** approve deletion of ≥2 | XEND-CLEANUP-20261022 |
 | MT-004 | Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate | DEPLOYMENT PENDING | MT-002 | last deploy `1faa0a4` verified by run 41485101193 | merge → Cloudflare auto-deploy → confirm "Xender Live E2E" green on the new SHA | G7 |
-| MT-005 | Owner ₹499 canary purchase | BLOCKED | MT-001, MT-004 | — | **[Sahil]** sign in at `/sitecheck-pro` with the owner account and pay ₹499. Record txnid | G9 |
+| MT-005 | Owner ₹499 canary purchase | BLOCKED | MT-001, MT-004 | — | **[Sahil]** follow `docs/SITECHECK_PRO_QA_CHECKLIST.md` sections 0–6 | G9 |
 | MT-006 | Verify capture → ledger → licence → extension unlock → reinstall restore | TESTING PENDING | MT-005 | — | check PayU dashboard, `/api/sitecheck/entitlement`, generate key, restore after reinstall | G9 |
 | MT-007 | Confirm webhook delivery format and `productinfo` round-trip | TESTING PENDING | MT-005 | handler accepts form-encoded only; productinfo has an em dash | if "Order mismatch"/415 seen, settle with MT-002 and fix in code | G8 |
 | MT-008 | Real full refund → automatic revocation | TESTING PENDING | MT-006 | refund query in `/api/sitecheck/license/verify` | **[Sahil]** refund in PayU dashboard; verify Pro off within 15 min | G10 |
@@ -21,6 +22,9 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
 | MT-011 | GST receipt/invoice + refund terms review for ₹499 | TESTING PENDING | — | pages exist | review copy against actual PayU receipt after MT-005 | G12 |
 | MT-012 | Chrome Web Store SiteCheck v2.0.0 submission | BLOCKED | MT-006–MT-011 | manifests 2.0.0; tests 28/28 | build zip, **[Sahil]** submit in dashboard, record approval | G13 |
 | MT-013 | Public launch | NOT STARTED | all above | — | **[Sahil]** authorize `SITECHECK_PRO_CHECKOUT_ENABLED=true` | G14 |
+| MT-015 | White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) | CODE COMPLETE | — | `claude/sitecheck-whitelabel-cta-20261104`; extension tests + lint green | PR → merge before the 2.0.0 zip is built | — |
+| MT-016 | v2.1: page-load metrics on device, Show on page, Pro white-label PDF | CODE COMPLETE | MT-012 approved | `claude/sitecheck-v21-local-ux-20261104` (stacked on MT-015); 46/46 | hold; after 2.0.0 approval bump to 2.1.0, update `/sitecheck-privacy` + `/sitecheck-pro` copy, submit update | — |
+| MT-017 | Launch on Product Hunt / Reddit | NOT STARTED | MT-012 approved **and** MT-006 passed | — | only then; ask for honest reviews, never offer anything in return (store policy) | G15 |
 
 ## P1 — AutoTube
 
