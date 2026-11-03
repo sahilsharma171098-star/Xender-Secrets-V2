@@ -1,7 +1,20 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-RECOVERY-001 — Consolidate scattered Xender work (2026-10-31)
+Status: REVIEW (docs-only recovery board on branch `chatgpt/xend-recovery-20261031`; no production changes)
+Owner: ChatGPT
+- Dated evidence, full open-PR triage, active revenue/content lanes and explicit freeze decisions: [XENDER_RECOVERY_2026-10-31.md](XENDER_RECOVERY_2026-10-31.md).
+- Reviewed GitHub repo/PR metadata for Xender and AutoTube on 2026-10-31. This does not establish fresh third-party platform access, provider credentials, payment flows, current CI or media publication.
+- Open PRs are not mass-merged or deleted; compare current main and validate each change before selective closing/merging. Generated `ops/HANDOFF.md` remains an older snapshot pending local handoff regeneration.
+
+## XEND-READER-XH-002 — Reader external API failure breaks live E2E (2026-10-29)
+Status: OPEN / UNFIXED (Xender PR #85 documents the incident only)
+Owner: Unassigned
+- `reader_xh_and_translation_ui` timed out while the partner WordPress API at `xperimentalhamid.com` returned server errors on 2026-10-29; PR #85 contains no code fix.
+- Next: read the exact workflow logs; separate deterministic reader/UI coverage from real partner availability; preserve validation of real application failures. Do not just silence the test, loosen guards or guess successful deployment.
+
 ## XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
-Status: IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
+Status: CODE_MERGED (PR #84 merged to main as `ebc6646`; production deploy recorded in PR #85; live reader E2E incident XEND-READER-XH-002 unresolved)
 Owner: Claude
 - What: home, studio, catalog (/portfolio), pricing (/services), about, FAQ, contact and a new /media page share one HUD shell: dark "story" chapters over a single three.js world (`public/xs/world.js`, scenes core/blueprint/build/ring/launch/globe), then white "paper" with the same content blocks as before. Generator: `scripts/commercial/hud.mjs` (shell), `scripts/commercial/media.mjs` + `media.json` (videos/Shorts/Reels snapshot, 27 Oct), page stories in `pages.mjs`.
 - Kept: every lead form and its `data-cta`/offer contract (`xs-growth.js`), catalog filters/search/deep links/share (`portfolio.js`), JSON-LD, canonicals, sitemap, internal links to all industry/location/guide pages, GST display rules, US$299 note for international visitors, honest demo labels. Retired: the light/dark theme toggle (test replaced by a HUD test).
@@ -10,14 +23,14 @@ Owner: Claude
 - Not in this change: industry, location, guide, legal, tool, /hire and 404 pages keep the previous design until they move to the shell.
 
 ## XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27)
-Status: REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
+Status: PARTIAL (HQ PR #80, AutoTube #8/#9 merged; historical retrofit recorded, current publication and CQ-024 profile parity unverified)
 Owner: Claude
 - Why: channel CTR 1.7% and ~1:03 average view on 3.3K impressions (YouTube Studio, 27 Oct). Same-niche channels win with "X वाला महीने का कितना कमाता है? | The Economics of X" titles and light covers with one picture and one number. Topics were fine; packaging was not.
 - Format: `docs/YOUTUBE_FORMAT.md` (public summary) → AutoTube `docs/CONTENT_FORMAT.md` (full spec) and `autotube/packaging.py` (code checks: `python -m autotube.packaging --format long|short "<title>"`). AGENTS.md, CLAUDE.md and GEMINI.md here and in AutoTube point to it; `ai:prepare` adds the format line for AutoTube/YouTube projects.
-- New videos: AutoTube [PR #8](https://github.com/sahilsharma171098-star/autotube/pull/8) (draft) turns the format on in the daily pipeline. **Needs Sahil's merge**; until then new uploads keep the old packaging.
+- New videos: AutoTube [PR #8](https://github.com/sahilsharma171098-star/autotube/pull/8) is **merged**, not a pending draft. Do not infer current live publishing without run/platform readback.
 - Existing videos: AutoTube branch `claude/yt-retrofit-old-videos`, workflow "Retrofit existing videos". Backs up all 30 public/unlisted videos (snippet, status, thumbnail) before any change, renders covers for review, applies only with `apply: true` + approved cover sha256, idempotent, `rollback: true` restores the backup. Plan: 15 long videos (14 new titles + 15 covers + search lines), 13 Hindi Shorts retitled, horror story → unlisted, 2-second test upload → private, English pilot Short untouched. Nothing deleted.
 - Applied 27 Oct 2026 (AutoTube [run 40460762967](https://github.com/sahilsharma171098-star/autotube/actions/runs/40460762967), draft [PR #9](https://github.com/sahilsharma171098-star/autotube/pull/9)): 30/30 changes in `data/retrofit/applied.json`. Checked on the public pages afterwards: all 27 new titles live, horror video unlisted, test upload private (login required), and each of the 15 live thumbnails matches its reviewed cover by pixel signature, not the old one. Plan locked again (`apply: false`). Rollback: set `rollback: true` in the plan.
-- Next: ChatGPT/Sahil CQ-024 (format profile + paste block). Sahil merges AutoTube #8 when happy.
+- Next: Check CQ-024 cross-agent format profile status and current publish receipts; AutoTube #8/#9 are already merged. Observe CTR/AVD before changing formats or topics.
 
 ## XEND-CATALOG-IMMERSIVE-001 — Differentiated 3D concept lab (2026-10-24)
 Status: DONE (phase 1: experimental lab only; phase 2 high-quality redesign remains separate)

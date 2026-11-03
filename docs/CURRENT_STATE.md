@@ -1,5 +1,7 @@
 # Xender Secrets V2 — Current State
 
+> **2026-10-31 recovery cross-check:** [XENDER_RECOVERY_2026-10-31.md](XENDER_RECOVERY_2026-10-31.md) reconciles current GitHub PR/merge status, known blockers and work to hold. Entries below are historical snapshots and are not evidence of current third-party service access or live publication.
+
 ## Supplied ThinkPad health results (2026-10-24; XEND-AI-HEALTH-001)
 - Sahil supplied a local verification summary reporting private backups of nine checkouts plus local AutoTube source, integrity/sample-restore checks, main 9e21348 in a separate workspace, Antigravity 2.23.0 running/signed in with Google AI Pro, and 120/120 offline plus 7/7 evidence/handoff tests.
 - These are supplied local results, not direct Windows checks by this cloud reviewer. The original local commit 8c13d26/full report/private receipt are not accessible here. Safe record: docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md. Historical snapshots below predate this supplied follow-up.
