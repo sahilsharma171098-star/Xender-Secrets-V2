@@ -1,5 +1,15 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-AUTOTUBE-MEL-001 — Midnight Evidence Lab as an isolated AutoTube channel profile (2026-11-01)
+Status: CORE_MERGED_DRAFT_ONLY (no YouTube channel/account created, no upload schedule or publishing activated)
+Owner: ChatGPT/Codex
+- Canonical source: **private** `sahilsharma171098-star/autotube`, PR [#21](https://github.com/sahilsharma171098-star/autotube/pull/21) merged to main as `0024ed34af37605c204d3d841763a062b59f86f0` on 1 November 2026.
+- Built: `channels/midnight_evidence_lab/` independent English US/UK channel config, 30-day calendar (20 Shorts/4 long), sourced D.B. Cooper draft, separate history/output namespace, `mystery_cli.py` read-only validation and no-upload draft preview, manual-only preview GitHub workflow.
+- Verified: AutoTube safety CI [run 41274923815](https://github.com/sahilsharma171098-star/autotube/actions/runs/41274923815) PASSED, 177/177 offline tests; check command and compile passed. No preview MP4 rendered or listened to, no finished content reviewed.
+- Isolation: Xender Hindi channel and existing same-channel US/UK business pilot unchanged; main daily cron and YT-03 publish queue unchanged; channel uploads and crossposts for new profile disabled.
+- Blockers before actual launch: create/verify new YouTube channel ID, separate OAuth credentials + channel ID lock, editor & rights review, documentary-specific long-video generator QA, verified rendering and final-cut approval; only then propose isolated publication workflow and explicit owner go.
+
+
 ## XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
 Status: IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 Owner: Claude
