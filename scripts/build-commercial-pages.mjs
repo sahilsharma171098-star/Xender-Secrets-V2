@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { allPages, CONTENT_DATE } from "./commercial/pages.mjs";
 import { HUBS } from "./seo/hubs.mjs";
+import { GA_SKIP, withGaTag } from "./commercial/analytics.mjs";
 
 const PUBLIC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "public");
 const check = process.argv.includes("--check");
@@ -27,6 +28,16 @@ for (const [file, transform] of Object.entries(HUBS)) {
   if (html === current) continue;
   if (check) stale.push(file);
   else { fs.writeFileSync(target, html); console.log("wrote public/" + file + " (hub)"); }
+}
+// Google Analytics: every served public/*.html (hand-written ones included) carries the GA4 tag,
+// except private/utility pages in GA_SKIP (scripts/commercial/analytics.mjs).
+for (const file of fs.readdirSync(PUBLIC).filter((f) => f.endsWith(".html") && !GA_SKIP.has(f))) {
+  const target = path.join(PUBLIC, file);
+  const current = fs.readFileSync(target, "utf8");
+  const html = withGaTag(current);
+  if (html === current) continue;
+  if (check) { if (!stale.includes(file)) stale.push(file); }
+  else { fs.writeFileSync(target, html); console.log("wrote public/" + file + " (google tag)"); }
 }
 // Sitemap: every indexable page in public/ (robots meta allows indexing), commercial pages first.
 // lastmod is preserved from the existing sitemap; generated pages carry CONTENT_DATE.

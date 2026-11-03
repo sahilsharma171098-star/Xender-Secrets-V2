@@ -2,9 +2,11 @@
 // FAQ, contact). Each page opens as a dark holographic story told in sticky chapters over one 3D
 // world (public/xs/world.js), then settles onto white "paper" for the details: the same content
 // blocks, lead form, analytics hooks and schema as before (layout.mjs / blocks.mjs), restyled by
-// public/xs/xs.css. Everything is self-hosted (fonts, three.js); no third-party requests.
+// public/xs/xs.css. Everything is self-hosted (fonts, three.js); the only third-party request is
+// the Google Analytics tag (analytics.mjs).
 // Without WebGL, with reduced motion, Save-Data or no JS, chapters render as static sections.
 import { SITE, EMAIL, esc, wa, canonicalUrl, cleanLinks } from "./layout.mjs";
+import { gaTag } from "./analytics.mjs";
 import { PROJECTS, KINDS } from "./portfolio.mjs";
 
 const YT = "https://www.youtube.com/@Xender-s7y";
@@ -125,6 +127,7 @@ export function hudPage({ path, title, description, ogTitle, story, body, jsonld
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  ${gaTag()}
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${canonical}">
