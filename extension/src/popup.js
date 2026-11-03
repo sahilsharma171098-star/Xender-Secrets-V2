@@ -7,6 +7,8 @@ import { reportText } from "./lib/report.js";
 import { prioritizedCsv } from "./lib/pro-export.js";
 import { BASELINE_STORAGE_KEY, snapshotOf, withSavedBaseline, findSavedBaseline, compareWithBaseline } from "./lib/baseline.js";
 import { CTA_DISMISS_KEY, ctaVisible } from "./lib/cta.js";
+import { vitalsRows, vitalsNotes, ratingLabel } from "./lib/vitals-rate.js";
+import { highlightOnPage, clearPageHighlights } from "./lib/highlight.js";
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = (id) => document.getElementById(id);
@@ -83,6 +85,8 @@ async function run() {
     const restriction = restrictionFor(tab.url);
     if (restriction) return blocked(restriction.message);
   }
+  // Remove any outline left by "Show on page" so it is never part of the audited page.
+  try { await api.scripting.executeScript({ target: { tabId: tab.id }, func: clearPageHighlights }); } catch (e) { /* audit below reports real errors */ }
   let result;
   try {
     const out = await api.scripting.executeScript({ target: { tabId: tab.id }, files: ["audit.js"] });
@@ -94,7 +98,13 @@ async function run() {
     return blocked(messageForError(null, tab.url));
   }
   $("domain").textContent = result.host || $("domain").textContent;
-  current = { result, scored: scoreReport(result.checks) };
+  // Page-load metrics are optional: a failure here never blocks the audit report.
+  let vitals = null;
+  try {
+    const v = await api.scripting.executeScript({ target: { tabId: tab.id }, files: ["vitals.js"] });
+    vitals = v && v[0] && v[0].result;
+  } catch (e) { vitals = null; }
+  current = { result, scored: scoreReport(result.checks), vitals, tabId: tab.id };
   render();
 }
 
@@ -137,12 +147,28 @@ function render() {
     ));
   }
 
+  renderVitals(current.vitals);
+
   $("passedLabel").textContent = `Passed checks (${scored.passed.length})`;
   $("passedList").replaceChildren(...scored.passed.map((p) => h("li", {}, p.passTitle, p.detail ? h("span", { class: "pd", text: " — " + p.detail }) : null)));
   $("passedBox").hidden = scored.passed.length === 0;
   $("exportCsv").hidden = !proActive;
   show("report");
   refreshBaselineControls();
+}
+
+function renderVitals(v) {
+  const rows = vitalsRows(v);
+  $("vitals").hidden = rows.length === 0;
+  if (!rows.length) return;
+  $("vitalsList").replaceChildren(...rows.map((row) => h("li", {
+    class: row.rating ? "r-" + row.rating : null,
+    "data-metric": row.id,
+    title: [row.label, row.note].filter(Boolean).join(" — "),
+  }, h("span", { class: "v-name", text: row.short }), h("b", { text: row.display }), h("span", { class: "v-rate", text: ratingLabel(row.rating) || "\u00a0" }))));
+  const notes = vitalsNotes(v);
+  $("vitalsCaveats").textContent = notes.join(" ");
+  $("vitalsCaveats").hidden = notes.length === 0;
 }
 
 function issueCard(i) {
@@ -154,8 +180,37 @@ function issueCard(i) {
       h("h3", { text: "Why it matters" }), h("p", { text: i.why }),
       h("h3", { text: "Recommended fix" }), h("p", { text: i.fix }),
       i.samples && i.samples.length ? [h("h3", { text: i.count > i.samples.length ? `Examples (${i.samples.length} of ${i.count})` : "Found on this page" }), h("ul", { class: "samples" }, i.samples.map((s) => h("li", { text: s })))] : null,
+      showOnPageControls(i),
     ),
   );
+}
+
+function showOnPageControls(issue) {
+  const targets = (issue.targets || []).filter((t) => typeof t === "string" && t);
+  if (!targets.length) return null;
+  const status = h("span", { class: "show-status", role: "status", "aria-live": "polite" });
+  const button = h("button", { class: "btn small", type: "button", "data-show": issue.id, onclick: () => showOnPage(issue, targets, status) }, "Show on page");
+  return h("div", { class: "issue-actions" }, button, status);
+}
+
+async function showOnPage(issue, targets, status) {
+  if (!current || current.tabId === undefined) return;
+  status.textContent = "";
+  try {
+    const out = await api.scripting.executeScript({ target: { tabId: current.tabId }, func: highlightOnPage, args: [targets, issue.title] });
+    const r = out && out[0] && out[0].result;
+    if (!r || !r.shown) { status.textContent = "Not found on the page any more — it may have changed. Check again."; return; }
+    const partial = issue.count > r.shown ? ` (first ${r.shown} of ${issue.count})` : "";
+    status.textContent = `Outlined ${r.shown} on the page${partial}. Press Esc on the page to clear.`;
+  } catch (e) {
+    status.textContent = "Couldn't draw on this page. Check again.";
+  }
+}
+
+async function clearOutlines() {
+  if (!current || current.tabId === undefined) return;
+  try { await api.scripting.executeScript({ target: { tabId: current.tabId }, func: clearPageHighlights }); } catch (e) { /* tab gone or navigated */ }
+  for (const el of document.querySelectorAll(".show-status")) el.textContent = "";
 }
 
 async function copyReport() {
@@ -307,6 +362,7 @@ loadCtaState();
 refreshLicense();
 
 $("ctaDismiss").addEventListener("click", dismissCta);
+$("clearOutlines").addEventListener("click", clearOutlines);
 $("rerun").addEventListener("click", run);
 $("copy").addEventListener("click", copyReport);
 run();

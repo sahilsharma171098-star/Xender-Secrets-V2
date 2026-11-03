@@ -8,10 +8,12 @@
 // Privacy rules enforced here (see extension/store/privacy-policy.md):
 // - never read form field values, cookies, storage or credentials;
 // - samples describe elements (tag, id, class, short label/href), never user input;
-// - the URL returned is origin + path only (no query string or fragment).
+// - the URL returned is origin + path only (no query string or fragment);
+// - targets are structural CSS paths (#id or tag:nth-of-type chains) for the sampled
+//   elements, used only if the user clicks "Show on page"; they carry no text or values.
 //
 // Check metadata (titles, why/fix copy, category, weight) lives in src/lib/checks.js;
-// this file returns only { id, status, count, detail, samples } per check.
+// this file returns only { id, status, count, detail, samples, targets } per check.
 (() => {
   "use strict";
   const doc = document;
@@ -60,17 +62,45 @@
     return s;
   }
 
+  /**
+   * Structural selector for one element, so "Show on page" can find it again. Uses a
+   * unique #id when there is one, else tag:nth-of-type steps. Same information as the
+   * samples (tag, id, position) — never text, attribute values or user input.
+   * Returns null when the path is not unique or cannot be expressed (shadow DOM, odd tags).
+   */
+  function cssPath(el) {
+    try {
+      if (!el || el.nodeType !== 1 || !el.isConnected) return null;
+      const esc = win.CSS && typeof win.CSS.escape === "function" ? win.CSS.escape : null;
+      if (!esc) return null;
+      const parts = [];
+      for (let node = el, depth = 0; node && node.nodeType === 1 && depth < 32; node = node.parentElement, depth++) {
+        const tag = node.localName;
+        if (node.id && doc.querySelectorAll("#" + esc(node.id)).length === 1) { parts.unshift("#" + esc(node.id)); break; }
+        if (node === doc.documentElement) { parts.unshift(tag); break; }
+        let i = 1;
+        for (let sib = node.previousElementSibling; sib; sib = sib.previousElementSibling) if (sib.localName === tag) i++;
+        parts.unshift(tag + ":nth-of-type(" + i + ")");
+      }
+      const sel = parts.join(" > ");
+      return sel.length <= 600 && doc.querySelector(sel) === el ? sel : null;
+    } catch (e) { return null; }
+  }
+
   function record(id, status, extra) {
-    const r = { id, status, count: 0, detail: "", samples: [] };
+    const r = { id, status, count: 0, detail: "", samples: [], targets: [] };
     if (extra) Object.assign(r, extra);
     if (r.samples.length > MAX_SAMPLES) r.samples = r.samples.slice(0, MAX_SAMPLES);
+    if (r.targets.length > MAX_SAMPLES) r.targets = r.targets.slice(0, MAX_SAMPLES);
     results.push(r);
   }
   /** pass/fail from a list of offending items ({el,label} or strings). na when not applicable. */
   function fromList(id, items, { applicable = true, detail = "", passDetail = "" } = {}) {
     if (!applicable) return record(id, "na");
-    const samples = items.slice(0, MAX_SAMPLES).map((it) => (typeof it === "string" ? it : describe(it.el, it.label)));
-    if (items.length) record(id, "fail", { count: items.length, detail, samples });
+    const picked = items.slice(0, MAX_SAMPLES);
+    const samples = picked.map((it) => (typeof it === "string" ? it : describe(it.el, it.label)));
+    const targets = picked.map((it) => (typeof it === "string" ? null : cssPath(it.el)));
+    if (items.length) record(id, "fail", { count: items.length, detail, samples, targets });
     else record(id, "pass", { detail: passDetail });
   }
 
@@ -378,7 +408,7 @@
       if (clipped || cs(el).position === "fixed") continue;
       origins.push({ el, label: `ends at ${Math.round(r.right + win.scrollX)}px` });
     }
-    record("ux-horizontal-overflow", "fail", { count: origins.length || 1, detail: `The page is ${scrollW}px wide but the window is ${viewW}px, so it scrolls sideways at this width.`, samples: origins.map((o) => describe(o.el, o.label)) });
+    record("ux-horizontal-overflow", "fail", { count: origins.length || 1, detail: `The page is ${scrollW}px wide but the window is ${viewW}px, so it scrolls sideways at this width.`, samples: origins.map((o) => describe(o.el, o.label)), targets: origins.slice(0, MAX_SAMPLES).map((o) => cssPath(o.el)) });
   } else record("ux-horizontal-overflow", "pass", { detail: `Checked at ${viewW}px window width.` });
 
   const forms = [...doc.forms].filter((f) => isRendered(f));

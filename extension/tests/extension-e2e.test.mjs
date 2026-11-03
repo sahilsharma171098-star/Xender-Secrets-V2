@@ -187,3 +187,26 @@ test("human-review suggestion: Not now hides it for later popups; Pro never sees
   await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
   await popup.close(); await target.close();
 });
+
+
+test("v2.1: page-load metrics panel and Show on page work in the packaged extension", async () => {
+  const { popup, target } = await openPopupFor("https://fixtures.test/insecure.html");
+  await popup.waitForSelector("#report:not([hidden])");
+  await popup.waitForSelector("#vitals:not([hidden])");
+  assert.deepEqual(await popup.locator("#vitalsList li").evaluateAll((els) => els.map((e) => e.dataset.metric)), ["lcp", "inp", "cls", "fcp", "ttfb"]);
+  assert.match(await popup.textContent('#vitalsList [data-metric="lcp"] b'), /^\d+ ms$|^\d+\.\d s$/);
+  assert.match(await popup.textContent("#vitals"), /not Google field data or a Lighthouse test/);
+  const card = popup.locator('[data-check="tech-broken-anchors"]');
+  await card.locator("summary").click();
+  await card.getByRole("button", { name: "Show on page" }).click();
+  await popup.waitForFunction(() => /Outlined \d/.test(document.querySelector('[data-check="tech-broken-anchors"] .show-status').textContent));
+  assert.equal(await target.evaluate(() => document.querySelectorAll("xender-sitecheck-outline").length), 1, "outline drawn in the audited tab");
+  await popup.click("#clearOutlines");
+  await target.waitForFunction(() => document.querySelectorAll("xender-sitecheck-outline").length === 0);
+  await card.getByRole("button", { name: "Show on page" }).click();
+  await target.waitForFunction(() => document.querySelectorAll("xender-sitecheck-outline").length === 1);
+  await popup.click("#rerun");
+  await popup.waitForSelector("#report:not([hidden])");
+  await target.waitForFunction(() => document.querySelectorAll("xender-sitecheck-outline").length === 0);
+  await popup.close(); await target.close();
+});

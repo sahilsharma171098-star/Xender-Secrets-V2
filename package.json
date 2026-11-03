@@ -19,7 +19,7 @@
     "extension:build": "node scripts/extension/build.mjs",
     "extension:package": "node scripts/extension/build.mjs --package",
     "extension:lint": "node scripts/extension/lint.mjs",
-    "extension:test": "node --test extension/tests/unit.test.mjs extension/tests/audit.test.mjs extension/tests/extension-e2e.test.mjs",
+    "extension:test": "node --test extension/tests/unit.test.mjs extension/tests/audit.test.mjs extension/tests/vitals.test.mjs extension/tests/highlight.test.mjs extension/tests/extension-e2e.test.mjs",
     "extension:assets": "node scripts/extension/assets.mjs && node scripts/extension/icons.mjs",
     "test:worker": "node --test tests/worker/canonical-worker.test.mjs",
     "seo:links": "node scripts/seo/normalize-links.mjs",

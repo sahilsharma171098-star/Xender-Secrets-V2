@@ -6,6 +6,11 @@ Versioning: MAJOR.MINOR.PATCH (semver), single source of truth in `extension/man
 - MAJOR: anything that changes permissions or data handling — requires a privacy-policy update first.
 Every store gets the same version number; rebuild all three packages for every release.
 
+## 2.1.0 — unreleased (ship as an update after 2.0.0 is approved; bump the manifest version then)
+- Page load on this device: LCP, INP, CLS, FCP and TTFB read from the browser's own timing entries for the current page load, rated with Google's published good/poor limits. Measured locally; never sent; not part of the Health Score. INP shows "Interact first" until the user clicks or types, and "Under 104 ms" when no slow interaction was recorded. CLS is unavailable in Firefox (no layout-shift API).
+- Show on page: outlines the elements an issue refers to (up to 5 per issue), scrolls to the first, clears on Esc / "Clear outlines" / re-check. No page content or style changes.
+- No new permissions. Privacy policy updated — publish the matching text on /sitecheck-privacy before releasing.
+
 ## 2.0.0 — pending payment verification and Chrome Web Store review
 - Free 49-check audit unchanged; optional priority CSV export with a ₹499 one-time Pro license.
 - Account-bound SHA-256-hashed license check, manual account-key activation and refund revocation.

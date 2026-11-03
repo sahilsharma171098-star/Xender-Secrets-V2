@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Page-load metrics fixture</title>
+</head>
+<body>
+  <main>
+    <h1>Page-load metrics fixture</h1>
+    <p id="lead">This paragraph is the largest text block when the page first paints. A banner is inserted above it shortly after load, which shifts it down without any user input.</p>
+    <button id="slow" type="button">Slow button</button>
+    <button id="fast" type="button">Fast button</button>
+  </main>
+  <script>
+    if (location.hash === "#shift") addEventListener("load", () => setTimeout(() => {
+      const banner = document.createElement("div");
+      banner.style.height = "320px";
+      banner.textContent = "Late banner";
+      document.body.prepend(banner);
+    }, 120));
+    document.getElementById("slow").addEventListener("click", () => { const t = performance.now(); while (performance.now() - t < 220) { /* block the main thread */ } });
+    document.getElementById("fast").addEventListener("click", () => {});
+  </script>
+</body>
+</html>
