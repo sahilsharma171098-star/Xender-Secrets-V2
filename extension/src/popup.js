@@ -235,7 +235,7 @@ $("exportCsv").addEventListener("click", () => {
   const link = document.createElement("a");
   link.href = objectUrl;
   const host = String(current.result.host || "website").replace(/[^a-z0-9.-]/gi, "-").slice(0, 80);
-  link.download = "xender-sitecheck-" + host + ".csv";
+  link.download = "website-qa-" + host + ".csv"; // white-label: no Xender name in the file either
   document.body.append(link);
   link.click();
   link.remove();
