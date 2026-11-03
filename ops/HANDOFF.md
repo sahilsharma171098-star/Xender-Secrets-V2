@@ -48,7 +48,7 @@ Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everyth
 ## Notes from the last agent
 
 ### XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
-- Owner: Claude. Branch `feat/google-analytics-ga4` (PR to `main`). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.
+- Owner: Claude. Branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.
 - Changed: `scripts/commercial/analytics.mjs` (single source), both templates, `build-commercial-pages.mjs` (adds/enforces the tag on hand-written pages), 77 `public/*.html` (all but `/admin`), `/privacy` disclosure, `docs/DATA_MEASUREMENT_PLAN.md`, tests.
 - Privacy: tag disabled for GPC/DNT and framed loads via Google's `ga-disable-<ID>` flag. Never send lead fields/PII to GA.
 - Checks run locally: unit 135/135, commercial-funnel 27/27 (incl. new Google tag test), build:pages/normalize-links --check, worker 4/4, operations 40/40, immersive browser 1/1, reader 8/8, extension lint + 28/28.

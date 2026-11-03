@@ -1,7 +1,7 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
-Status: REVIEW (branch `feat/google-analytics-ga4`)
+Status: REVIEW (branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101); live after Sahil merges)
 Owner: Claude
 - What: Google's gtag.js install code for `G-C95XL2M3ZQ`, high in `<head>` on 77 of 78 served pages (all except `/admin`). Source of truth `scripts/commercial/analytics.mjs`; templates embed it and `build:pages` adds it to hand-written pages, so `check:pages` fails on any page missing it.
 - Privacy: tag disabled via Google's `ga-disable-<ID>` flag for GPC/DNT visitors and framed loads (no double count from /preview inside /preview-builder). `/privacy` "Cookies and analytics" rewritten to disclose GA4 (updated 4 Nov 2026).
