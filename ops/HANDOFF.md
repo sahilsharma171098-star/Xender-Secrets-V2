@@ -1,18 +1,21 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-29 18:28 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-10-29 18:40 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/xend-hud-site-001`
+- Branch: `claude/xend-hud-001-deployed`
 - Last commits:
+  - `ebc6646 Merge pull request #84: XEND-HUD-001 core pages as one connected 3D story`
+  - `a93bac5 XEND-HUD-001: handoff notes`
   - `420808d XEND-HUD-001: core pages rebuilt as one connected 3D story`
   - `e112d7e Merge pull request #82`
 
 ## Working-tree snapshot at generation
-- none — working tree clean
+- ` M docs/TASKS.md`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
+- XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — REVIEW (live since 29 Oct 2026 via [PR #84](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/84), merge `ebc6646`; Sahil said "live kar" after reviewing the 8-page preview)
+- XEND-READER-XH-002 — XH reader chapters time out in live E2E (2026-10-29) — READY
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
 - XEND-IG-CROSSPOST-001 — Publish existing YouTube content to Instagram (2026-10-24) — IN_PROGRESS
@@ -50,7 +53,8 @@ Generated 2026-10-29 18:28 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Owner: Claude. Branch `claude/xend-hud-site-001`, [PR #84](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/84). Sahil approved going live ("live kar", 29 Oct) after reviewing the 8-page preview.
 - Changed: home, studio, /portfolio, /services, about, FAQ, contact + new /media use `hudPage()` (`scripts/commercial/hud.mjs`) — dark 3D chapters (`public/xs/world.js`, three.js r160 self-hosted) then the existing content blocks on white paper (`public/xs/xs.css`). `window.XH` is the HUD global; `window.XS` stays xs-growth's. Theme toggle retired.
 - Checks run locally: unit 101/101, commercial-funnel 18/18 (theme test replaced by HUD test), build:pages/normalize-links/novel --check, worker 4/4 (+ real `wrangler dev`: /media 200), reader 8/8, operations 40/40, immersive 1/1, extension lint + 25/25; Playwright screenshots of all 8 pages at 1440 and 390 px.
-- Next: after merge, Cloudflare deploys `main`; check the live pages and the "Xender Live E2E" run on main. Then move industry, location, guide, legal, tool, /hire and 404 pages to the shell (keep /hire free of contact/social links — Upwork rule).
+- Deployed 29 Oct 2026: PR #84 merged (`ebc6646`), Cloudflare production build success, live pages read back. Live E2E: all site checks pass; `reader_xh_and_translation_ui` fails (partner WordPress API errors, unrelated) → XEND-READER-XH-002.
+- Next: move industry, location, guide, legal, tool, /hire and 404 pages to the shell (keep /hire free of contact/social links — Upwork rule).
 - Waiting on Sahil: LinkedIn company page and Facebook page URLs (media.json `accounts` still has placeholders, not shown on the site).
 
 ### XEND-CATALOG-IMMERSIVE-001 — 3D catalog prototype deployed (2026-10-24)
