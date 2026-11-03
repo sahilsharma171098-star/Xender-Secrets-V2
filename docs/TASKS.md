@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03)
+Status: REVIEW (docs on branch `claude/xend-master-backlog-20261103`; SiteCheck recovery fix on `claude/sitecheck-payu-recovery-20261103`)
+Owner: Claude
+- What: one evidence-based backlog across products (`docs/MASTER_PENDING_TASKS.md`, MT-### IDs linked to existing XEND IDs), `docs/MASTER_PROJECT_STATUS.md`, `docs/RELEASE_GATES.md` (SiteCheck Pro G1–G14, GridSnip R1–R5), `docs/REVENUE_TRACKER.md`, `docs/EXECUTION_LOG.md`.
+- Verified 2026-11-03: main `1faa0a4` live (Live E2E run 41485101193 incl. SiteCheck checkout-OFF gate); PR #96 clean, CI green, suites re-run locally (unit 137, browser 26, extension 28, worker 4, ops 40).
+- Fix: `POST /api/payu/admin/verify` settles a captured payment whose callback and webhook were both lost (commit `708e876`, unit 136/136; merges with #96 → 138/138).
+- Not done: push/merge/deploy (no GitHub write in session), real ₹499 canary and refund (Sahil), CWS submission, AutoTube/Shopify/intl audits.
+- Next: push both branches, merge recovery fix, then owner canary MT-005.
+
 ## XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
 Status: IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 Owner: Claude

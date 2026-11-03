@@ -1,17 +1,26 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-29 18:28 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-03 05:25 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/xend-hud-site-001`
+- Branch: `claude/xend-master-backlog-20261103`
 - Last commits:
-  - `420808d XEND-HUD-001: core pages rebuilt as one connected 3D story`
-  - `e112d7e Merge pull request #82`
+  - `1faa0a4 feat(sitecheck): merchant-only PayU test checkout; public remains disabled`
+  - `c4a7049 fix(sitecheck): refresh v2 assets and enforce production freshness gate`
+  - `25d2186 feat(sitecheck): gated Pro backend and PayU webhook (checkout OFF)`
+  - `c87aa69 feat(extensions): live store links and launch-discovery pages (#89)`
+  - `ebc6646 Merge pull request #84: XEND-HUD-001 core pages as one connected 3D story`
 
 ## Working-tree snapshot at generation
-- none — working tree clean
+- `A  docs/EXECUTION_LOG.md`
+- `A  docs/MASTER_PENDING_TASKS.md`
+- `A  docs/MASTER_PROJECT_STATUS.md`
+- `A  docs/RELEASE_GATES.md`
+- `A  docs/REVENUE_TRACKER.md`
+- `M  docs/TASKS.md`
 
 ## Open tasks (docs/TASKS.md)
+- XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03) — REVIEW (docs on branch `claude/xend-master-backlog-20261103`; SiteCheck recovery fix on `claude/sitecheck-payu-recovery-20261103`)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
