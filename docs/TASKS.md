@@ -1,5 +1,13 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-OSS-UPGRADE-001 — Open-source benchmark for AutoTube and SiteCheck (2026-11-02)
+Status: IN_REVIEW (non-destructive audit document; no imports, deployment, payments or publishing)
+Owner: ChatGPT
+- Canonical research/decision: [docs/OSS_UPGRADE_BENCHMARK_2026-11-02.md](OSS_UPGRADE_BENCHMARK_2026-11-02.md); tracking [issue #93](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/issues/93).
+- AutoTube (private canonical repo): benchmark MoneyPrinterTurbo rendering on identical offline inputs; preserve ledger, publisher safety, history and per-channel identity. ShortGPT is reference only.
+- SiteCheck: retain the minimal current MV3 extension; WXT/Plasmo migration rejected until measured need; monetize via existing #90/PayU PR #92 production gates before considering new frameworks.
+- No licenses copied, third-party imports, secret access, tests claimed, or production changes in this milestone. Next: reproducible offline video baseline and SiteCheck browser/QA baseline.
+
 ## XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
 Status: IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 Owner: Claude
