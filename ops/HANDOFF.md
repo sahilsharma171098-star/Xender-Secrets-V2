@@ -1,17 +1,18 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-10-29 18:28 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/xend-hud-site-001`
+- Branch: `feat/google-analytics-ga4`
 - Last commits:
-  - `420808d XEND-HUD-001: core pages rebuilt as one connected 3D story`
-  - `e112d7e Merge pull request #82`
+  - `7ac00d2 XEND-GA4-001: add Google Analytics 4 tag (G-C95XL2M3ZQ) site-wide`
+  - `1faa0a4 feat(sitecheck): merchant-only PayU test checkout; public remains disabled`
 
 ## Working-tree snapshot at generation
 - none — working tree clean
 
 ## Open tasks (docs/TASKS.md)
+- XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04) — REVIEW (branch `feat/google-analytics-ga4`)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -45,6 +46,13 @@ Generated 2026-10-29 18:28 UTC by **claude** with `npm run ops:handoff`. Everyth
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+### XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
+- Owner: Claude. Branch `feat/google-analytics-ga4` (PR to `main`). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.
+- Changed: `scripts/commercial/analytics.mjs` (single source), both templates, `build-commercial-pages.mjs` (adds/enforces the tag on hand-written pages), 77 `public/*.html` (all but `/admin`), `/privacy` disclosure, `docs/DATA_MEASUREMENT_PLAN.md`, tests.
+- Privacy: tag disabled for GPC/DNT and framed loads via Google's `ga-disable-<ID>` flag. Never send lead fields/PII to GA.
+- Checks run locally: unit 135/135, commercial-funnel 27/27 (incl. new Google tag test), build:pages/normalize-links --check, worker 4/4, operations 40/40, immersive browser 1/1, reader 8/8, extension lint + 28/28.
+- Next: merge → Cloudflare deploys `main` → confirm hits in GA4 Realtime and the "Xender Live E2E" run. Keep Google Signals/ads personalisation off unless `/privacy` is updated.
 
 ### XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
 - Owner: Claude. Branch `claude/xend-hud-site-001`, [PR #84](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/84). Sahil approved going live ("live kar", 29 Oct) after reviewing the 8-page preview.
