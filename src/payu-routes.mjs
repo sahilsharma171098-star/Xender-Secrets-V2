@@ -117,18 +117,26 @@ export async function handlePayu(request,env) {
   }
   if((path==="/api/payu/callback"||path==="/api/payu/webhook")&&method==="POST") {
     const isWebhook=path==="/api/payu/webhook";
+    // The browser callback is a customer's tab: it always gets a page, never raw JSON.
+    // "pending" re-checks the server-side entitlement; the query string is never proof.
+    // The webhook keeps status codes so PayU retries when verification is unavailable.
+    const customerPage=state=>Response.redirect(url.origin+"/sitecheck-pro?payment="+state,303);
     if(!(request.headers.get("content-type")||"").includes("application/x-www-form-urlencoded"))return json({ok:false,error:"Invalid callback"},415);
     const raw=await request.text();
     if(raw.length>16000)return json({ok:false},413);
     const data=Object.fromEntries(new URLSearchParams(raw));
     if(data.key!==env.PAYU_KEY||!await verifyPayuCallbackHash(data,env.PAYU_SALT))return json({ok:false,error:"Invalid callback signature"},400);
-    const txnid=clean(data.txnid,25),{order}=await ledger(env,"get",{txnid});
-    if(!order||order.email!==data.email.toLowerCase()||order.offer_id!==data.udf1||order.amount_paise!==Math.round(Number(data.amount)*100)||PAYMENT_OFFERS[order.offer_id]?.name!==data.productinfo)return json({ok:false,error:"Order mismatch"},400);
-    if(data.status!=="success")return isWebhook?json({ok:true,captured:false}):Response.redirect(url.origin+"/payment-failed?txnid="+encodeURIComponent(txnid),303);
+    const txnid=clean(data.txnid,25);
+    let order;
+    try{({order}=await ledger(env,"get",{txnid}));}catch{return isWebhook?json({ok:false,error:"Payment ledger unavailable"},503):customerPage("pending");}
+    // A mismatch on a correctly signed callback can be a real paid order whose echoed fields
+    // differ (for example productinfo text); it is settled later by /api/payu/admin/verify.
+    if(!order||order.email!==data.email.toLowerCase()||order.offer_id!==data.udf1||order.amount_paise!==Math.round(Number(data.amount)*100)||PAYMENT_OFFERS[order.offer_id]?.name!==data.productinfo)return isWebhook?json({ok:false,error:"Order mismatch"},400):customerPage("pending");
+    if(data.status!=="success")return isWebhook?json({ok:true,captured:false}):customerPage("failed");
     let payment;
-    try{payment=await queryPayuTransaction(txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{return json({ok:false,error:"Payment verification pending"},503);}
-    if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)return json({ok:false,error:"Not captured"},409);
-    await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});
+    try{payment=await queryPayuTransaction(txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{return isWebhook?json({ok:false,error:"Payment verification pending"},503):customerPage("pending");}
+    if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)return isWebhook?json({ok:false,error:"Not captured"},409):customerPage("pending");
+    try{await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});}catch{return isWebhook?json({ok:false,error:"Payment ledger unavailable"},503):customerPage("pending");}
     return isWebhook?json({ok:true,captured:true,fulfilled:true}):Response.redirect(order.offer_id==="sitecheck-pro-onetime"?url.origin+"/sitecheck-pro?payment=verified":url.origin+"/payment-success?txnid="+encodeURIComponent(txnid),303);
   }
   if(path==="/api/payu/admin/reconcile"&&method==="POST") {

@@ -4,7 +4,11 @@
   const status=(id,text)=>{ $(id).textContent=text; };
   let enabled=false, account=null;
   // The URL query is only a prompt to check the server; never proof of a payment.
-  if(new URLSearchParams(location.search).get("payment")==="verified"){
+  const paymentState=new URLSearchParams(location.search).get("payment");
+  if(paymentState==="failed"){
+    status("licenseStatus","The payment was not completed, so no license was issued. You can try again. If money was deducted, contact us with the time of payment and we will check it with PayU.");
+  }
+  if(paymentState==="verified"||paymentState==="pending"){
     status("licenseStatus","Checking the captured payment and your account entitlement…");
     fetch("/api/sitecheck/entitlement",{credentials:"same-origin",cache:"no-store"})
       .then(async response=>{
@@ -14,7 +18,9 @@
         if(result.ok===true&&result.pro===true){
           status("licenseStatus","Payment confirmed for this Xender account. Select Generate a license key, then activate it in SiteCheck.");
           $("sitecheckLicenseIssue").focus();
-        }else status("licenseStatus","Your payment is still being verified. No license has been issued yet. Please check again or contact support.");
+        }else status("licenseStatus",paymentState==="pending"
+          ?"We could not confirm this payment yet, so no license has been issued. If money left your account it will be confirmed here or reversed. Check this page again in a few minutes, or contact us with the time of payment."
+          :"Your payment is still being verified. No license has been issued yet. Please check again or contact support.");
       })
       .catch(error=>status("licenseStatus",error.message||"Unable to verify entitlement right now."));
   }
