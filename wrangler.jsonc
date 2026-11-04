@@ -50,6 +50,9 @@
     }
   },
   "previews": {
+    "vars": {
+      "SITECHECK_PRO_OWNER_PILOT": "false"
+    },
     "ai": {
       "binding": "AI"
     },
