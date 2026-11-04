@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04)
+Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj`; PR pending merge)
+Owner: Claude
+- Why: the owner gives short commands ("Complete SiteCheck", "Check now", "Next", "Deploy") to ChatGPT/Codex, Claude and Gemini; each session re-investigates, burns usage and loses context.
+- What: dependency-free Node CLI (`npm run pm -- ...`). Reads existing records only (PR #100 backlog + release gates, issue/PR snapshot, `docs/TASKS.md`), reconciles stale rows against merged PRs, turns a short command into a bounded saved assignment (`ops/pm/tasks/PM-<PROJECT>-NNN.*`), saves checkpoints during agent runs (`XPM-CHECKPOINT` lines or the `checkpoint` command), generates continuation prompts for Claude Code / Codex CLI / Gemini CLI, checks those CLIs (`doctor`), and dispatches only when `XENDER_PM_ALLOW_EXEC=1` + CLI signed in + owner approval for deploy/payment/merge words. No LLM used to interpret commands; no paid API; no quota reading (no official interface).
+- Real records: MT-002/009/014/015 corrected to DONE from GitHub (PRs #105, #106 merged); MT-003 marked DONE from XEND-CF-PREVIEW-001 evidence; first real task `PM-SITECHECK-001` (MT-004 Live E2E check on `d7d3ad3`, MT-010 chargeback path) saved.
+- Checks: `node --test tests/unit/xender-pm.test.mjs` 14/14 (mock agents + mocked GitHub, includes the acceptance scenario with a fresh-process resume); full unit 160/160; operations 40/40; `npm run pm:demo` PASS.
+- Not done: Codex/Gemini CLIs not installed on the cloud host, so real (non-mock) dispatch was only verified to be refused/dry-run there; Claude Code is installed and signed in, but no real auto-run was executed. Snapshot refresh needs `GITHUB_TOKEN`/`GH_TOKEN` (`npm run pm -- sync`).
+
 ## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
 Status: DONE (2026-11-04: targets absent, 72/100 namespaces, preview build green)
 Owner: Claude

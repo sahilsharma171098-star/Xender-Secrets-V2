@@ -1,18 +1,26 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-04 19:04 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `feat/google-analytics-ga4`
+- Branch: `claude/xender-pm-mvp-v5yqxj`
 - Last commits:
-  - `7ac00d2 XEND-GA4-001: add Google Analytics 4 tag (G-C95XL2M3ZQ) site-wide`
-  - `1faa0a4 feat(sitecheck): merchant-only PayU test checkout; public remains disabled`
+  - `4b9adde XEND-PM-001: tests (mock agents + mocked GitHub), acceptance demo, snapshot update (#109 merged)`
+  - `7c24fa8 XEND-PM-001: xender-pm CLI core — project memory, reconciliation, task store, prompts, agent adapters`
+  - `d7d3ad3 Preview hygiene: SiteCheck owner pilot off in previews; GA only on production host (#109)`
+  - `8b7aaab feat(sitecheck): white-label copied report and CSV, dismissible human-review suggestion (2.0.0) (#106)`
+  - `0806fd8 XEND-CF-PREVIEW-001: done — preview build d0d00436 green, 72/100 namespaces`
 
 ## Working-tree snapshot at generation
-- none — working tree clean
+- ` M AGENTS.md`
+- ` M PROJECTS.md`
+- ` M docs/TASKS.md`
+- `?? docs/XENDER_PM.md`
+- `?? ops/pm/overrides.json`
+- `?? ops/pm/tasks/`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04) — DONE (live 2026-11-04, PR #101 → `d53205d`)
+- XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`; PR pending merge)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -46,6 +54,13 @@ Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everyth
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04)
+- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj` (rebased on main `d7d3ad3`). Guide: `docs/XENDER_PM.md`.
+- Use it first: `npm run pm -- status`, `npm run pm -- next`. Saved real task: `PM-SITECHECK-001` (MT-004 confirm Live E2E run 41892558789 on `d7d3ad3`; MT-010 chargeback path). Resume with `npm run pm -- resume PM-SITECHECK-001 --agent <you>`.
+- Records corrected: MT-002/009/014/015 DONE (PRs #105/#106 merged, detected automatically); MT-003 DONE via `ops/pm/overrides.json` (XEND-CF-PREVIEW-001 evidence). PR #100's backlog file still says otherwise; update it when #100 is next touched.
+- Checks run: `node --test tests/unit/xender-pm.test.mjs` 14/14; `node --test tests/unit/*.test.mjs` 160/160; `npm run test:ops` 40/40; `npm run pm:demo` PASS (mock agents, real metadata). `npm run pm -- doctor` on the cloud host: Claude Code 2.1.318 installed + signed in; Codex/Gemini CLIs not installed.
+- Not done: no real (non-mock) auto-dispatch executed; `sync` needs `GITHUB_TOKEN`. Not deployed (no runtime/site change).
 
 ### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
 - Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.
