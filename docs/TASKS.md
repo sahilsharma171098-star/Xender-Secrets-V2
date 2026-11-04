@@ -1,13 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
-Status: BLOCKED (54 merged-branch deletions queued for ChatGPT as CQ-025 in `docs/CHATGPT_ACTION_QUEUE.md`)
+Status: BLOCKED (CQ-025 verified on 2026-11-04; deletion requires an authenticated GitHub ref-delete operation)
 Owner: Claude
 - Cause (Cloudflare build log, build `91bb22c3`): `wrangler preview` fails with code 10067, "reached the Workers Free limit of 100 Durable Object namespaces". Account uses 99: production (AppState, CommunityIndex, ContentThread) + 3 per branch preview. Every PR preview build has failed since ~2 Nov (#92 onward); production deploys on `main` are unaffected.
 - Why they pile up: each preview has Auto-deletion ON (deleted when its branch is deleted), but GitHub never deleted merged branches.
 - Risk: with 1 slot free, adding any new Durable Object class would also fail the **production** deploy.
 - Done 2026-11-04: GitHub "Automatically delete head branches" turned ON (verified via API `delete_branch_on_merge: true`).
 - Data check: only production namespaces and the open PR #41 preview (`claude/project-thread-n0p6fk`, AppState 569 kB) hold data; merged-branch previews are 0 B.
+- CQ-025 ChatGPT verification — 2026-11-04: 90 remote branches and 23 open PRs checked via GitHub REST. All 54 listed branch tips matched their exact 40-character restore SHAs and none had an open PR; 0 SHA mismatches and 0 open-PR exclusions. The protected branches `main`, `backup/*`, `feat/payu-gateway-foundation-20261102`, and `claude/project-thread-n0p6fk` are absent from the deletion list. **Result: 0 deleted, 0 conditionally skipped, 54 pending/unexecuted.** The connected GitHub tool supports read/file writes but not ref deletion; local Git access has no GitHub network connectivity. No branch was deleted and Cloudflare namespace recovery is not verified. The existing bulk-delete script was not run because it does not enforce per-branch live SHA/open-PR checks. Run the 54 deletions only through an authenticated environment with per-branch rechecks immediately before each deletion, then record actual deleted/skipped and namespace counts here.
 - Pending (Sahil): run `ops/cleanup/delete-merged-branches-20261104.sh` (54 branches whose tip equals their merged PR head; restore lines included). Agent deletion was blocked by the session safety policy. Skipped: `feat/payu-gateway-foundation-20261102` (commits after merge), open-PR, no-PR, closed-unmerged and `backup/*` branches.
 - Then: check Durable Objects count in Cloudflare drops and retry a failed preview build.
 
