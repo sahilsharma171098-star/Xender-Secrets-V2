@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Welcome to GridSnip OCR</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="welcome.css">
+  <script type="module" src="welcome.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <h1>GridSnip is installed</h1>
+    <p class="lead">Copy any table you can see — on a web page, in a PDF or in a paused video — straight into Excel or Google Sheets.</p>
+    <ol class="steps">
+      <li><strong>Add your free Gemini key</strong> (below). GridSnip uses Google Gemini to read the table, with your own key — no GridSnip account or fee.</li>
+      <li><strong>Press <kbd id="shortcut">Alt+S</kbd></strong> on the page with your table, or click the GridSnip icon and choose “Snip a table on this page”.</li>
+      <li><strong>Drag a box</strong> around the table. GridSnip copies it; paste with <kbd>Ctrl</kbd>+<kbd>V</kbd> into a spreadsheet.</li>
+    </ol>
+    <section class="panel" id="keySetup"></section>
+    <section class="panel" id="keyDone" hidden>
+      <h2>You're ready</h2>
+      <p>Try it now: press <kbd>Alt+S</kbd> and drag a box around the table below.</p>
+    </section>
+    <h2>Practice table</h2>
+    <table class="sample">
+      <thead><tr><th>Quarter</th><th>Revenue (₹ lakh)</th><th>Orders</th><th>Growth</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 FY26</td><td>12.40</td><td>1,180</td><td>+4.2%</td></tr>
+        <tr><td>Q2 FY26</td><td>13.95</td><td>1,302</td><td>+12.5%</td></tr>
+        <tr><td>Q3 FY26</td><td>13.10</td><td>1,214</td><td>-6.1%</td></tr>
+        <tr><td>Q4 FY26</td><td>15.62</td><td>1,466</td><td>+19.2%</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Privacy: only the area you select is sent, from your browser straight to Google Gemini with your key. GridSnip has no servers and keeps nothing. <a href="https://www.xendersecrets.com/gridsnip-privacy" target="_blank" rel="noopener">Read the privacy policy</a>.</p>
+  </main>
+</body>
+</html>

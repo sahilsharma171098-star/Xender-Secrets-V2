@@ -1,0 +1,6 @@
+{
+  "name": "gridsnip",
+  "private": true,
+  "type": "module",
+  "description": "GridSnip OCR Chrome extension. Build, lint and tests run from the repository root: npm run gridsnip:test"
+}

@@ -940,7 +940,7 @@ function sitecheckPage() {
 }
 
 /** Tiny Markdown → HTML for the extension privacy policy (headings, paragraphs, lists, tables, bold, code, links). */
-function mdToHtml(md) {
+export function mdToHtml(md) {
   const inline = (t) => esc(t)
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/`([^`]+)`/g, "<code>$1</code>")
@@ -989,6 +989,24 @@ function sitecheckPrivacyPage() {
   return page({ path: "/sitecheck-privacy.html", title: "Xender SiteCheck Privacy Policy | Xender Secrets",
     description: "Privacy policy for the Xender SiteCheck browser extension: analysis runs locally, no data collected or transmitted, permissions activeTab and scripting only.",
     body, jsonld: [breadcrumbJsonLd([["Home", "/"], ["SiteCheck", "/sitecheck.html"], ["Privacy", "/sitecheck-privacy.html"]])] });
+}
+
+// GridSnip OCR privacy policy, generated from the extension's own policy file so the page and the
+// store disclosure can never drift apart (XEND-GRIDSNIP-001).
+function gridsnipPrivacyPage() {
+  const md = fs.readFileSync(new URL("../../projects/gridsnip/store/privacy-policy.md", import.meta.url), "utf8");
+  const body = `<section class="section">
+      <div class="wrap narrow">
+        <p class="eyebrow">GridSnip OCR · Chrome extension</p>
+        <h1>GridSnip privacy policy</h1>
+        ${mdToHtml(md)}
+      </div>
+    </section>
+
+    ${leadForm({ cta: "gridsnip-privacy-form", heading: "Questions about GridSnip <span>or a custom tool?</span>", intro: "Ask anything about the extension, or tell us about a browser extension or automation you want built for your business. We reply personally.", bullets: ["Privacy or permission questions", "Custom browser extensions", "Data-entry automation"] })}`;
+  return page({ path: "/gridsnip-privacy.html", title: "GridSnip OCR Privacy Policy | Xender Secrets",
+    description: "GridSnip OCR sends only the screen area you select, straight from your browser to Google Gemini with your own API key. No GridSnip servers, account, analytics or tracking.",
+    body, jsonld: [breadcrumbJsonLd([["Home", "/"], ["GridSnip privacy", "/gridsnip-privacy.html"]])] });
 }
 
 // Served by Cloudflare (not_found_handling: "404-page") for any unknown URL, at any depth,
@@ -1138,5 +1156,6 @@ export function allPages() {
     // SiteCheck public pages are maintained as static HTML for optional Pro and privacy disclosures.
     // Do not regenerate them from legacy free-only commercial templates.
     ...ARTICLES.map((a) => ({ file: a.file, html: articlePage(a) })),
+    { file: "gridsnip-privacy.html", html: gridsnipPrivacyPage() },
   ];
 }

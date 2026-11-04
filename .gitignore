@@ -12,3 +12,4 @@ prospects-out/
 
 # Private AI briefs, generated assets and result receipts
 .xender-ai/
+projects/gridsnip/dist/

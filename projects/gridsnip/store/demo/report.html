@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Regional sales — demo report</title>
+  <style>
+    body{margin:0;font:16px/1.5 Georgia,serif;background:#f6f3ee;color:#1f2933}
+    header{background:#1f2933;color:#f6f3ee;padding:18px 48px;font:600 15px/1 Arial,sans-serif;letter-spacing:.04em}
+    main{max-width:980px;margin:36px auto;padding:0 32px}
+    h1{font-size:30px;margin:0 0 6px}
+    .sub{color:#52606d;margin:0 0 26px;font-family:Arial,sans-serif}
+    table{border-collapse:collapse;width:100%;background:#fff;font:15px/1.4 Arial,sans-serif;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    th,td{padding:11px 16px;border-bottom:1px solid #e4e7eb;text-align:right}
+    th:first-child,td:first-child{text-align:left}
+    th{background:#323f4b;color:#fff;font-weight:600}
+    tr:nth-child(even) td{background:#f5f7fa}
+    .neg{color:#c0392b}
+    p.note{font:13px Arial,sans-serif;color:#7b8794;margin-top:14px}
+  </style>
+</head>
+<body>
+  <header>DEMO CO. · QUARTERLY REVIEW</header>
+  <main>
+    <h1>Regional sales, Q3 FY26</h1>
+    <p class="sub">Figures in ₹ lakh unless stated. Demo data for illustration.</p>
+    <table id="results">
+      <thead><tr><th>Region</th><th>Q2 revenue</th><th>Q3 revenue</th><th>Change</th><th>Orders</th><th>Avg. order (₹)</th></tr></thead>
+      <tbody>
+        <tr><td>North</td><td>48.20</td><td>52.75</td><td>+9.4%</td><td>4,812</td><td>1,096</td></tr>
+        <tr><td>West</td><td>61.05</td><td>59.30</td><td class="neg">-2.9%</td><td>5,240</td><td>1,132</td></tr>
+        <tr><td>South</td><td>39.80</td><td>44.10</td><td>+10.8%</td><td>4,015</td><td>1,098</td></tr>
+        <tr><td>East</td><td>22.45</td><td>24.90</td><td>+10.9%</td><td>2,318</td><td>1,074</td></tr>
+        <tr><td>Online</td><td>71.60</td><td>83.25</td><td>+16.3%</td><td>9,904</td><td>841</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>243.10</strong></td><td><strong>264.30</strong></td><td><strong>+8.7%</strong></td><td><strong>26,289</strong></td><td><strong>1,005</strong></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Source: demo dataset. Change is Q3 vs Q2.</p>
+  </main>
+</body>
+</html>

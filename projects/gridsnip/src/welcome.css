@@ -1,0 +1,7 @@
+.wrap{max-width:760px;margin:0 auto;padding:36px 20px 48px}
+.lead{font-size:16px;color:var(--ink-2)}
+.steps{padding-left:20px;margin:18px 0 20px}
+.steps li{margin:0 0 10px}
+.sample{border-collapse:collapse;margin:6px 0 18px;background:var(--surface)}
+.sample th,.sample td{border:1px solid var(--line);padding:8px 14px;text-align:left}
+.sample th{background:var(--surface-2)}
