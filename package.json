@@ -29,7 +29,12 @@
     "ai:list": "node scripts/ops/ai-workspace.mjs list",
     "ai:doctor": "node scripts/ops/ai-workspace.mjs doctor",
     "ai:prepare": "node scripts/ops/ai-workspace.mjs prepare",
-    "ai:task": "node scripts/ops/task-workspace.mjs"
+    "ai:task": "node scripts/ops/task-workspace.mjs",
+    "gridsnip:build": "node projects/gridsnip/scripts/build.mjs",
+    "gridsnip:package": "node projects/gridsnip/scripts/build.mjs --package",
+    "gridsnip:lint": "node projects/gridsnip/scripts/lint.mjs",
+    "gridsnip:test": "node --test projects/gridsnip/tests/unit.test.mjs projects/gridsnip/tests/e2e.test.mjs",
+    "gridsnip:icons": "node projects/gridsnip/scripts/icons.mjs"
   },
   "devDependencies": {
     "playwright": "1.57.0",

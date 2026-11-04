@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GridSnip OCR</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="popup.css">
+  <script type="module" src="popup.js"></script>
+</head>
+<body>
+  <header class="top">
+    <img src="icons/icon-32.png" width="26" height="26" alt="">
+    <strong>GridSnip OCR</strong>
+  </header>
+  <main>
+    <section class="panel">
+      <button class="btn primary wide" id="snipBtn" type="button">Snip a table on this page</button>
+      <p class="shortcut">Shortcut: <kbd id="shortcut">Alt+S</kbd> · <a href="#" id="changeShortcut">change</a></p>
+      <p class="note">Drag a box around a table on a web page, a PDF or a paused video. GridSnip copies it as rows and columns — paste with <kbd>Ctrl</kbd>+<kbd>V</kbd> into Excel or Google Sheets.</p>
+    </section>
+    <section class="panel" id="keySaved" hidden>
+      <h2>Gemini key</h2>
+      <p>Saved on this device: <code id="keyMask"></code></p>
+      <p class="note" id="modelLine"></p>
+      <button class="btn" id="removeKey" type="button">Remove key</button>
+    </section>
+    <section class="panel" id="keySetup" hidden></section>
+  </main>
+  <footer class="foot">
+    Only the area you select is sent — straight from your browser to Google Gemini with your own key. Nothing goes to us.
+    <a href="https://www.xendersecrets.com/gridsnip-privacy" target="_blank" rel="noopener">Privacy</a>
+  </footer>
+</body>
+</html>

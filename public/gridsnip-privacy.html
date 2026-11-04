@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!-- Google tag (gtag.js) -->
+  <script>try{if(navigator.globalPrivacyControl||navigator.doNotTrack==="1"||window.doNotTrack==="1"||window.self!==window.top)window["ga-disable-G-C95XL2M3ZQ"]=true}catch(e){window["ga-disable-G-C95XL2M3ZQ"]=true}</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C95XL2M3ZQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-C95XL2M3ZQ');
+  </script>
+  <title>GridSnip OCR Privacy Policy | Xender Secrets</title>
+  <meta name="description" content="GridSnip OCR sends only the screen area you select, straight from your browser to Google Gemini with your own API key. No GridSnip servers, account, analytics or tracking.">
+  <link rel="canonical" href="https://www.xendersecrets.com/gridsnip-privacy">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#0f0f0e">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Xender Secrets">
+  <meta property="og:title" content="GridSnip OCR Privacy Policy | Xender Secrets">
+  <meta property="og:description" content="GridSnip OCR sends only the screen area you select, straight from your browser to Google Gemini with your own API key. No GridSnip servers, account, analytics or tracking.">
+  <meta property="og:url" content="https://www.xendersecrets.com/gridsnip-privacy">
+  <meta property="og:image" content="https://www.xendersecrets.com/og-xender.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>try{if(localStorage.getItem("xs-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="preload" href="/fonts/playfair-display-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/home.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.xendersecrets.com/"},{"@type":"ListItem","position":2,"name":"GridSnip privacy","item":"https://www.xendersecrets.com/gridsnip-privacy"}]}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="Xender Secrets home">XENDER <span>SECRETS</span></a>
+      <nav class="nav" id="nav" aria-label="Main">
+        <a href="/portfolio">Catalog</a>
+        <a href="/studio">Studio</a>
+        <a href="/services">Pricing</a>
+        <a href="/articles">Guides</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to light mode">◐</button>
+        <a class="btn primary header-cta" href="#start" data-offer="custom-build" data-cta="header-quote">Start a project</a>
+        <button class="icon-btn menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="section">
+      <div class="wrap narrow">
+        <p class="eyebrow">GridSnip OCR · Chrome extension</p>
+        <h1>GridSnip privacy policy</h1>
+        <p>Updated 4 November 2026 for GridSnip 1.1.0.<br>Published at: <a href="https://www.xendersecrets.com/gridsnip-privacy">https://www.xendersecrets.com/gridsnip-privacy</a></p>
+        <p>GridSnip OCR (&quot;GridSnip&quot;, &quot;the extension&quot;) is made by Xender Secrets, a proprietorship of Sahil Kumar Sharma, Gurugram, Haryana, India. This policy explains exactly what the extension handles and where it goes.</p>
+        <h2>Summary</h2>
+        <ul class="dash"><li>GridSnip does something <strong>only when you press its shortcut or click &quot;Snip a table&quot;</strong>, and only on the tab you are looking at.</li><li><strong>Only the area you select</strong> leaves your browser, and it goes <strong>directly to Google&#39;s Gemini API</strong> (<code>generativelanguage.googleapis.com</code>) using <strong>your own API key</strong>. Nothing is sent to Xender Secrets — GridSnip has no servers.</li><li>There are <strong>no analytics, no tracking, no advertising and no account</strong>.</li></ul>
+        <h2>What GridSnip handles, and when</h2>
+        <ul class="dash"><li><strong>Screenshot of the visible tab.</strong> When you press the shortcut or click &quot;Snip a table on this page&quot;, the extension takes one screenshot of the tab you are looking at (this uses the <code>activeTab</code> permission, which Chrome grants only for that action). The screenshot is kept in temporary session storage in memory for the moment it takes to open GridSnip&#39;s own snip tab, which deletes it as soon as it has loaded it. It is never saved to disk by GridSnip and disappears when you close the snip tab.</li><li><strong>The area you select.</strong> When you drag a box, that cropped part of the screenshot is sent as an image to Google&#39;s Gemini API so it can be read as a table. Nothing outside your box is sent. The request carries your API key in a request header.</li><li><strong>The extracted table.</strong> The text Gemini returns is shown in the snip tab and copied to your clipboard (the <code>clipboardWrite</code> permission lets GridSnip do that without an extra click). You can also download it as a CSV file. GridSnip does not keep the table after you close the tab.</li><li><strong>Your Gemini API key</strong> and the name of the Gemini model chosen for it are saved in the browser&#39;s local extension storage (the <code>storage</code> permission) on this device only — not synced and never sent anywhere except to Google with your own requests. You can remove the key from the GridSnip popup at any time.</li></ul>
+        <h2>Google Gemini</h2>
+        <p>GridSnip sends your selection to Google under your own Gemini API account, so Google&#39;s terms apply to that request. According to Google&#39;s Gemini API terms, when you use Google&#39;s <strong>free (unpaid) tier</strong>, Google uses the content you submit and the responses to provide, improve and develop its products, and human reviewers may read it; Google asks that you do not submit sensitive, confidential or personal information to the free tier. On a paid Gemini API plan, Google says it does not use prompts or responses to improve its products. Choose your key accordingly, and don&#39;t snip confidential or personal data with a free key.</p>
+        <h2>What GridSnip never does</h2>
+        <ul class="dash"><li>It does not read pages in the background, inject scripts into pages, read form fields, cookies or passwords, or access browsing history.</li><li>It does not send anything to Xender Secrets or any party other than Google&#39;s Gemini API.</li><li>It does not sell or transfer data, and it does not use data for advertising, credit-worthiness or any purpose other than reading the table you selected.</li></ul>
+        <h2>Permissions</h2>
+        <div class="table-wrap"><table class="compare"><thead><tr><th scope="col">Permission</th><th scope="col">Why</th></tr></thead><tbody><tr><td><code>activeTab</code></td><td>Take one screenshot of the tab you are looking at, only when you press the shortcut or click &quot;Snip a table&quot;.</td></tr><tr><td><code>storage</code></td><td>Keep your Gemini API key and chosen model on this device, and hand the screenshot to the snip tab through temporary session storage.</td></tr><tr><td><code>clipboardWrite</code></td><td>Copy the extracted table to your clipboard automatically.</td></tr><tr><td><code>https://generativelanguage.googleapis.com/*</code></td><td>Send the selected area to Google&#39;s Gemini API with your key — the only network destination.</td></tr></tbody></table></div>
+        <h2>Changes and contact</h2>
+        <p>Material changes will be published on this page with a new date. Questions: use the contact options at <a href="https://www.xendersecrets.com/contact">https://www.xendersecrets.com/contact</a>.</p>
+      </div>
+    </section>
+
+    <section id="start" class="section start">
+      <div class="wrap split">
+        <div>
+          <p class="kicker">Start here</p>
+          <h2>Questions about GridSnip <span>or a custom tool?</span></h2>
+          <p>Ask anything about the extension, or tell us about a browser extension or automation you want built for your business. We reply personally.</p>
+          <ul class="checks"><li>Privacy or permission questions</li><li>Custom browser extensions</li><li>Data-entry automation</li></ul>
+          <p class="alt-contact">Prefer to talk? <a href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20to%20discuss%20a%20website." data-cta="start-whatsapp" target="_blank" rel="noopener">WhatsApp +91 98219 41814</a> · <a href="mailto:Sahilsharma171098@gmail.com" data-cta="start-email">Email us</a></p>
+        </div>
+        <form class="card lead-form" data-lead-form data-cta="gridsnip-privacy-form" novalidate>
+          <div class="field">
+            <label for="lf-name">Your name *</label>
+            <input id="lf-name" name="name" autocomplete="name" required maxlength="80">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="lf-phone">WhatsApp number</label>
+              <input id="lf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="98xxxxxxxx" maxlength="20">
+            </div>
+            <div class="field">
+              <label for="lf-email">Email</label>
+              <input id="lf-email" name="email" type="email" autocomplete="email" maxlength="254">
+            </div>
+          </div>
+          <p class="hint">WhatsApp number or email — at least one, so we can reply.</p>
+          <div class="field">
+            <label for="lf-business">Business name &amp; city</label>
+            <input id="lf-business" name="business" autocomplete="organization" maxlength="120" placeholder="e.g. Sharma Dental, Gurugram">
+          </div>
+          <div class="field">
+            <label for="lf-website">Current website or Instagram / Google page <span class="opt">(optional)</span></label>
+            <input id="lf-website" name="website" inputmode="url" maxlength="300" placeholder="yourbusiness.com">
+          </div>
+          <div class="field">
+            <label for="lf-offer">What do you need?</label>
+            <select id="lf-offer" name="offer">
+              <option value="free-website-check" selected>Free website check</option>
+              <option value="founding-website-999">₹999 + GST · Founding Website (1 page)</option>
+              <option value="business-starter-1999">₹1,999 + GST · Business Starter (3 pages)</option>
+              <option value="business-pro-3499">₹3,499 + GST · Business Pro (5 pages)</option>
+              <option value="redesign">Redesign my existing website</option>
+              <option value="custom-build">Custom website, store or web app</option>
+              <option value="not-sure">Not sure yet</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="lf-message">Anything we should know? <span class="opt">(optional)</span></label>
+            <textarea id="lf-message" name="message" rows="3" maxlength="1500" placeholder="What do you sell, and who are your customers?"></textarea>
+          </div>
+          <div class="hp" aria-hidden="true"><label for="lf-company-url">Leave this empty</label><input id="lf-company-url" name="company_url" tabindex="-1" autocomplete="off"></div>
+          <button class="btn primary block lg" type="submit">Send — we'll reply personally</button>
+          <p class="status" data-lead-status role="alert" aria-live="polite"></p>
+          <p class="fine">By sending, you agree we may contact you about this enquiry. See our <a href="/privacy">privacy policy</a>.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <strong>XENDER SECRETS</strong><br>
+        Founded by Sahil Kumar Sharma · Gurugram, Haryana, India<br>
+        GSTIN: 06IQFPS4456B1ZP · Udyam (MSME): <a href="https://udyamregistration.gov.in/Udyam_Verify.aspx" target="_blank" rel="noopener">UDYAM-HR-05-0152992</a>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="/portfolio">Catalog</a>
+        <a href="/studio">Studio</a>
+        <a href="/services">Pricing</a>
+        <a href="/website-catalog">All demos</a>
+        <a href="/business-templates">Templates</a>
+        <a href="/website-cost-calculator">Cost calculator</a>
+        <a href="/sitecheck">SiteCheck extension</a>
+        <a href="/articles">Articles</a>
+        <a href="/novels">Novels</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/refund">Refunds</a>
+      </nav>
+    </div>
+    <div class="wrap footer-industries">
+      <span>Websites for:</span>
+      <a href="/accountant-website-development">CA firms</a>
+      <a href="/clinic-website-development">Clinics &amp; dentists</a>
+      <a href="/real-estate-website-development">Real estate</a>
+      <a href="/recruitment-agency-website-development">Recruitment</a>
+      <a href="/consultant-website-development">Consultants</a>
+      <a href="/coaching-website-development">Coaching</a>
+      <a href="/gym-website-development">Gyms</a>
+      <a href="/restaurant-website-development">Restaurants</a>
+    </div>
+    <div class="wrap footer-industries">
+      <span>Website development in:</span>
+      <a href="/website-development-gurugram">Gurgaon (Gurugram)</a>
+      <a href="/website-development-delhi">Delhi NCR</a>
+      <a href="/website-development-noida">Noida</a>
+      <a href="/small-business-website-india">All of India</a>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="https://wa.me/919821941814?text=Hi%20Xender%20Secrets%2C%20I%20want%20a%20website%20for%20my%20business." data-cta="float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
+
+  <script src="/home.js" defer></script>
+  <script src="/xs-growth.js" defer></script>
+</body>
+</html>

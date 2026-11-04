@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GridSnip — select a table</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="snip.css">
+  <script type="module" src="snip.js"></script>
+</head>
+<body>
+  <header class="bar">
+    <strong class="brand">GridSnip</strong>
+    <p id="hint" class="hint" role="status" aria-live="polite">Loading the screenshot…</p>
+    <div class="bar-actions">
+      <button class="btn" id="cancelBtn" type="button" hidden>Cancel</button>
+      <button class="btn ghost" id="closeBtn" type="button">Close</button>
+    </div>
+  </header>
+  <main class="content">
+    <section class="panel" id="message" hidden></section>
+    <section class="panel" id="keySetup" hidden></section>
+    <section class="panel result" id="result" hidden>
+      <p class="result-status" id="resultStatus" role="status" aria-live="polite"></p>
+      <div class="result-actions">
+        <button class="btn primary" id="copyBtn" type="button">Copy again</button>
+        <button class="btn" id="csvBtn" type="button">Download CSV</button>
+        <button class="btn" id="againBtn" type="button">Select another area</button>
+      </div>
+      <div class="preview-wrap"><table class="preview" id="preview"></table></div>
+      <label class="raw-label" for="tsvOutput">Tab-separated text — if the clipboard was blocked, select all of it and copy</label>
+      <textarea id="tsvOutput" readonly rows="5" spellcheck="false"></textarea>
+    </section>
+    <div class="stage" id="stage" hidden>
+      <img id="shot" alt="Screenshot of the page you were on. Drag across it to select a table." draggable="false">
+      <div class="selection" id="selection" hidden></div>
+    </div>
+  </main>
+  <footer class="foot">
+    Only the area you select is sent — straight from your browser to Google Gemini with your own key. Nothing goes to us.
+    <a href="https://www.xendersecrets.com/gridsnip-privacy" target="_blank" rel="noopener">Privacy</a>
+  </footer>
+</body>
+</html>

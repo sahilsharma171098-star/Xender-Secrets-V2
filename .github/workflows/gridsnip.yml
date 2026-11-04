@@ -1,0 +1,34 @@
+name: GridSnip OCR
+on:
+  pull_request:
+    paths:
+      - "projects/gridsnip/**"
+      - "scripts/extension/zip.mjs"
+      - ".github/workflows/gridsnip.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gridsnip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Store policy and permissions checks
+        run: npm run gridsnip:lint
+      - name: Unit and real-extension tests (Gemini mocked)
+        run: npm run gridsnip:test
+      - name: Build store ZIP
+        run: npm run gridsnip:package
+      - name: Upload unsigned store submission candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: gridsnip-store-candidate
+          path: projects/gridsnip/dist/gridsnip-*.zip
+          if-no-files-found: error
+          retention-days: 14
