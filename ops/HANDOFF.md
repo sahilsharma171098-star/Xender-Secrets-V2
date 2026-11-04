@@ -61,6 +61,9 @@ Generated 2026-11-04 15:26 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Checks run: see `docs/EXECUTION_LOG.md` (2026-11-04 evening). Main + all four squashed together: unit 146, extension 31, GridSnip 16, reader+funnel 27, worker 4, ops 42, check:pages and link check clean.
 - After each merge: Workers Builds production build ✓ and "Xender Live E2E" ✓ on the new SHA (`checkoutEnabled=false`); after GridSnip, `/gridsnip-privacy` must load before Sahil submits GridSnip 1.1.0.
 - Never set `SITECHECK_PRO_CHECKOUT_ENABLED`. Workers Builds *preview* fails on every PR (Durable Object namespace limit) — known, not caused by these branches.
+### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
+- Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.
+- Done: GitHub auto-delete of merged branches ON. Pending Sahil: `bash ops/cleanup/delete-merged-branches-20261104.sh` (54 merged branches; previews auto-delete and free slots). Do not add a new Durable Object class until slots are freed.
 
 ### XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
 - Owner: Claude. Branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.

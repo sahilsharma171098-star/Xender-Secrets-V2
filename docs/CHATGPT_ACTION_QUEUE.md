@@ -194,3 +194,11 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 - ChatGPT: in the private Command Center `OS Formats` tab, add profile `autotube-economics-v2` (owner decision 27 Oct 2026) pointing to AutoTube `docs/CONTENT_FORMAT.md` at the commit where it lands on `main`; mark the pre-27-Oct YouTube profile superseded for new work (keep it for history). Re-pin open YouTube task workspaces to v2 per `docs/TASK_WORKSPACES.md`.
 - Rule for every agent: titles must pass `python -m autotube.packaging`; existing videos change only through AutoTube `data/retrofit/plan.json` + the "Retrofit existing videos" workflow, never by hand in YouTube Studio.
 - Expected: the next title/cover any agent proposes already passes the check. MIS: OS Formats row + OS Handoffs note.
+
+## Added by Claude — 2026-11-04 (XEND-CF-PREVIEW-001)
+### CQ-025 — Delete 54 merged GitHub branches to free Cloudflare preview slots (P1, ChatGPT, Sahil approved 4 Nov 2026)
+- Why: Cloudflare preview builds fail with code 10067 (99/100 Durable Object namespaces used on the free plan). Each stale branch preview holds 3; previews auto-delete when their branch is deleted. Claude's session cannot delete branches (GitHub proxy + safety policy), so Sahil asked for ChatGPT to do it.
+- Action: delete exactly the 54 branches listed in `ops/cleanup/delete-merged-branches-20261104.sh` from `sahilsharma171098-star/Xender-Secrets-V2` (GitHub connector, or `git push origin --delete …` as in that file). Before deleting each, confirm its tip SHA still equals the SHA in the script's restore lines and that it has no open PR; skip any that changed.
+- Never delete: `main`, `backup/*`, `feat/payu-gateway-foundation-20261102`, `claude/project-thread-n0p6fk` (open PR #41, holds preview data), or any branch with an open PR.
+- Expected: branch count drops from 90 to 36; within minutes Cloudflare → Durable Objects shows far fewer than 99 namespaces. Any branch can be restored from its PR page ("Restore branch") or with the restore line in the script.
+- MIS / handoff: record branches deleted vs skipped and the new namespace count under XEND-CF-PREVIEW-001 in `docs/TASKS.md`; then Claude verifies with a preview build retry.
