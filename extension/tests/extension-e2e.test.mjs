@@ -161,3 +161,29 @@ test("Pro can explicitly save local before/after snapshots and delete them even 
   await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
   await popup.close();await target.close();
 });
+
+
+test("human-review suggestion: Not now hides it for later popups; Pro never sees it", async () => {
+  const { popup, target } = await openPopupFor("https://fixtures.test/healthy.html");
+  await popup.evaluate(async () => chrome.storage.local.remove("sitecheckCtaDismissedAt"));
+  await popup.reload();
+  await popup.waitForSelector("#report:not([hidden])");
+  await popup.waitForSelector("#cta:not([hidden])");
+  await popup.click("#ctaDismiss");
+  await popup.locator("#cta").waitFor({ state: "hidden" });
+  const saved = (await popup.evaluate(async () => chrome.storage.local.get("sitecheckCtaDismissedAt"))).sitecheckCtaDismissedAt;
+  assert.ok(Number.isFinite(saved) && Math.abs(Date.now() - saved) < 60_000, "only a timestamp is stored");
+  await popup.reload();
+  await popup.waitForSelector("#report:not([hidden])");
+  assert.equal(await popup.isVisible("#cta"), false, "stays hidden on the next popup");
+  await popup.evaluate(async () => chrome.storage.local.remove("sitecheckCtaDismissedAt"));
+  const key = "sc1_" + "c".repeat(64);
+  await context.route("https://www.xendersecrets.com/api/sitecheck/license/verify", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify({ ok: true, product: "sitecheck", pro: true }) }));
+  await popup.evaluate(async (token) => chrome.storage.local.set({ sitecheckLicenseKey: token }), key);
+  await popup.reload();
+  await popup.waitForSelector("#exportCsv:not([hidden])");
+  assert.equal(await popup.isVisible("#cta"), false, "Pro users never see the suggestion");
+  await popup.evaluate(async () => chrome.storage.local.remove(["sitecheckLicenseKey", "sitecheckCtaDismissedAt"]));
+  await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
+  await popup.close(); await target.close();
+});

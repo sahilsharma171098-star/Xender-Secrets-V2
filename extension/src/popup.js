@@ -6,6 +6,7 @@ import { restrictionFor, messageForError } from "./lib/restricted.js";
 import { reportText } from "./lib/report.js";
 import { prioritizedCsv } from "./lib/pro-export.js";
 import { BASELINE_STORAGE_KEY, snapshotOf, withSavedBaseline, findSavedBaseline, compareWithBaseline } from "./lib/baseline.js";
+import { CTA_DISMISS_KEY, ctaVisible } from "./lib/cta.js";
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = (id) => document.getElementById(id);
@@ -16,6 +17,8 @@ const CAT_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
 
 let current = null; // { result, scored }
 let filter = "all";
+let screen = "loading";
+let ctaDismissedAt = null;
 
 /** Tiny DOM builder: text is always set via textContent, never parsed as HTML. */
 function h(tag, attrs = {}, ...children) {
@@ -32,9 +35,28 @@ function h(tag, attrs = {}, ...children) {
 }
 
 function show(id) {
+  screen = id;
   for (const s of ["loading", "blocked", "report"]) $(s).hidden = s !== id;
-  $("cta").hidden = id !== "report";
+  updateCta();
   $("rerun").hidden = id === "loading";
+}
+
+function updateCta() {
+  $("cta").hidden = !ctaVisible({ reportShown: screen === "report", proActive, dismissedAt: ctaDismissedAt });
+}
+
+async function loadCtaState() {
+  try {
+    const saved = await api.storage.local.get(CTA_DISMISS_KEY);
+    ctaDismissedAt = saved[CTA_DISMISS_KEY] ?? null;
+  } catch { ctaDismissedAt = null; }
+  updateCta();
+}
+
+async function dismissCta() {
+  ctaDismissedAt = Date.now();
+  updateCta(); // hide now even if storage is unavailable
+  try { await api.storage.local.set({ [CTA_DISMISS_KEY]: ctaDismissedAt }); } catch { /* hidden for this popup only */ }
 }
 
 function blocked(message) {
@@ -138,7 +160,7 @@ function issueCard(i) {
 
 async function copyReport() {
   if (!current) return;
-  const text = reportText(current.result, current.scored);
+  const text = reportText(current.result, current.scored, new Date(), { whiteLabel: proActive });
   try {
     await navigator.clipboard.writeText(text);
     $("copyStatus").textContent = "Copied to clipboard";
@@ -159,6 +181,7 @@ function showLicenseState(active) {
   $("deactivatePro").hidden = !active;
   proStatus(active ? "Pro active · CSV export and before/after comparison enabled" : "Free edition · Pro tools locked");
   refreshBaselineControls();
+  updateCta();
 }
 async function validateKey(key) {
   if (!/^sc1_[a-f0-9]{64}$/.test(key)) throw new Error("Invalid SiteCheck license key format");
@@ -212,7 +235,7 @@ $("exportCsv").addEventListener("click", () => {
   const link = document.createElement("a");
   link.href = objectUrl;
   const host = String(current.result.host || "website").replace(/[^a-z0-9.-]/gi, "-").slice(0, 80);
-  link.download = "xender-sitecheck-" + host + ".csv";
+  link.download = "website-qa-" + host + ".csv"; // white-label: no Xender name in the file either
   document.body.append(link);
   link.click();
   link.remove();
@@ -280,8 +303,10 @@ $("clearBaselines").addEventListener("click", async () => {
   }
 });
 
+loadCtaState();
 refreshLicense();
 
+$("ctaDismiss").addEventListener("click", dismissCta);
 $("rerun").addEventListener("click", run);
 $("copy").addEventListener("click", copyReport);
 run();

@@ -151,3 +151,30 @@ test("SiteCheck Pro CSV export prioritizes severity, escapes cells and blocks sp
  assert.ok(csv.includes('""https://evil.test""'));
  assert.ok(csv.includes('"Line 1\nLine 2"'));
 });
+
+test("copied report never carries a sales pitch; Pro copy is white-label", async () => {
+  const checks = [r("seo-title-missing", "pass"), { ...r("tech-dead-links", "fail"), count: 3, detail: "3 links have an empty address." }];
+  const scored = scoreReport(checks);
+  const result = { url: "https://client.example/", viewport: { width: 1280 } };
+  const free = reportText(result, scored, new Date("2026-11-04T00:00:00Z"));
+  assert.doesNotMatch(free, /human review|free website audit|xendersecrets\.com/i);
+  assert.match(free, /Checked with Xender SiteCheck, a free browser extension\.$/);
+  const pro = reportText(result, scored, new Date("2026-11-04T00:00:00Z"), { whiteLabel: true });
+  assert.doesNotMatch(pro, /xender/i, "white-label report has no Xender branding");
+  assert.match(pro, /^Website QA report — https:\/\/client\.example\//);
+  assert.match(pro, /heuristic score, not a Lighthouse score/);
+  const csv = prioritizedCsv(result, scored, new Date("2026-11-04T00:00:00Z"));
+  assert.doesNotMatch(csv, /xender/i, "Pro CSV is white-label");
+});
+
+test("human-review suggestion: report only, never for Pro, 30-day snooze after Not now", async () => {
+  const { ctaVisible, CTA_SNOOZE_MS } = await import("../src/lib/cta.js");
+  const now = Date.parse("2026-11-04T00:00:00Z");
+  assert.equal(ctaVisible({ reportShown: true, proActive: false, dismissedAt: null, now }), true);
+  assert.equal(ctaVisible({ reportShown: false, proActive: false, dismissedAt: null, now }), false);
+  assert.equal(ctaVisible({ reportShown: true, proActive: true, dismissedAt: null, now }), false);
+  assert.equal(ctaVisible({ reportShown: true, proActive: false, dismissedAt: now - 1000, now }), false);
+  assert.equal(ctaVisible({ reportShown: true, proActive: false, dismissedAt: now - CTA_SNOOZE_MS + 1, now }), false);
+  assert.equal(ctaVisible({ reportShown: true, proActive: false, dismissedAt: now - CTA_SNOOZE_MS, now }), true, "comes back after 30 days");
+  for (const bad of ["junk", -5, 0, now + 60_000]) assert.equal(ctaVisible({ reportShown: true, proActive: false, dismissedAt: bad, now }), true, String(bad));
+});

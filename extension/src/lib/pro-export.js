@@ -10,7 +10,7 @@ export function prioritizedCsv(result,scored,now=new Date()){
   if(!result||!scored)throw new Error("No audit to export");
   const host=String(result.url||"");
   const rows=[
-    ["Xender SiteCheck Pro report",host,"Checked",now.toISOString()],
+    ["Website QA report",host,"Checked",now.toISOString()],
     ["Heuristic score",scored.overall??"N/A","Band",scored.band?.label||"N/A"],
     ["Priority","Area","Issue","Instances","Evidence / details","Recommended fix"],
   ];
