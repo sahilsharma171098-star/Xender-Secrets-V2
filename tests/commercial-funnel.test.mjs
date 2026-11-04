@@ -127,16 +127,37 @@ test('Google tag: on every served page except /admin, and off for GPC visitors',
     assert.equal(n, f === 'admin.html' ? 0 : 1, `${f} has ${n} Google tag(s)`);
     if (n) assert.ok(html.indexOf('gtag/js?id=') < html.search(/<\/head>/i), `${f}: tag is inside <head>`);
   }
-  const { page, context } = await newPage();
-  await context.addInitScript(() => Object.defineProperty(Navigator.prototype, 'globalPrivacyControl', { get: () => true, configurable: true }));
-  await page.goto(ORIGIN + '/contact');
-  assert.equal(await page.evaluate(() => window['ga-disable-G-C95XL2M3ZQ']), true, 'GPC disables GA');
-  await context.close();
-  const plain = await newPage();
-  await plain.page.goto(ORIGIN + '/contact');
-  assert.equal(await plain.page.evaluate(() => window['ga-disable-G-C95XL2M3ZQ']), undefined, 'GA enabled without opt-out signals');
-  assert.ok(await plain.page.evaluate(() => Array.isArray(window.dataLayer) && window.dataLayer.length >= 2), 'dataLayer receives js + config');
-  await plain.context.close();
+  // Serve public/ as the production host so the hostname guard can be exercised in a real browser.
+  const asProduction = (context) => context.route('https://www.xendersecrets.com/**', (route) => {
+    const u = new URL(route.request().url());
+    let file = path.join(PUBLIC, u.pathname === '/' ? 'index.html' : decodeURIComponent(u.pathname));
+    if (!path.extname(file) && fs.existsSync(file + '.html')) file += '.html';
+    if (!file.startsWith(PUBLIC) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return route.fulfill({ status: 204, body: '' });
+    return route.fulfill({ status: 200, headers: { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' }, body: fs.readFileSync(file) });
+  });
+  const disabled = (page) => page.evaluate(() => window['ga-disable-G-C95XL2M3ZQ']);
+
+  // Test/preview hosts never report to GA.
+  const other = await newPage();
+  await other.page.goto(ORIGIN + '/contact');
+  assert.equal(await disabled(other.page), true, 'non-production host disables GA');
+  await other.context.close();
+
+  // Production host: on by default...
+  const prod = await newPage();
+  await asProduction(prod.context);
+  await prod.page.goto('https://www.xendersecrets.com/contact');
+  assert.equal(await disabled(prod.page), undefined, 'GA enabled on www.xendersecrets.com');
+  assert.ok(await prod.page.evaluate(() => Array.isArray(window.dataLayer) && window.dataLayer.length >= 2), 'dataLayer receives js + config');
+  await prod.context.close();
+
+  // ...and off for visitors sending Global Privacy Control.
+  const gpc = await newPage();
+  await asProduction(gpc.context);
+  await gpc.context.addInitScript(() => Object.defineProperty(Navigator.prototype, 'globalPrivacyControl', { get: () => true, configurable: true }));
+  await gpc.page.goto('https://www.xendersecrets.com/contact');
+  assert.equal(await disabled(gpc.page), true, 'GPC disables GA on production');
+  await gpc.context.close();
 });
 
 test('mobile: no horizontal overflow, menu toggles, key pages clean', async () => {
