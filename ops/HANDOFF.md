@@ -47,6 +47,10 @@ Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everyth
 
 ## Notes from the last agent
 
+### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
+- Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.
+- Done: GitHub auto-delete of merged branches ON. Pending Sahil: `bash ops/cleanup/delete-merged-branches-20261104.sh` (54 merged branches; previews auto-delete and free slots). Do not add a new Durable Object class until slots are freed.
+
 ### XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
 - Owner: Claude. Branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.
 - Changed: `scripts/commercial/analytics.mjs` (single source), both templates, `build-commercial-pages.mjs` (adds/enforces the tag on hand-written pages), 77 `public/*.html` (all but `/admin`), `/privacy` disclosure, `docs/DATA_MEASUREMENT_PLAN.md`, tests.

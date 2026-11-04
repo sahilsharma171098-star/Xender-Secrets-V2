@@ -1,5 +1,16 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
+Status: BLOCKED (waiting on Sahil to delete 54 merged branches)
+Owner: Claude
+- Cause (Cloudflare build log, build `91bb22c3`): `wrangler preview` fails with code 10067, "reached the Workers Free limit of 100 Durable Object namespaces". Account uses 99: production (AppState, CommunityIndex, ContentThread) + 3 per branch preview. Every PR preview build has failed since ~2 Nov (#92 onward); production deploys on `main` are unaffected.
+- Why they pile up: each preview has Auto-deletion ON (deleted when its branch is deleted), but GitHub never deleted merged branches.
+- Risk: with 1 slot free, adding any new Durable Object class would also fail the **production** deploy.
+- Done 2026-11-04: GitHub "Automatically delete head branches" turned ON (verified via API `delete_branch_on_merge: true`).
+- Data check: only production namespaces and the open PR #41 preview (`claude/project-thread-n0p6fk`, AppState 569 kB) hold data; merged-branch previews are 0 B.
+- Pending (Sahil): run `ops/cleanup/delete-merged-branches-20261104.sh` (54 branches whose tip equals their merged PR head; restore lines included). Agent deletion was blocked by the session safety policy. Skipped: `feat/payu-gateway-foundation-20261102` (commits after merge), open-PR, no-PR, closed-unmerged and `backup/*` branches.
+- Then: check Durable Objects count in Cloudflare drops and retry a failed preview build.
+
 ## XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
 Status: DONE (live 2026-11-04; [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101) squash-merged as `d53205d` on Sahil's "Make it live")
 Owner: Claude
