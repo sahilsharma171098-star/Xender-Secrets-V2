@@ -12,7 +12,7 @@ Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everyth
 - none — working tree clean
 
 ## Open tasks (docs/TASKS.md)
-- XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04) — REVIEW (branch `feat/google-analytics-ga4`)
+- XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04) — DONE (live 2026-11-04, PR #101 → `d53205d`)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -52,7 +52,9 @@ Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Changed: `scripts/commercial/analytics.mjs` (single source), both templates, `build-commercial-pages.mjs` (adds/enforces the tag on hand-written pages), 77 `public/*.html` (all but `/admin`), `/privacy` disclosure, `docs/DATA_MEASUREMENT_PLAN.md`, tests.
 - Privacy: tag disabled for GPC/DNT and framed loads via Google's `ga-disable-<ID>` flag. Never send lead fields/PII to GA.
 - Checks run locally: unit 135/135, commercial-funnel 27/27 (incl. new Google tag test), build:pages/normalize-links --check, worker 4/4, operations 40/40, immersive browser 1/1, reader 8/8, extension lint + 28/28.
-- Next: merge → Cloudflare deploys `main` → confirm hits in GA4 Realtime and the "Xender Live E2E" run. Keep Google Signals/ads personalisation off unless `/privacy` is updated.
+- Live 2026-11-04: squash-merged as `d53205d`; production Workers Build success; Live E2E run 41777343065 confirmed production serves this commit and passed 18/18.
+- Open issue: Workers Builds preview builds fail on every PR branch since ~2 Nov (production on `main` is fine) — check the build log in the Cloudflare dashboard.
+- Next: Sahil confirms hits in GA4 Realtime. Keep Google Signals/ads personalisation off unless `/privacy` is updated.
 
 ### XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
 - Owner: Claude. Branch `claude/xend-hud-site-001`, [PR #84](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/84). Sahil approved going live ("live kar", 29 Oct) after reviewing the 8-page preview.

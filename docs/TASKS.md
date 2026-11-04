@@ -1,12 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
-Status: REVIEW (branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101); live after Sahil merges)
+Status: DONE (live 2026-11-04; [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101) squash-merged as `d53205d` on Sahil's "Make it live")
 Owner: Claude
 - What: Google's gtag.js install code for `G-C95XL2M3ZQ`, high in `<head>` on 77 of 78 served pages (all except `/admin`). Source of truth `scripts/commercial/analytics.mjs`; templates embed it and `build:pages` adds it to hand-written pages, so `check:pages` fails on any page missing it.
 - Privacy: tag disabled via Google's `ga-disable-<ID>` flag for GPC/DNT visitors and framed loads (no double count from /preview inside /preview-builder). `/privacy` "Cookies and analytics" rewritten to disclose GA4 (updated 4 Nov 2026).
 - Tests: funnel test now stubs Google tag hosts and asserts no *other* third-party requests.
-- Next (Sahil): merge + deploy, then confirm in GA4 Realtime; keep Google Signals/ads personalisation off unless the privacy text is updated.
+- Deployed: Workers Builds production build success on `d53205d`; [Xender Live E2E run 41777343065](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions/runs/41777343065) confirmed production serves this commit's `/404.html` (byte-identical, tag included) and passed 18/18 live tests.
+- Note: Workers Builds *preview* builds fail on every PR branch since ~2 Nov (#92 onwards) while production builds on `main` pass; not caused by this change, still needs investigating.
+- Next (Sahil): open GA4 → Reports → Realtime to see hits; keep Google Signals/ads personalisation off unless the privacy text is updated.
 
 ## XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
 Status: IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
