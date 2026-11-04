@@ -187,3 +187,48 @@ test("human-review suggestion: Not now hides it for later popups; Pro never sees
   await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
   await popup.close(); await target.close();
 });
+
+
+test("v2.1: page-load metrics panel and Show on page work in the packaged extension", async () => {
+  const { popup, target } = await openPopupFor("https://fixtures.test/insecure.html");
+  await popup.waitForSelector("#report:not([hidden])");
+  await popup.waitForSelector("#vitals:not([hidden])");
+  assert.deepEqual(await popup.locator("#vitalsList li").evaluateAll((els) => els.map((e) => e.dataset.metric)), ["lcp", "inp", "cls", "fcp", "ttfb"]);
+  assert.match(await popup.textContent('#vitalsList [data-metric="lcp"] b'), /^\d+ ms$|^\d+\.\d s$/);
+  assert.match(await popup.textContent("#vitals"), /not Google field data or a Lighthouse test/);
+  const card = popup.locator('[data-check="tech-broken-anchors"]');
+  await card.locator("summary").click();
+  await card.getByRole("button", { name: "Show on page" }).click();
+  await popup.waitForFunction(() => /Outlined \d/.test(document.querySelector('[data-check="tech-broken-anchors"] .show-status').textContent));
+  assert.equal(await target.evaluate(() => document.querySelectorAll("xender-sitecheck-outline").length), 1, "outline drawn in the audited tab");
+  await popup.click("#clearOutlines");
+  await target.waitForFunction(() => document.querySelectorAll("xender-sitecheck-outline").length === 0);
+  await card.getByRole("button", { name: "Show on page" }).click();
+  await target.waitForFunction(() => document.querySelectorAll("xender-sitecheck-outline").length === 1);
+  await popup.click("#rerun");
+  await popup.waitForSelector("#report:not([hidden])");
+  await target.waitForFunction(() => document.querySelectorAll("xender-sitecheck-outline").length === 0);
+  await popup.close(); await target.close();
+});
+
+
+test("Pro: white-label PDF and CSV download from the popup; free users never see them", async () => {
+  const { popup, target } = await openPopupFor("https://fixtures.test/insecure.html");
+  await popup.waitForSelector("#report:not([hidden])");
+  assert.equal(await popup.isVisible("#exportPdf"), false, "PDF is Pro-only");
+  await context.route("https://www.xendersecrets.com/api/sitecheck/license/verify", (route) => route.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify({ ok: true, product: "sitecheck", pro: true }) }));
+  await popup.evaluate(async (token) => chrome.storage.local.set({ sitecheckLicenseKey: token }), "sc1_" + "d".repeat(64));
+  await popup.reload();
+  await popup.waitForSelector("#exportPdf:not([hidden])");
+  const [pdf] = await Promise.all([popup.waitForEvent("download"), popup.click("#exportPdf")]);
+  assert.equal(pdf.suggestedFilename(), "website-qa-fixtures.test.pdf");
+  const bytes = fs.readFileSync(await pdf.path());
+  assert.equal(bytes.subarray(0, 8).toString("latin1"), "%PDF-1.4");
+  assert.doesNotMatch(bytes.toString("latin1"), /xender/i);
+  const [csv] = await Promise.all([popup.waitForEvent("download"), popup.click("#exportCsv")]);
+  assert.equal(csv.suggestedFilename(), "website-qa-fixtures.test.csv");
+  assert.doesNotMatch(fs.readFileSync(await csv.path(), "utf8"), /xender/i);
+  await popup.evaluate(async () => chrome.storage.local.remove("sitecheckLicenseKey"));
+  await context.unroute("https://www.xendersecrets.com/api/sitecheck/license/verify");
+  await popup.close(); await target.close();
+});

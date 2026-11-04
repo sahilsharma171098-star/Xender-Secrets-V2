@@ -48,6 +48,13 @@
       <ul class="cats" id="cats" aria-label="Category scores"></ul>
       <p class="disclaimer">This is a Xender SiteCheck heuristic score, not a Lighthouse score. <a href="https://www.xendersecrets.com/sitecheck#scoring" target="_blank" rel="noopener">How it's calculated</a></p>
 
+      <section class="vitals" id="vitals" aria-labelledby="vitalsTitle" hidden>
+        <h2 id="vitalsTitle">Page load on this device</h2>
+        <ul class="vitals-list" id="vitalsList"></ul>
+        <p class="vitals-note" id="vitalsCaveats" hidden></p>
+        <p class="vitals-note">Measured from this page load in your browser — not Google field data or a Lighthouse test, and not part of the Health Score.</p>
+      </section>
+
       <div class="filters" role="group" aria-label="Filter by category" id="filters"></div>
 
       <div id="groups"></div>
@@ -59,7 +66,9 @@
 
       <div class="tools">
         <button class="btn" id="copy" type="button">Copy report</button>
-        <button class="btn primary" id="exportCsv" type="button" hidden>Export priority CSV (Pro)</button>
+        <button class="btn" id="clearOutlines" type="button" title="Remove SiteCheck outlines from the page" hidden>Clear outlines</button>
+        <button class="btn primary" id="exportPdf" type="button" hidden>Download PDF report (Pro)</button>
+        <button class="btn" id="exportCsv" type="button" hidden>Export priority CSV (Pro)</button>
         <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
       </div>
       <section id="baselinePanel" class="pro-compare" aria-label="SiteCheck Pro before-and-after comparison" hidden>
@@ -76,7 +85,7 @@
     <section class="pro-license" aria-label="SiteCheck Pro">
       <h2>SiteCheck Pro <span class="pro-price">₹499 one-time (GST included)</span></h2>
       <p id="proStatus" class="pro-status" role="status" aria-live="polite">Free edition · Checking license…</p>
-      <p>Pro adds a downloadable, prioritized CSV issue report. Free page checks and text reports remain available.</p>
+      <p>Pro adds white-label PDF and prioritized CSV reports, plus before/after comparisons. Free page checks and text reports remain available.</p>
       <form id="proForm">
         <label for="licenseKey">Pro license key</label>
         <div class="pro-form-row">

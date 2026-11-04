@@ -119,3 +119,21 @@ main{flex:1;overflow:auto;padding:14px}
 .pro-compare-actions{display:flex;gap:7px;flex-wrap:wrap}
 .pro-compare .btn:disabled{opacity:.55;cursor:not-allowed}
 .pro-compare .pro-compare-status{margin:7px 0 0;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+
+/* Page load on this device (v2.1) */
+.vitals{border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin:0 0 12px;background:var(--surface)}
+.vitals h2{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px;color:var(--muted)}
+.vitals-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.vitals-list li{border-radius:9px;padding:6px 3px;text-align:center;background:var(--bg-alt);border:1px solid var(--line)}
+.vitals-list .v-name{display:block;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.vitals-list b{display:block;font-size:12.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vitals-list .v-rate{display:block;font-size:9.5px;font-weight:650;color:var(--muted)}
+.vitals-list .r-good{background:var(--ok-soft);border-color:transparent}.vitals-list .r-good .v-rate{color:var(--ok)}
+.vitals-list .r-needs-improvement{background:var(--warn-soft);border-color:transparent}.vitals-list .r-needs-improvement .v-rate{color:var(--warn)}
+.vitals-list .r-poor{background:var(--crit-soft);border-color:transparent}.vitals-list .r-poor .v-rate{color:var(--crit)}
+.vitals-note{margin:6px 0 0;font-size:10.5px;color:var(--muted)}
+
+/* Show on page (v2.1) */
+.issue-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.small{padding:5px 10px;font-size:12px;border-radius:8px}
+.show-status{font-size:11px;color:var(--ink-2)}

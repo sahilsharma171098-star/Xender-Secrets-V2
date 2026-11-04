@@ -20,9 +20,12 @@ When you click the SiteCheck button, the extension runs its bundled audit script
 - headings, links and their addresses, buttons, images (alt text and sizes) and ARIA attributes;
 - form structure — which fields exist, their labels, types and autocomplete settings — **but never what is typed into them** (the script does not read field values);
 - computed colours of text (for contrast), element sizes and positions (for sideways-scroll detection), and the number of elements on the page;
-- the page address (scheme, host and path) so the report can say which page was checked. The query string and fragment are not included in the result.
+- the page address (scheme, host and path) so the report can say which page was checked. The query string and fragment are not included in the result;
+- (from 2.1.0) the browser's own timing records for the current page load — when content first painted, when the largest element painted, how much the layout shifted and how long slow clicks or key presses took — to show "Page load on this device". These are numbers measured in your browser; they are not stored and not sent anywhere.
 
 The results are shown in the extension popup. They are held only in the popup's memory and disappear when the popup closes. Free scans are not saved automatically or synced. With active Pro, the user may explicitly save a minimal before/after baseline for the exact page checked. This keeps only its origin and path (never query parameters), heuristic score, issue identifiers/counts and a timestamp in local extension storage, capped at 20 pages. No page content, DOM, issue samples or forms are stored. The customer can delete saved comparisons at any time, even after Pro expires. A Pro user also saves a license key locally (never browser sync). If the user clicks "Not now" on the human-review suggestion, only the time of that click is saved in local extension storage so the suggestion stays hidden for 30 days.
+
+From 2.1.0, an issue can offer **Show on page**. Only when you click it, the extension draws temporary outlines over the elements that issue refers to, using their position in the page structure. The outlines sit on top of the page; the page's own content and styles are not changed. They disappear when you press Esc, click "Clear outlines" or check the page again, and nothing about them is stored or sent.
 
 The extension does not run in the background, does not read other tabs, and cannot see pages you have not clicked it on.
 
@@ -32,7 +35,7 @@ The extension does not run in the background, does not read other tabs, and cann
 - Pro purchase/account details are handled separately on the Xender website under its website privacy and refund policies.
 - If a user voluntarily activates Pro, the extension sends **only** their entered license key to `https://www.xendersecrets.com/api/sitecheck/license/verify` via HTTPS. The server looks up a SHA-256 hash of the key and returns a boolean status. It receives **no audited URL, page contents, scores, or reports**.
 - The key is saved in browser **local** extension storage, not sync. The user can remove it from the popup. Refunded/charged-back purchases lose Pro on successful online revalidation. If validation cannot reach the server, free capabilities remain available.
-- CSV exports and user-saved before/after comparisons stay locally on the device. Neither is uploaded.
+- CSV and (from 2.1.0) PDF reports are built inside the extension and saved through a normal browser download; user-saved before/after comparisons stay locally on the device. None of these is uploaded.
 
 ## What leaves your browser
 

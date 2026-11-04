@@ -107,7 +107,7 @@ jobs:
       - name: SiteCheck extension — lint (policy, manifests, store copy)
         run: node scripts/extension/lint.mjs
       - name: SiteCheck extension — unit, audit-rule and real-extension tests
-        run: node --test extension/tests/unit.test.mjs extension/tests/audit.test.mjs extension/tests/extension-e2e.test.mjs
+        run: node --test extension/tests/unit.test.mjs extension/tests/pdf.test.mjs extension/tests/audit.test.mjs extension/tests/vitals.test.mjs extension/tests/highlight.test.mjs extension/tests/extension-e2e.test.mjs
 
   live-e2e:
     needs: checks
