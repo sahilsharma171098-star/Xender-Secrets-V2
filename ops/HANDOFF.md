@@ -1,25 +1,24 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-04 15:26 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-04 15:54 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
 - Branch: `claude/xend-master-backlog-20261103`
 - Last commits:
-  - `6380ab9 docs(tasks): register XEND-SITECHECK-002 and XEND-GRIDSNIP-001; #99 merged`
-  - `1977429 Merge remote-tracking branch 'origin/main' into claude/xend-master-backlog-20261103`
-  - `995301a fix(auth): support existing Google OAuth Cloudflare credentials (#103)`
-  - `8eef28c fix(sitecheck): recover verified captured PayU transactions safely (#99)`
-  - `bb5ced1 docs(hq): log 2026-11-04 execution session; update MT-009, GridSnip, Shopify, PayU, AutoTube rows`
+  - `7cee30b Merge remote-tracking branch 'origin/main' into claude/xend-master-backlog-20261103`
+  - `4f92272 XEND-CF-PREVIEW-001: point task status at CQ-025`
+  - `85287fc XEND-CF-PREVIEW-001: queue CQ-025 (delete 54 merged branches) for ChatGPT`
+  - `9316415 docs(hq): log the 2026-11-04 evening release prep; #99 live, follow-ups rebuilt on 995301a`
+  - `faa3db4 XEND-CF-PREVIEW-001: record preview-build cause and branch cleanup plan`
 
 ## Working-tree snapshot at generation
-- ` M docs/EXECUTION_LOG.md`
-- ` M docs/MASTER_PENDING_TASKS.md`
-- ` M docs/RELEASE_GATES.md`
+- none — working tree clean
 
 ## Open tasks (docs/TASKS.md)
 - XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04) — REVIEW (branches `claude/sitecheck-payu-recheck-20261104`, `claude/sitecheck-whitelabel-cta-20261104`; draft `claude/sitecheck-v21-local-ux-20261104`)
 - XEND-GRIDSNIP-001 — GridSnip OCR 1.1.0: working, honest store build (2026-11-04) — REVIEW (branch `claude/gridsnip-v1.1-20261104`)
 - XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03) — REVIEW (docs on branch `claude/xend-master-backlog-20261103`, PR #100; recovery fix merged as PR #99 `8eef28c` on 2026-11-04)
+- XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04) — BLOCKED (54 merged-branch deletions queued for ChatGPT as CQ-025 in `docs/CHATGPT_ACTION_QUEUE.md`)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -57,7 +56,7 @@ Generated 2026-11-04 15:26 UTC by **claude** with `npm run ops:handoff`. Everyth
 ### XEND-SITECHECK-002 + XEND-GRIDSNIP-001 — rebuilt on main `995301a`, waiting for a push (2026-11-04 evening)
 - Owner: Claude. PR #99 was squash-merged by Sahil as `8eef28c` (admin re-verify only); Live E2E #272 and #275 (`995301a`) green on main.
 - Branches (all on `995301a`, none pushed yet — this session has no GitHub write access): `claude/sitecheck-payu-recheck-20261104` (`19dc349`: callback pages, QA checklist, self-serve recheck), `claude/sitecheck-whitelabel-cta-20261104` (`f77c216`), draft `claude/sitecheck-v21-local-ux-20261104` (`55e43e9`, stacked on white-label), `claude/gridsnip-v1.1-20261104` (`f1292c5`), and this docs branch (PR #100).
-- The four non-draft branches touch disjoint files; merge them in any order. Suggested: PayU recheck → white-label → GridSnip → docs (#100).
+- The four non-draft branches touch disjoint files (also none of the files main changed in `faa3db4`..`4f92272`); merge them in any order. Suggested: PayU recheck → white-label → GridSnip → docs (#100). With "Automatically delete head branches" now ON, GitHub retargets the v2.1 draft to main when the white-label branch is deleted after its merge.
 - Checks run: see `docs/EXECUTION_LOG.md` (2026-11-04 evening). Main + all four squashed together: unit 146, extension 31, GridSnip 16, reader+funnel 27, worker 4, ops 42, check:pages and link check clean.
 - After each merge: Workers Builds production build ✓ and "Xender Live E2E" ✓ on the new SHA (`checkoutEnabled=false`); after GridSnip, `/gridsnip-privacy` must load before Sahil submits GridSnip 1.1.0.
 - Never set `SITECHECK_PRO_CHECKOUT_ENABLED`. Workers Builds *preview* fails on every PR (Durable Object namespace limit) — known, not caused by these branches.
