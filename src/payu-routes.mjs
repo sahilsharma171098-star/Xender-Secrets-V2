@@ -142,6 +142,27 @@ export async function handlePayu(request,env) {
     try{return json(await ledger(env,"revoke",{txnid:body.txnid,reason:body.reason}));}
     catch{return json({ok:false,error:"Reconciliation unavailable"},503);}
   }
+  if(path==="/api/payu/admin/verify"&&method==="POST") {
+    // Recovery for a payment whose browser callback and webhook were both lost or arrived
+    // while PayU verification was unavailable. It only re-asks PayU (verify_payment) and
+    // settles through the same idempotent ledger path; it never trusts operator input as proof.
+    const auth=request.headers.get("authorization")||"";
+    if(!env.ADMIN_TOKEN||auth!=="Bearer "+env.ADMIN_TOKEN)return json({ok:false,error:"Unauthorized"},401);
+    if(request.headers.get("Origin")&&request.headers.get("Origin")!==url.origin)return json({ok:false},403);
+    const body=await request.json().catch(()=>({}));
+    const txnid=String(body.txnid||"");
+    if(!/^[a-zA-Z0-9_-]{8,25}$/.test(txnid))return json({ok:false,error:"Valid txnid required"},400);
+    let order;
+    try{({order}=await ledger(env,"get",{txnid}));}catch{return json({ok:false,error:"Payment ledger unavailable"},503);}
+    if(!order)return json({ok:false,error:"Unknown order"},404);
+    if(order.status!=="pending")return json({ok:true,txnid,status:order.status,changed:false});
+    let payment;
+    try{payment=await queryPayuTransaction(txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{return json({ok:false,error:"PayU verification unavailable"},503);}
+    if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)
+      return json({ok:true,txnid,status:"pending",changed:false,payu:{found:Boolean(payment.found),status:payment.status||"unverified",settlement:payment.settlementStatus||""}});
+    try{await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});}catch{return json({ok:false,error:"Payment ledger unavailable"},503);}
+    return json({ok:true,txnid,status:"captured",changed:true});
+  }
   if(path==="/api/payu/status"&&method==="GET")return json({ok:false,error:"Authentication required"},401);
   return json({ok:false,error:"Not found"},404);
 }
