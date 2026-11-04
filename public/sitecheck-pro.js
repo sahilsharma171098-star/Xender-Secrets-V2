@@ -18,9 +18,9 @@
         if(result.ok===true&&result.pro===true){
           status("licenseStatus","Payment confirmed for this Xender account. Select Generate a license key, then activate it in SiteCheck.");
           $("sitecheckLicenseIssue").focus();
-        }else status("licenseStatus",paymentState==="pending"
+        }else{ $("sitecheckRecheck").hidden=false; status("licenseStatus",paymentState==="pending"
           ?"We could not confirm this payment yet, so no license has been issued. If money left your account it will be confirmed here or reversed. Check this page again in a few minutes, or contact us with the time of payment."
-          :"Your payment is still being verified. No license has been issued yet. Please check again or contact support.");
+          :"Your payment is still being verified. No license has been issued yet. Please check again or contact support."); }
       })
       .catch(error=>status("licenseStatus",error.message||"Unable to verify entitlement right now."));
   }
@@ -74,8 +74,35 @@
       $("issuedKey").value=data.licenseKey;
       $("copyIssuedKey").disabled=false;
       status("licenseStatus","Pro key generated. Copy it into your SiteCheck extension. This invalidates older keys.");
-    }catch(error){status("licenseStatus",error.message||"License service unavailable. Check your account email.")}
+    }catch(error){
+      status("licenseStatus",error.message||"License service unavailable. Check your account email.");
+      $("sitecheckRecheck").hidden=false; // paid but not confirmed yet? let the customer ask PayU again
+    }
     finally{$("sitecheckLicenseIssue").disabled=false}
+  });
+  // Self-serve re-check: asks PayU again about this account's own unconfirmed payment.
+  // The server decides; the page only reports what the server says.
+  $("sitecheckRecheck").addEventListener("click",async()=>{
+    const button=$("sitecheckRecheck");
+    button.disabled=true;
+    status("licenseStatus","Asking PayU about your payment…");
+    try{
+      const resp=await fetch("/api/payu/recheck",{method:"POST",headers:{"content-type":"application/json"},body:"{}",credentials:"same-origin"});
+      const data=await resp.json().catch(()=>({}));
+      if(!resp.ok||!data.ok)throw Error(data.error||"Could not check the payment right now.");
+      if(data.settled>0){
+        button.hidden=true;
+        status("licenseStatus","Payment confirmed for this Xender account. Select Generate a license key, then activate it in SiteCheck.");
+        $("sitecheckLicenseIssue").focus();
+      }else if(data.unavailable){
+        status("licenseStatus","PayU could not be reached just now. Please try again in a few minutes.");
+      }else if(data.checked===0){
+        status("licenseStatus","No unconfirmed SiteCheck payment was found on this account in the last 14 days. Check you are signed in with the email you paid with.");
+      }else{
+        status("licenseStatus","PayU has not confirmed this payment yet, so no license has been issued. If money left your account it will be confirmed or reversed. Try again later or contact us with the time of payment.");
+      }
+    }catch(error){status("licenseStatus",error.message||"Could not check the payment right now.")}
+    finally{button.disabled=false}
   });
   $("copyIssuedKey").addEventListener("click",async()=>{
     try{await navigator.clipboard.writeText($("issuedKey").value);status("licenseStatus","Copied your key. Paste it into the SiteCheck popup.")}

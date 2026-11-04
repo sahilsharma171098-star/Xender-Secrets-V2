@@ -46,6 +46,7 @@ Never paste the admin token, PayU key/salt, OTPs or card/UPI details into a chat
 | 3.4 | PayU record | PayU dashboard → Transactions | status success / captured, ₹499.00, same txnid; note the PayU ID (`mihpayid`) | screenshot |
 | 3.5 | Entitlement | Signed in, open `/api/sitecheck/entitlement` | `{"ok":true,"product":"sitecheck","pro":true}` | JSON |
 | 3.6 | If still pending after 10 minutes | From your own terminal: `curl -sS -X POST https://www.xendersecrets.com/api/payu/admin/verify -H "authorization: Bearer $XS_ADMIN_TOKEN" -H 'content-type: application/json' -d '{"txnid":"XS…"}'` | `"status":"captured","changed":true`, then 3.5 passes. `"status":"pending"` with PayU `settlement` ≠ `captured` means PayU has not captured — wait, do not retry the payment | response |
+| 3.6b | Customer self-serve re-check | Signed in, on `/sitecheck-pro`, click "Check my payment again" (shown while unconfirmed) | settles the same pending order without the admin token; a second click within a minute says "Please wait a minute…" | screenshot |
 | 3.7 | Webhook delivered | PayU dashboard webhook log (if shown) | response `{"ok":true,"captured":true,"fulfilled":true}`. A `400 Order mismatch` means PayU changed an echoed field (watch: the em dash in productinfo) — record it; 3.6 settles the order | screenshot |
 | 3.8 | No double licence | Run 3.6 again; resend the webhook from PayU if the dashboard allows | `"changed":false`; entitlement still one purchase | response |
 
