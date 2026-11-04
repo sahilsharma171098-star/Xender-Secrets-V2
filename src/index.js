@@ -474,6 +474,7 @@ export class AppState extends DurableObject {
       }
 
       if(stage==="callback"&&method==="GET"){
+        try {
         const code=url.searchParams.get("code"),state=url.searchParams.get("state");
         if(!code||!state)return Response.redirect(origin+"/account.html?auth=error",302);
         const saved=this.sql.exec("SELECT provider,verifier,expires_at FROM oauth_states WHERE state=?",state).toArray()[0];
@@ -521,6 +522,11 @@ export class AppState extends DurableObject {
         this.sql.exec("INSERT OR REPLACE INTO auth_identities(provider,provider_user_id,user_id,provider_email,created_at) VALUES(?,?,?,?,?)",provider,externalId,user.id,email||null,new Date().toISOString());
         const session=await this.createSession(user.id);
         return new Response(null,{status:302,headers:{location:origin+"/account.html?auth="+provider,"set-cookie":sessionCookie(session),"cache-control":"no-store"}});
+        } catch(error) {
+          // OAuth codes, state, profile data and secrets must never reach logs.
+          console.error("OAuth callback failed safely",String(error?.name||"Error").slice(0,80));
+          return Response.redirect(origin+"/account.html?auth=provider_error",302);
+        }
       }
     }
 
