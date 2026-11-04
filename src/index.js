@@ -474,12 +474,16 @@ export class AppState extends DurableObject {
       }
 
       if(stage==="callback"&&method==="GET"){
+        let callbackPhase="validate";
+        try {
         const code=url.searchParams.get("code"),state=url.searchParams.get("state");
         if(!code||!state)return Response.redirect(origin+"/account.html?auth=error",302);
+        callbackPhase="state_lookup";
         const saved=this.sql.exec("SELECT provider,verifier,expires_at FROM oauth_states WHERE state=?",state).toArray()[0];
         this.sql.exec("DELETE FROM oauth_states WHERE state=?",state);
         if(!saved||saved.provider!==provider||new Date(saved.expires_at).getTime()<Date.now())return Response.redirect(origin+"/account.html?auth=expired",302);
 
+        callbackPhase="provider_exchange";
         let externalId="",name="",email="",emailVerified=false;
         try{
           if(provider==="google"){
@@ -512,6 +516,7 @@ export class AppState extends DurableObject {
           if(!externalId)throw new Error("profile");
         }catch(e){return Response.redirect(origin+"/account.html?auth=provider_error",302)}
 
+        callbackPhase="account_link";
         let identity=this.sql.exec("SELECT user_id FROM auth_identities WHERE provider=? AND provider_user_id=?",provider,externalId).toArray()[0],user=null;
         if(identity)user=this.sql.exec("SELECT id,name,email,created_at FROM users WHERE id=?",identity.user_id).toArray()[0];
         if(!user&&email&&emailVerified)user=this.sql.exec("SELECT id,name,email,created_at FROM users WHERE email=?",email).toArray()[0];
@@ -521,8 +526,15 @@ export class AppState extends DurableObject {
           user={id,name:name||"Member",email:safeEmail,created_at:now};
         }
         this.sql.exec("INSERT OR REPLACE INTO auth_identities(provider,provider_user_id,user_id,provider_email,created_at) VALUES(?,?,?,?,?)",provider,externalId,user.id,email||null,new Date().toISOString());
+        callbackPhase="session";
         const session=await this.createSession(user.id);
         return new Response(null,{status:302,headers:{location:origin+"/account.html?auth="+provider,"set-cookie":sessionCookie(session),"cache-control":"no-store"}});
+        } catch(error) {
+          // Deliberately exclude error.message, stack, OAuth code/state, email, tokens, cookies and secrets.
+          const errorClass=String(error?.name||"Error").replace(/[^A-Za-z0-9_]/g,"").slice(0,48);
+          console.error("OAuth callback failure",JSON.stringify({provider,phase:callbackPhase,errorClass}));
+          return Response.redirect(origin+"/account.html?auth=provider_error",302);
+        }
       }
     }
 
