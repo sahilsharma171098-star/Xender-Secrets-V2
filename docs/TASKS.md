@@ -1,7 +1,7 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
-Status: BLOCKED (waiting on Sahil to delete 54 merged branches)
+Status: BLOCKED (54 merged-branch deletions queued for ChatGPT as CQ-025 in `docs/CHATGPT_ACTION_QUEUE.md`)
 Owner: Claude
 - Cause (Cloudflare build log, build `91bb22c3`): `wrangler preview` fails with code 10067, "reached the Workers Free limit of 100 Durable Object namespaces". Account uses 99: production (AppState, CommunityIndex, ContentThread) + 3 per branch preview. Every PR preview build has failed since ~2 Nov (#92 onward); production deploys on `main` are unaffected.
 - Why they pile up: each preview has Auto-deletion ON (deleted when its branch is deleted), but GitHub never deleted merged branches.
