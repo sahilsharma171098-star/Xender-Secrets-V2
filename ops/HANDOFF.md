@@ -1,127 +1,25 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-04 06:43 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-04 15:26 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
 - Branch: `claude/xend-master-backlog-20261103`
 - Last commits:
-  - `75d3a13 docs(hq): log 2026-11-04 SiteCheck work, add MT-014..017 and launch gate G15`
-  - `1926d07 docs(hq): XEND-MASTER-001 master backlog, release gates, revenue tracker`
-  - `1faa0a4 feat(sitecheck): merchant-only PayU test checkout; public remains disabled`
-  - `c4a7049 fix(sitecheck): refresh v2 assets and enforce production freshness gate`
-  - `25d2186 feat(sitecheck): gated Pro backend and PayU webhook (checkout OFF)`
+  - `6380ab9 docs(tasks): register XEND-SITECHECK-002 and XEND-GRIDSNIP-001; #99 merged`
+  - `1977429 Merge remote-tracking branch 'origin/main' into claude/xend-master-backlog-20261103`
+  - `995301a fix(auth): support existing Google OAuth Cloudflare credentials (#103)`
+  - `8eef28c fix(sitecheck): recover verified captured PayU transactions safely (#99)`
+  - `bb5ced1 docs(hq): log 2026-11-04 execution session; update MT-009, GridSnip, Shopify, PayU, AutoTube rows`
 
 ## Working-tree snapshot at generation
-- `M  docs/DATA_MEASUREMENT_PLAN.md`
-- `UU docs/TASKS.md`
-- `A  immersive-qa-screenshots/bistro-desktop-stage.png`
-- `A  immersive-qa-screenshots/bistro-desktop.png`
-- `A  immersive-qa-screenshots/bistro-mobile-stage.png`
-- `A  immersive-qa-screenshots/bistro-mobile.png`
-- `A  immersive-qa-screenshots/cinema-desktop-stage.png`
-- `A  immersive-qa-screenshots/cinema-desktop.png`
-- `A  immersive-qa-screenshots/cinema-mobile-stage.png`
-- `A  immersive-qa-screenshots/cinema-mobile.png`
-- `A  immersive-qa-screenshots/fashion-desktop-stage.png`
-- `A  immersive-qa-screenshots/fashion-desktop.png`
-- `A  immersive-qa-screenshots/fashion-mobile-stage.png`
-- `A  immersive-qa-screenshots/fashion-mobile.png`
-- `A  immersive-qa-screenshots/gym-desktop-stage.png`
-- `A  immersive-qa-screenshots/gym-desktop.png`
-- `A  immersive-qa-screenshots/gym-mobile-stage.png`
-- `A  immersive-qa-screenshots/gym-mobile.png`
-- `A  immersive-qa-screenshots/property-desktop-stage.png`
-- `A  immersive-qa-screenshots/property-desktop.png`
-- `A  immersive-qa-screenshots/property-mobile-stage.png`
-- `A  immersive-qa-screenshots/property-mobile.png`
-- `M  public/404.html`
-- `M  public/about.html`
-- `M  public/account.html`
-- `M  public/accountant-website-development.html`
-- `M  public/article-ai-content-engine.html`
-- `M  public/article-ai-workflows-business.html`
-- `M  public/article-backend-api-guide.html`
-- `M  public/article-chinese-classic-novels-guide.html`
-- `M  public/article-chinese-web-novels-vs-classics.html`
-- `M  public/article-community-led-growth.html`
-- `M  public/article-customer-retention-after-first-sale.html`
-- `M  public/article-digital-products-guide.html`
-- `M  public/article-ecommerce-store-guide.html`
-- `M  public/article-ecommerce-trust-checklist.html`
-- `M  public/article-frontend-development-guide.html`
-- `M  public/article-full-stack-development-guide.html`
-- `M  public/article-lead-generation-guide.html`
-- `M  public/article-roofing-contractor-website-quote-enquiries.html`
-- `M  public/article-sales-customer-experience-guide.html`
-- `M  public/article-small-business-website-features.html`
-- `M  public/article-website-project-planning.html`
-- `M  public/articles.html`
-- `M  public/business-templates.html`
-- `M  public/catalog.html`
-- `M  public/clinic-website-development.html`
-- `M  public/coaching-website-development.html`
-- `M  public/community.html`
-- `M  public/consultant-website-development.html`
-- `M  public/contact.html`
-- `M  public/demo-backend-api.html`
-- `M  public/demo-backend-auth.html`
-- `M  public/demo-backend-crm.html`
-- `M  public/demo-frontend-dashboard.html`
-- `M  public/demo-frontend-saas.html`
-- `M  public/demo-frontend-store.html`
-- `M  public/demo-fullstack-booking.html`
-- `M  public/demo-fullstack-commerce.html`
-- `M  public/demo-fullstack-saas.html`
-- `M  public/demo-gym.html`
-- `M  public/demo-local.html`
-- `M  public/demo-pro.html`
-- `M  public/extensions.html`
-- `M  public/faceless-youtube-course.html`
-- `M  public/faq.html`
-- `M  public/gridsnip.html`
-- `M  public/gym-website-development.html`
-- `M  public/ideas.html`
-- `M  public/immersive-lab.html`
-- `M  public/index.html`
-- `M  public/media.html`
-- `M  public/novels.html`
-- `M  public/pay.html`
-- `M  public/payment-success.html`
-- `M  public/portfolio.html`
-- `M  public/preview-builder.html`
-- `M  public/preview.html`
-- `M  public/privacy.html`
-- `M  public/reader.html`
-- `M  public/real-estate-website-development.html`
-- `M  public/recruitment-agency-website-development.html`
-- `M  public/refund.html`
-- `M  public/resources.html`
-- `M  public/restaurant-website-development.html`
-- `M  public/sample-preview.html`
-- `M  public/services.html`
-- `M  public/sitecheck-privacy.html`
-- `M  public/sitecheck-pro.html`
-- `M  public/sitecheck.html`
-- `M  public/small-business-website-india.html`
-- `M  public/studio.html`
-- `M  public/template-preview.html`
-- `M  public/terms.html`
-- `M  public/website-catalog.html`
-- `M  public/website-cost-calculator.html`
-- `M  public/website-development-delhi.html`
-- `M  public/website-development-gurugram.html`
-- `M  public/website-development-noida.html`
-- `M  scripts/build-commercial-pages.mjs`
-- `A  scripts/commercial/analytics.mjs`
-- `M  scripts/commercial/hud.mjs`
-- `M  scripts/commercial/layout.mjs`
-- `M  tests/commercial-funnel.test.mjs`
-- `M  tests/immersive-browser.test.mjs`
-- `M  tests/unit/immersive-lab.test.mjs`
-- `?? projects/`
+- ` M docs/EXECUTION_LOG.md`
+- ` M docs/MASTER_PENDING_TASKS.md`
+- ` M docs/RELEASE_GATES.md`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03) — REVIEW (docs on branch `claude/xend-master-backlog-20261103`; SiteCheck recovery fix on `claude/sitecheck-payu-recovery-20261103`)
+- XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04) — REVIEW (branches `claude/sitecheck-payu-recheck-20261104`, `claude/sitecheck-whitelabel-cta-20261104`; draft `claude/sitecheck-v21-local-ux-20261104`)
+- XEND-GRIDSNIP-001 — GridSnip OCR 1.1.0: working, honest store build (2026-11-04) — REVIEW (branch `claude/gridsnip-v1.1-20261104`)
+- XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03) — REVIEW (docs on branch `claude/xend-master-backlog-20261103`, PR #100; recovery fix merged as PR #99 `8eef28c` on 2026-11-04)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -155,6 +53,14 @@ Generated 2026-11-04 06:43 UTC by **claude** with `npm run ops:handoff`. Everyth
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+### XEND-SITECHECK-002 + XEND-GRIDSNIP-001 — rebuilt on main `995301a`, waiting for a push (2026-11-04 evening)
+- Owner: Claude. PR #99 was squash-merged by Sahil as `8eef28c` (admin re-verify only); Live E2E #272 and #275 (`995301a`) green on main.
+- Branches (all on `995301a`, none pushed yet — this session has no GitHub write access): `claude/sitecheck-payu-recheck-20261104` (`19dc349`: callback pages, QA checklist, self-serve recheck), `claude/sitecheck-whitelabel-cta-20261104` (`f77c216`), draft `claude/sitecheck-v21-local-ux-20261104` (`55e43e9`, stacked on white-label), `claude/gridsnip-v1.1-20261104` (`f1292c5`), and this docs branch (PR #100).
+- The four non-draft branches touch disjoint files; merge them in any order. Suggested: PayU recheck → white-label → GridSnip → docs (#100).
+- Checks run: see `docs/EXECUTION_LOG.md` (2026-11-04 evening). Main + all four squashed together: unit 146, extension 31, GridSnip 16, reader+funnel 27, worker 4, ops 42, check:pages and link check clean.
+- After each merge: Workers Builds production build ✓ and "Xender Live E2E" ✓ on the new SHA (`checkoutEnabled=false`); after GridSnip, `/gridsnip-privacy` must load before Sahil submits GridSnip 1.1.0.
+- Never set `SITECHECK_PRO_CHECKOUT_ENABLED`. Workers Builds *preview* fails on every PR (Durable Object namespace limit) — known, not caused by these branches.
 
 ### XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
 - Owner: Claude. Branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.

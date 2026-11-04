@@ -2,28 +2,28 @@
 
 One backlog across products. `MT-###` IDs are stable; existing `XEND-*` IDs are kept in the "Links" column so
 nothing in `docs/TASKS.md` is duplicated. Status words as in `docs/MASTER_PROJECT_STATUS.md`.
-Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
+Owner action items are marked **[Sahil]**. Last updated 2026-11-04 (evening).
 
 ## P0 — SiteCheck Pro + PayU (XEND-EXT-PAY-001, issue #90)
 
 | ID | Task | Status | Depends on | Evidence | Next action | Links |
 | --- | --- | --- | --- | --- | --- | --- |
 | MT-001 | Decide owner-only gate: main's owner pilot vs PR #96 canary email | CODE COMPLETE | — | both paths tested; #96 clean + CI green at `12c2f2c` | **[Sahil]** either set `WORKSPACE_OWNER_EMAIL` secret (no merge needed) or merge #96 and set `SITECHECK_PRO_CANARY_EMAIL`. Use one, not both | PR #96 |
-| MT-002 | Merge payment fixes: lost-callback recovery (`708e876`) + customer-safe callback pages (`6fa5fc6`) + QA checklist (`616b565`) | CODE COMPLETE | write access or Sahil push | unit 138/138; merges with #96 → 140/140 | open PR from `claude/sitecheck-payu-recovery-20261103`, merge before the canary | G6, MT-014 |
-| MT-014 | Failed PayU payment landed on a 404 (`/payment-failed` missing); ambiguous callbacks showed raw JSON | CODE COMPLETE | MT-002 | fixed in `6fa5fc6` | merge with MT-002 | G9 |
+| MT-002 | Merge payment fixes: lost-callback recovery + customer-safe callback pages + QA checklist | PARTLY DONE | push of the follow-up branch | admin re-verify merged as PR #99 (`8eef28c`, squash by Sahil 2026-11-04); Live E2E #272 green on it. The later commits never reached GitHub, so they are rebuilt on `995301a` as `claude/sitecheck-payu-recheck-20261104` (`018975c` callback pages, `751461b` checklist, `19dc349` MT-009); unit 146/146, reader+funnel 27/27, worker 4/4 | push → PR → CI → merge → confirm Live E2E on the new main | G6, MT-014 |
+| MT-014 | Failed PayU payment landed on a 404 (`/payment-failed` missing); ambiguous callbacks showed raw JSON | IN REVIEW (push pending) | MT-002 | `018975c` on `claude/sitecheck-payu-recheck-20261104` | merge with MT-002 | G9 |
 | MT-003 | Free Durable Object namespace capacity (99/100) so PR previews build | BLOCKED | Sahil authorization | PR #96 handoff, build `ab36ba2b…` error 10067 | list namespaces in Cloudflare dashboard, identify ones left by deleted previews, back up, **[Sahil]** approve deletion of ≥2 | XEND-CLEANUP-20261022 |
-| MT-004 | Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate | DEPLOYMENT PENDING | MT-002 | last deploy `1faa0a4` verified by run 41485101193 | merge → Cloudflare auto-deploy → confirm "Xender Live E2E" green on the new SHA | G7 |
+| MT-004 | Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate | PARTLY DONE | MT-002 | main `8eef28c` (#99) and `995301a` (#103) deployed: Xender Live E2E #272 and #275 green (gate includes `checkoutEnabled=false`) | after the follow-up PR merges, confirm Live E2E on that SHA | G7 |
 | MT-005 | Owner ₹499 canary purchase | BLOCKED | MT-001, MT-004 | — | **[Sahil]** follow `docs/SITECHECK_PRO_QA_CHECKLIST.md` sections 0–6 | G9 |
 | MT-006 | Verify capture → ledger → licence → extension unlock → reinstall restore | TESTING PENDING | MT-005 | — | check PayU dashboard, `/api/sitecheck/entitlement`, generate key, restore after reinstall | G9 |
 | MT-007 | Confirm webhook delivery format and `productinfo` round-trip | TESTING PENDING | MT-005 | handler accepts form-encoded only; productinfo has an em dash | if "Order mismatch"/415 seen, settle with MT-002 and fix in code | G8 |
 | MT-008 | Real full refund → automatic revocation | TESTING PENDING | MT-006 | refund query in `/api/sitecheck/license/verify` | **[Sahil]** refund in PayU dashboard; verify Pro off within 15 min | G10 |
-| MT-009 | Customer self-serve "re-check my payment" (no admin needed) | CODE COMPLETE | MT-002 | `f2efecb` on the recovery branch; unit 142/142 | merge with PR #99 | — |
+| MT-009 | Customer self-serve "re-check my payment" (no admin needed) | IN REVIEW (push pending) | MT-002 | `19dc349` on `claude/sitecheck-payu-recheck-20261104`; `tests/unit/payu-recheck.test.mjs` | merge with MT-002 | — |
 | MT-010 | Chargeback path | NOT STARTED | — | manual reconcile only | document PayU chargeback notification; keep manual until signed source exists | G11 |
 | MT-011 | GST receipt/invoice + refund terms review for ₹499 | TESTING PENDING | — | pages exist | review copy against actual PayU receipt after MT-005 | G12 |
 | MT-012 | Chrome Web Store SiteCheck v2.0.0 submission | BLOCKED | MT-006–MT-011 | manifests 2.0.0; tests 28/28 | build zip, **[Sahil]** submit in dashboard, record approval | G13 |
 | MT-013 | Public launch | NOT STARTED | all above | — | **[Sahil]** authorize `SITECHECK_PRO_CHECKOUT_ENABLED=true` | G14 |
-| MT-015 | White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) | CODE COMPLETE | — | `claude/sitecheck-whitelabel-cta-20261104`; extension tests + lint green | PR → merge before the 2.0.0 zip is built | — |
-| MT-016 | v2.1: page-load metrics on device, Show on page, Pro white-label PDF | CODE COMPLETE | MT-012 approved | `claude/sitecheck-v21-local-ux-20261104` (stacked on MT-015); 46/46 | hold; after 2.0.0 approval bump to 2.1.0, update `/sitecheck-privacy` + `/sitecheck-pro` copy, submit update | — |
+| MT-015 | White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) | IN REVIEW (push pending) | — | `claude/sitecheck-whitelabel-cta-20261104` (`2caf7ff`, `f77c216` on `995301a`); extension 31/31, lint ✓ | PR → merge before the 2.0.0 zip is built | — |
+| MT-016 | v2.1: page-load metrics on device, Show on page, Pro white-label PDF | CODE COMPLETE (draft) | MT-012 approved | `claude/sitecheck-v21-local-ux-20261104` (`a049b61`, `55e43e9`, stacked on MT-015); 46/46, package ✓ | open as draft PR; after 2.0.0 approval bump to 2.1.0, update `/sitecheck-privacy` + `/sitecheck-pro` copy, submit update | — |
 | MT-017 | Launch on Product Hunt / Reddit | NOT STARTED | MT-012 approved **and** MT-006 passed | — | only then; ask for honest reviews, never offer anything in return (store policy) | G15 |
 
 ## P1 — AutoTube
@@ -42,10 +42,10 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
 | ID | Task | Status | Depends on | Evidence | Next action | Links |
 | --- | --- | --- | --- | --- | --- | --- |
 | MT-030 | Do not submit the old 1.0.0 zip | **[Sahil]** | — | 1.0.0 could not work at all | upload `gridsnip-1.1.0.zip` instead (MT-036) | R2, R3 |
-| MT-031 | Move source into HQ (`projects/gridsnip/`), secret-scan, register in PROJECTS.md | CODE COMPLETE | — | only in Antigravity scratch | copy, commit on branch | R1 |
+| MT-031 | Move source into HQ (`projects/gridsnip/`), secret-scan, register in PROJECTS.md | IN REVIEW (push pending) | — | `claude/gridsnip-v1.1-20261104` (`f1292c5` on `995301a`); task entry XEND-GRIDSNIP-001 in `docs/TASKS.md` | merge | R1 |
 | MT-032 | Free tier design (BYO key only, or capped server proxy with cost approval) | CODE COMPLETE (BYO key) | MT-031 | placeholder key | pick one; listing must match | R2 |
 | MT-033 | Paid tier via SiteCheck licence infra (INR PayU) — Gumroad placeholder removed | NOT STARTED (placeholder removed) | MT-006 | placeholder permalink | reuse `/api/sitecheck/license/*` pattern with product id `gridsnip` | R3 |
-| MT-034 | Privacy policy page + CWS data disclosure ("Website content") | CODE COMPLETE | — | — | add `/gridsnip-privacy` | R4 |
+| MT-034 | Privacy policy page + CWS data disclosure ("Website content") | IN REVIEW (push pending) | MT-031 | `/gridsnip-privacy` generated from `projects/gridsnip/store/privacy-policy.md`; check:pages clean | merge, then confirm the page is live | R4 |
 | MT-036 | GridSnip 1.1.0 store submission | BLOCKED | merge `claude/gridsnip-v1.1-20261104` (privacy page must be live) | zip + store kit on the laptop | **[Sahil]** test once with own Gemini key, upload zip, paste store answers, submit | R1–R5 |
 | MT-035 | Replace `alert()`, error recovery, complex-table accuracy tests | CODE COMPLETE (live accuracy untested) | MT-031 | — | — | R5 |
 

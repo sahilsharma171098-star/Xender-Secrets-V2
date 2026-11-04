@@ -88,3 +88,30 @@ Not done (and why)
 - Push/PR/merge/deploy — no GitHub write access in this session.
 - Real ₹499 payment, refund, Chrome Web Store submissions, Shopify price/status changes, replies to PayU — owner actions.
 - AutoTube fixes — private repo not reachable from the session; failure logs needed.
+
+## 2026-11-04 (evening) — Claude — release prep: rebuild on new main, ready-to-push copy
+
+Main moved to `995301a`: Sahil squash-merged PR #99 as `8eef28c` (admin re-verify only) and #103 (`995301a`, Google OAuth
+credentials). "Xender Live E2E" #272 (`8eef28c`) and #275 (`995301a`) passed on main, so the recovery endpoint is live with
+the checkout flag still off.
+
+Done
+- The commits made after `708e876` on the recovery branch never reached GitHub. Rebuilt on `995301a` as
+  `claude/sitecheck-payu-recheck-20261104`: `018975c` customer-safe callback pages, `751461b` QA checklist, `19dc349`
+  "Check my payment again" (MT-009). Unit 146/146, reader+funnel 27/27, worker 4/4, check:pages and link check clean.
+- Rebased on `995301a`: white-label `2caf7ff`, `f77c216` (extension lint ✓, 31/31); v2.1 draft `a049b61`, `55e43e9`
+  (46/46, package ✓); GridSnip `f1292c5` (lint ✓, 16/16, unit 140/140, reader+funnel 27/27, pages clean, zip builds).
+- GridSnip's task entry moved from the GridSnip PR into this docs branch, and this branch merged main (`1977429`), so the four
+  PRs touch disjoint files and merge in any order with any merge method.
+- Combined check: main + all four branches squashed together → unit 146/146, extension 31/31, GridSnip 16/16,
+  reader+funnel 27/27, worker 4/4, ops 42/42, check:pages and link check clean.
+- A ready-to-push clone with all five branches sits in the laptop handoff folder (`_claude_push_20261104`).
+
+Not done (and why)
+- Push: this session still has no GitHub write access, and the laptop was locked, so Git GUI could not be used.
+  An in-browser upload route was refused by the agent's safety check and was not used.
+- PRs, merges, deploy of the follow-ups, real ₹499 canary, refund, store submissions — follow the push.
+
+Next: push the five branches → PRs (v2.1 as draft on top of white-label) → merge PayU recheck, white-label, GridSnip, then
+this docs PR → confirm Workers Builds production and Live E2E on each new main SHA (`checkoutEnabled=false`) and that
+`/gridsnip-privacy` is live → Sahil's canary per `docs/SITECHECK_PRO_QA_CHECKLIST.md`.

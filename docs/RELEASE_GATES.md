@@ -14,7 +14,7 @@ Configuration that must stay true until G12: `SITECHECK_PRO_CHECKOUT_ENABLED` un
 | G3 | Fulfilment only after PayU `verify_payment` says `success` + `captured` + exact amount + matching txn/email/SKU | PASS (code + tests) | `isCapturedMatchingOrder`; test "does not fulfill if verify_payment reports pending" |
 | G4 | Idempotent fulfilment, one entitlement per txn, replay safe | PASS (tests) | ledger `settle` + `extension_entitlements.txnid UNIQUE`; replay test |
 | G5 | Account ownership: purchase email must equal signed-in Xender account; licence bound to account | PASS (tests) | `/api/payu/initiate` 401 on mismatch; `sitecheck_order_accounts` |
-| G6 | Recovery when callback and webhook are both lost | CODE COMPLETE, not deployed | `POST /api/payu/admin/verify` on branch `claude/sitecheck-payu-recovery-20261103` (`708e876`) |
+| G6 | Recovery when callback and webhook are both lost | PASS (deployed, not yet exercised with real money) | `POST /api/payu/admin/verify` merged as PR #99 (`8eef28c`); Live E2E #272 green. Customer self-serve recheck (MT-009) in review on `claude/sitecheck-payu-recheck-20261104` |
 | G7 | Public checkout OFF; only owner account can buy | PASS in production for anonymous visitors | Live E2E run 41485101193 asserts `checkoutEnabled=false`. Owner path needs **one** of: `WORKSPACE_OWNER_EMAIL` secret (main already has `SITECHECK_PRO_OWNER_PILOT=true`) **or** PR #96 + `SITECHECK_PRO_CANARY_EMAIL` |
 | G8 | PayU webhook actually delivered, form-encoded, hash-valid | TESTING PENDING | Webhook created by merchant 2026-11-02 for `/api/payu/webhook`. Handler only accepts `application/x-www-form-urlencoded` — confirm PayU's real delivery format in the canary |
 | G9 | Real ₹499 owner purchase → captured in PayU dashboard → ledger `captured` → licence issued → extension unlocks → survives reinstall | TESTING PENDING (owner must pay) | record txnid, PayU dashboard status, licence restore result here |
@@ -36,8 +36,8 @@ rejected as "Order mismatch" and must be settled with G6. Check this first in th
 
 | # | Gate | Status | Evidence |
 | --- | --- | --- | --- |
-| R1 | Source registered in HQ (no orphan copy in Antigravity scratch) | NOT STARTED | only at `~/.gemini/antigravity/scratch/gridsnip_extension` |
+| R1 | Source registered in HQ (no orphan copy in Antigravity scratch) | IN REVIEW | `projects/gridsnip/` + PROJECTS.md row on `claude/gridsnip-v1.1-20261104` (push pending) |
 | R2 | Free tier works with no user key, or listing stops promising it | FAIL | `background.js` uses `"YOUR_GEMINI_API_KEY"` fallback |
 | R3 | Any paid tier has a working purchase + licence check | FAIL | `popup.js` Gumroad verify uses `product_permalink=YOUR_PRODUCT`; `$14` alert |
-| R4 | Data-use disclosure: "Website content" (selected region sent to Google Gemini) + privacy policy URL | NOT STARTED | — |
+| R4 | Data-use disclosure: "Website content" (selected region sent to Google Gemini) + privacy policy URL | IN REVIEW | `/gridsnip-privacy` + `projects/gridsnip/store/permission-justification.md` on the GridSnip branch |
 | R5 | No `alert()` dialogs, graceful OCR/API errors | FAIL | `background.js` injects `alert()` |
