@@ -15,7 +15,8 @@ test("new lab is explicitly a noindex concept demo with a single real WebGL canv
   assert.match(html, /No pre-rendered videos/);
   assert.match(html, /immersive-lab\.js/);
   assert.match(html, /immersive-lab\.css/);
-  assert.doesNotMatch(html, /<script[^>]+src="https?:\/\//);
+  // Only the site-wide Google Analytics tag (scripts/commercial/analytics.mjs) may load from another origin.
+  assert.doesNotMatch(html, /<script[^>]+src="https?:\/\/(?!www\.googletagmanager\.com\/gtag\/js\?id=G-C95XL2M3ZQ")/);
 });
 
 test("procedural renderer parses and exposes all five distinct verticals", () => {

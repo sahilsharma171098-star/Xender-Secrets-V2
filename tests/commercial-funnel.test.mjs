@@ -13,6 +13,7 @@ import { ensureGrowthSchema, handleGrowth } from '../src/growth.mjs';
 const PUBLIC = path.resolve('public');
 const ORIGIN = 'http://xender.test';
 const ADMIN = 'test-admin-token-0123456789abcdef';
+const GOOGLE_TAG_HOSTS = /^(www\.googletagmanager\.com|([a-z0-9-]+\.)?google-analytics\.com|([a-z0-9-]+\.)?analytics\.google\.com)$/;
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
 
 function doSql() {
@@ -55,13 +56,15 @@ async function newPage({ viewport = { width: 1280, height: 900 }, leadStatus = n
   const context = await browser.newContext({ viewport, ...contextOptions });
   await context.addInitScript((n) => Object.defineProperty(Navigator.prototype, 'hardwareConcurrency', { get: () => n, configurable: true }), cores);
   const page = await context.newPage();
-  const log = { errors: [], external: [], leadPosts: 0, missing: [] };
+  const log = { errors: [], external: [], google: [], leadPosts: 0, missing: [] };
   page.on('pageerror', (e) => log.errors.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) log.errors.push(m.text()); });
   await context.route('**/*', async (route) => {
     const req = route.request();
     const url = new URL(req.url());
-    if (url.origin !== ORIGIN) { log.external.push(url.host); return route.fulfill({ status: 204, body: '' }); }
+    // The Google Analytics tag (scripts/commercial/analytics.mjs) is the one allowed third party;
+    // it is stubbed so tests stay offline and never send hits.
+    if (url.origin !== ORIGIN) { (GOOGLE_TAG_HOSTS.test(url.host) ? log.google : log.external).push(url.host); return route.fulfill({ status: 204, body: '' }); }
     if (url.pathname.startsWith('/api/')) {
       // Demo backends (src/index.js AppState) are stubbed with the same response shapes.
       const demo = demoApi(url, req);
@@ -110,8 +113,30 @@ test('homepage is a price-free showcase and keeps the live-E2E contract', async 
   const lds = (await page.locator('script[type="application/ld+json"]').allInnerTexts()).map((t) => JSON.parse(t)['@type']);
   assert.deepEqual(lds, ['ProfessionalService', 'FAQPage']);
   assert.deepEqual(log.errors, []);
-  assert.deepEqual(log.external, [], 'no third-party requests');
+  assert.deepEqual(log.external, [], 'no third-party requests besides the Google tag');
+  assert.ok(log.google.includes('www.googletagmanager.com'), 'Google tag (gtag.js) is requested');
+  assert.equal(await page.locator('head script[src="https://www.googletagmanager.com/gtag/js?id=G-C95XL2M3ZQ"]').count(), 1);
   await context.close();
+});
+
+test('Google tag: on every served page except /admin, and off for GPC visitors', async () => {
+  const pages = fs.readdirSync(PUBLIC).filter((f) => f.endsWith('.html'));
+  for (const f of pages) {
+    const html = fs.readFileSync(path.join(PUBLIC, f), 'utf8');
+    const n = html.split('googletagmanager.com/gtag/js?id=G-C95XL2M3ZQ').length - 1;
+    assert.equal(n, f === 'admin.html' ? 0 : 1, `${f} has ${n} Google tag(s)`);
+    if (n) assert.ok(html.indexOf('gtag/js?id=') < html.search(/<\/head>/i), `${f}: tag is inside <head>`);
+  }
+  const { page, context } = await newPage();
+  await context.addInitScript(() => Object.defineProperty(Navigator.prototype, 'globalPrivacyControl', { get: () => true, configurable: true }));
+  await page.goto(ORIGIN + '/contact');
+  assert.equal(await page.evaluate(() => window['ga-disable-G-C95XL2M3ZQ']), true, 'GPC disables GA');
+  await context.close();
+  const plain = await newPage();
+  await plain.page.goto(ORIGIN + '/contact');
+  assert.equal(await plain.page.evaluate(() => window['ga-disable-G-C95XL2M3ZQ']), undefined, 'GA enabled without opt-out signals');
+  assert.ok(await plain.page.evaluate(() => Array.isArray(window.dataLayer) && window.dataLayer.length >= 2), 'dataLayer receives js + config');
+  await plain.context.close();
 });
 
 test('mobile: no horizontal overflow, menu toggles, key pages clean', async () => {
