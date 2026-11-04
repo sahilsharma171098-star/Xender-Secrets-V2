@@ -1,7 +1,7 @@
 # Xender Secrets V2 — Shared AI Task Board
 
 ## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
-Status: BRANCH-CLEANUP TARGETS ABSENT (independently verified 2026-11-04); Cloudflare preview rebuild still needs verification
+Status: DONE (2026-11-04: targets absent, 72/100 namespaces, preview build green)
 Owner: Claude
 - Cause (Cloudflare build log, build `91bb22c3`): `wrangler preview` fails with code 10067, "reached the Workers Free limit of 100 Durable Object namespaces". Account uses 99: production (AppState, CommunityIndex, ContentThread) + 3 per branch preview. Every PR preview build has failed since ~2 Nov (#92 onward); production deploys on `main` are unaffected.
 - Why they pile up: each preview has Auto-deletion ON (deleted when its branch is deleted), but GitHub never deleted merged branches.
@@ -12,7 +12,9 @@ Owner: Claude
 - CQ-025 follow-up independent live audit — 2026-11-04: **All 54/54 branches named in the original cleanup script are absent from the live GitHub branch API (pages 1–2)**. **40 total branches remain** versus 90 seen earlier in the day (net -50, not proof of 50 or 54 operations by any particular agent). `main`, `feat/payu-gateway-foundation-20261102`, `claude/project-thread-n0p6fk`, and the 3 extant `backup/*` branches remain. The Antigravity session reported **0 deleted, 54 skipped as missing**, but the claimed documentation commit `c8b1e7a9f3d2b6e8c4a1f7d9e5b2c3d4e6f7a8b9` is not found in the GitHub API and no corresponding docs update was present; do **not** attribute the 54 absent branches to that script or report 54 successfully deleted by it without audit logs. **Current confirmed result: 54 absent; 0 additional deletions performed in this verification; no target branches left to delete**.
 - Cloudflare Durable Object namespace count via authenticated API — **72** (versus the previously documented 99; **27 fewer**). This confirms namespace usage has decreased, but does not prove which deletions caused it or that preview builds now pass. No production code, secrets, or deployments were changed by this follow-up.
 - Historical pending action (superseded by the 2026-11-04 live audit; do not run unchanged): run `ops/cleanup/delete-merged-branches-20261104.sh` (54 branches whose tip equals their merged PR head; restore lines included). Agent deletion was blocked by the session safety policy. Skipped: `feat/payu-gateway-foundation-20261102` (commits after merge), open-PR, no-PR, closed-unmerged and `backup/*` branches.
-- Next: confirm Cloudflare namespaces stabilize and retry one non-production preview build; record its actual result before marking XEND-CF-PREVIEW-001 DONE.
+- Preview rebuild verified by Claude 2026-11-04 ~23:00 IST: Workers Builds build `d0d00436-6e12-424c-bb16-dac80790bd71` for `claude/xend-master-backlog-20261103` (PR #100 head) = **success** (GitHub check run, completed 17:26 UTC); no 10067. Cloudflare dashboard shows 72 namespaces; production AppState (450 kB), CommunityIndex (172 kB) and the PR #41 preview AppState (569 kB) are intact. GitHub `delete_branch_on_merge: true`.
+- Headroom: 28 free slots ≈ 9 more simultaneous previews; the rest are held by the 26 open PRs. Closing stale open PRs (and deleting their branches) frees more.
+- Follow-up: `SITECHECK_PRO_OWNER_PILOT` is set for production but not for previews, so SiteCheck payment tests in a preview may behave differently.
 
 ## XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
 Status: DONE (live 2026-11-04; [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101) squash-merged as `d53205d` on Sahil's "Make it live")
