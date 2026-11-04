@@ -105,3 +105,39 @@ test("PayU does not fulfill if authoritative verify_payment reports pending",asy
     assert.equal(db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements").get().n,0);
   }finally{globalThis.fetch=priorFetch;db.close();}
 });
+test("admin recovery settles a captured payment whose callback and webhook were lost, once, only after PayU confirms",async()=>{
+  const {db,env}=newHarness();
+  env.ADMIN_TOKEN="offline-admin-token-0123456789";
+  const priorFetch=globalThis.fetch;
+  const verify=(txnid,headers={})=>handlePayu(new Request(origin+"/api/payu/admin/verify",{method:"POST",headers:{"content-type":"application/json",...headers},body:JSON.stringify({txnid})}),env);
+  const admin={authorization:"Bearer "+env.ADMIN_TOKEN};
+  const entitlements=()=>db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements").get().n;
+  let payu={status:"success",unmappedstatus:"auth",amt:"499.00"};
+  try{
+    const f=await initiate(env);
+    globalThis.fetch=async(url,options)=>{
+      assert.equal(options.body.get("command"),"verify_payment");
+      return new Response(JSON.stringify({transaction_details:{[f.txnid]:{mihpayid:"98765432101",...payu}}}),{headers:{"content-type":"application/json"}});
+    };
+    assert.equal((await verify(f.txnid)).status,401,"no admin token");
+    assert.equal((await verify(f.txnid,{authorization:"Bearer wrong"})).status,401);
+    assert.equal((await verify(f.txnid,{...admin,Origin:"https://attacker.invalid"})).status,403);
+    assert.equal((await verify("bad id",admin)).status,400);
+    assert.equal((await verify("XSUNKNOWN0000000000",admin)).status,404);
+    const authorized=await(await verify(f.txnid,admin)).json();
+    assert.equal(authorized.status,"pending","authorized-but-not-captured is not paid");
+    assert.equal(authorized.changed,false);
+    assert.equal(entitlements(),0);
+    payu={status:"success",unmappedstatus:"captured",amt:"1.00"};
+    assert.equal((await(await verify(f.txnid,admin)).json()).status,"pending","amount mismatch never settles");
+    assert.equal(entitlements(),0);
+    payu={status:"success",unmappedstatus:"captured",amt:"499.00"};
+    const settled=await(await verify(f.txnid,admin)).json();
+    assert.deepEqual([settled.status,settled.changed],["captured",true]);
+    assert.equal(entitlements(),1);
+    const again=await(await verify(f.txnid,admin)).json();
+    assert.deepEqual([again.status,again.changed],["captured",false]);
+    assert.equal(entitlements(),1,"repeat recovery never duplicates the license");
+    assert.equal(JSON.stringify(again).includes(user.email),false,"no customer PII in admin response");
+  }finally{globalThis.fetch=priorFetch;db.close();}
+});
