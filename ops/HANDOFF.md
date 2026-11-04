@@ -1,23 +1,124 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-03 05:25 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-04 06:43 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
 - Branch: `claude/xend-master-backlog-20261103`
 - Last commits:
+  - `75d3a13 docs(hq): log 2026-11-04 SiteCheck work, add MT-014..017 and launch gate G15`
+  - `1926d07 docs(hq): XEND-MASTER-001 master backlog, release gates, revenue tracker`
   - `1faa0a4 feat(sitecheck): merchant-only PayU test checkout; public remains disabled`
   - `c4a7049 fix(sitecheck): refresh v2 assets and enforce production freshness gate`
   - `25d2186 feat(sitecheck): gated Pro backend and PayU webhook (checkout OFF)`
-  - `c87aa69 feat(extensions): live store links and launch-discovery pages (#89)`
-  - `ebc6646 Merge pull request #84: XEND-HUD-001 core pages as one connected 3D story`
 
 ## Working-tree snapshot at generation
-- `A  docs/EXECUTION_LOG.md`
-- `A  docs/MASTER_PENDING_TASKS.md`
-- `A  docs/MASTER_PROJECT_STATUS.md`
-- `A  docs/RELEASE_GATES.md`
-- `A  docs/REVENUE_TRACKER.md`
-- `M  docs/TASKS.md`
+- `M  docs/DATA_MEASUREMENT_PLAN.md`
+- `UU docs/TASKS.md`
+- `A  immersive-qa-screenshots/bistro-desktop-stage.png`
+- `A  immersive-qa-screenshots/bistro-desktop.png`
+- `A  immersive-qa-screenshots/bistro-mobile-stage.png`
+- `A  immersive-qa-screenshots/bistro-mobile.png`
+- `A  immersive-qa-screenshots/cinema-desktop-stage.png`
+- `A  immersive-qa-screenshots/cinema-desktop.png`
+- `A  immersive-qa-screenshots/cinema-mobile-stage.png`
+- `A  immersive-qa-screenshots/cinema-mobile.png`
+- `A  immersive-qa-screenshots/fashion-desktop-stage.png`
+- `A  immersive-qa-screenshots/fashion-desktop.png`
+- `A  immersive-qa-screenshots/fashion-mobile-stage.png`
+- `A  immersive-qa-screenshots/fashion-mobile.png`
+- `A  immersive-qa-screenshots/gym-desktop-stage.png`
+- `A  immersive-qa-screenshots/gym-desktop.png`
+- `A  immersive-qa-screenshots/gym-mobile-stage.png`
+- `A  immersive-qa-screenshots/gym-mobile.png`
+- `A  immersive-qa-screenshots/property-desktop-stage.png`
+- `A  immersive-qa-screenshots/property-desktop.png`
+- `A  immersive-qa-screenshots/property-mobile-stage.png`
+- `A  immersive-qa-screenshots/property-mobile.png`
+- `M  public/404.html`
+- `M  public/about.html`
+- `M  public/account.html`
+- `M  public/accountant-website-development.html`
+- `M  public/article-ai-content-engine.html`
+- `M  public/article-ai-workflows-business.html`
+- `M  public/article-backend-api-guide.html`
+- `M  public/article-chinese-classic-novels-guide.html`
+- `M  public/article-chinese-web-novels-vs-classics.html`
+- `M  public/article-community-led-growth.html`
+- `M  public/article-customer-retention-after-first-sale.html`
+- `M  public/article-digital-products-guide.html`
+- `M  public/article-ecommerce-store-guide.html`
+- `M  public/article-ecommerce-trust-checklist.html`
+- `M  public/article-frontend-development-guide.html`
+- `M  public/article-full-stack-development-guide.html`
+- `M  public/article-lead-generation-guide.html`
+- `M  public/article-roofing-contractor-website-quote-enquiries.html`
+- `M  public/article-sales-customer-experience-guide.html`
+- `M  public/article-small-business-website-features.html`
+- `M  public/article-website-project-planning.html`
+- `M  public/articles.html`
+- `M  public/business-templates.html`
+- `M  public/catalog.html`
+- `M  public/clinic-website-development.html`
+- `M  public/coaching-website-development.html`
+- `M  public/community.html`
+- `M  public/consultant-website-development.html`
+- `M  public/contact.html`
+- `M  public/demo-backend-api.html`
+- `M  public/demo-backend-auth.html`
+- `M  public/demo-backend-crm.html`
+- `M  public/demo-frontend-dashboard.html`
+- `M  public/demo-frontend-saas.html`
+- `M  public/demo-frontend-store.html`
+- `M  public/demo-fullstack-booking.html`
+- `M  public/demo-fullstack-commerce.html`
+- `M  public/demo-fullstack-saas.html`
+- `M  public/demo-gym.html`
+- `M  public/demo-local.html`
+- `M  public/demo-pro.html`
+- `M  public/extensions.html`
+- `M  public/faceless-youtube-course.html`
+- `M  public/faq.html`
+- `M  public/gridsnip.html`
+- `M  public/gym-website-development.html`
+- `M  public/ideas.html`
+- `M  public/immersive-lab.html`
+- `M  public/index.html`
+- `M  public/media.html`
+- `M  public/novels.html`
+- `M  public/pay.html`
+- `M  public/payment-success.html`
+- `M  public/portfolio.html`
+- `M  public/preview-builder.html`
+- `M  public/preview.html`
+- `M  public/privacy.html`
+- `M  public/reader.html`
+- `M  public/real-estate-website-development.html`
+- `M  public/recruitment-agency-website-development.html`
+- `M  public/refund.html`
+- `M  public/resources.html`
+- `M  public/restaurant-website-development.html`
+- `M  public/sample-preview.html`
+- `M  public/services.html`
+- `M  public/sitecheck-privacy.html`
+- `M  public/sitecheck-pro.html`
+- `M  public/sitecheck.html`
+- `M  public/small-business-website-india.html`
+- `M  public/studio.html`
+- `M  public/template-preview.html`
+- `M  public/terms.html`
+- `M  public/website-catalog.html`
+- `M  public/website-cost-calculator.html`
+- `M  public/website-development-delhi.html`
+- `M  public/website-development-gurugram.html`
+- `M  public/website-development-noida.html`
+- `M  scripts/build-commercial-pages.mjs`
+- `A  scripts/commercial/analytics.mjs`
+- `M  scripts/commercial/hud.mjs`
+- `M  scripts/commercial/layout.mjs`
+- `M  tests/commercial-funnel.test.mjs`
+- `M  tests/immersive-browser.test.mjs`
+- `M  tests/unit/immersive-lab.test.mjs`
+- `?? projects/`
 
 ## Open tasks (docs/TASKS.md)
 - XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03) — REVIEW (docs on branch `claude/xend-master-backlog-20261103`; SiteCheck recovery fix on `claude/sitecheck-payu-recovery-20261103`)
@@ -54,6 +155,15 @@ Generated 2026-11-03 05:25 UTC by **claude** with `npm run ops:handoff`. Everyth
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+### XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
+- Owner: Claude. Branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.
+- Changed: `scripts/commercial/analytics.mjs` (single source), both templates, `build-commercial-pages.mjs` (adds/enforces the tag on hand-written pages), 77 `public/*.html` (all but `/admin`), `/privacy` disclosure, `docs/DATA_MEASUREMENT_PLAN.md`, tests.
+- Privacy: tag disabled for GPC/DNT and framed loads via Google's `ga-disable-<ID>` flag. Never send lead fields/PII to GA.
+- Checks run locally: unit 135/135, commercial-funnel 27/27 (incl. new Google tag test), build:pages/normalize-links --check, worker 4/4, operations 40/40, immersive browser 1/1, reader 8/8, extension lint + 28/28.
+- Live 2026-11-04: squash-merged as `d53205d`; production Workers Build success; Live E2E run 41777343065 confirmed production serves this commit and passed 18/18.
+- Open issue: Workers Builds preview builds fail on every PR branch since ~2 Nov (production on `main` is fine) — check the build log in the Cloudflare dashboard.
+- Next: Sahil confirms hits in GA4 Realtime. Keep Google Signals/ads personalisation off unless `/privacy` is updated.
 
 ### XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29)
 - Owner: Claude. Branch `claude/xend-hud-site-001`, [PR #84](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/84). Sahil approved going live ("live kar", 29 Oct) after reviewing the 8-page preview.

@@ -30,11 +30,15 @@ function startServer(){
 }
 async function testViewport(browser,url,viewport,deviceLabel){
   const context=await browser.newContext({viewport,deviceScaleFactor:1,isMobile:deviceLabel==="mobile",hasTouch:deviceLabel==="mobile",reducedMotion:"reduce"});
+  // The site-wide Google Analytics tag is the one allowed third party; stub it so the test stays offline.
+  const googleTag=/^https:\/\/(www\.googletagmanager\.com|([a-z0-9-]+\.)?google-analytics\.com|([a-z0-9-]+\.)?analytics\.google\.com)\//;
+  await context.route(googleTag,route=>route.fulfill({status:204,body:""}));
   const page=await context.newPage();
   const errors=[];
   page.on("pageerror",e=>errors.push(e.message));
   page.on("console",message=>{if(message.type()==="error")errors.push(message.text())});
   page.on("request",request=>{
+    if(googleTag.test(request.url()))return;
     if(!request.url().startsWith(url.split("/immersive-lab")[0]))errors.push("Unexpected cross-origin request: "+request.url());
   });
   await page.goto(url,{waitUntil:"load"});
