@@ -7,6 +7,7 @@ import { ensurePayuSchema, handlePayuLedger, handlePayu } from "./payu-routes.mj
 import { ensureSitecheckLicenseSchema, handleSitecheckLicenseInternal, sitecheckLicenseCors } from "./sitecheck-license.mjs";
 import { queryPayuRefunds } from "./payu-gateway.mjs";
 import { handleYouTubeVideos } from "./youtube.mjs";
+import { googleOAuthCredentials } from "./google-oauth-config.mjs";
 
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...extra}});
 const enc=new TextEncoder();
@@ -395,7 +396,7 @@ export class AppState extends DurableObject {
     if(path==="/api/auth/providers" && method==="GET"){
       return json({ok:true,providers:{
         otp:Boolean(this.env.RESEND_API_KEY&&this.env.AUTH_FROM_EMAIL),
-        google:Boolean(this.env.GOOGLE_CLIENT_ID&&this.env.GOOGLE_CLIENT_SECRET),
+        google:Boolean(googleOAuthCredentials(this.env)),
         github:Boolean(this.env.GITHUB_CLIENT_ID&&this.env.GITHUB_CLIENT_SECRET),
         facebook:Boolean(this.env.FACEBOOK_CLIENT_ID&&this.env.FACEBOOK_CLIENT_SECRET),
         x:Boolean(this.env.X_CLIENT_ID)
@@ -448,9 +449,10 @@ export class AppState extends DurableObject {
         const state=randomToken(),now=new Date(),expires=new Date(now.getTime()+10*60*1000);
         let verifier=null,authorize=null;
         if(provider==="google"){
-          if(!this.env.GOOGLE_CLIENT_ID||!this.env.GOOGLE_CLIENT_SECRET)return json({ok:false,error:"Google sign-in is not configured yet."},503);
+          const google=googleOAuthCredentials(this.env);
+          if(!google)return json({ok:false,error:"Google sign-in is not configured yet."},503);
           authorize=new URL("https://accounts.google.com/o/oauth2/v2/auth");
-          authorize.search=new URLSearchParams({client_id:this.env.GOOGLE_CLIENT_ID,redirect_uri:redirectUri,response_type:"code",scope:"openid email profile",state,prompt:"select_account"}).toString();
+          authorize.search=new URLSearchParams({client_id:google.clientId,redirect_uri:redirectUri,response_type:"code",scope:"openid email profile",state,prompt:"select_account"}).toString();
         }else if(provider==="github"){
           if(!this.env.GITHUB_CLIENT_ID||!this.env.GITHUB_CLIENT_SECRET)return json({ok:false,error:"GitHub sign-in is not configured yet."},503);
           authorize=new URL("https://github.com/login/oauth/authorize");
@@ -481,7 +483,9 @@ export class AppState extends DurableObject {
         let externalId="",name="",email="",emailVerified=false;
         try{
           if(provider==="google"){
-            const tokenRes=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:this.env.GOOGLE_CLIENT_ID,client_secret:this.env.GOOGLE_CLIENT_SECRET,code,grant_type:"authorization_code",redirect_uri:redirectUri})});
+            const google=googleOAuthCredentials(this.env);
+            if(!google)throw new Error("Google sign-in credentials are not configured");
+            const tokenRes=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:google.clientId,client_secret:google.clientSecret,code,grant_type:"authorization_code",redirect_uri:redirectUri})});
             const tok=await tokenRes.json();if(!tokenRes.ok||!tok.access_token)throw new Error("token");
             const pr=await fetch("https://openidconnect.googleapis.com/v1/userinfo",{headers:{"authorization":"Bearer "+tok.access_token}}),p=await pr.json();
             externalId=String(p.sub||"");name=clean(p.name||p.email?.split("@")[0]||"Google member",60);email=clean(p.email,254).toLowerCase();emailVerified=Boolean(p.email_verified);
