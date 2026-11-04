@@ -17,7 +17,7 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
 | MT-006 | Verify capture → ledger → licence → extension unlock → reinstall restore | TESTING PENDING | MT-005 | — | check PayU dashboard, `/api/sitecheck/entitlement`, generate key, restore after reinstall | G9 |
 | MT-007 | Confirm webhook delivery format and `productinfo` round-trip | TESTING PENDING | MT-005 | handler accepts form-encoded only; productinfo has an em dash | if "Order mismatch"/415 seen, settle with MT-002 and fix in code | G8 |
 | MT-008 | Real full refund → automatic revocation | TESTING PENDING | MT-006 | refund query in `/api/sitecheck/license/verify` | **[Sahil]** refund in PayU dashboard; verify Pro off within 15 min | G10 |
-| MT-009 | Customer self-serve "re-check my payment" (no admin needed) | NOT STARTED | MT-002 | — | signed-in route that runs the MT-002 logic for the caller's own pending orders only | — |
+| MT-009 | Customer self-serve "re-check my payment" (no admin needed) | CODE COMPLETE | MT-002 | `f2efecb` on the recovery branch; unit 142/142 | merge with PR #99 | — |
 | MT-010 | Chargeback path | NOT STARTED | — | manual reconcile only | document PayU chargeback notification; keep manual until signed source exists | G11 |
 | MT-011 | GST receipt/invoice + refund terms review for ₹499 | TESTING PENDING | — | pages exist | review copy against actual PayU receipt after MT-005 | G12 |
 | MT-012 | Chrome Web Store SiteCheck v2.0.0 submission | BLOCKED | MT-006–MT-011 | manifests 2.0.0; tests 28/28 | build zip, **[Sahil]** submit in dashboard, record approval | G13 |
@@ -33,6 +33,7 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
 | MT-020 | Give Claude read/write access to private `autotube` repo | BLOCKED | Sahil | API 404 from this session | **[Sahil]** add repo to Claude's GitHub access | — |
 | MT-021 | Reconcile laptop checkout (detached at `lab-out/final-biryani`, untracked `autotube/`, `final_720p.mp4`) | NOT STARTED | — | observed 2026-11-03 | inspect untracked folder before any pull; back up; never discard | XEND-CLEANUP-20261022 |
 | MT-022 | Merge state of AutoTube PR #8 (format) / #9 (retrofit) | unverified | MT-020 | TASKS.md says Sahil merge pending | check, then merge or close | XEND-YT-FORMAT-001 |
+| MT-025 | Daily video workflow failing (3 failures emailed on 2 Nov); 4 Nov merge PR fails safety tests | BLOCKED | MT-020 | GitHub notification emails | read run logs, fix on a branch; don't merge the failing PR | XEND-YT-01 |
 | MT-023 | Hindi pipeline quality pass (voice, captions, music, thumbnails, QA gate) + one offline sample | NOT STARTED | MT-020 | — | render offline sample, review before any publish | XEND-YT-QUALITY-001 |
 | MT-024 | US/UK English channel config inside AutoTube (no second engine) | NOT STARTED | MT-023 | — | channel profile + research-source rules | — |
 
@@ -40,12 +41,13 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
 
 | ID | Task | Status | Depends on | Evidence | Next action | Links |
 | --- | --- | --- | --- | --- | --- | --- |
-| MT-030 | Stop/withdraw store submission until fixed | **[Sahil]** | — | broken free tier + placeholder paywall | cancel review if submitted | R2, R3 |
-| MT-031 | Move source into HQ (`projects/gridsnip/`), secret-scan, register in PROJECTS.md | NOT STARTED | — | only in Antigravity scratch | copy, commit on branch | R1 |
-| MT-032 | Free tier design (BYO key only, or capped server proxy with cost approval) | NOT STARTED | MT-031 | placeholder key | pick one; listing must match | R2 |
-| MT-033 | Paid tier via SiteCheck licence infra (INR PayU), remove Gumroad placeholder | NOT STARTED | MT-006 | placeholder permalink | reuse `/api/sitecheck/license/*` pattern with product id `gridsnip` | R3 |
-| MT-034 | Privacy policy page + CWS data disclosure ("Website content") | NOT STARTED | — | — | add `/gridsnip-privacy` | R4 |
-| MT-035 | Replace `alert()`, error recovery, complex-table accuracy tests | NOT STARTED | MT-031 | — | — | R5 |
+| MT-030 | Do not submit the old 1.0.0 zip | **[Sahil]** | — | 1.0.0 could not work at all | upload `gridsnip-1.1.0.zip` instead (MT-036) | R2, R3 |
+| MT-031 | Move source into HQ (`projects/gridsnip/`), secret-scan, register in PROJECTS.md | CODE COMPLETE | — | only in Antigravity scratch | copy, commit on branch | R1 |
+| MT-032 | Free tier design (BYO key only, or capped server proxy with cost approval) | CODE COMPLETE (BYO key) | MT-031 | placeholder key | pick one; listing must match | R2 |
+| MT-033 | Paid tier via SiteCheck licence infra (INR PayU) — Gumroad placeholder removed | NOT STARTED (placeholder removed) | MT-006 | placeholder permalink | reuse `/api/sitecheck/license/*` pattern with product id `gridsnip` | R3 |
+| MT-034 | Privacy policy page + CWS data disclosure ("Website content") | CODE COMPLETE | — | — | add `/gridsnip-privacy` | R4 |
+| MT-036 | GridSnip 1.1.0 store submission | BLOCKED | merge `claude/gridsnip-v1.1-20261104` (privacy page must be live) | zip + store kit on the laptop | **[Sahil]** test once with own Gemini key, upload zip, paste store answers, submit | R1–R5 |
+| MT-035 | Replace `alert()`, error recovery, complex-table accuracy tests | CODE COMPLETE (live accuracy untested) | MT-031 | — | — | R5 |
 
 ## P3 — Website, Cloudflare, CI
 
@@ -60,8 +62,8 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-03.
 
 | ID | Task | Status | Next action | Links |
 | --- | --- | --- | --- | --- |
-| MT-050 | Shopify audit: products, supplier terms, shipping/returns, margins, checkout (India/US) | NOT STARTED | read-only audit via Shopify connector | — |
-| MT-060 | International payments: PayU intl application gaps; PayPal/Stripe eligibility for an India merchant | NOT STARTED | collect current application status from Sahil/Gmail; no new accounts | — |
+| MT-050 | Shopify audit: products, supplier terms, shipping/returns, margins, checkout (India/US) | AUDITED 2026-11-04 (private report on laptop) | **[Sahil]** re-price or draft near-zero-margin gadgets, fix plug variants, one price list for website packages, confirm PayU app vs USD store currency | — |
+| MT-060 | International payments: PayU intl application gaps; PayPal/Stripe eligibility for an India merchant | WAITING ON PAYU | request auto-closed 3 Nov (needs FIRC/invoices/CA-signed revenue); Sahil asked for an alternative path on 4 Nov; Stripe India is invite-only | — |
 | MT-070 | Lead pipeline: enable digest cron and Command Center importer | BLOCKED | **[Sahil]** approval + Apps Script OAuth | XEND-HQ-01 |
 | MT-071 | Outreach history + suppression check before any new sends | NOT STARTED | read Command Center | XEND-ACQ-001 |
 | MT-080 | YouTube → Instagram/Facebook distribution with dedupe ledger | IN PROGRESS (per TASKS.md) | verify ledger fields: content ID, platform, status, URL, retries | XEND-IG-CROSSPOST-001 |

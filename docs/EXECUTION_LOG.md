@@ -62,3 +62,29 @@ Done
 Not done
 - Push/PR/merge/deploy, real payment, refund, store submission — same reasons as 2026-11-03.
 - `/sitecheck-privacy` and `/sitecheck-pro` page copy for v2.1 (must change at v2.1 release, not before).
+
+## 2026-11-04 (later) — Claude — "execute all pending tasks" session
+
+Access: same as before (no GitHub write from the session; laptop folders; Shopify, Gmail and Cloudflare-metadata connectors).
+Main moved to `41b27c4` (GA4 #101) during the session; every unpushed branch was rebased onto it and re-tested.
+
+Done
+- MT-009 self-serve "Check my payment again": `POST /api/payu/recheck` + button on `/sitecheck-pro` (commit `f2efecb` on
+  `claude/sitecheck-payu-recovery-20261103`). Only the caller's own pending SiteCheck orders (14 days, max 3), one check per
+  minute, settles only on captured + exact amount. Unit 142/142; merged with main 142/142 and with PR #96 144/144.
+- GridSnip OCR 1.1.0 (XEND-GRIDSNIP-001, branch `claude/gridsnip-v1.1-20261104`, `f5731e7`): the 1.0.0 draft could not work
+  (see `projects/gridsnip/store/changelog.md`); rebuilt with a snip tab, the user's own Gemini key, automatic model choice,
+  honest store copy, privacy page `/gridsnip-privacy` (generated, carries the GA4 tag like every page), store answers,
+  screenshots, CI workflow. 10 unit + 6 real-Chromium tests (Gemini mocked, e2e run 3×), site suites green.
+- SiteCheck white-label/CTA (`4b40391`, `3b0c101`) and v2.1 (`8cf5640`, `26486de`) rebased onto `41b27c4`: extension 31/31 and 46/46.
+- Master docs branch: merged main to clear the TASKS/HANDOFF conflicts in PR #100 (`0ab3e37`).
+- Read-only audits: Shopify (0 orders; three tracked gadgets priced about 3% above cost; other gadgets untracked with no cost;
+  USD-only store; website-package prices differ from the site) — details kept privately on the laptop, not in this public repo.
+  PayU (Gmail): domestic settlement active; international request auto-closed on 3 Nov waiting for FIRC/invoices/CA-signed revenue;
+  Sahil's 4 Nov follow-up asks for an alternative path. AutoTube: laptop copy of main passes 167/168 tests (1 = missing Hindi font
+  locally); GitHub emailed three Daily-video failures on 2 Nov and a failing safety run on a 4 Nov merge PR.
+
+Not done (and why)
+- Push/PR/merge/deploy — no GitHub write access in this session.
+- Real ₹499 payment, refund, Chrome Web Store submissions, Shopify price/status changes, replies to PayU — owner actions.
+- AutoTube fixes — private repo not reachable from the session; failure logs needed.
