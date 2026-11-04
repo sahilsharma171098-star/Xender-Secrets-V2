@@ -1,5 +1,31 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04)
+Status: REVIEW (branches `claude/sitecheck-payu-recheck-20261104`, `claude/sitecheck-whitelabel-cta-20261104`; draft `claude/sitecheck-v21-local-ux-20261104`)
+Owner: Claude
+- Context: PR #99 was squash-merged by Sahil as `8eef28c` with only the admin re-verify commit; the later commits on that branch never reached GitHub, so they move to a new branch on main `995301a`.
+- PayU (`claude/sitecheck-payu-recheck-20261104`): browser callback always lands on `/sitecheck-pro?payment=failed|pending|verified` (no 404, no raw JSON; webhook keeps retry status codes; forged signatures still 400); owner canary checklist `docs/SITECHECK_PRO_QA_CHECKLIST.md`; customer "Check my payment again" (`POST /api/payu/recheck`, own pending orders only, 14 days, max 3, one check per minute, settles only captured + exact amount). Checkout flag untouched (stays OFF).
+- White-label (`claude/sitecheck-whitelabel-cta-20261104`, ships in 2.0.0): copied report/CSV carry no sales pitch, Pro copy/CSV/file name are white-label, "Not now" hides the human-review suggestion for 30 days and Pro never sees it.
+- v2.1 (draft, stacked on white-label): on-device page-load metrics, "Show on page" outlines, Pro PDF report. Hold until the Chrome Web Store approves 2.0.0, then bump to 2.1.0 and update `/sitecheck-privacy` + `/sitecheck-pro` copy.
+- Checks (on `995301a`): unit 146/146, reader+funnel 27/27, worker 4/4, check:pages and link check clean (PayU branch); extension lint + 31/31 (white-label), 46/46 + package (v2.1).
+- Next: PRs → CI → merge PayU and white-label → confirm Workers Builds production + "Xender Live E2E" on the new main (checkoutEnabled=false) → Sahil's ₹499 canary per the checklist.
+
+## XEND-GRIDSNIP-001 — GridSnip OCR 1.1.0: working, honest store build (2026-11-04)
+Status: REVIEW (branch `claude/gridsnip-v1.1-20261104`)
+Owner: Claude
+- Why: the 1.0.0 draft in Antigravity scratch could not work (content script ignored the screenshot, called APIs content scripts cannot use, sent an unhandled message), used a placeholder Gemini key and a placeholder Gumroad "$14 Pro", and showed alert() dialogs. Its target model gemini-2.5-flash was also due for retirement.
+- What: rebuilt in `projects/gridsnip/` — shortcut/popup → screenshot (activeTab) → own snip tab → drag → only the crop goes to the Gemini API with the user's own key (header, not URL) → preview + auto-copy TSV + CSV. Picks a current Gemini model from models.list and re-picks on 404. No content scripts, no `scripting`, no servers, no analytics. Privacy page `/gridsnip-privacy` generated from `projects/gridsnip/store/privacy-policy.md` (discloses Google's free-tier data use).
+- Checks: `npm run gridsnip:lint`, `npm run gridsnip:test` (10 unit + 6 real-Chromium e2e with mocked Gemini), `npm run gridsnip:package` → `dist/gridsnip-1.1.0.zip`. Not tested against the live Gemini API (no key/egress in the agent session).
+- Next: Sahil tests once with his own key, uploads the zip, fills the store form from `projects/gridsnip/store/`, submits. Paid tier only after a real licence backend exists.
+
+## XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03)
+Status: REVIEW (docs on branch `claude/xend-master-backlog-20261103`, PR #100; recovery fix merged as PR #99 `8eef28c` on 2026-11-04)
+Owner: Claude
+- What: one evidence-based backlog across products (`docs/MASTER_PENDING_TASKS.md`, MT-### IDs linked to existing XEND IDs), `docs/MASTER_PROJECT_STATUS.md`, `docs/RELEASE_GATES.md` (SiteCheck Pro G1–G14, GridSnip R1–R5), `docs/REVENUE_TRACKER.md`, `docs/EXECUTION_LOG.md`.
+- Verified 2026-11-03: main `1faa0a4` live (Live E2E run 41485101193 incl. SiteCheck checkout-OFF gate); PR #96 clean, CI green, suites re-run locally (unit 137, browser 26, extension 28, worker 4, ops 40).
+- Fix: `POST /api/payu/admin/verify` settles a captured payment whose callback and webhook were both lost (commit `708e876`, unit 136/136; merges with #96 → 138/138).
+- Not done: push/merge/deploy (no GitHub write in session), real ₹499 canary and refund (Sahil), CWS submission, AutoTube/Shopify/intl audits.
+- Next: merge last, after the XEND-SITECHECK-002 and XEND-GRIDSNIP-001 PRs; then owner canary MT-005.
 ## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
 Status: BLOCKED (CQ-025 verified on 2026-11-04; deletion requires an authenticated GitHub ref-delete operation)
 Owner: Claude
