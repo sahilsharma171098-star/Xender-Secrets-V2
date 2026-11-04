@@ -34,7 +34,8 @@
     "ai:prepare": "node scripts/ops/ai-workspace.mjs prepare",
     "ai:task": "node scripts/ops/task-workspace.mjs",
     "pm": "node scripts/pm/xender-pm.mjs",
-    "test:pm": "node --test tests/unit/xender-pm.test.mjs"
+    "test:pm": "node --test tests/unit/xender-pm.test.mjs",
+    "pm:demo": "node scripts/pm/demo.mjs"
   },
   "devDependencies": {
     "playwright": "1.57.0",
