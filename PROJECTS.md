@@ -24,7 +24,7 @@ goes through a branch + PR. Start with `AGENTS.md`, then the project's own READM
 | Amazon SP-API connector (Xender Seller Manager) | Commerce | own repo `xender-amazon-spapi` | Render free | live; key check unverified; lane reserved |
 | Claude Code executor (`@claude` on issues/PRs) | Development | `.github/workflows/claude-code.yml` | GitHub Actions | installed; 2026-10-24 review run blocked by missing/empty `CLAUDE_CODE_OAUTH_TOKEN` (XEND-CLAUDE-EXECUTOR-001); separate Claude review supplied by Sahil |
 | Shared AI workspace | HQ / Content | `ops/ai/`, `scripts/ops/ai-workspace.mjs` | local task briefs; Gemini, Antigravity, Nano Banana, Veo, NVIDIA and Grok routes | Gemini sign-in/Flow options observed 2026-10-22; no fresh inference/API verification. ThinkPad health check supplied 2026-10-24; original local evidence review and Gemini skill save pending. NVIDIA/Grok access pending |
-| Xender AI Project Manager (`xender-pm`) | HQ | `scripts/pm/`, `ops/pm/`, `docs/XENDER_PM.md` (XEND-PM-001) | any laptop with git + Node 22 (no server, no paid API) | MVP in review (branch `claude/xender-pm-mvp-v5yqxj`); dispatch dry-run by default |
+| Xender AI Project Manager (`xender-pm`) | HQ | `scripts/pm/`, `ops/pm/`, `docs/XENDER_PM.md` (XEND-PM-001) | any laptop with git + Node 22 (no server, no paid API) | MVP in review (PR #110); dispatch dry-run by default |
 | AI failover handoff | HQ | `ops/`, `scripts/ops/handoff.mjs`, `GEMINI.md` | any laptop with git | ready |
 | Laptop projects (trading bots, episode studio, website copies) | — | not in any repo yet | Sahil's laptop | **audit pending** (folder access) |
 

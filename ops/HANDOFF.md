@@ -56,7 +56,7 @@ Generated 2026-11-04 19:04 UTC by **claude** with `npm run ops:handoff`. Everyth
 ## Notes from the last agent
 
 ### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04)
-- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj` (rebased on main `d7d3ad3`). Guide: `docs/XENDER_PM.md`.
+- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (rebased on main `d7d3ad3`). Guide: `docs/XENDER_PM.md`.
 - Use it first: `npm run pm -- status`, `npm run pm -- next`. Saved real task: `PM-SITECHECK-001` (MT-004 confirm Live E2E run 41892558789 on `d7d3ad3`; MT-010 chargeback path). Resume with `npm run pm -- resume PM-SITECHECK-001 --agent <you>`.
 - Records corrected: MT-002/009/014/015 DONE (PRs #105/#106 merged, detected automatically); MT-003 DONE via `ops/pm/overrides.json` (XEND-CF-PREVIEW-001 evidence). PR #100's backlog file still says otherwise; update it when #100 is next touched.
 - Checks run: `node --test tests/unit/xender-pm.test.mjs` 14/14; `node --test tests/unit/*.test.mjs` 160/160; `npm run test:ops` 40/40; `npm run pm:demo` PASS (mock agents, real metadata). `npm run pm -- doctor` on the cloud host: Claude Code 2.1.318 installed + signed in; Codex/Gemini CLIs not installed.
