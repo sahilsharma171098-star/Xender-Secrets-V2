@@ -17,7 +17,7 @@ Verified:
 Owner authorized the INR 499 pilot and will perform payment and full refund after preflight. No charge initiated.
 
 Blocked/pending:
-- PayU merchant session expired. Login page is open; owner sign-in needed before webhook configuration/delivery, merchant approval and invoice readiness can be inspected.
+- PayU merchant Live Mode login succeeded. No webhook existed; created Payments / successful to https://www.xendersecrets.com/api/payu/webhook at 16:02:25 IST and verified the saved dashboard row. Configuration is verified; delivery remains pending a real payment. Invoice readiness awaits owner confirmation.
 - Real captured payment, one Pro entitlement, license activation/reinstall restore, full refund/revocation and bank settlement remain unverified.
 - Chrome Store navigation returned Not allowed. No v2 upload, submission or approval verified. Preserve existing public version; do not submit until payment QA gates pass and private reviewer access is available.
 - Public paid checkout remains OFF. Keep it OFF during store review; require real payment/refund/settlement evidence, store approval and an explicit later owner launch decision before enabling.
