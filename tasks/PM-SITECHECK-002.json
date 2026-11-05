@@ -10,7 +10,7 @@
   "approvalRequired": [],
   "approvalNote": "",
   "createdAt": "2026-11-05T04:34:13.550Z",
-  "updatedAt": "2026-11-05T04:59:50.784Z",
+  "updatedAt": "2026-11-05T05:01:46.253Z",
   "focus": [
     "MT-010"
   ],
@@ -277,10 +277,30 @@
       "blocker": null,
       "note": null,
       "source": "manual"
+    },
+    {
+      "at": "2026-11-05T05:01:46.252Z",
+      "agent": "claude",
+      "status": "IN_PROGRESS",
+      "done": "Added tests/unit/payu-chargeback.test.mjs (4/4 pass): chargeback revoke, idempotency, refusal cases, admin auth",
+      "next": "Write docs/PAYU_CHARGEBACK.md; link QA checklist 5.4",
+      "files": [
+        "tests/unit/payu-chargeback.test.mjs"
+      ],
+      "commit": null,
+      "pr": null,
+      "tests": [
+        "payu-chargeback 4/4"
+      ],
+      "blocker": null,
+      "note": null,
+      "source": "manual"
     }
   ],
-  "lastSuccessfulAction": "Resumed on main b69d7c0 from xender-pm-state a9a472f (no re-investigation)",
-  "changedFiles": [],
+  "lastSuccessfulAction": "Added tests/unit/payu-chargeback.test.mjs (4/4 pass): chargeback revoke, idempotency, refusal cases, admin auth",
+  "changedFiles": [
+    "tests/unit/payu-chargeback.test.mjs"
+  ],
   "commit": null,
   "pr": null,
   "testResults": [
@@ -335,10 +355,14 @@
     {
       "at": "2026-11-05T04:35:58.730Z",
       "result": "check:pages: not run (no shell)"
+    },
+    {
+      "at": "2026-11-05T05:01:46.252Z",
+      "result": "payu-chargeback 4/4"
     }
   ],
   "blockers": [],
-  "nextAction": "Write docs/PAYU_CHARGEBACK.md from src/payu-routes.mjs admin reconcile/revoke; link from SITECHECK_PRO_QA_CHECKLIST and G11",
+  "nextAction": "Write docs/PAYU_CHARGEBACK.md; link QA checklist 5.4",
   "nextAgentNotes": "",
   "attempts": [
     {
