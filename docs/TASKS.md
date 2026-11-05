@@ -1,5 +1,12 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05)
+Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
+Owner: Claude (PM task `PM-SITECHECK-002`, resumed from `xender-pm-state`)
+- What: `docs/PAYU_CHARGEBACK.md`, the manual owner-only process: PayU dashboard confirmation → `POST /api/payu/admin/reconcile {"reason":"chargeback"}` → check → log. It is limited to verified code behaviour and says plainly what is unverified (PayU notification format; whether the refund query reports chargebacks; no reinstate path; whole-order revoke only). Policy (Sahil, 2026-11-05, PR #111 review): reply in PayU before `Reply Before`; revoke Pro only on `Closed Customer Favour`, never on the first notice, `Pending Response` or an interim debit. Pro stays active during an open dispute because no restore path exists. QA checklist 5.4 links it.
+- Tests: new `tests/unit/payu-chargeback.test.mjs` (4) covers chargeback revoke → licence `pro:false`, no new key, no re-settle; idempotency and no flip to refunded; 409/404/400 refusals; admin token/origin checks. Before this, the revoke path was only tested with `reason:"refunded"`.
+- No code, config, secret, payment, deployment or checkout change. `docs/RELEASE_GATES.md` (G11 row) lives only in unmerged PR #100, so it was not edited here; update G11 to point at this runbook when #100 is touched.
+
 ## XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04)
 Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
 Owner: Claude
