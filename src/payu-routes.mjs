@@ -18,6 +18,7 @@ export function ensurePayuSchema(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_order_accounts (txnid TEXT PRIMARY KEY,user_id TEXT NOT NULL)");
   sql.exec("CREATE INDEX IF NOT EXISTS idx_sitecheck_order_user ON sitecheck_order_accounts(user_id)");
   sql.exec("CREATE INDEX IF NOT EXISTS idx_entitlement_email ON extension_entitlements(email,product_id,status)");
+  sql.exec("CREATE TABLE IF NOT EXISTS sitecheck_rechecks (user_id TEXT PRIMARY KEY,last_at TEXT NOT NULL)");
 }
 export async function handlePayuLedger(request,sql) {
   const path=new URL(request.url).pathname;
@@ -44,6 +45,19 @@ export async function handlePayuLedger(request,sql) {
     if(o.offer_id==="sitecheck-pro-onetime") sql.exec("INSERT OR IGNORE INTO extension_entitlements (id,email,product_id,txnid,status,issued_at,revoked_at) VALUES (?,?,?,?,'active',?,NULL)",crypto.randomUUID(),o.email,"sitecheck",b.txnid,now);
     sql.exec("INSERT INTO payu_events (txnid,event,status,created_at) VALUES (?,'verified','captured',?)",b.txnid,now);
     return json({ok:true,status:"captured"});
+  }
+  if(path.endsWith("/recheck-candidates")) {
+    // Customer self-serve "check my payment again": only this account's own pending SiteCheck
+    // orders from the last 14 days, at most 3, and at most one check per account per minute.
+    const userId=String(b.accountId||"");
+    if(!/^[a-f0-9-]{36}$/i.test(userId))return json({ok:false,error:"Invalid account"},400);
+    const now=Number.isFinite(b.now)?b.now:Date.now();
+    const last=sql.exec("SELECT last_at FROM sitecheck_rechecks WHERE user_id=?",userId).toArray()[0];
+    if(last&&now-Date.parse(last.last_at)<60000)return json({ok:true,throttled:true,orders:[]});
+    sql.exec("INSERT INTO sitecheck_rechecks(user_id,last_at) VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET last_at=excluded.last_at",userId,new Date(now).toISOString());
+    const since=new Date(now-14*86400000).toISOString();
+    const orders=sql.exec("SELECT p.txnid,p.amount_paise FROM payu_orders p JOIN sitecheck_order_accounts a ON a.txnid=p.txnid WHERE a.user_id=? AND p.status='pending' AND p.offer_id='sitecheck-pro-onetime' AND p.created_at>=? ORDER BY p.created_at DESC LIMIT 3",userId,since).toArray();
+    return json({ok:true,throttled:false,orders});
   }
   if(path.endsWith("/entitlements-for-account")) {
     const userId=String(b.accountId||"");
@@ -117,18 +131,26 @@ export async function handlePayu(request,env) {
   }
   if((path==="/api/payu/callback"||path==="/api/payu/webhook")&&method==="POST") {
     const isWebhook=path==="/api/payu/webhook";
+    // The browser callback is a customer's tab: it always gets a page, never raw JSON.
+    // "pending" re-checks the server-side entitlement; the query string is never proof.
+    // The webhook keeps status codes so PayU retries when verification is unavailable.
+    const customerPage=state=>Response.redirect(url.origin+"/sitecheck-pro?payment="+state,303);
     if(!(request.headers.get("content-type")||"").includes("application/x-www-form-urlencoded"))return json({ok:false,error:"Invalid callback"},415);
     const raw=await request.text();
     if(raw.length>16000)return json({ok:false},413);
     const data=Object.fromEntries(new URLSearchParams(raw));
     if(data.key!==env.PAYU_KEY||!await verifyPayuCallbackHash(data,env.PAYU_SALT))return json({ok:false,error:"Invalid callback signature"},400);
-    const txnid=clean(data.txnid,25),{order}=await ledger(env,"get",{txnid});
-    if(!order||order.email!==data.email.toLowerCase()||order.offer_id!==data.udf1||order.amount_paise!==Math.round(Number(data.amount)*100)||PAYMENT_OFFERS[order.offer_id]?.name!==data.productinfo)return json({ok:false,error:"Order mismatch"},400);
-    if(data.status!=="success")return isWebhook?json({ok:true,captured:false}):Response.redirect(url.origin+"/payment-failed?txnid="+encodeURIComponent(txnid),303);
+    const txnid=clean(data.txnid,25);
+    let order;
+    try{({order}=await ledger(env,"get",{txnid}));}catch{return isWebhook?json({ok:false,error:"Payment ledger unavailable"},503):customerPage("pending");}
+    // A mismatch on a correctly signed callback can be a real paid order whose echoed fields
+    // differ (for example productinfo text); it is settled later by /api/payu/admin/verify.
+    if(!order||order.email!==data.email.toLowerCase()||order.offer_id!==data.udf1||order.amount_paise!==Math.round(Number(data.amount)*100)||PAYMENT_OFFERS[order.offer_id]?.name!==data.productinfo)return isWebhook?json({ok:false,error:"Order mismatch"},400):customerPage("pending");
+    if(data.status!=="success")return isWebhook?json({ok:true,captured:false}):customerPage("failed");
     let payment;
-    try{payment=await queryPayuTransaction(txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{return json({ok:false,error:"Payment verification pending"},503);}
-    if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)return json({ok:false,error:"Not captured"},409);
-    await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});
+    try{payment=await queryPayuTransaction(txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{return isWebhook?json({ok:false,error:"Payment verification pending"},503):customerPage("pending");}
+    if(!isCapturedMatchingOrder({txnid,amountPaise:order.amount_paise},payment)||!payment.paymentId)return isWebhook?json({ok:false,error:"Not captured"},409):customerPage("pending");
+    try{await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});}catch{return isWebhook?json({ok:false,error:"Payment ledger unavailable"},503):customerPage("pending");}
     return isWebhook?json({ok:true,captured:true,fulfilled:true}):Response.redirect(order.offer_id==="sitecheck-pro-onetime"?url.origin+"/sitecheck-pro?payment=verified":url.origin+"/payment-success?txnid="+encodeURIComponent(txnid),303);
   }
   if(path==="/api/payu/admin/reconcile"&&method==="POST") {
@@ -162,6 +184,30 @@ export async function handlePayu(request,env) {
       return json({ok:true,txnid,status:"pending",changed:false,payu:{found:Boolean(payment.found),status:payment.status||"unverified",settlement:payment.settlementStatus||""}});
     try{await ledger(env,"settle",{txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});}catch{return json({ok:false,error:"Payment ledger unavailable"},503);}
     return json({ok:true,txnid,status:"captured",changed:true});
+  }
+  if(path==="/api/payu/recheck"&&method==="POST") {
+    // Signed-in customer asks PayU again about their own unconfirmed SiteCheck payment.
+    // Same rule as every other path: only verify_payment saying captured + exact amount settles.
+    if(request.headers.get("Origin")!==url.origin)return json({ok:false,error:"Origin mismatch"},403);
+    const cookie=request.headers.get("Cookie");
+    if(!cookie)return json({ok:false,error:"Sign in to the Xender account you paid with."},401);
+    let user=null;
+    try{
+      const who=await state(env).fetch(new Request(url.origin+"/api/auth/me",{method:"GET",headers:{Cookie:cookie}}));
+      if(who.ok)user=(await who.json().catch(()=>({}))).user||null;
+    }catch{user=null;}
+    if(!user?.id)return json({ok:false,error:"Sign in to the Xender account you paid with."},401);
+    let candidates;
+    try{candidates=await ledger(env,"recheck-candidates",{accountId:user.id});}catch{return json({ok:false,error:"Payment records are unavailable right now. Try again shortly."},503);}
+    if(candidates.throttled)return json({ok:false,error:"Please wait a minute before checking again."},429);
+    let settled=0,unavailable=false;
+    for(const o of candidates.orders||[]){
+      let payment;
+      try{payment=await queryPayuTransaction(o.txnid,{key:env.PAYU_KEY,salt:env.PAYU_SALT});}catch{unavailable=true;continue;}
+      if(!isCapturedMatchingOrder({txnid:o.txnid,amountPaise:o.amount_paise},payment)||!payment.paymentId)continue;
+      try{await ledger(env,"settle",{txnid:o.txnid,paymentId:payment.paymentId,verifiedStatus:"captured"});settled++;}catch{unavailable=true;}
+    }
+    return json({ok:true,checked:(candidates.orders||[]).length,settled,unavailable});
   }
   if(path==="/api/payu/status"&&method==="GET")return json({ok:false,error:"Authentication required"},401);
   return json({ok:false,error:"Not found"},404);

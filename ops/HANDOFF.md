@@ -1,18 +1,24 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-05 05:09 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `feat/google-analytics-ga4`
+- Branch: `claude/xender-pm-mvp-v5yqxj`
 - Last commits:
-  - `7ac00d2 XEND-GA4-001: add Google Analytics 4 tag (G-C95XL2M3ZQ) site-wide`
-  - `1faa0a4 feat(sitecheck): merchant-only PayU test checkout; public remains disabled`
+  - `48c9313 MT-010 (XEND-EXT-PAY-001, gate G11): SiteCheck Pro chargeback runbook + regression tests`
+  - `b69d7c0 XEND-PM-001: Xender AI Project Manager MVP (xender-pm CLI) (#110)`
+  - `3243cee XEND-CF-PREVIEW-001: record PR #109 live`
+  - `d7d3ad3 Preview hygiene: SiteCheck owner pilot off in previews; GA only on production host (#109)`
+  - `8b7aaab feat(sitecheck): white-label copied report and CSV, dismissible human-review suggestion (2.0.0) (#106)`
 
 ## Working-tree snapshot at generation
-- none — working tree clean
+- ` M docs/PAYU_CHARGEBACK.md`
+- ` M docs/SITECHECK_PRO_QA_CHECKLIST.md`
+- ` M docs/TASKS.md`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04) — DONE (live 2026-11-04, PR #101 → `d53205d`)
+- XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
+- XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -46,6 +52,24 @@ Generated 2026-11-03 19:06 UTC by **claude** with `npm run ops:handoff`. Everyth
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+### XEND-EXT-PAY-001 / MT-010 — chargeback runbook (2026-11-05)
+- Owner: Claude, via PM task `PM-SITECHECK-002` (resumed from `xender-pm-state` on main `b69d7c0` after PR #110 merged). Branch `claude/xender-pm-mvp-v5yqxj` restarted from main.
+- Added `docs/PAYU_CHARGEBACK.md`, `tests/unit/payu-chargeback.test.mjs` (4/4), and a QA checklist 5.4 link. Docs and tests only.
+- Checks run: `npm test` unit 176/176 and browser 27/27; payu + licence group 36/36; `extension:lint` passed; `extension:test` 31/31; `check:pages` clean; `test:pm` 23/23. Browser suites need Playwright resolvable from the repo: this host has no `node_modules`, so the pre-installed `/opt/node-tools` copy was symlinked into git-ignored `node_modules/`.
+- Policy decided by Sahil (PR #111 review, 2026-11-05): reply before PayU `Reply Before`; revoke only on `Closed Customer Favour`. Runbook updated. Open: G11 row in PR #100 to point here. No chargeback has occurred, so live verification of G11 is still pending.
+
+### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04, review fixes 2026-11-05)
+- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (current main merged in, no force-push). Guide: `docs/XENDER_PM.md`. **Not merged, not deployed.**
+- Review 5774186840 blockers: (1) approvals now come from the selected work items, not just the owner's words; `PM-SITECHECK-001` needs `--approve deploy,merge` before any auto-run (MT-004), and old task files are re-checked at dispatch. (2) State is local in git-ignored `ops/pm/state/` until `npm run pm -- sync-state`, which shares it on branch `xender-pm-state` with history-based conflict detection, a secret scan and fast-forward-only push; a fresh clone pulls it on `resume`.
+- Real smoke test 2026-11-05 (`ops/pm/evidence/SMOKE-2026-11-05.md`): real Claude CLI read-only task `PM-SITECHECK-002` (MT-010) → checkpoint → `sync-state` (first real push, `xender-pm-state` @ `6c44adc`) → fresh clone resume → second real Claude run → fast-forward `a9a472f` → pull on the first clone. `main` untouched. Codex/Gemini not tested (not installed).
+- Use it first: `npm run pm -- status` (a fresh clone pulls shared tasks on `resume`; `npm run pm -- pull` gets all). Resume: `npm run pm -- resume PM-SITECHECK-001 --agent <you>`. Next action there is MT-004 verify-only (Live E2E 41892558789 green on `d7d3ad3`), then MT-010 docs.
+- Checks run 2026-11-05: xender-pm 22/22; unit 171/171; operations 40/40; `pm:demo` PASS; `check:pages` clean. Fresh-clone resume is tested against a local bare remote, not against GitHub.
+- Not done: no Codex/Gemini run (CLIs absent on the cloud host); no non-read-only real agent run; PR CI ran offline checks only (live-e2e skipped on PRs); PR #100's backlog file still shows MT-002/003/009/014/015 as open (the PM shows them corrected).
+
+### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
+- Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.
+- Done: GitHub auto-delete of merged branches ON. Pending Sahil: `bash ops/cleanup/delete-merged-branches-20261104.sh` (54 merged branches; previews auto-delete and free slots). Do not add a new Durable Object class until slots are freed.
 
 ### XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
 - Owner: Claude. Branch `feat/google-analytics-ga4`, [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101). Sahil supplied the GA4 install code for `G-C95XL2M3ZQ`.

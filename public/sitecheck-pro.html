@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <!-- Google tag (gtag.js) -->
-  <script>try{if(navigator.globalPrivacyControl||navigator.doNotTrack==="1"||window.doNotTrack==="1"||window.self!==window.top)window["ga-disable-G-C95XL2M3ZQ"]=true}catch(e){window["ga-disable-G-C95XL2M3ZQ"]=true}</script>
+  <script>try{if(!/^(www\.)?xendersecrets\.com$/.test(location.hostname)||navigator.globalPrivacyControl||navigator.doNotTrack==="1"||window.doNotTrack==="1"||window.self!==window.top)window["ga-disable-G-C95XL2M3ZQ"]=true}catch(e){window["ga-disable-G-C95XL2M3ZQ"]=true}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C95XL2M3ZQ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -42,6 +42,7 @@
    <h2 id="restoreTitle">Activate or restore SiteCheck Pro</h2>
    <p>After a captured payment, <a href="/account">sign in to Xender Secrets</a> using your payment email. Generate a new key and paste it into SiteCheck's Pro panel. Regenerating a key disables the previous key.</p>
    <button id="sitecheckLicenseIssue" class="btn" type="button">Generate a license key for my account</button>
+   <button id="sitecheckRecheck" class="btn" type="button" hidden>Check my payment again</button>
    <p id="licenseStatus" role="status" aria-live="polite"></p>
    <label for="issuedKey">Your private Pro key (shown only once)</label>
    <input id="issuedKey" readonly autocomplete="off" aria-label="Your private SiteCheck Pro activation key" style="width:100%;margin:.5rem 0;">

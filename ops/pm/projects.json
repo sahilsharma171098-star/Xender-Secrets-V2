@@ -1,0 +1,249 @@
+{
+  "_comment": "xender-pm project registry (XEND-PM-001). Keywords route short owner commands to one canonical project. Edit here, never in code.",
+  "repo": "sahilsharma171098-star/Xender-Secrets-V2",
+  "backlog": {
+    "path": "docs/MASTER_PENDING_TASKS.md",
+    "gates": "docs/RELEASE_GATES.md",
+    "cacheDir": "ops/pm/cache",
+    "fallbackRef": "origin/claude/xend-master-backlog-20261103",
+    "fallbackPr": 100
+  },
+  "projects": [
+    {
+      "key": "SITECHECK",
+      "name": "SiteCheck Pro + PayU checkout",
+      "keywords": [
+        "sitecheck",
+        "site check",
+        "payu",
+        "payment",
+        "payments",
+        "checkout",
+        "licence",
+        "license",
+        "pro",
+        "refund",
+        "canary",
+        "chrome store",
+        "extension"
+      ],
+      "issue": 90,
+      "taskIds": [
+        "XEND-EXT-PAY-001",
+        "XEND-SITECHECK-002",
+        "CLAUDE-EXT-001"
+      ],
+      "backlogSection": "P0",
+      "gatePrefix": "G",
+      "prs": [
+        92,
+        95,
+        96,
+        98,
+        99,
+        102,
+        103,
+        104,
+        105,
+        106,
+        108,
+        109
+      ],
+      "branchHints": [
+        "sitecheck",
+        "payu",
+        "google-oauth",
+        "auth",
+        "preview-hygiene"
+      ],
+      "files": [
+        "src/payu-gateway.mjs",
+        "src/payu-routes.mjs",
+        "src/payments.mjs",
+        "public/sitecheck-pro.html",
+        "public/sitecheck-pro.js",
+        "extension/",
+        "docs/SITECHECK_PRO_QA_CHECKLIST.md",
+        "docs/PAYU_CHECKOUT_HANDOFF.md"
+      ],
+      "tests": [
+        "npm test",
+        "npm run extension:lint",
+        "npm run extension:test",
+        "npm run check:pages"
+      ],
+      "safety": [
+        "Keep SITECHECK_PRO_CHECKOUT_ENABLED unset/false in production until gate G14 is passed by Sahil.",
+        "Never charge, refund or enable public checkout; the owner performs real-money steps.",
+        "Never read, print or commit PayU/Google/Cloudflare secret values.",
+        "No production deploy without release verification (Live E2E green on the exact SHA) and Sahil's yes.",
+        "Do not submit to the Chrome Web Store; prepare the package and notes only."
+      ]
+    },
+    {
+      "key": "GRIDSNIP",
+      "name": "GridSnip OCR extension",
+      "keywords": [
+        "gridsnip",
+        "grid snip",
+        "ocr"
+      ],
+      "issue": null,
+      "taskIds": [
+        "XEND-GRIDSNIP-001"
+      ],
+      "backlogSection": "P2",
+      "gatePrefix": "R",
+      "prs": [
+        107
+      ],
+      "branchHints": [
+        "gridsnip"
+      ],
+      "files": [
+        "projects/gridsnip/",
+        ".github/workflows/gridsnip.yml"
+      ],
+      "tests": [
+        "npm test",
+        "npm run check:pages"
+      ],
+      "safety": [
+        "Do not submit to the Chrome Web Store; Sahil uploads.",
+        "No paid Gemini usage; BYO key only."
+      ]
+    },
+    {
+      "key": "AUTOTUBE",
+      "name": "AutoTube YouTube pipeline",
+      "keywords": [
+        "autotube",
+        "youtube",
+        "video",
+        "shorts",
+        "channel"
+      ],
+      "issue": null,
+      "taskIds": [
+        "XEND-YT-01",
+        "XEND-YT-03",
+        "XEND-YT-FORMAT-001"
+      ],
+      "backlogSection": "P1",
+      "gatePrefix": null,
+      "prs": [],
+      "branchHints": [],
+      "externalRepo": "sahilsharma171098-star/autotube",
+      "files": [
+        "docs/YOUTUBE_FORMAT.md"
+      ],
+      "tests": [
+        "python -m pytest (in the autotube repo)"
+      ],
+      "safety": [
+        "Follow docs/YOUTUBE_FORMAT.md.",
+        "Live video changes only via AutoTube retrofit plan; backup first; Sahil approves apply.",
+        "Never publish without owner approval."
+      ]
+    },
+    {
+      "key": "WEBSITE",
+      "name": "xendersecrets.com website, Cloudflare, CI",
+      "keywords": [
+        "website",
+        "site",
+        "seo",
+        "cloudflare",
+        "preview",
+        "deploy",
+        "ga4",
+        "analytics",
+        "hud",
+        "reader",
+        "novel",
+        "ci"
+      ],
+      "issue": null,
+      "taskIds": [
+        "XEND-HUD-001",
+        "XEND-GA4-001",
+        "XEND-CF-PREVIEW-001"
+      ],
+      "backlogSection": "P3",
+      "gatePrefix": null,
+      "prs": [
+        100,
+        109
+      ],
+      "branchHints": [
+        "hud",
+        "preview",
+        "ga"
+      ],
+      "files": [
+        "public/",
+        "src/index.js",
+        "scripts/commercial/",
+        "wrangler.jsonc"
+      ],
+      "tests": [
+        "npm test",
+        "npm run check:pages",
+        "npm run test:worker"
+      ],
+      "safety": [
+        "No production deploy without Live E2E on the exact SHA and Sahil's yes.",
+        "Do not add Durable Object classes without checking the 100-namespace limit."
+      ]
+    },
+    {
+      "key": "PM",
+      "name": "Xender AI Project Manager (this tool)",
+      "keywords": [
+        "xender-pm",
+        "project manager",
+        "pm tool",
+        "handoff tool"
+      ],
+      "issue": null,
+      "taskIds": [
+        "XEND-PM-001"
+      ],
+      "backlogSection": null,
+      "gatePrefix": null,
+      "prs": [],
+      "branchHints": [
+        "xender-pm"
+      ],
+      "files": [
+        "scripts/pm/",
+        "ops/pm/",
+        "tests/unit/xender-pm.test.mjs",
+        "docs/XENDER_PM.md"
+      ],
+      "tests": [
+        "node --test tests/unit/xender-pm.test.mjs"
+      ],
+      "safety": [
+        "Never store secrets in ops/pm/tasks.",
+        "Dispatch stays dry-run unless doctor verifies the CLI and the owner opts in."
+      ]
+    }
+  ],
+  "approvalWords": [
+    "deploy",
+    "go live",
+    "live kar",
+    "publish",
+    "submit",
+    "enable checkout",
+    "enable payment",
+    "charge",
+    "refund",
+    "delete",
+    "drop",
+    "rotate",
+    "secret",
+    "merge"
+  ]
+}
