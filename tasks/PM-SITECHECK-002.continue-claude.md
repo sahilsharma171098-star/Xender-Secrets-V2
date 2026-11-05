@@ -7,19 +7,21 @@ Verify the current state of SiteCheck Pro + PayU checkout against GitHub/CI and 
 
 ## Current state
 - Status: REVIEW
-- Last successful action: MT-010 status checked read-only; no changes; still NOT STARTED, manual only
+- Last successful action: MT-010 status verified read-only from local files; unchanged: NOT STARTED, manual only; no files changed; GitHub/CI not checked (no shell)
 - Changed files so far: none
 - Commit: none · PR: none
-- Tests recorded: not run: no shell in this session; npm test: not run; extension:lint: not run; extension:test: not run; check:pages: not run (no shell available)
+- Tests recorded: not run: no shell in this session; npm test: not run; extension:lint: not run; extension:test: not run; check:pages: not run (no shell available); npm test: not run; extension:lint: not run; extension:test: not run; check:pages: not run (no shell); npm test: not run; extension:lint: not run; extension:test: not run; check:pages: not run (no shell)
 - Blockers: none
 - Previous session: claude execute-read-only → done
 
 ## NEXT EXACT ACTION
-Next agent with a shell: run an implement pass for MT-010 on a new branch (docs only, no code paths changed), run the 4 checks, open a draft PR, then npm run pm -- checkpoint PM-SITECHECK-002 --status REVIEW --sync
+Next agent with a shell: implement MT-010 runbook (docs only) on a new branch, run 4 checks, open draft PR, npm run pm -- checkpoint PM-SITECHECK-002 --status REVIEW --sync
 
 ## Checkpoint history (latest last)
 - 2026-11-05T04:34:55.043Z [claude, IN_PROGRESS, agent-stream] done: MT-010 checked read-only: chargeback is admin-only manual reconcile (src/payu-routes.mjs:74-86,156-166); webhook cannot revoke on chargeback (:149); docs/PAYU_CHARGEBACK.md absent; G11 still NOT STARTED | next: Implement run on branch: write docs/PAYU_CHARGEBACK.md (PayU dispute notification -> dashboard check -> /api/payu/admin/reconcile reason=chargeback -> licence revoked), link from QA checklist 5.4 and G11; run the 4 required checks | tests: not run: no shell in this session
 - 2026-11-05T04:34:55.045Z [claude, REVIEW, agent-done] done: MT-010 status checked read-only; no changes; still NOT STARTED, manual only | next: Next agent with a shell: run an implement pass for MT-010 on a new branch (docs only, no code paths changed), run the 4 checks, open a draft PR, then npm run pm -- checkpoint PM-SITECHECK-002 --status REVIEW --sync | tests: npm test: not run; extension:lint: not run; extension:test: not run; check:pages: not run (no shell available)
+- 2026-11-05T04:35:58.728Z [claude, IN_PROGRESS, agent-stream] done: MT-010 re-checked read-only: admin-only reconcile with reason=chargeback (src/payu-routes.mjs:74-86,156-166); webhook cannot revoke (:149); docs/PAYU_CHARGEBACK.md absent; G11 NOT STARTED (ops/pm/cache/RELEASE_GATES.md:23); GitHub/CI not checked (no shell) | next: Agent with shell: branch from main, write docs/PAYU_CHARGEBACK.md, link from QA checklist 5.4 + G11, run 4 checks, draft PR, pm checkpoint --sync | tests: npm test: not run; extension:lint: not run; extension:test: not run; check:pages: not run (no shell)
+- 2026-11-05T04:35:58.730Z [claude, REVIEW, agent-done] done: MT-010 status verified read-only from local files; unchanged: NOT STARTED, manual only; no files changed; GitHub/CI not checked (no shell) | next: Next agent with a shell: implement MT-010 runbook (docs only) on a new branch, run 4 checks, open draft PR, npm run pm -- checkpoint PM-SITECHECK-002 --status REVIEW --sync | tests: npm test: not run; extension:lint: not run; extension:test: not run; check:pages: not run (no shell)
 
 ## Remaining work items
 - MT-010 — Chargeback path
