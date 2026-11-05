@@ -1,21 +1,20 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-05 05:04 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-05 05:09 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
 - Branch: `claude/xender-pm-mvp-v5yqxj`
 - Last commits:
+  - `48c9313 MT-010 (XEND-EXT-PAY-001, gate G11): SiteCheck Pro chargeback runbook + regression tests`
   - `b69d7c0 XEND-PM-001: Xender AI Project Manager MVP (xender-pm CLI) (#110)`
   - `3243cee XEND-CF-PREVIEW-001: record PR #109 live`
   - `d7d3ad3 Preview hygiene: SiteCheck owner pilot off in previews; GA only on production host (#109)`
   - `8b7aaab feat(sitecheck): white-label copied report and CSV, dismissible human-review suggestion (2.0.0) (#106)`
-  - `0806fd8 XEND-CF-PREVIEW-001: done — preview build d0d00436 green, 72/100 namespaces`
 
 ## Working-tree snapshot at generation
+- ` M docs/PAYU_CHARGEBACK.md`
 - ` M docs/SITECHECK_PRO_QA_CHECKLIST.md`
 - ` M docs/TASKS.md`
-- `?? docs/PAYU_CHARGEBACK.md`
-- `?? tests/unit/payu-chargeback.test.mjs`
 
 ## Open tasks (docs/TASKS.md)
 - XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
@@ -58,7 +57,7 @@ Generated 2026-11-05 05:04 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Owner: Claude, via PM task `PM-SITECHECK-002` (resumed from `xender-pm-state` on main `b69d7c0` after PR #110 merged). Branch `claude/xender-pm-mvp-v5yqxj` restarted from main.
 - Added `docs/PAYU_CHARGEBACK.md`, `tests/unit/payu-chargeback.test.mjs` (4/4), and a QA checklist 5.4 link. Docs and tests only.
 - Checks run: `npm test` unit 176/176 and browser 27/27; payu + licence group 36/36; `extension:lint` passed; `extension:test` 31/31; `check:pages` clean; `test:pm` 23/23. Browser suites need Playwright resolvable from the repo: this host has no `node_modules`, so the pre-installed `/opt/node-tools` copy was symlinked into git-ignored `node_modules/`.
-- Open for Sahil: the dispute-timing decision in the runbook (revoke when final vs when raised); G11 row in PR #100 to point here. No chargeback has occurred.
+- Policy decided by Sahil (PR #111 review, 2026-11-05): reply before PayU `Reply Before`; revoke only on `Closed Customer Favour`. Runbook updated. Open: G11 row in PR #100 to point here. No chargeback has occurred, so live verification of G11 is still pending.
 
 ### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04, review fixes 2026-11-05)
 - Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (current main merged in, no force-push). Guide: `docs/XENDER_PM.md`. **Not merged, not deployed.**
