@@ -1,3 +1,21 @@
+## XEND-AUTH-1101 — owner verification complete (2026-11-05)
+
+Owner completed Google sign-in. Same Chrome profile /api/auth/me returned ok:true with the signed-in account (personal details excluded from this public record). Authenticated read-only PayU config recognized the existing owner pilot; independent anonymous config remains checkoutEnabled:false. Account UI shows signed-in navigation. No cookies/tokens inspected or copied, no payment initiated. Production version remains 7eba4890; no smoke regression or rollback. Runtime-tested source revision 3c02caf; later commits only record documentation.
+
+---
+
+## XEND-AUTH-1101 — 2026-11-05 Codex checkpoint
+
+Issue #90 / PR #104 (draft). Source revision 3c02caf6d925a90c106db181fceb8a8eb4a2e402 deployed as 7eba4890-526b-47b6-bb2d-1f282b87026e, 100%, at 10:18 UTC. CI 42009141705 passed; unit 177/177, serial browser 27/27, isolated auth/canonical workerd 6/6, dry-run pass. Initial parallel browser GPU failure did not recur in isolated/serial runs.
+
+New password hashes tagged at 100000; untagged legacy uses 180000 or fails closed with recovery guidance. Verified Google/OTP can recover same account; no password rewrite/reset, schema or entitlement migration. Production OTP unavailable. Password-only users without a verified recovery provider still require support.
+
+Live anonymous health/providers/PayU config pass; auth/me 401 expected; public checkout false. All original encrypted secret binding names/types and 3 DO namespace IDs verified preserved; custom domains, preview flags and logging reconciled in config. Strict preflight halted on real config drift; after reconciliation, only empty DO optional-property diff remained and normal --keep-vars deploy was used after code/namespace review.
+
+PENDING: owner completes Google account chooser in Chrome tab opened by this task; then inspect /api/auth/me in SAME browser session (never print cookies/tokens or put owner personal data in public evidence). Keep draft until authenticated proof. Issue receipt: https://github.com/sahilsharma171098-star/Xender-Secrets-V2/issues/90#issuecomment-6655483318 . Rollback baseline f906c15e-e744-4135-8a94-59b82f83049f; code rollback does not migrate tagged credentials or DB state. No regression observed; no rollback, payments/refunds or store publication.
+
+---
+
 # Handoff — read this after AGENTS.md
 
 Generated 2026-11-05 05:09 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.

@@ -204,3 +204,10 @@ State: **LIVE on production** — PR #18's content was squash-committed to `main
 ## Shared task and content workspace (2026-10-24)
 
 See `docs/TASK_WORKSPACES.md` for fixed format profiles, private research/script/video storage, revision checkpoints and continuation by another authorized model. The existing private Command Center indexes workspaces, formats, handoffs and historical content. Historical publishing records retain source evidence and missing-file flags; they are not fresh platform readbacks. OS Tasks and the existing publisher approval rules remain canonical.
+
+### XEND-AUTH-1101 runtime compatibility (2026-11-05)
+New PBKDF2-SHA256 password hashes encode the 100000 cost in the hash string; untagged historical digests are always verified at their original 180000 cost. Where the runtime rejects that cost, password login fails closed with a recovery response and no session. Verified Google/email-OTP identity can recover the same account ID without altering credentials or entitlements. A password-only account without a configured verified recovery provider still requires support; no unauthenticated reset or silent downgrade is permitted. This is an access-recovery strategy, not a claim that 180000 hashes work on production or that passwords have been reset. No schema/binding/payment changes. Actual owner OAuth verification remains pending until observed.
+
+Controlled deploy confirmed 2026-11-05 10:18 UTC: revision 3c02caf, Worker 7eba4890 (100%). CI 42009141705 passed; live anonymous health/providers/PayU config pass with public checkout OFF. Secret binding names/types and DO namespace IDs preserved. Owner-interactive login and authenticated /api/auth/me remain pending; PR #104 draft.
+
+Owner verification completed after user interaction on 2026-11-05: same-profile /api/auth/me returned ok:true with the signed-in owner account; account navigation reflects the signed-in user. Read-only authenticated PayU config recognizes the existing owner-only pilot while a separate anonymous request still returns checkoutEnabled:false. No payment initiated.

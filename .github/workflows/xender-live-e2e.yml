@@ -33,6 +33,7 @@ on:
       - 'scripts/build-novel-data.mjs'
       - 'tests/**'
       - 'src/**'
+      - 'wrangler.jsonc'
   pull_request:
     paths:
       - 'extension/**'
@@ -57,6 +58,7 @@ on:
       - 'scripts/build-novel-data.mjs'
       - 'tests/**'
       - 'src/**'
+      - 'wrangler.jsonc'
 
 concurrency:
   group: xender-live-e2e-${{ github.ref }}
@@ -83,6 +85,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Reader data + Worker reader API unit tests
         run: node --test tests/unit/*.test.mjs
+      - name: OAuth and credential regression tests in isolated workerd
+        run: node --test tests/worker/auth-worker.test.mjs
       - name: Generated commercial pages + hubs + sitemap are up to date
         run: node scripts/build-commercial-pages.mjs --check
       - name: Internal links point at canonical URLs (no .html hops)
