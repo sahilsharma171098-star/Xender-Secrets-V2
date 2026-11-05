@@ -26,6 +26,8 @@ Pass only the minimum task context. Keep secrets, private customer records and u
 `PROJECTS.md` lists the projects by department and where each one lives. Some live in their own repos (AutoTube, Amazon SP-API connector).
 When you stop mid-task, leave `ops/HANDOFF.md` updated (`npm run ops:handoff -- --agent <name>`) so the next agent can resume.
 
+**Xender PM (XEND-PM-001):** short owner commands ("Complete SiteCheck", "Check now", "Next") become saved, bounded tasks (local `ops/pm/state/`, shared on branch `xender-pm-state` by `npm run pm -- sync-state`). If you were given a `PM-*` task ID, run `npm run pm -- resume <ID> --agent <you>` instead of re-investigating (a fresh clone pulls it automatically), save progress after every milestone with `npm run pm -- checkpoint <ID> --done ".." --next ".." --sync`, and never perform an operation the assignment lists under NEEDS SAHIL'S APPROVAL. Guide: `docs/XENDER_PM.md`.
+
 ## Required workflow
 1. Read this file, `CLAUDE.md` (when using Claude), `PROJECTS.md`, `ops/HANDOFF.md`, `docs/XENDER_ARCHITECTURE.md`, `docs/CURRENT_STATE.md`, and `docs/TASKS.md`.
 2. Inspect the relevant existing implementation before changing code.
