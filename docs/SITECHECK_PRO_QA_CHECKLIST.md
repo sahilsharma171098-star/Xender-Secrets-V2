@@ -69,7 +69,7 @@ Never paste the admin token, PayU key/salt, OTPs or card/UPI details into a chat
 | 5.1 | Optional partial | PayU dashboard → refund ₹1.00 | after PayU shows refund **success**, wait 15+ minutes, open the popup: **still Pro** | screenshot |
 | 5.2 | Full refund | Refund the remaining amount | PayU refund status success | screenshot |
 | 5.3 | Revocation | Wait 15+ minutes (the licence re-checks refunds at most every 15 minutes), open the popup | Pro turns off; `/api/sitecheck/entitlement` → `pro:false`; free audit still works | screenshot + JSON |
-| 5.4 | Chargeback path (dry run only) | Read `POST /api/payu/admin/reconcile` with `{"txnid","reason":"chargeback"}` | process documented; no signed chargeback webhook exists yet — manual only, after checking the PayU dashboard | note |
+| 5.4 | Chargeback path (dry run only — do not call the endpoint for a real order unless PayU shows a real chargeback) | Read [`docs/PAYU_CHARGEBACK.md`](PAYU_CHARGEBACK.md): PayU dashboard check → `POST /api/payu/admin/reconcile` with `{"txnid","reason":"chargeback"}` | runbook read; the dispute-timing decision (revoke when final vs when raised) is recorded there; no signed chargeback webhook exists yet — manual only | note |
 
 ## 6. Close out
 
