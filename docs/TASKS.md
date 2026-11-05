@@ -413,8 +413,8 @@ Status: REVIEW · Owner: ChatGPT · PR #32
 - Integrated on top of merged #45, preserving the Windows/local setup fixes and current showcase. CI rerun required; no customer preview or outbound message was automatically created.
 
 ## XEND-AUTH-1101 — Google OAuth PBKDF2 runtime compatibility (2026-11-05)
-Status: REVIEW / tests and controlled production verification in progress. Owner: Codex. Issue #90, OAuth PR #104.
+Status: DEPLOYED / owner-interactive OAuth verification pending. Owner: Codex. Issue #90, OAuth PR #104.
 - New password hashes are tagged `pbkdf2-sha256$100000$<digest>`; historical untagged hashes retain 180000-iteration verification.
 - A runtime that rejects historical cost returns PASSWORD_RECOVERY_REQUIRED and creates no session. Existing rows, account IDs, identities and entitlements are preserved.
 - Verified Google sign-in (or configured email OTP) recovers access to the existing account without overwriting a password or treating an unverified email as proof of ownership. No bulk credential rewrite or password reset endpoint is introduced.
-- Remaining: CI, controlled deploy, binding/config smoke checks and actual owner-interactive Google sign-in. Public checkout stays OFF.
+- CI and controlled deploy passed (version 7eba4890); binding/config smoke checks pass. Remaining: actual owner-interactive Google sign-in and authenticated /api/auth/me. Public checkout stays OFF.
