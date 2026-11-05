@@ -1,3 +1,4 @@
+import { passwordHash, verifyPassword } from "./password-hash.mjs";
 import { canonicalRedirect } from "./canonical.mjs";
 import { DurableObject } from "cloudflare:workers";
 import { handleReaderApi } from "./reader/api.mjs";
@@ -22,11 +23,6 @@ const randomToken=()=>randomB64(32).replace(/\+/g,"-").replace(/\//g,"_").replac
 const b64url=bytes=>b64(bytes).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 const sha256Raw=async value=>new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(value)));
 const sha256=async value=>hex(new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(value))));
-const passwordHash=async(password,saltB64)=>{
-  const key=await crypto.subtle.importKey("raw",enc.encode(password),"PBKDF2",false,["deriveBits"]);
-  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:fromB64(saltB64),iterations:180000,hash:"SHA-256"},key,256);
-  return b64(new Uint8Array(bits));
-};
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let x=0;for(let i=0;i<a.length;i++)x|=a.charCodeAt(i)^b.charCodeAt(i);return x===0};
 const cookieValue=(header,name)=>{
   if(!header)return null;
@@ -557,8 +553,9 @@ export class AppState extends DurableObject {
       const email=clean(body.email,254).toLowerCase(),password=String(body.password||"");
       const user=this.sql.exec("SELECT id,name,email,password_hash,password_salt,created_at FROM users WHERE email=?",email).toArray()[0];
       if(!user)return json({ok:false,error:"Email or password is incorrect."},401);
-      const candidate=await passwordHash(password,user.password_salt);
-      if(!safeEqual(candidate,user.password_hash))return json({ok:false,error:"Email or password is incorrect."},401);
+      const verification=await verifyPassword(password,user.password_salt,user.password_hash);
+      if(verification.recoveryRequired)return json({ok:false,code:"PASSWORD_RECOVERY_REQUIRED",error:"This older password cannot be checked on this server. Sign in with your verified Google account or email code if available. Contact support if neither is available."},409);
+      if(!verification.ok)return json({ok:false,error:"Email or password is incorrect."},401);
       const token=await this.createSession(user.id);
       return json({ok:true,user:{id:user.id,name:user.name,email:user.email,created_at:user.created_at}},200,{"set-cookie":sessionCookie(token)});
     }
