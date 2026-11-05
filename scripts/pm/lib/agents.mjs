@@ -80,7 +80,10 @@ export async function dispatch(root, cfg, taskId, { agent, prompt, execute = fal
   const task = getTask(root, taskId);
   const spec = cfg.agents?.[agent];
   if (!spec) throw new Error(`Unknown agent "${agent}". Known: ${Object.keys(cfg.agents || {}).join(", ")}`);
+  // Read-only (check) tasks get the CLI's tool restriction; without a verified one they never auto-run.
+  const readOnly = task.intent === "check";
   const cmd = buildCommand(spec, prompt);
+  if (readOnly && spec.readOnlyArgs) cmd.args.push(...spec.readOnlyArgs);
   const preview = `${cmd.bin} ${cmd.args.map((a) => (a === prompt ? '"<prompt>"' : a)).join(" ")}`;
   const refuse = (reason) => {
     task.attempts.push({ at: new Date().toISOString(), agent, mode: "dry-run", result: "not executed", reason });
@@ -96,6 +99,7 @@ export async function dispatch(root, cfg, taskId, { agent, prompt, execute = fal
     const items = (task.workItems || []).filter((w) => (w.sensitiveOps || []).some((op) => missing.includes(op))).map((w) => w.id);
     return refuse(`owner approval required for: ${missing.join(", ")}${items.length ? ` (${items.join(", ")})` : ""}. Paste the prompt for a verify/prepare-only run, or re-run with --approve ${needed.join(",")} only after Sahil says yes`);
   }
+  if (readOnly && !spec.readOnlyArgs) return refuse(`${spec.label} has no verified read-only mode in ops/pm/agents.json (readOnlyArgs); paste the prompt instead`);
   const h = health || checkAgent(agent, spec);
   if (!h.installed) return refuse(`${spec.label} not installed`);
   if (h.auth === "not signed in" || (h.auth !== "verified" && !allowUnknownAuth)) return refuse(`${spec.label} sign-in ${h.auth}`);
@@ -148,7 +152,7 @@ export async function dispatch(root, cfg, taskId, { agent, prompt, execute = fal
   const interrupted = detectInterruption({ code: result.code, timedOut: result.timedOut, output }, cfg.interruptPatterns);
   const tail = redact(output.split("\n").filter(Boolean).slice(-6).join(" ⏎ ")).slice(0, 600);
   const fresh = getTask(root, taskId);
-  fresh.attempts.push({ at: new Date().toISOString(), agent, mode: "execute", result: interrupted ? "interrupted" : done ? "done" : "exited", reason: interrupted || null, checkpointsSaved: saved, approvedOps: needed });
+  fresh.attempts.push({ at: new Date().toISOString(), agent, mode: readOnly ? "execute-read-only" : "execute", result: interrupted ? "interrupted" : done ? "done" : "exited", reason: interrupted || null, checkpointsSaved: saved, approvedOps: needed });
   saveTask(root, fresh, env);
   if (interrupted) {
     addCheckpoint(root, taskId, { status: "INTERRUPTED", agent, source: "manager", blocker: `${spec.label} session stopped (${interrupted})`, note: `output tail: ${tail}`, notes: `Previous ${spec.label} run stopped: ${interrupted}. Resume from the last checkpoint; do not redo saved steps.` }, env);

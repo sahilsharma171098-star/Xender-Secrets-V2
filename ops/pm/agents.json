@@ -1,30 +1,69 @@
 {
-  "_comment": "Coding-agent adapters for xender-pm doctor/dispatch. Only official CLIs. Auth checks run the CLI's own status command; nothing reads credential files. Execution stays OFF unless XENDER_PM_ALLOW_EXEC=1 and doctor reports installed + authenticated.",
+  "_comment": "Coding-agent adapters for xender-pm doctor/dispatch. Only official CLIs. Auth checks run the CLI's own status command; nothing reads credential files. Execution stays OFF unless XENDER_PM_ALLOW_EXEC=1 and doctor reports installed + authenticated. readOnlyArgs: appended for read-only (check) tasks; a CLI without verified readOnlyArgs refuses to auto-run them.",
   "agents": {
     "claude": {
       "label": "Claude Code",
       "bin": "claude",
-      "versionArgs": ["--version"],
-      "authArgs": ["auth", "status"],
-      "execArgs": ["-p", "{prompt}", "--output-format", "text"],
-      "install": "npm install -g @anthropic-ai/claude-code, then run `claude` once and sign in"
+      "versionArgs": [
+        "--version"
+      ],
+      "authArgs": [
+        "auth",
+        "status"
+      ],
+      "execArgs": [
+        "-p",
+        "{prompt}",
+        "--output-format",
+        "text"
+      ],
+      "install": "npm install -g @anthropic-ai/claude-code, then run `claude` once and sign in",
+      "readOnlyArgs": [
+        "--tools",
+        "Read,Grep,Glob"
+      ]
     },
     "codex": {
       "label": "OpenAI Codex CLI",
       "bin": "codex",
-      "versionArgs": ["--version"],
-      "authArgs": ["login", "status"],
-      "execArgs": ["exec", "{prompt}"],
+      "versionArgs": [
+        "--version"
+      ],
+      "authArgs": [
+        "login",
+        "status"
+      ],
+      "execArgs": [
+        "exec",
+        "{prompt}"
+      ],
       "install": "npm install -g @openai/codex, then run `codex login`"
     },
     "gemini": {
       "label": "Gemini CLI",
       "bin": "gemini",
-      "versionArgs": ["--version"],
+      "versionArgs": [
+        "--version"
+      ],
       "authArgs": null,
-      "execArgs": ["-p", "{prompt}"],
+      "execArgs": [
+        "-p",
+        "{prompt}"
+      ],
       "install": "npm install -g @google/gemini-cli, then run `gemini` once and sign in with Google"
     }
   },
-  "interruptPatterns": ["usage limit", "rate limit", "rate_limit", "quota", "limit reached", "429", "too many requests", "session expired", "context length", "overloaded", "credit balance"]
+  "interruptPatterns": [
+    "usage limit",
+    "rate limit",
+    "rate_limit",
+    "quota",
+    "limit reached",
+    "429",
+    "too many requests",
+    "session expired",
+    "context length",
+    "overloaded",
+    "credit balance"
+  ]
 }

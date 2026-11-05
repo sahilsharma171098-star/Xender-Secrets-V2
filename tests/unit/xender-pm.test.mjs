@@ -419,3 +419,20 @@ test("committed seed tasks are imported once and never overwrite newer local pro
   assert.equal(getTask(root, "PM-SITECHECK-001").lastSuccessfulAction, "local progress");
   assert.equal(loadMemory(root, { git: noGit }).items.find((i) => i.id === "MT-003").category, "done", "seed override imported");
 });
+
+test("read-only (check) tasks run with the CLI's tool restriction, or not at all", async () => {
+  const root = sandbox();
+  await run(root, ["Check MT-010"]);
+  const t = getTask(root, "PM-SITECHECK-001");
+  assert.equal(t.intent, "check");
+  assert.deepEqual(t.approvalRequired, []);
+  assert.deepEqual(requiredApprovals(t), [], "check objective wording must not look like a sensitive op");
+  const env = { XENDER_PM_ALLOW_EXEC: "1", MOCK_AGENT_MODE: "argv" };
+  let r = await run(root, ["dispatch", "PM-SITECHECK-001", "--agent", "codex", "--execute"], env);
+  assert.match(r.text, /no verified read-only mode/);
+  r = await run(root, ["dispatch", "PM-SITECHECK-001", "--agent", "claude", "--execute"], env);
+  assert.match(r.text, /reported DONE/);
+  const done = getTask(root, "PM-SITECHECK-001");
+  assert.equal(done.attempts.at(-1).mode, "execute-read-only");
+  assert.match(done.checkpoints.at(-1).note, /--tools Read,Grep,Glob$/);
+});

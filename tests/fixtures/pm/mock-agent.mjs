@@ -21,4 +21,8 @@ if (mode === "done") {
   say("XPM-DONE", { done: "MT-004 verified, MT-010 documented", commit: "abc1234", pr: "https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/999", tests: ["unit 150/150 (mock)"], next: "Sahil reviews the PR" });
   process.exit(0);
 }
+if (mode === "argv") {
+  say("XPM-DONE", { done: "argv check", note: process.argv.slice(3).join(" ") });
+  process.exit(0);
+}
 process.exit(2);

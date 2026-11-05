@@ -91,7 +91,7 @@ export function createTask(root, plan, { instruction, agent = "claude", env = pr
     status: "READY",
     approvalRequired: plan.approval,
     approvalNote: plan.approval.length
-      ? `Agent auto-run needs \`--approve ${plan.approval.join(",")}\` given only after Sahil says yes. Without it the agent does the verify/prepare part only.`
+      ? `Auto-run (dispatch --execute) is refused as a whole until \`--approve ${plan.approval.join(",")}\` is given after Sahil says yes. For the safe verify/prepare part, paste the assignment into an agent session.`
       : "",
     createdAt: now,
     updatedAt: now,

@@ -111,7 +111,7 @@ export async function main(argv, { env = process.env, out = (s) => console.log(s
       const file = save(root, task.id, "assignment", assignmentPrompt(task, agent));
       out(`${reused ? "Existing open task reused (no duplicate created)" : "Saved new task"}: ${task.id} - ${task.projectName}`);
       out(`Objective: ${task.objective}`);
-      out(`Work items: ${task.focus.join(", ") || "none agent-ready"}${task.approvalRequired.length ? ` | NEEDS YOUR APPROVAL before any auto-run: ${task.approvalRequired.join(", ")} (agent does verify/prepare only)` : ""}`);
+      out(`Work items: ${task.focus.join(", ") || "none agent-ready"}${task.approvalRequired.length ? ` | NEEDS YOUR APPROVAL: ${task.approvalRequired.join(", ")} — auto-run is refused until approved; paste the assignment for the safe verify/prepare part` : ""}`);
       out(`Your action items: ${task.ownerBlockers.length}`);
       out(`Assignment for ${agent}: ${file}`);
       out(`Next: paste that file into ${agent}, or run: npm run pm -- dispatch ${task.id} --agent ${agent}`);

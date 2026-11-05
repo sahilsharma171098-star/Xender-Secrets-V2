@@ -127,9 +127,9 @@ export function planAssignment(instruction, memory, { limit = 2 } = {}) {
   const approval = SENSITIVE_OPS.map(([op]) => op).filter((op) => instructionOps.includes(op) || itemOps.includes(op));
   const objective =
     intent === "check"
-      ? `Verify the current state of ${project.name} against GitHub/CI and update the records. Read-only: no code, config or deploy changes.`
+      ? `Verify the current state of ${project.name} against GitHub/CI and update the records. Read-only: inspect and report; change nothing.`
       : focus.length
-        ? `${project.name}: ${focus.map((i) => `${i.id} ${i.task}`).join(" + ")}${approval.length ? ` — agent part only (verify/prepare); ${approval.join(", ")} needs Sahil's approval` : ""}`
+        ? `${project.name}: ${focus.map((i) => `${i.id} ${i.task}`).join(" + ")}${approval.length ? ` — agent does the verify/prepare part; ${approval.join(", ")} needs Sahil's approval` : ""}`
         : `${project.name}: no agent-executable item is ready — prepare the owner's next step and report blockers.`;
   return { project, intent, focus, ctx, approval, instructionOps, objective };
 }

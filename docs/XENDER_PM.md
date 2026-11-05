@@ -58,6 +58,9 @@ DNS, billing). This check covers the item itself, not only your words. So "Compl
 
 - In the assignment such an item is split into **AGENT MAY** (verify, read CI/logs, prepare on a branch)
   and **NEEDS SAHIL'S APPROVAL** (the listed operations). The prompt says plainly that a short command is not approval.
+- The split is an instruction inside the **pasted prompt**. Automatic runs (`dispatch --execute`) are
+  **refused as a whole** while any sensitive operation is unapproved. They do not run "only the safe part"
+  (fail-closed). To get the safe part done, paste the assignment into an agent session.
 - `status` shows `needs your approval: deploy, merge` next to the task.
 
 ## Automatic agent runs (optional, off by default)
@@ -71,6 +74,10 @@ DNS, billing). This check covers the item itself, not only your words. So "Compl
   `--approve deploy,merge`. A partial list is refused, and the old yes/no `--approved` flag is no longer accepted.
   The list is recomputed from the task content at run time, so an older task file cannot skip the check.
   Approvals given are recorded in the task (`approvalsGranted`).
+- **Read-only tasks** (`Check ...` commands) run with the CLI's tool restriction from `ops/pm/agents.json`
+  (`readOnlyArgs`). For Claude Code that is `--tools Read,Grep,Glob`: no shell, no edits, so the agent reports
+  checkpoints as `XPM-CHECKPOINT` lines. Codex and Gemini have no verified read-only flag here yet, so their
+  read-only tasks are refused for auto-run (paste instead).
 
 While the agent runs, every `XPM-CHECKPOINT {...}` line it prints is saved at once. If the run ends with a
 usage-limit message, a non-zero exit or a timeout, the task becomes `INTERRUPTED` and
