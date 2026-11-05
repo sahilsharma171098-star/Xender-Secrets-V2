@@ -1,6 +1,7 @@
 // XEND-PM-001 — plain English/Hinglish summaries for the owner. ASCII only (works in Windows cmd).
 import { projectContext } from "./planner.mjs";
 import { listTasks } from "./store.mjs";
+import { lastSync } from "./gitsync.mjs";
 
 const short = (s, n = 110) => {
   const t = String(s || "").replace(/\*\*/g, "").replace(/\s+/g, " ").trim();
@@ -53,7 +54,9 @@ export function renderStatus(memory, { only, now = new Date().toISOString() } = 
   const tasks = listTasks(memory.root).filter((t) => t.status !== "DONE" && (!only || t.project === only.toUpperCase()));
   lines.push("", "== Saved agent tasks ==");
   if (!tasks.length) lines.push('  none - start one with: xender-pm "Complete SiteCheck"');
-  for (const t of tasks) lines.push(`  ${t.id} [${t.status}] ${t.agent} - next: ${short(t.nextAction, 90)}`);
+  for (const t of tasks) lines.push(`  ${t.id} [${t.status}] ${t.agent} - next: ${short(t.nextAction, 90)}${t.approvalRequired?.length ? ` (needs your approval: ${t.approvalRequired.join(", ")})` : ""}`);
+  const ls = lastSync(memory.root);
+  lines.push(`  Shared: ${ls ? `last sync-state ${ls.at} to ${ls.branch}${ls.sha ? ` @ ${String(ls.sha).slice(0, 7)}` : ""}` : "NOT YET - tasks are on this disk only; run: npm run pm -- sync-state"}`);
   lines.push("", `Owner action needed? ${ownerCount ? `YES - ${ownerCount} item(s) above marked "Your action".` : "No."}`);
   return lines.join("\n");
 }

@@ -1,11 +1,39 @@
-// XEND-PM-001 — persistent task state in ops/pm/tasks/<ID>.json (committed = survives any session).
+// XEND-PM-001 — task state.
+// Local working copy: ops/pm/state/tasks/<ID>.json (git-ignored, written atomically).
+// It is LOCAL until `xender-pm sync-state` pushes it to the shared state branch (see gitsync.mjs);
+// a fresh clone pulls it from there automatically on resume/handoff/brief.
 import fs from "node:fs";
 import path from "node:path";
-import { readJson, writeJson, redact, isoNow, list } from "./util.mjs";
+import { readJson, writeJson, redact, isoNow, list, statePath } from "./util.mjs";
+import { itemRisk } from "./planner.mjs";
 
 export const STATUSES = ["READY", "IN_PROGRESS", "INTERRUPTED", "BLOCKED", "REVIEW", "DONE"];
 
-const dir = (root) => path.join(root, "ops/pm/tasks");
+const dir = (root) => statePath(root, "tasks");
+export const taskFile = (root, id, suffix = "json") => path.join(dir(root), `${id}.${suffix}`);
+
+/** One-time import of tasks committed under ops/pm/seed/ (never overwrites local state). */
+export function importSeed(root) {
+  const seed = path.join(root, "ops/pm/seed");
+  const imported = [];
+  if (fs.existsSync(path.join(seed, "tasks"))) {
+    for (const f of fs.readdirSync(path.join(seed, "tasks"))) {
+      const dest = path.join(dir(root), f);
+      if (fs.existsSync(dest)) continue;
+      fs.mkdirSync(dir(root), { recursive: true });
+      fs.copyFileSync(path.join(seed, "tasks", f), dest);
+      if (f.endsWith(".json")) imported.push(f.replace(/\.json$/, ""));
+    }
+  }
+  const so = readJson(path.join(seed, "overrides.json"));
+  if (so) {
+    const file = statePath(root, "overrides.json");
+    const cur = readJson(file, {});
+    const merged = { ...so, ...cur };
+    if (Object.keys(merged).length !== Object.keys(cur).length) writeJson(file, merged);
+  }
+  return imported;
+}
 const file = (root, id) => path.join(dir(root), `${id}.json`);
 
 export function listTasks(root) {
@@ -62,10 +90,13 @@ export function createTask(root, plan, { instruction, agent = "claude", env = pr
     agent,
     status: "READY",
     approvalRequired: plan.approval,
+    approvalNote: plan.approval.length
+      ? `Agent auto-run needs \`--approve ${plan.approval.join(",")}\` given only after Sahil says yes. Without it the agent does the verify/prepare part only.`
+      : "",
     createdAt: now,
     updatedAt: now,
     focus: focusIds,
-    workItems: plan.focus.map((i) => ({ id: i.id, task: i.task, status: i.status, next: i.next, evidence: i.evidence, gates: i.gates })),
+    workItems: plan.focus.map((i) => ({ id: i.id, task: i.task, status: i.status, next: i.next, evidence: i.evidence, gates: i.gates, ...itemRisk(i) })),
     // Findings = the investigation already done. Continuations reuse these instead of re-reading the repo.
     findings: [
       ...(ctx.issue ? [`Issue #${ctx.issue.number} (${ctx.issue.state}) "${ctx.issue.title}" — last updated ${ctx.issue.updatedAt}.`] : []),

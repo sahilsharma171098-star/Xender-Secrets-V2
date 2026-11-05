@@ -1,26 +1,39 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-04 19:04 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-05 03:20 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
 - Branch: `claude/xender-pm-mvp-v5yqxj`
 - Last commits:
+  - `e156c6f Merge remote-tracking branch 'origin/main' into claude/xender-pm-mvp-v5yqxj`
+  - `3243cee XEND-CF-PREVIEW-001: record PR #109 live`
+  - `241e600 XEND-PM-001: record PR #110 in task, project and handoff records`
+  - `b722453 XEND-PM-001: owner guide, HQ registration, first real task PM-SITECHECK-001`
   - `4b9adde XEND-PM-001: tests (mock agents + mocked GitHub), acceptance demo, snapshot update (#109 merged)`
-  - `7c24fa8 XEND-PM-001: xender-pm CLI core — project memory, reconciliation, task store, prompts, agent adapters`
-  - `d7d3ad3 Preview hygiene: SiteCheck owner pilot off in previews; GA only on production host (#109)`
-  - `8b7aaab feat(sitecheck): white-label copied report and CSV, dismissible human-review suggestion (2.0.0) (#106)`
-  - `0806fd8 XEND-CF-PREVIEW-001: done — preview build d0d00436 green, 72/100 namespaces`
 
 ## Working-tree snapshot at generation
+- ` M .gitignore`
 - ` M AGENTS.md`
-- ` M PROJECTS.md`
 - ` M docs/TASKS.md`
-- `?? docs/XENDER_PM.md`
-- `?? ops/pm/overrides.json`
-- `?? ops/pm/tasks/`
+- ` M docs/XENDER_PM.md`
+- ` D ops/pm/overrides.json`
+- ` D ops/pm/tasks/PM-SITECHECK-001.assignment.md`
+- ` D ops/pm/tasks/PM-SITECHECK-001.json`
+- ` M scripts/pm/demo.mjs`
+- ` M scripts/pm/lib/agents.mjs`
+- ` M scripts/pm/lib/planner.mjs`
+- ` M scripts/pm/lib/prompts.mjs`
+- ` M scripts/pm/lib/sources.mjs`
+- ` M scripts/pm/lib/store.mjs`
+- ` M scripts/pm/lib/summary.mjs`
+- ` M scripts/pm/lib/util.mjs`
+- ` M scripts/pm/xender-pm.mjs`
+- ` M tests/unit/xender-pm.test.mjs`
+- `?? ops/pm/seed/`
+- `?? scripts/pm/lib/gitsync.mjs`
 
 ## Open tasks (docs/TASKS.md)
-- XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`; PR pending merge)
+- XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -55,12 +68,12 @@ Generated 2026-11-04 19:04 UTC by **claude** with `npm run ops:handoff`. Everyth
 
 ## Notes from the last agent
 
-### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04)
-- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (rebased on main `d7d3ad3`). Guide: `docs/XENDER_PM.md`.
-- Use it first: `npm run pm -- status`, `npm run pm -- next`. Saved real task: `PM-SITECHECK-001` (MT-004 confirm Live E2E run 41892558789 on `d7d3ad3`; MT-010 chargeback path). Resume with `npm run pm -- resume PM-SITECHECK-001 --agent <you>`.
-- Records corrected: MT-002/009/014/015 DONE (PRs #105/#106 merged, detected automatically); MT-003 DONE via `ops/pm/overrides.json` (XEND-CF-PREVIEW-001 evidence). PR #100's backlog file still says otherwise; update it when #100 is next touched.
-- Checks run: `node --test tests/unit/xender-pm.test.mjs` 14/14; `node --test tests/unit/*.test.mjs` 160/160; `npm run test:ops` 40/40; `npm run pm:demo` PASS (mock agents, real metadata). `npm run pm -- doctor` on the cloud host: Claude Code 2.1.318 installed + signed in; Codex/Gemini CLIs not installed.
-- Not done: no real (non-mock) auto-dispatch executed; `sync` needs `GITHUB_TOKEN`. Not deployed (no runtime/site change).
+### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04, review fixes 2026-11-05)
+- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (current main merged in, no force-push). Guide: `docs/XENDER_PM.md`. **Not merged, not deployed.**
+- Review 5774186840 blockers: (1) approvals now come from the selected work items, not just the owner's words; `PM-SITECHECK-001` needs `--approve deploy,merge` before any auto-run (MT-004), and old task files are re-checked at dispatch. (2) State is local in git-ignored `ops/pm/state/` until `npm run pm -- sync-state`, which shares it on branch `xender-pm-state` with history-based conflict detection, a secret scan and fast-forward-only push; a fresh clone pulls it on `resume`.
+- Use it first: `npm run pm -- status`, then `npm run pm -- sync-state` once to create `xender-pm-state` (not done in this session). Resume: `npm run pm -- resume PM-SITECHECK-001 --agent <you>`. Next action there is MT-004 verify-only (Live E2E 41892558789 green on `d7d3ad3`), then MT-010 docs.
+- Checks run 2026-11-05: xender-pm 22/22; unit 171/171; operations 40/40; `pm:demo` PASS; `check:pages` clean. Fresh-clone resume is tested against a local bare remote, not against GitHub.
+- Not done: no real (non-mock) multi-agent run; Codex/Gemini CLIs absent on the cloud host; PR #100's backlog file still shows MT-002/003/009/014/015 as open (the PM shows them corrected).
 
 ### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
 - Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.

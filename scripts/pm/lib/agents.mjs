@@ -6,6 +6,7 @@
 import { spawn, spawnSync } from "node:child_process";
 import { redact } from "./util.mjs";
 import { addCheckpoint, getTask, saveTask } from "./store.mjs";
+import { requiredApprovals } from "./planner.mjs";
 
 function runQuiet(bin, args, { timeout = 15000, spawnImpl = spawnSync } = {}) {
   const r = spawnImpl(bin, args, { encoding: "utf8", timeout, stdio: ["ignore", "pipe", "pipe"] });
@@ -70,10 +71,12 @@ const pick = (d) => ({ done: d.done, next: d.next, files: d.files, tests: d.test
 /**
  * Dispatch a prompt to an agent CLI.
  * Default is a dry run. Real execution needs ALL of: execute=true, XENDER_PM_ALLOW_EXEC=1,
- * CLI installed + signed in (or allowUnknownAuth for CLIs without a status command), and
- * --approved when the task was flagged for owner approval.
+ * CLI installed + signed in (or allowUnknownAuth for CLIs without a status command), and an explicit
+ * `approve` list naming EVERY sensitive operation the task contains. The list is recomputed from the
+ * task's instruction, objective and work items at dispatch time, so an old task file whose stored
+ * approvalRequired is empty cannot slip a deploy/merge/payment step through.
  */
-export async function dispatch(root, cfg, taskId, { agent, prompt, execute = false, approved = false, allowUnknownAuth = false, timeoutMs = 45 * 60 * 1000, env = process.env, health, spawnImpl = spawn, onLine } = {}) {
+export async function dispatch(root, cfg, taskId, { agent, prompt, execute = false, approve = [], allowUnknownAuth = false, timeoutMs = 45 * 60 * 1000, env = process.env, health, spawnImpl = spawn, onLine } = {}) {
   const task = getTask(root, taskId);
   const spec = cfg.agents?.[agent];
   if (!spec) throw new Error(`Unknown agent "${agent}". Known: ${Object.keys(cfg.agents || {}).join(", ")}`);
@@ -87,13 +90,19 @@ export async function dispatch(root, cfg, taskId, { agent, prompt, execute = fal
   };
   if (!execute) return refuse("dry run (default) — paste the prompt into the agent, or re-run with --execute");
   if (env.XENDER_PM_ALLOW_EXEC !== "1") return refuse("execution disabled: set XENDER_PM_ALLOW_EXEC=1 after `xender-pm doctor` shows the agent ready");
-  if (task.approvalRequired?.length && !approved) return refuse(`owner approval required for "${task.approvalRequired.join(", ")}" — re-run with --approved only after Sahil says yes`);
+  const needed = requiredApprovals(task);
+  const missing = needed.filter((op) => !approve.includes(op));
+  if (missing.length) {
+    const items = (task.workItems || []).filter((w) => (w.sensitiveOps || []).some((op) => missing.includes(op))).map((w) => w.id);
+    return refuse(`owner approval required for: ${missing.join(", ")}${items.length ? ` (${items.join(", ")})` : ""}. Paste the prompt for a verify/prepare-only run, or re-run with --approve ${needed.join(",")} only after Sahil says yes`);
+  }
   const h = health || checkAgent(agent, spec);
   if (!h.installed) return refuse(`${spec.label} not installed`);
   if (h.auth === "not signed in" || (h.auth !== "verified" && !allowUnknownAuth)) return refuse(`${spec.label} sign-in ${h.auth}`);
 
   task.status = "IN_PROGRESS";
   task.agent = agent;
+  if (needed.length) task.approvalsGranted = [...(task.approvalsGranted || []), { at: new Date().toISOString(), ops: needed, via: "--approve (owner)" }];
   saveTask(root, task, env);
   let output = "";
   let buffered = "";
@@ -139,7 +148,7 @@ export async function dispatch(root, cfg, taskId, { agent, prompt, execute = fal
   const interrupted = detectInterruption({ code: result.code, timedOut: result.timedOut, output }, cfg.interruptPatterns);
   const tail = redact(output.split("\n").filter(Boolean).slice(-6).join(" ⏎ ")).slice(0, 600);
   const fresh = getTask(root, taskId);
-  fresh.attempts.push({ at: new Date().toISOString(), agent, mode: "execute", result: interrupted ? "interrupted" : done ? "done" : "exited", reason: interrupted || null, checkpointsSaved: saved });
+  fresh.attempts.push({ at: new Date().toISOString(), agent, mode: "execute", result: interrupted ? "interrupted" : done ? "done" : "exited", reason: interrupted || null, checkpointsSaved: saved, approvedOps: needed });
   saveTask(root, fresh, env);
   if (interrupted) {
     addCheckpoint(root, taskId, { status: "INTERRUPTED", agent, source: "manager", blocker: `${spec.label} session stopped (${interrupted})`, note: `output tail: ${tail}`, notes: `Previous ${spec.label} run stopped: ${interrupted}. Resume from the last checkpoint; do not redo saved steps.` }, env);

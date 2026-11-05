@@ -3,20 +3,23 @@ You are Claude Code working in the local clone. Repository: sahilsharma171098-st
 Owner command: "Complete SiteCheck"  (intent: complete)
 
 ## Objective
-SiteCheck Pro + PayU checkout: MT-004 Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate + MT-010 Chargeback path
+SiteCheck Pro + PayU checkout: MT-004 Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate + MT-010 Chargeback path — agent part only (verify/prepare); deploy, merge needs Sahil's approval
 
 ## Bounded work items (do these only, in order)
 - MT-004 — Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate
   status: PARTLY DONE
   next: after the follow-up PR merges, confirm Live E2E on that SHA
   evidence so far: main `8eef28c` (#99) and `995301a` (#103) deployed: Xender Live E2E #272 and #275 green (gate includes `checkoutEnabled=false`)
+  AGENT MAY: Prepare and verify only (read code, CI runs, logs, docs; draft changes on a branch). Do NOT perform: deploy, merge — those need Sahil's explicit approval.
+  NEEDS SAHIL'S APPROVAL: deploy, merge
 - MT-010 — Chargeback path
   status: NOT STARTED
   next: document PayU chargeback notification; keep manual until signed source exists
   evidence so far: manual reconcile only
+  AGENT MAY: Agent may implement on a branch, run checks and open/update a PR.
 
 ## Start here
-MT-004: open https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions/runs/41892558789; if green (checkoutEnabled=false), record MT-004 done with run ID; if red, read the failing step and fix on a branch.
+MT-004: after the follow-up PR merges, confirm Live E2E on that SHA
 
 ## Already known (do NOT re-investigate — verify only what you change)
 - Issue #90 (open) "XEND-EXT-PAY-001: production checkout + automated license fulfillment for SiteCheck / GridSnip" — last updated 2026-11-04T10:41:36Z.
@@ -29,7 +32,6 @@ MT-004: open https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions
 - Done: MT-003 Free Durable Object namespace capacity (99/100) so PR previews build — DONE (XEND-CF-PREVIEW-001 (docs/TASKS.md): 72/100 Durable Object namespaces, preview build d0d00436 green 2026-11-04)
 - Done: MT-009 Customer self-serve "re-check my payment" (no admin needed) — DONE (GitHub: PR #105 merged)
 - Done: MT-015 White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) — DONE (GitHub: PR #106 merged)
-- Live E2E run 41877892815 SUCCESS on main b433d4f (PR #105 merge). Main is now d7d3ad3 (PR #109 merged 18:59 UTC); its Live E2E run 41892558789 was in progress at 19:05 UTC — checked via GitHub connector by Claude.
 
 ## Open PRs for this project
 - #96 (draft) feat(sitecheck): owner-only PayU ₹499 test checkout (public OFF) — branch `feat/sitecheck-payu-private-canary-20261102`
@@ -104,10 +106,12 @@ MT-004: open https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions
 - Never print, store or commit secrets, tokens, cookies or customer data.
 - No production deploy, merge, payment, refund, store submission or account change without Sahil's explicit yes.
 - Work on a branch and open/update a PR; do not push to main.
+- APPROVAL REQUIRED — not granted by this assignment: deploy, merge in MT-004 (deploy, merge). Do only the verify/prepare part, record what is ready, then stop and ask Sahil. A short owner command such as "Complete SiteCheck" is NOT approval.
 
 ## Checkpoint protocol (mandatory — your session may end without warning)
 After EVERY meaningful milestone (finding confirmed, file changed, test run, commit, PR) save progress:
-  npm run pm -- checkpoint PM-SITECHECK-001 --done "<what finished>" --next "<exact next step>" [--files a,b] [--tests "unit 150/150"] [--commit <sha>] [--pr <url>] [--blocker "<text>"]
+  npm run pm -- checkpoint PM-SITECHECK-001 --done "<what finished>" --next "<exact next step>" [--files a,b] [--tests "unit 150/150"] [--commit <sha>] [--pr <url>] [--blocker "<text>"] --sync
+`--sync` pushes the checkpoint to the shared state branch so an agent on another machine can resume. Without it the checkpoint stays on this disk only.
 If you cannot run commands, print one line per milestone instead (the manager parses it):
   XPM-CHECKPOINT {"done":"...","next":"...","files":["..."],"tests":["..."],"commit":"...","pr":"..."}
 When finished print: XPM-DONE {"done":"...","tests":["..."],"commit":"...","pr":"...","next":"<owner or next-agent step>"}

@@ -15,9 +15,47 @@ export function detectIntent(instruction) {
   return "complete";
 }
 
-export function needsApproval(instruction, cfg) {
-  const t = normalize(instruction);
-  return (cfg.approvalWords || []).filter((w) => new RegExp(`\\b${w}\\b`).test(t));
+// Operations an agent must never perform without Sahil's explicit, named approval.
+// Matched on the owner's words AND on every selected work item, so a harmless command such as
+// "Complete SiteCheck" cannot silently authorize a deploy that sits inside the backlog item.
+export const SENSITIVE_OPS = [
+  ["deploy", /\b(deploy\w*|production|go[- ]?live|live kar|promote|roll ?back|rollback|wrangler (?:deploy|versions|rollback))\b/],
+  ["merge", /\b(merge|merges|merging)\b/],
+  ["payment", /\b(?:charge|refunds?|refunding|purchase|canary|enable (?:public )?checkout|pay now)\b|checkout_enabled\s*[=:]\s*["']?(?:true|1)\b/],
+  ["secrets", /\b(secrets?|credentials?|rotate|api keys?|tokens?|client_secret|oauth client)\b/],
+  ["store-submit", /\b(submit\w*|publish\w*|web store submission|upload (?:the )?zip)\b/],
+  ["delete", /\b(delet\w*|drop|destroy|purge|force[- ]push|clean ?up)\b/],
+  ["account", /\b(dashboard|dns|billing|account settings|upgrade plan|paid plan)\b/],
+];
+
+export function classifyRisk(text) {
+  const t = normalize(String(text || "").replace(/_/g, " "));
+  const raw = String(text || "").toLowerCase();
+  return SENSITIVE_OPS.filter(([, re]) => re.test(t) || re.test(raw)).map(([op]) => op);
+}
+
+/** Owner words that need approval (kept for the command summary). */
+export function needsApproval(instruction) {
+  return classifyRisk(instruction);
+}
+
+/** Splits one backlog item into what an agent may do now and what needs Sahil. */
+export function itemRisk(item) {
+  const ops = classifyRisk(`${item.task} ${item.next}`);
+  return {
+    risk: ops.length ? "sensitive" : "safe",
+    sensitiveOps: ops,
+    agentScope: ops.length
+      ? `Prepare and verify only (read code, CI runs, logs, docs; draft changes on a branch). Do NOT perform: ${ops.join(", ")} — those need Sahil's explicit approval.`
+      : "Agent may implement on a branch, run checks and open/update a PR.",
+  };
+}
+
+/** All approvals a task needs, recomputed from its content (never trust a stored list alone). */
+export function requiredApprovals(task) {
+  const ops = new Set([...(task.approvalRequired || []), ...classifyRisk(task.instruction), ...classifyRisk(task.objective)]);
+  for (const w of task.workItems || []) for (const op of classifyRisk(`${w.task} ${w.next}`)) ops.add(op);
+  return SENSITIVE_OPS.map(([op]) => op).filter((op) => ops.has(op));
 }
 
 /** Picks the project whose keywords best match. Explicit MT ids win. */
@@ -84,12 +122,14 @@ export function planAssignment(instruction, memory, { limit = 2 } = {}) {
   if (ids.length) focus = ctx.items.filter((i) => ids.includes(i.id));
   else if (intent === "check") focus = ctx.items.filter((i) => i.category === "in_progress" || i.reconciled).slice(0, limit + 1);
   else focus = ctx.ready.slice(0, limit);
-  const approval = needsApproval(instruction, memory.projects);
+  const instructionOps = needsApproval(instruction);
+  const itemOps = focus.flatMap((i) => itemRisk(i).sensitiveOps);
+  const approval = SENSITIVE_OPS.map(([op]) => op).filter((op) => instructionOps.includes(op) || itemOps.includes(op));
   const objective =
     intent === "check"
       ? `Verify the current state of ${project.name} against GitHub/CI and update the records. Read-only: no code, config or deploy changes.`
       : focus.length
-        ? `${project.name}: ${focus.map((i) => `${i.id} ${i.task}`).join(" + ")}`
+        ? `${project.name}: ${focus.map((i) => `${i.id} ${i.task}`).join(" + ")}${approval.length ? ` — agent part only (verify/prepare); ${approval.join(", ")} needs Sahil's approval` : ""}`
         : `${project.name}: no agent-executable item is ready — prepare the owner's next step and report blockers.`;
-  return { project, intent, focus, ctx, approval, objective };
+  return { project, intent, focus, ctx, approval, instructionOps, objective };
 }

@@ -32,14 +32,15 @@ Needs Node 22 (already used by this repo). Nothing else to install.
 | Agent stopped (limit hit) | `npm run pm -- handoff PM-SITECHECK-001 --to codex` | "Continue from here" prompt for another agent |
 | Pick it up | `npm run pm -- resume PM-SITECHECK-001 --agent gemini` | Same as handoff, and marks the task as taken |
 
-Other commands: `list`, `checkpoint`, `dispatch`, `doctor`, `sync`, `mark`. Run `npm run pm -- help` to see them.
+Other commands: `list`, `checkpoint`, `sync-state`, `pull`, `dispatch`, `doctor`, `sync`, `mark`. Run `npm run pm -- help` to see them.
 
 ### The normal flow
 
-1. `npm run pm -- "Complete SiteCheck"` prints the file path, e.g. `ops/pm/tasks/PM-SITECHECK-001.assignment.md`.
+1. `npm run pm -- "Complete SiteCheck"` prints the file path, e.g. `ops/pm/state/tasks/PM-SITECHECK-001.assignment.md`.
 2. Open Claude Code (or Codex/Gemini) in the repo folder and say:
-   **"Do the task in ops/pm/tasks/PM-SITECHECK-001.assignment.md"**. That is the whole prompt.
-3. The agent saves progress with `npm run pm -- checkpoint PM-SITECHECK-001 ...` after each step.
+   **"Do the task in ops/pm/state/tasks/PM-SITECHECK-001.assignment.md"**. That is the whole prompt.
+3. The agent saves progress with `npm run pm -- checkpoint PM-SITECHECK-001 ... --sync` after each step.
+   `--sync` shares it so a different laptop or cloud session can continue (see "Sharing between machines").
 4. If it stops (usage limit, crash, end of day), run `npm run pm -- handoff PM-SITECHECK-001 --to codex`.
    Give Codex the saved file it prints. It continues from the last checkpoint and does not start over.
 5. `npm run pm -- status` tells you what happened and whether **you** need to do something.
@@ -48,6 +49,17 @@ Short commands it understands: `Complete <project>`, `Check <project>` (read-onl
 `Next`, `Deploy <project>` (always marked **needs your approval**), or a backlog ID such as `fix MT-041`.
 Projects: SiteCheck/PayU, GridSnip, AutoTube, website. Edit keywords in `ops/pm/projects.json`.
 
+## Approval: what an agent may do alone
+
+Every selected backlog item is checked for sensitive operations: **deploy, merge, payment** (charge, refund,
+canary purchase, turning checkout on), **secrets**, **store-submit**, **delete**, **account** (dashboards,
+DNS, billing). This check covers the item itself, not only your words. So "Complete SiteCheck" does
+**not** approve the deploy that is inside MT-004.
+
+- In the assignment such an item is split into **AGENT MAY** (verify, read CI/logs, prepare on a branch)
+  and **NEEDS SAHIL'S APPROVAL** (the listed operations). The prompt says plainly that a short command is not approval.
+- `status` shows `needs your approval: deploy, merge` next to the task.
+
 ## Automatic agent runs (optional, off by default)
 
 `npm run pm -- dispatch PM-SITECHECK-001 --agent claude` only saves the prompt and shows the command
@@ -55,8 +67,10 @@ Projects: SiteCheck/PayU, GridSnip, AutoTube, website. Edit keywords in `ops/pm/
 
 - `--execute` is given **and** the shell has `XENDER_PM_ALLOW_EXEC=1`;
 - `doctor` shows the CLI installed and signed in (its own `auth status` / `login status` command);
-- the task did not mention deploy / merge / payment / refund / publish / delete. If it did, `--approved` is
-  also needed, and only after you said yes.
+- the task has no sensitive operations, **or** you name every one of them after saying yes:
+  `--approve deploy,merge`. A partial list is refused, and the old yes/no `--approved` flag is no longer accepted.
+  The list is recomputed from the task content at run time, so an older task file cannot skip the check.
+  Approvals given are recorded in the task (`approvalsGranted`).
 
 While the agent runs, every `XPM-CHECKPOINT {...}` line it prints is saved at once. If the run ends with a
 usage-limit message, a non-zero exit or a timeout, the task becomes `INTERRUPTED` and
@@ -66,15 +80,40 @@ Add your chosen flag to `ops/pm/agents.json` (`execArgs`) yourself; the default 
 Usage limits: no official CLI shows your remaining subscription quota, so Xender PM does not guess.
 It detects a stopped run and saves the checkpoint instead.
 
+## Sharing between machines (laptop ↔ cloud ↔ another agent)
+
+Tasks and checkpoints are first saved in `ops/pm/state/` **on this disk only** (git-ignored).
+`status` shows `Shared: NOT YET` until you share them.
+
+```bash
+npm run pm -- sync-state          # one command: pull + merge + secret scan + push
+npm run pm -- checkpoint <ID> --done ".." --next ".." --sync   # save and share in one step
+```
+
+- State goes to its own Git branch, **`xender-pm-state`** (set `stateBranch` in `ops/pm/projects.json`).
+  It never touches `main`, your code branch, your working files or the staging area. Pushes are never forced.
+  The first `sync-state` creates the branch.
+- **Fresh clone / other machine:** `git clone …` then `npm run pm -- resume PM-SITECHECK-001 --agent codex`.
+  If the task is not on that disk, it is pulled from `xender-pm-state` automatically. `npm run pm -- pull` gets everything.
+- **Conflicts:** if two machines added different checkpoints to the same task, nothing is overwritten
+  and nothing is pushed. The other side's copy is saved as `ops/pm/state/tasks/<ID>.conflict-remote.json`.
+  Choose with `npm run pm -- sync-state --prefer <ID>=local` or `--prefer <ID>=remote`.
+  The losing version stays in the branch history.
+- **Secret scan:** if any state file looks like it holds a key or token, nothing is pushed. The message names the
+  file, never the value.
+- `ops/pm/seed/` holds tasks committed with the code (first: `PM-SITECHECK-001`). They are copied into local
+  state once, only if that task is missing.
+
 ## Where things are saved
 
 | What | Where | Committed? |
 | --- | --- | --- |
 | Projects, keywords, safety rules, tests per project | `ops/pm/projects.json` | yes |
 | Agent CLI commands | `ops/pm/agents.json` | yes |
-| Task state, checkpoints, prompts | `ops/pm/tasks/PM-*.json` / `*.md` | yes, so any session can resume |
-| GitHub issue/PR facts | `ops/pm/github-snapshot.json` (`sync` refreshes with `GITHUB_TOKEN`) | yes, metadata only |
-| Corrections with evidence | `ops/pm/overrides.json` (`mark MT-003 --status DONE --evidence ...`) | yes |
+| Task state, checkpoints, prompts | `ops/pm/state/tasks/PM-*.json` / `*.md` | no — local; shared via `sync-state` to branch `xender-pm-state` |
+| Starter tasks shipped with the code | `ops/pm/seed/` | yes (imported once if missing) |
+| GitHub issue/PR facts | `ops/pm/state/github-snapshot.json`, seeded from committed `ops/pm/github-snapshot.json` (`sync` refreshes with `GITHUB_TOKEN`) | seed yes; refreshed copy via `sync-state` |
+| Corrections with evidence | `ops/pm/state/overrides.json` (`mark MT-003 --status DONE --evidence ...`) | via `sync-state` (seed copy in `ops/pm/seed/`) |
 | Backlog while PR #100 is unmerged | `ops/pm/cache/` (local `docs/MASTER_PENDING_TASKS.md` wins once merged) | yes |
 
 ## Safety
@@ -89,4 +128,4 @@ It detects a stopped run and saves the checkpoint instead.
 ## For agents
 
 If you were given a `PM-*` ID: `npm run pm -- resume <ID> --agent <you>`, follow NEXT EXACT ACTION, and save
-`checkpoint` after each milestone. Tests: `npm run test:pm`. Demo with mock agents: `npm run pm:demo`.
+`checkpoint ... --sync` after each milestone. Never perform an operation listed under NEEDS SAHIL'S APPROVAL. Tests: `npm run test:pm`. Demo with mock agents: `npm run pm:demo`.

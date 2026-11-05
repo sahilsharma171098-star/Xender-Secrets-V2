@@ -3,13 +3,18 @@
 // Sources (in priority order, all already in the repository — nothing new to maintain):
 //   1. docs/MASTER_PENDING_TASKS.md + docs/RELEASE_GATES.md (PR #100). While #100 is unmerged the
 //      committed cache in ops/pm/cache/ (or `git show <fallbackRef>:docs/...`) is used.
-//   2. ops/pm/github-snapshot.json — issue + PR metadata (merged/open/draft), refreshed by `sync`.
+//   2. GitHub issue + PR metadata: ops/pm/state/github-snapshot.json (refreshed by `sync`, shared by
+//      `sync-state`), falling back to the committed seed ops/pm/github-snapshot.json.
 //   3. docs/TASKS.md — XEND-* task statuses.
-//   4. ops/pm/overrides.json — evidence-backed corrections recorded with `xender-pm mark`.
+//   4. ops/pm/state/overrides.json — evidence-backed corrections recorded with `xender-pm mark`.
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { readJson, readText, writeJson, isoNow, redact } from "./util.mjs";
+import { readJson, readText, writeJson, isoNow, redact, statePath } from "./util.mjs";
+
+export function readSnapshot(root) {
+  return readJson(statePath(root, "github-snapshot.json")) || readJson(path.join(root, "ops/pm/github-snapshot.json"), { pulls: [], issues: {} });
+}
 
 export function loadConfig(root) {
   const projects = readJson(path.join(root, "ops/pm/projects.json"));
@@ -211,8 +216,8 @@ export function loadMemory(root, { git } = {}) {
   const { projects, agents } = loadConfig(root);
   const backlogDoc = loadDoc(root, projects, projects.backlog.path, { git });
   const gatesDoc = loadDoc(root, projects, projects.backlog.gates, { git });
-  const snapshot = readJson(path.join(root, "ops/pm/github-snapshot.json"), { pulls: [], issues: {} });
-  const overrides = readJson(path.join(root, "ops/pm/overrides.json"), {});
+  const snapshot = readSnapshot(root);
+  const overrides = readJson(statePath(root, "overrides.json"), {});
   const items = parseBacklog(backlogDoc.text);
   const conflicts = reconcile(items, snapshot, overrides);
   return {
@@ -232,7 +237,7 @@ export function loadMemory(root, { git } = {}) {
 export function markItem(root, id, status, evidence, env = process.env) {
   if (!/^MT-\d{3}$/.test(id)) throw new Error(`mark expects an MT-### id, got "${id}"`);
   if (!evidence || evidence.length < 8) throw new Error("mark needs --evidence (run ID, commit, PR or dashboard record)");
-  const file = path.join(root, "ops/pm/overrides.json");
+  const file = statePath(root, "overrides.json");
   const all = readJson(file, {});
   all[id] = { status: String(status).toUpperCase(), evidence: redact(evidence), at: isoNow(env) };
   writeJson(file, all);
@@ -243,8 +248,8 @@ export function markItem(root, id, status, evidence, env = process.env) {
 export async function syncGithub(root, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
   const token = env.GITHUB_TOKEN || env.GH_TOKEN;
   const { projects } = loadConfig(root);
-  const file = path.join(root, "ops/pm/github-snapshot.json");
-  const snap = readJson(file, { repo: projects.repo, issues: {}, pulls: [] });
+  const file = statePath(root, "github-snapshot.json");
+  const snap = readSnapshot(root);
   if (!token) return { ok: false, reason: "no GITHUB_TOKEN/GH_TOKEN in this shell; using saved snapshot", snapshot: snap };
   const api = (p) =>
     fetchImpl(`https://api.github.com/repos/${projects.repo}${p}`, {

@@ -67,6 +67,22 @@ export function redact(value) {
   return s;
 }
 
+/** Credential-looking strings that redaction did not catch. Returns labels only, never the value. */
+export function findSecrets(text) {
+  const hits = [];
+  SECRET_PATTERNS.forEach((re, i) => {
+    for (const m of String(text || "").matchAll(new RegExp(re.source, re.flags))) {
+      if (!m[0].includes("[REDACTED]")) hits.push(`pattern #${i + 1} at offset ${m.index}`);
+    }
+  });
+  return hits;
+}
+
+/** Local working copy of PM state (git-ignored). Shared through the state branch by `sync-state`. */
+export function statePath(root, ...parts) {
+  return path.join(root, "ops/pm/state", ...parts);
+}
+
 export function normalize(text) {
   return String(text || "")
     .toLowerCase()

@@ -4,12 +4,16 @@
   "projectName": "SiteCheck Pro + PayU checkout",
   "instruction": "Complete SiteCheck",
   "intent": "complete",
-  "objective": "SiteCheck Pro + PayU checkout: MT-004 Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate + MT-010 Chargeback path",
+  "objective": "SiteCheck Pro + PayU checkout: MT-004 Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate + MT-010 Chargeback path — agent part only (verify/prepare); deploy, merge needs Sahil's approval",
   "agent": "claude",
   "status": "READY",
-  "approvalRequired": [],
-  "createdAt": "2026-11-04T19:03:46.610Z",
-  "updatedAt": "2026-11-04T19:03:46.854Z",
+  "approvalRequired": [
+    "deploy",
+    "merge"
+  ],
+  "approvalNote": "Agent auto-run needs `--approve deploy,merge` given only after Sahil says yes. Without it the agent does the verify/prepare part only.",
+  "createdAt": "2026-11-05T03:18:23.043Z",
+  "updatedAt": "2026-11-05T03:18:23.188Z",
   "focus": [
     "MT-004",
     "MT-010"
@@ -23,7 +27,13 @@
       "evidence": "main `8eef28c` (#99) and `995301a` (#103) deployed: Xender Live E2E #272 and #275 green (gate includes `checkoutEnabled=false`)",
       "gates": [
         "G7"
-      ]
+      ],
+      "risk": "sensitive",
+      "sensitiveOps": [
+        "deploy",
+        "merge"
+      ],
+      "agentScope": "Prepare and verify only (read code, CI runs, logs, docs; draft changes on a branch). Do NOT perform: deploy, merge — those need Sahil's explicit approval."
     },
     {
       "id": "MT-010",
@@ -33,7 +43,10 @@
       "evidence": "manual reconcile only",
       "gates": [
         "G11"
-      ]
+      ],
+      "risk": "safe",
+      "sensitiveOps": [],
+      "agentScope": "Agent may implement on a branch, run checks and open/update a PR."
     }
   ],
   "findings": [
@@ -47,7 +60,7 @@
     "Done: MT-003 Free Durable Object namespace capacity (99/100) so PR previews build — DONE (XEND-CF-PREVIEW-001 (docs/TASKS.md): 72/100 Durable Object namespaces, preview build d0d00436 green 2026-11-04)",
     "Done: MT-009 Customer self-serve \"re-check my payment\" (no admin needed) — DONE (GitHub: PR #105 merged)",
     "Done: MT-015 White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) — DONE (GitHub: PR #106 merged)",
-    "Live E2E run 41877892815 SUCCESS on main b433d4f (PR #105 merge). Main is now d7d3ad3 (PR #109 merged 18:59 UTC); its Live E2E run 41892558789 was in progress at 19:05 UTC — checked via GitHub connector by Claude."
+    "Live E2E run 41877892815 SUCCESS on main b433d4f (PR #105). Live E2E run 41892558789 SUCCESS on main d7d3ad3 (PR #109 merge, completed 2026-11-04 19:06 UTC) — read via GitHub connector by Claude."
   ],
   "openPrs": [
     {
@@ -200,11 +213,11 @@
   },
   "checkpoints": [
     {
-      "at": "2026-11-04T19:03:46.853Z",
+      "at": "2026-11-05T03:18:23.187Z",
       "agent": "claude",
       "status": "READY",
       "done": null,
-      "next": "MT-004: open https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions/runs/41892558789; if green (checkoutEnabled=false), record MT-004 done with run ID; if red, read the failing step and fix on a branch.",
+      "next": "MT-004 (verify only): record run 41892558789 as the live-gate evidence for d7d3ad3 and check whether newer main commits have their own green Live E2E; do NOT deploy or merge. Then MT-010: draft the PayU chargeback runbook (docs only).",
       "files": [],
       "commit": null,
       "pr": null,
@@ -220,7 +233,7 @@
   "pr": null,
   "testResults": [],
   "blockers": [],
-  "nextAction": "MT-004: open https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions/runs/41892558789; if green (checkoutEnabled=false), record MT-004 done with run ID; if red, read the failing step and fix on a branch.",
+  "nextAction": "MT-004 (verify only): record run 41892558789 as the live-gate evidence for d7d3ad3 and check whether newer main commits have their own green Live E2E; do NOT deploy or merge. Then MT-010: draft the PayU chargeback runbook (docs only).",
   "nextAgentNotes": "",
   "attempts": []
 }
