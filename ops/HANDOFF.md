@@ -1,3 +1,9 @@
+## XEND-AUTH-1101 — owner verification complete (2026-11-05)
+
+Owner completed Google sign-in. Same Chrome profile /api/auth/me returned ok:true with the signed-in account (personal details excluded from this public record). Authenticated read-only PayU config recognized the existing owner pilot; independent anonymous config remains checkoutEnabled:false. Account UI shows signed-in navigation. No cookies/tokens inspected or copied, no payment initiated. Production version remains 7eba4890; no smoke regression or rollback. Runtime-tested source revision 3c02caf; later commits only record documentation.
+
+---
+
 ## XEND-AUTH-1101 — 2026-11-05 Codex checkpoint
 
 Issue #90 / PR #104 (draft). Source revision 3c02caf6d925a90c106db181fceb8a8eb4a2e402 deployed as 7eba4890-526b-47b6-bb2d-1f282b87026e, 100%, at 10:18 UTC. CI 42009141705 passed; unit 177/177, serial browser 27/27, isolated auth/canonical workerd 6/6, dry-run pass. Initial parallel browser GPU failure did not recur in isolated/serial runs.
