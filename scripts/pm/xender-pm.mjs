@@ -160,7 +160,7 @@ export async function main(argv, { env = process.env, out = (s) => console.log(s
         out(`Not executed: ${r.reason}\nWould run: ${r.command}\nPrompt saved: ${file}`);
         return 0;
       }
-      out(`${agent} finished: exit ${r.exitCode}, checkpoints saved ${r.checkpointsSaved}, ${r.interrupted ? `INTERRUPTED (${r.interrupted}) - run: npm run pm -- handoff ${t.id} --to <other agent>` : r.done ? "reported DONE - review the PR" : "no DONE signal - check its work"}`);
+      out(`${agent} finished: exit ${r.exitCode}, checkpoints saved ${r.checkpointsSaved}, ${r.interrupted ? `INTERRUPTED (${r.interrupted}) - run: npm run pm -- handoff ${t.id} --to <other agent>` : r.done ? (t.intent === "check" ? "reported DONE (read-only run: no changes expected; review its findings)" : "reported DONE - review the PR") : "no DONE signal - check its work"}`);
       return r.interrupted ? 3 : 0;
     }
     case "doctor": {

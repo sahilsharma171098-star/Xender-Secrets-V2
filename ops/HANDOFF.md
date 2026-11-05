@@ -1,36 +1,21 @@
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-05 03:20 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-05 04:36 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
 - Branch: `claude/xender-pm-mvp-v5yqxj`
 - Last commits:
+  - `c014880 XEND-PM-001: enforced read-only mode for check tasks; accurate fail-closed wording (PR #110 review follow-up)`
+  - `d9474a1 XEND-PM-001: fix PR #110 review blockers — item-level approvals, Git-backed shared state`
   - `e156c6f Merge remote-tracking branch 'origin/main' into claude/xender-pm-mvp-v5yqxj`
   - `3243cee XEND-CF-PREVIEW-001: record PR #109 live`
   - `241e600 XEND-PM-001: record PR #110 in task, project and handoff records`
-  - `b722453 XEND-PM-001: owner guide, HQ registration, first real task PM-SITECHECK-001`
-  - `4b9adde XEND-PM-001: tests (mock agents + mocked GitHub), acceptance demo, snapshot update (#109 merged)`
 
 ## Working-tree snapshot at generation
-- ` M .gitignore`
-- ` M AGENTS.md`
 - ` M docs/TASKS.md`
-- ` M docs/XENDER_PM.md`
-- ` D ops/pm/overrides.json`
-- ` D ops/pm/tasks/PM-SITECHECK-001.assignment.md`
-- ` D ops/pm/tasks/PM-SITECHECK-001.json`
-- ` M scripts/pm/demo.mjs`
-- ` M scripts/pm/lib/agents.mjs`
-- ` M scripts/pm/lib/planner.mjs`
-- ` M scripts/pm/lib/prompts.mjs`
-- ` M scripts/pm/lib/sources.mjs`
-- ` M scripts/pm/lib/store.mjs`
-- ` M scripts/pm/lib/summary.mjs`
-- ` M scripts/pm/lib/util.mjs`
 - ` M scripts/pm/xender-pm.mjs`
 - ` M tests/unit/xender-pm.test.mjs`
-- `?? ops/pm/seed/`
-- `?? scripts/pm/lib/gitsync.mjs`
+- `?? ops/pm/evidence/`
 
 ## Open tasks (docs/TASKS.md)
 - XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
@@ -71,9 +56,10 @@ Generated 2026-11-05 03:20 UTC by **claude** with `npm run ops:handoff`. Everyth
 ### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04, review fixes 2026-11-05)
 - Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (current main merged in, no force-push). Guide: `docs/XENDER_PM.md`. **Not merged, not deployed.**
 - Review 5774186840 blockers: (1) approvals now come from the selected work items, not just the owner's words; `PM-SITECHECK-001` needs `--approve deploy,merge` before any auto-run (MT-004), and old task files are re-checked at dispatch. (2) State is local in git-ignored `ops/pm/state/` until `npm run pm -- sync-state`, which shares it on branch `xender-pm-state` with history-based conflict detection, a secret scan and fast-forward-only push; a fresh clone pulls it on `resume`.
-- Use it first: `npm run pm -- status`, then `npm run pm -- sync-state` once to create `xender-pm-state` (not done in this session). Resume: `npm run pm -- resume PM-SITECHECK-001 --agent <you>`. Next action there is MT-004 verify-only (Live E2E 41892558789 green on `d7d3ad3`), then MT-010 docs.
+- Real smoke test 2026-11-05 (`ops/pm/evidence/SMOKE-2026-11-05.md`): real Claude CLI read-only task `PM-SITECHECK-002` (MT-010) → checkpoint → `sync-state` (first real push, `xender-pm-state` @ `6c44adc`) → fresh clone resume → second real Claude run → fast-forward `a9a472f` → pull on the first clone. `main` untouched. Codex/Gemini not tested (not installed).
+- Use it first: `npm run pm -- status` (a fresh clone pulls shared tasks on `resume`; `npm run pm -- pull` gets all). Resume: `npm run pm -- resume PM-SITECHECK-001 --agent <you>`. Next action there is MT-004 verify-only (Live E2E 41892558789 green on `d7d3ad3`), then MT-010 docs.
 - Checks run 2026-11-05: xender-pm 22/22; unit 171/171; operations 40/40; `pm:demo` PASS; `check:pages` clean. Fresh-clone resume is tested against a local bare remote, not against GitHub.
-- Not done: no real (non-mock) multi-agent run; Codex/Gemini CLIs absent on the cloud host; PR #100's backlog file still shows MT-002/003/009/014/015 as open (the PM shows them corrected).
+- Not done: no Codex/Gemini run (CLIs absent on the cloud host); no non-read-only real agent run; PR CI ran offline checks only (live-e2e skipped on PRs); PR #100's backlog file still shows MT-002/003/009/014/015 as open (the PM shows them corrected).
 
 ### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
 - Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.

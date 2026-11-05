@@ -431,7 +431,7 @@ test("read-only (check) tasks run with the CLI's tool restriction, or not at all
   let r = await run(root, ["dispatch", "PM-SITECHECK-001", "--agent", "codex", "--execute"], env);
   assert.match(r.text, /no verified read-only mode/);
   r = await run(root, ["dispatch", "PM-SITECHECK-001", "--agent", "claude", "--execute"], env);
-  assert.match(r.text, /reported DONE/);
+  assert.match(r.text, /reported DONE \(read-only run/);
   const done = getTask(root, "PM-SITECHECK-001");
   assert.equal(done.attempts.at(-1).mode, "execute-read-only");
   assert.match(done.checkpoints.at(-1).note, /--tools Read,Grep,Glob$/);
