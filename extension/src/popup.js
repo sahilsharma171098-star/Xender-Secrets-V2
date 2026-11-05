@@ -1,6 +1,7 @@
 // Xender SiteCheck popup. Runs src/audit.js in the active tab (activeTab + scripting),
 // scores locally. Optional Pro sends only a license key to Xender for verification.
 import { CATEGORIES } from "./lib/checks.js";
+import { detectLeadIssues, clearHighlights } from "./lib/lead-leak.js";
 import { scoreReport } from "./lib/score.js";
 import { restrictionFor, messageForError } from "./lib/restricted.js";
 import { reportText } from "./lib/report.js";
