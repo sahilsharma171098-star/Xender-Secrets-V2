@@ -10,6 +10,24 @@ const ledger=async(env,action,body)=>{
   if(!r.ok)throw new Error("Payment ledger unavailable");
   return r.json();
 };
+
+// The first real PayU check must not expose unfinished checkout to all customers.
+// An optionally configured single signed-in account can perform an isolated paid
+// canary while SITECHECK_PRO_CHECKOUT_ENABLED remains OFF for everyone else.
+async function sitecheckCheckoutEligible(request,env){
+  if(env.SITECHECK_PRO_CHECKOUT_ENABLED==="true")return true;
+  const email=String(env.SITECHECK_PRO_CANARY_EMAIL||"").trim().toLowerCase();
+  if(!email||!validEmail(email))return false;
+  const cookie=request.headers.get("Cookie");
+  if(!cookie)return false;
+  try{
+    const authRequest=new Request(new URL(request.url).origin+"/api/auth/me",{headers:{Cookie:cookie}});
+    const response=await state(env).fetch(authRequest);
+    if(!response.ok)return false;
+    const data=await response.json();
+    return Boolean(data.user?.id&&data.user.email?.toLowerCase()===email);
+  }catch{return false;}
+}
 export function ensurePayuSchema(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS payu_orders (txnid TEXT PRIMARY KEY,offer_id TEXT NOT NULL,amount_paise INTEGER NOT NULL,customer_name TEXT NOT NULL,email TEXT NOT NULL,phone TEXT NOT NULL,quote_reference TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',payu_payment_id TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL)");
   sql.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_payu_payment_id ON payu_orders(payu_payment_id) WHERE payu_payment_id IS NOT NULL");
@@ -104,7 +122,7 @@ export async function handlePayu(request,env) {
   const url=new URL(request.url),path=url.pathname,method=request.method.toUpperCase();
   if(!path.startsWith("/api/payu/"))return null;
   if(!env.PAYU_KEY||!env.PAYU_SALT)return json({ok:false,error:"PayU unavailable"},503);
-  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:[],sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,release:"sitecheck-pro-v2.0.0",checkoutEnabled:env.SITECHECK_PRO_CHECKOUT_ENABLED==="true"||await ownerPilotAllowed(request,env)}});
+  if(path==="/api/payu/config"&&method==="GET")return json({ok:true,available:true,provider:"payu",currency:"INR",offers:[],sitecheck:{offerId:"sitecheck-pro-onetime",currency:"INR",amountPaise:49900,release:"sitecheck-pro-v2.0.0",checkoutEnabled:await sitecheckCheckoutEligible(request,env)||await ownerPilotAllowed(request,env)}});
   if(path==="/api/payu/initiate"&&method==="POST") {
     if(request.headers.get("Origin")!==url.origin)return json({ok:false,error:"Origin mismatch"},403);
     if(!String(request.headers.get("content-type")||"").startsWith("application/json"))return json({ok:false,error:"JSON required"},415);
@@ -112,7 +130,7 @@ export async function handlePayu(request,env) {
     const offer=PAYMENT_OFFERS[clean(b.offer,80)],name=clean(b.name,60),email=clean(b.email,100).toLowerCase(),phone=clean(b.phone,25);
     if(!offer||name.length<2||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[+0-9() -]{8,25}$/.test(phone))return json({ok:false,error:"Valid package, name, email and phone required"},400);
     if(offer.id!=="sitecheck-pro-onetime")return json({ok:false,error:"PayU website-package checkout is not enabled; use Razorpay."},503);
-    if(offer.id==="sitecheck-pro-onetime"&&env.SITECHECK_PRO_CHECKOUT_ENABLED!=="true"&&!(await ownerPilotAllowed(request,env)))return json({ok:false,error:"SiteCheck Pro checkout is awaiting payment and fulfillment verification."},503);
+    if(offer.id==="sitecheck-pro-onetime"&&!(await sitecheckCheckoutEligible(request,env))&&!(await ownerPilotAllowed(request,env)))return json({ok:false,error:"SiteCheck Pro checkout is awaiting payment and fulfillment verification."},503);
     let accountId=null;
     if(offer.id==="sitecheck-pro-onetime"){
       const sessionHeaders=new Headers();
