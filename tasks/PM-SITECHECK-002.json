@@ -10,7 +10,7 @@
   "approvalRequired": [],
   "approvalNote": "",
   "createdAt": "2026-11-05T04:34:13.550Z",
-  "updatedAt": "2026-11-05T05:04:50.922Z",
+  "updatedAt": "2026-11-05T05:10:15.985Z",
   "focus": [
     "MT-010"
   ],
@@ -322,9 +322,31 @@
       "blocker": null,
       "note": null,
       "source": "manual"
+    },
+    {
+      "at": "2026-11-05T05:10:15.984Z",
+      "agent": "claude",
+      "status": "REVIEW",
+      "done": "Applied PR #111 review policy: reply before Reply Before; revoke only on Closed Customer Favour",
+      "next": "Sahil: merge PR #111 when satisfied. Then priority: SiteCheck real ₹499 owner canary (MT-005..MT-008), public checkout stays OFF",
+      "files": [
+        "docs/PAYU_CHARGEBACK.md",
+        "docs/SITECHECK_PRO_QA_CHECKLIST.md"
+      ],
+      "commit": "46d5e6b",
+      "pr": "https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/111",
+      "tests": [
+        "payu-chargeback 4/4",
+        "unit 176/176",
+        "browser 27/27",
+        "check:pages clean"
+      ],
+      "blocker": null,
+      "note": null,
+      "source": "manual"
     }
   ],
-  "lastSuccessfulAction": "MT-010 chargeback runbook docs/PAYU_CHARGEBACK.md + tests/unit/payu-chargeback.test.mjs; QA checklist 5.4 linked; PR #111 opened",
+  "lastSuccessfulAction": "Applied PR #111 review policy: reply before Reply Before; revoke only on Closed Customer Favour",
   "changedFiles": [
     "tests/unit/payu-chargeback.test.mjs",
     "docs/PAYU_CHARGEBACK.md",
@@ -332,7 +354,7 @@
     "docs/TASKS.md",
     "ops/HANDOFF.md"
   ],
-  "commit": "48c9313",
+  "commit": "46d5e6b",
   "pr": "https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/111",
   "testResults": [
     {
@@ -414,10 +436,26 @@
     {
       "at": "2026-11-05T05:04:50.921Z",
       "result": "test:pm 23/23"
+    },
+    {
+      "at": "2026-11-05T05:10:15.984Z",
+      "result": "payu-chargeback 4/4"
+    },
+    {
+      "at": "2026-11-05T05:10:15.984Z",
+      "result": "unit 176/176"
+    },
+    {
+      "at": "2026-11-05T05:10:15.984Z",
+      "result": "browser 27/27"
+    },
+    {
+      "at": "2026-11-05T05:10:15.984Z",
+      "result": "check:pages clean"
     }
   ],
   "blockers": [],
-  "nextAction": "Sahil: review/merge PR #111; record dispute-timing decision in docs/PAYU_CHARGEBACK.md; point G11 (PR #100) at the runbook",
+  "nextAction": "Sahil: merge PR #111 when satisfied. Then priority: SiteCheck real ₹499 owner canary (MT-005..MT-008), public checkout stays OFF",
   "nextAgentNotes": "",
   "attempts": [
     {
