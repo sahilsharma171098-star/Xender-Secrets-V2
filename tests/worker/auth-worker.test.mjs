@@ -54,4 +54,3 @@ test('real workerd: password register/login and legacy recovery preserve credent
  // An unverified matching address must not link to the password account.
  subject='unverified-google';verified=false;const {response:unverified}=await google();const user=(await (await call('/api/auth/me',null,unverified.headers.get('set-cookie'))).json()).user;assert.notEqual(user.id,'legacy-id');assert.match(user.email,/@social.xendersecrets.local$/);
 });
-
