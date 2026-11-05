@@ -14,7 +14,7 @@
   ],
   "approvalNote": "Auto-run (dispatch --execute) is refused as a whole until `--approve merge,payment,secrets` is given after Sahil says yes. For the safe verify/prepare part, paste the assignment into an agent session.",
   "createdAt": "2026-11-05T06:08:00.487Z",
-  "updatedAt": "2026-11-05T06:08:11.553Z",
+  "updatedAt": "2026-11-05T08:41:26.452Z",
   "focus": [
     "MT-001",
     "MT-002",
@@ -78,7 +78,8 @@
     "Done: MT-003 Free Durable Object namespace capacity (99/100) so PR previews build — DONE (XEND-CF-PREVIEW-001 (docs/TASKS.md): 72/100 Durable Object namespaces, preview build d0d00436 green 2026-11-04)",
     "Done: MT-009 Customer self-serve \"re-check my payment\" (no admin needed) — DONE (GitHub: PR #105 merged)",
     "Done: MT-015 White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) — DONE (GitHub: PR #106 merged)",
-    "wrangler.jsonc has no GOOGLE_* entries; plain_text GOOGLE_CLIENT_ID/SECRET exist only in Cloudflare settings (issue #90). Production version/bindings could not be read: www.xendersecrets.com egress blocked (proxy 403, MT-040), Cloudflare connector returns name/id only."
+    "wrangler.jsonc has no GOOGLE_* entries; plain_text GOOGLE_CLIENT_ID/SECRET exist only in Cloudflare settings (issue #90). Production version/bindings could not be read: www.xendersecrets.com egress blocked (proxy 403, MT-040), Cloudflare connector returns name/id only.",
+    "redirect_uri_mismatch (2026-11-05): code on main 0635392 sends redirect_uri=https://www.xendersecrets.com/api/auth/oauth/google/callback (DO origin of the forwarded request; /account is canonicalised to www; start link is relative). client_id = GOOGLE_CLIENT_ID if the dedicated pair is set, else WORKSPACE_GOOGLE_CLIENT_ID (PR #103 fallback). Derived from code, not observed live."
   ],
   "openPrs": [
     {
@@ -243,6 +244,20 @@
       "blocker": "Owner-only: rotate exposed Google OAuth client secret; replace plain_text GOOGLE_* with encrypted secret_text; confirm production version/bindings.",
       "note": null,
       "source": "manual"
+    },
+    {
+      "at": "2026-11-05T08:41:26.451Z",
+      "agent": "claude",
+      "status": "BLOCKED",
+      "done": null,
+      "next": "After owner adds the URI: retry Google login on /account, confirm /api/auth/me returns the owner email, record result in issue #90; then continue PR #104 path (dedicated Web client, encrypted secrets).",
+      "files": [],
+      "commit": null,
+      "pr": null,
+      "tests": [],
+      "blocker": "Owner action: on Google's error page copy client_id; in Google Cloud Console open that OAuth client (must be Web application) and add Authorized redirect URI https://www.xendersecrets.com/api/auth/oauth/google/callback, keeping existing URIs; then sign in and check /api/auth/me.",
+      "note": "Recorded in issue #90 comment 6653594459.",
+      "source": "manual"
     }
   ],
   "lastSuccessfulAction": null,
@@ -251,9 +266,10 @@
   "pr": null,
   "testResults": [],
   "blockers": [
-    "Owner-only: rotate exposed Google OAuth client secret; replace plain_text GOOGLE_* with encrypted secret_text; confirm production version/bindings."
+    "Owner-only: rotate exposed Google OAuth client secret; replace plain_text GOOGLE_* with encrypted secret_text; confirm production version/bindings.",
+    "Owner action: on Google's error page copy client_id; in Google Cloud Console open that OAuth client (must be Web application) and add Authorized redirect URI https://www.xendersecrets.com/api/auth/oauth/google/callback, keeping existing URIs; then sign in and check /api/auth/me."
   ],
-  "nextAction": "After #111 merges: restart branch from main, merge PR #104's commits (authorship kept), run npm test + extension tests, open PR superseding #104/#102 (draft, do not merge/deploy until owner rotates secret and sets encrypted secrets).",
+  "nextAction": "After owner adds the URI: retry Google login on /account, confirm /api/auth/me returns the owner email, record result in issue #90; then continue PR #104 path (dedicated Web client, encrypted secrets).",
   "nextAgentNotes": "",
   "attempts": []
 }
