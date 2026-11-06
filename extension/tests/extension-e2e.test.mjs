@@ -51,7 +51,10 @@ async function openPopupFor(fixtureUrl) {
   popup.on("console", (m) => { if (m.type() === "error") consoleErrors.push(m.text()); });
   popup.on("pageerror", (e) => consoleErrors.push(e.message));
   await popup.goto(`chrome-extension://${extId}/popup.html`);
-  const tabId = await popup.evaluate(async (url) => (await chrome.tabs.query({ url })).map((t) => t.id)[0], fixtureUrl);
+  const tabId = await popup.evaluate(async (url) => {
+    const page = new URL(url);
+    return (await chrome.tabs.query({ url: `${page.origin}${page.pathname}*` })).map((t) => t.id)[0];
+  }, fixtureUrl);
   assert.ok(tabId, "fixture tab found");
   await popup.goto(`chrome-extension://${extId}/popup.html?tab=${tabId}`);
   return { popup, target };
@@ -87,6 +90,67 @@ test("issues render grouped by severity with why/fix, and filters work", async (
   assert.equal(await popup.locator('[data-check^="seo-"]').count(), 0, "filter hides other categories");
   await popup.getByRole("button", { name: /^All issues/ }).click();
   assert.ok(await popup.locator('[data-check^="seo-"]').count() > 0);
+  await popup.close(); await target.close();
+});
+
+test("Lead Leak injection avoids common false positives and persists local evidence", async () => {
+  const fixtureUrl = "https://fixtures.test/lead-leak.html?private=do-not-store#ignored";
+  const { popup, target } = await openPopupFor(fixtureUrl);
+  await popup.waitForSelector("#report:not([hidden])");
+  assert.deepEqual(await popup.locator("[id]").evaluateAll((elements) => {
+    const ids = elements.map((element) => element.id);
+    return ids.filter((id, index) => ids.indexOf(id) !== index);
+  }), [], "popup IDs are unique");
+  await popup.click("#leadLeakTest");
+  await popup.waitForSelector("#leadLeakPanel:not([hidden])");
+
+  const items = popup.locator("#leadLeakList .lead-leak-item");
+  assert.equal(await items.count(), 2, "only the missing CTA and missing section are reported");
+  assert.match(await popup.textContent("#leadLeakList"), /broken-cta/);
+  assert.match(await popup.textContent("#leadLeakList"), /broken-anchor/);
+  assert.doesNotMatch(await popup.textContent("#leadLeakList"), /disabled-button|disabled-submit|form-no-action/);
+  assert.equal(await target.locator("[data-xs-lead-leak-highlight]").count(), 2);
+  await popup.click("#leadLeakTest");
+  await popup.waitForFunction(() => document.getElementById("leadLeakStatus").textContent.startsWith("2 likely"));
+  assert.equal(await items.count(), 2, "a second run replaces findings instead of duplicating them");
+
+  const cta = items.nth(0);
+  await cta.getByRole("button", { name: "Mark not delivered" }).click();
+  await popup.waitForFunction(() => document.querySelector(".lead-leak-item .lead-leak-evidence")?.textContent === "Marked not delivered");
+
+  const pageKey = "https://fixtures.test/lead-leak.html";
+  const saved = (await popup.evaluate(async () => chrome.storage.local.get("sitecheckLeadLeakEvidence"))).sitecheckLeadLeakEvidence;
+  assert.equal(saved.version, 1);
+  assert.ok(saved.pages[pageKey]);
+  assert.equal(Object.keys(saved.pages).length, 1, "evidence is scoped to the page path");
+  const evidence = Object.values(saved.pages[pageKey]).find((entry) => entry.state === "not_delivered");
+  assert.ok(Number.isFinite(evidence.updatedAt));
+  assert.doesNotMatch(JSON.stringify(saved), /private=do-not-store|ignored|Get a quote/);
+
+  await popup.reload();
+  await popup.waitForSelector("#report:not([hidden])");
+  await popup.click("#leadLeakTest");
+  await popup.waitForSelector("#leadLeakPanel:not([hidden])");
+  const restoredCta = popup.locator("#leadLeakList .lead-leak-item").nth(0);
+  await restoredCta.getByText("Marked not delivered").waitFor();
+  await popup.click("#leadLeakClear");
+  await popup.locator("#leadLeakPanel").waitFor({ state: "hidden" });
+  assert.equal(await target.locator("[data-xs-lead-leak-highlight]").count(), 0);
+  const afterClear = (await popup.evaluate(async () => chrome.storage.local.get("sitecheckLeadLeakEvidence"))).sitecheckLeadLeakEvidence;
+  assert.deepEqual(afterClear, saved, "clearing highlights does not erase evidence");
+  await popup.click("#leadLeakTest");
+  await popup.waitForSelector("#leadLeakPanel:not([hidden])");
+  await popup.click("#leadLeakEvidenceClear");
+  await popup.waitForFunction(() => document.getElementById("leadLeakStatus").textContent.includes("was deleted"));
+  const deleted = await popup.evaluate(async () => chrome.storage.local.get("sitecheckLeadLeakEvidence"));
+  assert.equal(deleted.sitecheckLeadLeakEvidence, undefined);
+
+  await target.locator("a").first().evaluate((anchor) => anchor.setAttribute("href", "/contact"));
+  await popup.click("#leadLeakTest");
+  await popup.waitForFunction(() => document.getElementById("leadLeakStatus").textContent.startsWith("1 likely"));
+  assert.equal(await items.count(), 1);
+  assert.equal(await target.locator("[data-xs-lead-leak-highlight]").count(), 1, "repaired links lose stale highlights");
+
   await popup.close(); await target.close();
 });
 

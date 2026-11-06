@@ -1,5 +1,13 @@
 # Xender Secrets V2 — Current State
 
+## SiteCheck Lead Leak repair (2026-11-06; XEND-EXT-LEAD-001)
+- Branch `lead-leak-detector-mvp`, PR #113: preserved and completed existing local repairs. Popup has one findings panel; bundled self-contained functions are passed to MV3 `executeScript`, with no module imports in the injected context or new permissions.
+- Named CTA links without destinations and missing same-page sections are reported as likely issues. Forms, disabled controls and script/router placeholders are not delivery failures. Legacy named anchors are accepted; reruns replace findings and remove stale highlights while restoring original outlines.
+- User marks are local, manual evidence only, scoped to origin/path with no query, fragment, page text or form values. Popup reload restores them; clearing highlights preserves evidence; explicit deletion removes evidence for the page. No network delivery verification is claimed.
+- Verified locally on PR #113: `npm ci`; 38/38 extension tests including packaged Chromium popup/injection/evidence flows; extension lint; Chrome/Edge/Firefox package build; 177/177 + 27/27 repository tests; generated-page check. Repository tests required temporary `safe.bareRepository=all` for their disposable bare remotes. Install reported 4 advisories (1 moderate, 3 high); no dependency upgrade was made.
+- Remote PR head `111be1d6e142efa85112e132d64a00bdcd1542a8`: offline checks, SiteCheck release-candidate checks and Workers preview build passed. Hosted live-e2e was skipped; local packaged Chromium E2E passed.
+- No merge, production deployment, store publication, payment or public checkout activation performed.
+
 ## Supplied ThinkPad health results (2026-10-24; XEND-AI-HEALTH-001)
 - Sahil supplied a local verification summary reporting private backups of nine checkouts plus local AutoTube source, integrity/sample-restore checks, main 9e21348 in a separate workspace, Antigravity 2.23.0 running/signed in with Google AI Pro, and 120/120 offline plus 7/7 evidence/handoff tests.
 - These are supplied local results, not direct Windows checks by this cloud reviewer. The original local commit 8c13d26/full report/private receipt are not accessible here. Safe record: docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md. Historical snapshots below predate this supplied follow-up.
@@ -211,3 +219,9 @@ New PBKDF2-SHA256 password hashes encode the 100000 cost in the hash string; unt
 Controlled deploy confirmed 2026-11-05 10:18 UTC: revision 3c02caf, Worker 7eba4890 (100%). CI 42009141705 passed; live anonymous health/providers/PayU config pass with public checkout OFF. Secret binding names/types and DO namespace IDs preserved. Owner-interactive login and authenticated /api/auth/me remain pending; PR #104 draft.
 
 Owner verification completed after user interaction on 2026-11-05: same-profile /api/auth/me returned ok:true with the signed-in owner account; account navigation reflects the signed-in user. Read-only authenticated PayU config recognizes the existing owner-only pilot while a separate anonymous request still returns checkoutEnabled:false. No payment initiated.
+
+### XEND-EXT-LEAD-001 follow-up — 2026-11-06
+- Owner: Codex; PR #113, lead-leak-detector-mvp. Fresh extension tests 38/38 and lint passed; three reproducible v2.0.0 ZIPs generated. Hosted offline retry on 79b8bb5 passed; live E2E skipped.
+- Fixed Windows screenshot capture ID hashing to UTF-16LE, matching the working E2E helper. Regenerated five actual demo screenshots and three promo assets; inspected the first screenshot visually. Synchronized Lead Leak/manual evidence copy across Chrome/Edge/Firefox descriptions and changelog.
+- npm audit: four dev-tool findings (Wrangler/Miniflare/sharp/undici); npm audit --omit=dev: zero. No dependency upgrade. Shipped ZIP excludes node_modules.
+- Remaining: native toolbar-click acceptance (E2E uses temporary test-only host grant), full visual owner approval, current hosted privacy/store dashboard verification, separate dependency remediation and payment release gates. No merge/deploy/store submission/public checkout activation. Pre-existing untracked extension/package-lock.json preserved.

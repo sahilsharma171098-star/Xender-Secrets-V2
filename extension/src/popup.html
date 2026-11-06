@@ -59,9 +59,17 @@
 
       <div class="tools">
         <button class="btn" id="copy" type="button">Copy report</button>
+        <button class="btn primary" id="leadLeakTest" type="button">Lead Leak Test</button>
         <button class="btn primary" id="exportCsv" type="button" hidden>Export priority CSV (Pro)</button>
         <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
       </div>
+      <section id="leadLeakPanel" class="lead-leak-panel" aria-label="Lead Leak findings" hidden>
+        <h2>Lead Leak findings</h2>
+        <p id="leadLeakStatus" class="lead-leak-status" role="status" aria-live="polite"></p>
+        <ul id="leadLeakList" class="lead-leak-list"></ul>
+        <button class="btn" id="leadLeakClear" type="button">Clear page highlights</button>
+        <button class="btn" id="leadLeakEvidenceClear" type="button">Delete saved evidence for this page</button>
+      </section>
       <section id="baselinePanel" class="pro-compare" aria-label="SiteCheck Pro before-and-after comparison" hidden>
         <h3>Before / after comparison (Pro)</h3>
         <p>Save a baseline for this exact page, then rerun the audit after making improvements. Only scores and issue counts stay on your device.</p>
@@ -71,31 +79,33 @@
         </div>
         <p id="baselineStatus" class="pro-compare-status" role="status" aria-live="polite"></p>
       </section>
+
+      <section class="pro-license" aria-label="SiteCheck Pro">
+        <h2>SiteCheck Pro <span class="pro-price">₹499 one-time (GST included)</span></h2>
+        <p id="proStatus" class="pro-status" role="status" aria-live="polite">Free edition · Checking license…</p>
+        <p>Pro adds a downloadable, prioritized CSV issue report. Free page checks and text reports remain available.</p>
+        <form id="proForm">
+          <label for="licenseKey">Pro license key</label>
+          <div class="pro-form-row">
+            <input id="licenseKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your SiteCheck Pro key" maxlength="90">
+            <button class="btn" id="activatePro" type="submit">Activate</button>
+          </div>
+        </form>
+        <div class="pro-actions">
+          <a href="https://www.xendersecrets.com/sitecheck-pro" target="_blank" rel="noopener">Buy / retrieve a license</a>
+          <button id="deactivatePro" class="pro-text-button" type="button" hidden>Remove saved key</button>
+          <button id="clearBaselines" class="pro-text-button" type="button">Delete saved comparisons</button>
+        </div>
+      </section>
+
+      <aside class="cta" id="cta" hidden>
+        <button class="cta-dismiss" id="ctaDismiss" type="button" aria-label="Not now: hide this suggestion for 30 days">Not now</button>
+        <p class="cta-title">Want a human review?</p>
+        <p class="cta-text">Get a free website audit from Xender Secrets — a person checks your site and sends specific fixes.</p>
+        <a class="btn primary" id="ctaLink" href="https://www.xendersecrets.com/sitecheck?utm_source=sitecheck_extension&amp;utm_medium=extension&amp;utm_campaign=human_audit#start" target="_blank" rel="noopener">Get a free website audit</a>
+      </aside>
     </section>
 
-    <section class="pro-license" aria-label="SiteCheck Pro">
-      <h2>SiteCheck Pro <span class="pro-price">₹499 one-time (GST included)</span></h2>
-      <p id="proStatus" class="pro-status" role="status" aria-live="polite">Free edition · Checking license…</p>
-      <p>Pro adds a downloadable, prioritized CSV issue report. Free page checks and text reports remain available.</p>
-      <form id="proForm">
-        <label for="licenseKey">Pro license key</label>
-        <div class="pro-form-row">
-          <input id="licenseKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your SiteCheck Pro key" maxlength="90">
-          <button class="btn" id="activatePro" type="submit">Activate</button>
-        </div>
-      </form>
-      <div class="pro-actions">
-        <a href="https://www.xendersecrets.com/sitecheck-pro" target="_blank" rel="noopener">Buy / retrieve a license</a>
-        <button id="deactivatePro" class="pro-text-button" type="button" hidden>Remove saved key</button>
-        <button id="clearBaselines" class="pro-text-button" type="button">Delete saved comparisons</button>
-      </div>
-    </section>
-    <aside class="cta" id="cta" hidden>
-      <button class="cta-dismiss" id="ctaDismiss" type="button" aria-label="Not now: hide this suggestion for 30 days">Not now</button>
-      <p class="cta-title">Want a human review?</p>
-      <p class="cta-text">Get a free website audit from Xender Secrets — a person checks your site and sends specific fixes.</p>
-      <a class="btn primary" id="ctaLink" href="https://www.xendersecrets.com/sitecheck?utm_source=sitecheck_extension&amp;utm_medium=extension&amp;utm_campaign=human_audit#start" target="_blank" rel="noopener">Get a free website audit</a>
-    </aside>
   </main>
 
   <footer class="foot">

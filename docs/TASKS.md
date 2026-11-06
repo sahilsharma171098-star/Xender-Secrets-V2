@@ -1,5 +1,14 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-EXT-LEAD-001 — Lead Leak Detector reliability in SiteCheck (2026-11-06)
+Status: REVIEW · Owner: ChatGPT · Branch: `lead-leak-detector-mvp` · PR #113 · Commit `111be1d6e142efa85112e132d64a00bdcd1542a8`
+- Scope: repair the MV3 detector injection and popup, reduce deterministic false positives, persist user-marked evidence locally by page path, and validate the packaged extension.
+- Guardrails: no page content, query strings, form values, network calls, new permissions, deployment, store submission, merge, or public checkout changes.
+- Baseline: PR CI reported syntax/policy lint failures on the prior head; repairs are committed and pushed to the existing PR.
+- Verified: `npm ci`; extension lint; Chrome/Edge/Firefox build; 38/38 extension tests including packaged Chromium injection, evidence persistence/reload/deletion and reruns; 177/177 + 27/27 repository tests; generated-page check. The repository tests needed a temporary `safe.bareRepository=all` setting for their disposable bare remotes; default Git safety blocked those fixtures. `npm ci` reported 4 advisories (1 moderate, 3 high); no dependency upgrade was made.
+- Remote: PR head SHA `111be1d6e142efa85112e132d64a00bdcd1542a8`; offline checks and SiteCheck release-candidate checks passed; Workers preview build passed. The hosted live-e2e job was skipped; local packaged Chromium E2E passed.
+- Next: Sahil review PR #113. No merge, production deployment, store submission, payment, or public checkout activation authorized.
+
 ## XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05)
 Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
 Owner: Claude (PM task `PM-SITECHECK-002`, resumed from `xender-pm-state`)
@@ -418,3 +427,9 @@ Status: DONE / deployed and owner Google session verified. Owner: Codex. Issue #
 - A runtime that rejects historical cost returns PASSWORD_RECOVERY_REQUIRED and creates no session. Existing rows, account IDs, identities and entitlements are preserved.
 - Verified Google sign-in (or configured email OTP) recovers access to the existing account without overwriting a password or treating an unverified email as proof of ownership. No bulk credential rewrite or password reset endpoint is introduced.
 - CI and controlled deploy passed (version 7eba4890); binding/config smoke checks pass. Owner completed Google sign-in; authenticated /api/auth/me returned ok:true and owner-pilot read-only config recognized the account. Anonymous checkout remains OFF.
+
+### XEND-EXT-LEAD-001 follow-up — 2026-11-06
+- Owner: Codex; PR #113, lead-leak-detector-mvp. Fresh extension tests 38/38 and lint passed; three reproducible v2.0.0 ZIPs generated. Hosted offline retry on 79b8bb5 passed; live E2E skipped.
+- Fixed Windows screenshot capture ID hashing to UTF-16LE, matching the working E2E helper. Regenerated five actual demo screenshots and three promo assets; inspected the first screenshot visually. Synchronized Lead Leak/manual evidence copy across Chrome/Edge/Firefox descriptions and changelog.
+- npm audit: four dev-tool findings (Wrangler/Miniflare/sharp/undici); npm audit --omit=dev: zero. No dependency upgrade. Shipped ZIP excludes node_modules.
+- Remaining: native toolbar-click acceptance (E2E uses temporary test-only host grant), full visual owner approval, current hosted privacy/store dashboard verification, separate dependency remediation and payment release gates. No merge/deploy/store submission/public checkout activation. Pre-existing untracked extension/package-lock.json preserved.

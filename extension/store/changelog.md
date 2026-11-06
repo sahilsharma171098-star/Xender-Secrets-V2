@@ -7,6 +7,7 @@ Versioning: MAJOR.MINOR.PATCH (semver), single source of truth in `extension/man
 Every store gets the same version number; rebuild all three packages for every release.
 
 ## 2.0.0 — pending payment verification and Chrome Web Store review
+- Lead Leak Detector identifies missing CTA destinations and broken same-page links, highlights findings, and saves explicitly marked evidence locally per page. Manual marks do not verify network delivery.
 - Free 49-check audit unchanged; optional priority CSV export with a ₹499 one-time Pro license.
 - Account-bound SHA-256-hashed license check, manual account-key activation and refund revocation.
 - New permissions: local storage plus scoped first-party HTTPS host. Privacy/store disclosures updated.

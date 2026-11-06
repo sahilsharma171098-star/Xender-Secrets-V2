@@ -22,7 +22,7 @@ When you click the SiteCheck button, the extension runs its bundled audit script
 - computed colours of text (for contrast), element sizes and positions (for sideways-scroll detection), and the number of elements on the page;
 - the page address (scheme, host and path) so the report can say which page was checked. The query string and fragment are not included in the result.
 
-The results are shown in the extension popup. They are held only in the popup's memory and disappear when the popup closes. Free scans are not saved automatically or synced. With active Pro, the user may explicitly save a minimal before/after baseline for the exact page checked. This keeps only its origin and path (never query parameters), heuristic score, issue identifiers/counts and a timestamp in local extension storage, capped at 20 pages. No page content, DOM, issue samples or forms are stored. The customer can delete saved comparisons at any time, even after Pro expires. A Pro user also saves a license key locally (never browser sync). If the user clicks "Not now" on the human-review suggestion, only the time of that click is saved in local extension storage so the suggestion stays hidden for 30 days.
+The results are shown in the extension popup and disappear when it closes. Free scans are not saved automatically or synced. If a user marks a Lead Leak finding as delivered or not delivered, that explicit evidence is saved in local extension storage: the page origin and path (not its query string or fragment), finding type and structural selector, chosen status, and timestamp. No page text, DOM, form values or issue samples are stored. Evidence can be deleted for the current page in the popup. With active Pro, the user may also explicitly save a minimal before/after baseline for the exact page checked. This keeps only its origin and path, heuristic score, issue identifiers/counts and a timestamp in local extension storage, capped at 20 pages. The customer can delete saved comparisons at any time, even after Pro expires. A Pro user also saves a license key locally (never browser sync). If the user clicks "Not now" on the human-review suggestion, only the time of that click is saved in local extension storage so the suggestion stays hidden for 30 days.
 
 The extension does not run in the background, does not read other tabs, and cannot see pages you have not clicked it on.
 
@@ -48,10 +48,10 @@ The audited page's data stays local. Optional Pro sends only the license key for
 |---|---|
 | `activeTab` | Gives SiteCheck temporary access to the current tab only after you click the toolbar button. |
 | `scripting` | Lets SiteCheck run its own bundled audit script in that tab. No remote code is loaded or executed. |
-| `storage` (Pro release) | Stores optional local license key and manually saved minimal comparisons, not browser sync. |
+| `storage` | Stores the optional Pro license key, manually saved comparisons, dismissed-suggestion timestamp, and explicitly marked Lead Leak evidence locally; never browser sync. |
 | `https://www.xendersecrets.com/*` (Pro release) | Checks optional Pro entitlement with the first-party Xender HTTPS service. Audited data is never sent. |
 
-SiteCheck does not request access to all websites, browsing history, cookies or downloads. The planned Pro release adds only local extension storage and first-party Xender HTTPS access for license verification. No background tracking or browser sync.
+SiteCheck does not request access to all websites, browsing history, cookies or downloads. It uses local extension storage for user-requested records and Pro verification. No background tracking or browser sync.
 
 ## Data sharing and sale
 
