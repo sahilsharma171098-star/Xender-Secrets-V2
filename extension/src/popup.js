@@ -1,76 +1,193 @@
-// Xender SiteCheck popup. Runs src/audit.js in the active tab (activeTab + scripting),
-// scores locally. Optional Pro sends only a license key to Xender for verification.
-import { detectLeadIssues, clearHighlights } from "./lib/lead-leak.js";
-
-// Add click handler for Lead Leak Test
-$("leadLeakTest").addEventListener("click", async () => {
-  show("loading");
-  let tab;
-  try { tab = await targetTab(); } catch (e) { blocked(messageForError(e)); return; }
-  if (!tab?.id) { blocked(messageForError(null)); return; }
-  try {
-    const result = await api.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["lib/lead-leak-run.js"]
-    });
-    const issues = result && result[0] && result[0].result ? result[0].result : [];
-    // Populate UI list
-    const listEl = $("leadLeakList");
-    listEl.innerHTML = "";
-    if (issues.length === 0) {
-      listEl.append(document.createTextNode("No lead‑leak issues detected."));
-    } else {
-      issues.forEach(issue => {
-        const li = document.createElement("li");
-        li.textContent = `${issue.type}: ${issue.reason}`;
-        // Add a Test button for guided manual testing
-        const testBtn = document.createElement("button");
-        testBtn.type = "button";
-        testBtn.className = "btn small";
-        testBtn.textContent = "Test";
-        testBtn.dataset.selector = issue.selector;
-        li.appendChild(document.createTextNode(' '));
-        li.appendChild(testBtn);
-        listEl.append(li);
-      });
-      // Replace the original loop that added only text
-        const li = document.createElement("li");
-        li.textContent = `${issue.type}: ${issue.reason}`;
-        listEl.append(li);
-      });
-    }
-    $("leadLeakPanel").hidden = false;
-    show("report"); // keep main UI visible
-  } catch (e) {
-    blocked(messageForError(e));
-  }
-});
-
-$("leadLeakClear").addEventListener("click", async () => {
-  let tab;
-  try { tab = await targetTab(); } catch (e) { blocked(messageForError(e)); return; }
-  if (!tab?.id) { blocked(messageForError(null)); return; }
-  try {
-    await api.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["lib/lead-leak-clear.js"]
-    });
-    $("leadLeakPanel").hidden = true;
-    $("leadLeakList").innerHTML = "";
-    show("report");
-  } catch (e) { blocked(messageForError(e)); }
-});
-
-import { detectLeadIssues, clearHighlights } from "./lib/lead-leak.js";
+// Xender SiteCheck popup. Runs page analysis locally; only an optional Pro key is sent for verification.
+import { detectLeadIssues, clearHighlights, focusLeadIssue } from "./lib/lead-leak-run.js";
 import { scoreReport } from "./lib/score.js";
 import { restrictionFor, messageForError } from "./lib/restricted.js";
 import { reportText } from "./lib/report.js";
 import { prioritizedCsv } from "./lib/pro-export.js";
 import { BASELINE_STORAGE_KEY, snapshotOf, withSavedBaseline, findSavedBaseline, compareWithBaseline } from "./lib/baseline.js";
 import { CTA_DISMISS_KEY, ctaVisible } from "./lib/cta.js";
+import { CATEGORIES } from "./lib/checks.js";
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = (id) => document.getElementById(id);
+const LEAD_EVIDENCE_KEY = "sitecheckLeadLeakEvidence";
+const isRecord = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+let leadLeakTab = null;
+
+function evidenceStorageError(action, error) {
+  const detail = error instanceof Error ? error.message : String(error || "Unknown storage error");
+  return `${action}: ${detail}`;
+}
+
+function leadPageScope(url) {
+  const page = new URL(url);
+  return page.origin + page.pathname;
+}
+
+function leadEvidenceLabel(state) {
+  return ({ delivered: "Marked delivered", not_delivered: "Marked not delivered" })[state] || "";
+}
+
+async function saveLeadEvidence(pageKey, issueKey, state, evidenceEl) {
+  try {
+    const stored = await api.storage.local.get(LEAD_EVIDENCE_KEY);
+    const root = isRecord(stored[LEAD_EVIDENCE_KEY]) ? stored[LEAD_EVIDENCE_KEY] : {};
+    const pages = isRecord(root.pages) ? root.pages : {};
+    const pageEvidence = isRecord(pages[pageKey]) ? pages[pageKey] : {};
+    const updatedAt = Date.now();
+    const next = {
+      ...root,
+      version: 1,
+      pages: {
+        ...pages,
+        [pageKey]: { ...pageEvidence, [issueKey]: { state, updatedAt } },
+      },
+    };
+    await api.storage.local.set({ [LEAD_EVIDENCE_KEY]: next });
+    evidenceEl.textContent = leadEvidenceLabel(state);
+    $("leadLeakStatus").textContent = "Evidence saved on this device for this page.";
+  } catch (error) {
+    $("leadLeakStatus").textContent = evidenceStorageError("Could not save evidence on this device", error);
+  }
+}
+
+function appendLeadFinding(issue, pageKey, savedEvidence) {
+  const item = document.createElement("li");
+  item.className = "lead-leak-item";
+  const description = document.createElement("p");
+  description.textContent = issue.type + ": " + issue.reason;
+  const controls = document.createElement("div");
+  controls.className = "lead-leak-controls";
+  const evidence = document.createElement("span");
+  evidence.className = "lead-leak-evidence";
+  evidence.setAttribute("role", "status");
+  const issueKey = issue.type + "|" + issue.selector;
+  const saved = isRecord(savedEvidence[issueKey]) ? savedEvidence[issueKey] : null;
+  evidence.textContent = saved ? leadEvidenceLabel(saved.state) : "No evidence recorded";
+
+  const addButton = (label, action) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn small";
+    button.textContent = label;
+    button.addEventListener("click", action);
+    controls.append(button);
+  };
+
+  addButton("Show on page", async () => {
+    try {
+      const [result] = await api.scripting.executeScript({
+        target: { tabId: leadLeakTab.id },
+        func: focusLeadIssue,
+        args: [issue.selector],
+      });
+      $("leadLeakStatus").textContent = result?.result
+        ? "The finding is highlighted in the page."
+        : "This element is no longer on the page. Run the test again.";
+    } catch (error) {
+      $("leadLeakStatus").textContent = messageForError(error, leadLeakTab?.url);
+    }
+  });
+  addButton("Mark delivered", () => saveLeadEvidence(pageKey, issueKey, "delivered", evidence));
+  addButton("Mark not delivered", () => saveLeadEvidence(pageKey, issueKey, "not_delivered", evidence));
+  controls.append(evidence);
+  item.append(description, controls);
+  $("leadLeakList").append(item);
+}
+
+$("leadLeakTest").addEventListener("click", async () => {
+  const status = $("leadLeakStatus");
+  const panel = $("leadLeakPanel");
+  const list = $("leadLeakList");
+  panel.hidden = false;
+  list.replaceChildren();
+  status.textContent = "Checking calls to action and same-page links...";
+
+  try {
+    leadLeakTab = await targetTab();
+    if (!leadLeakTab || leadLeakTab.id === undefined) {
+      status.textContent = messageForError(null);
+      return;
+    }
+    const restriction = leadLeakTab.url ? restrictionFor(leadLeakTab.url) : null;
+    if (restriction) {
+      status.textContent = restriction.message;
+      return;
+    }
+    const pageKey = leadPageScope(leadLeakTab.url);
+    const [result] = await api.scripting.executeScript({
+      target: { tabId: leadLeakTab.id },
+      func: detectLeadIssues,
+    });
+    if (!Array.isArray(result?.result)) throw new Error("Lead Leak test returned an invalid result.");
+
+    let pageEvidence = {};
+    let evidenceWarning = "";
+    try {
+      const stored = await api.storage.local.get(LEAD_EVIDENCE_KEY);
+      const root = stored[LEAD_EVIDENCE_KEY];
+      if (isRecord(root) && isRecord(root.pages) && isRecord(root.pages[pageKey])) {
+        pageEvidence = root.pages[pageKey];
+      }
+    } catch (error) {
+      evidenceWarning = evidenceStorageError("Could not read saved evidence from this device", error);
+    }
+
+    if (!result.result.length) {
+      const empty = document.createElement("li");
+      empty.textContent = "No likely lead leaks detected. Valid forms, disabled controls, script links, and empty placeholder anchors are not treated as failures.";
+      list.append(empty);
+    } else {
+      for (const issue of result.result) appendLeadFinding(issue, pageKey, pageEvidence);
+    }
+    status.textContent = evidenceWarning || (result.result.length + " likely issue" + (result.result.length === 1 ? "" : "s") + " found. Evidence is stored locally on this device only.");
+  } catch (error) {
+    status.textContent = messageForError(error, leadLeakTab?.url);
+  }
+});
+
+$("leadLeakClear").addEventListener("click", async () => {
+  try {
+    const tab = leadLeakTab || await targetTab();
+    if (!tab || tab.id === undefined) {
+      $("leadLeakStatus").textContent = messageForError(null);
+      return;
+    }
+    await api.scripting.executeScript({ target: { tabId: tab.id }, func: clearHighlights });
+    $("leadLeakPanel").hidden = true;
+    $("leadLeakList").replaceChildren();
+    $("leadLeakStatus").textContent = "Page highlights cleared. Saved evidence is unchanged.";
+  } catch (error) {
+    $("leadLeakStatus").textContent = messageForError(error, leadLeakTab?.url);
+  }
+});
+
+$("leadLeakEvidenceClear").addEventListener("click", async () => {
+  try {
+    const tab = leadLeakTab || await targetTab();
+    if (!tab?.url) {
+      $("leadLeakStatus").textContent = messageForError(null);
+      return;
+    }
+    const pageKey = leadPageScope(tab.url);
+    const stored = await api.storage.local.get(LEAD_EVIDENCE_KEY);
+    const root = isRecord(stored[LEAD_EVIDENCE_KEY]) ? stored[LEAD_EVIDENCE_KEY] : {};
+    const pages = isRecord(root.pages) ? root.pages : {};
+    const nextPages = { ...pages };
+    delete nextPages[pageKey];
+    if (Object.keys(nextPages).length) {
+      await api.storage.local.set({ [LEAD_EVIDENCE_KEY]: { ...root, pages: nextPages } });
+    } else {
+      await api.storage.local.remove(LEAD_EVIDENCE_KEY);
+    }
+    document.querySelectorAll(".lead-leak-evidence").forEach((item) => {
+      item.textContent = "No evidence recorded";
+    });
+    $("leadLeakStatus").textContent = "Saved evidence for this page was deleted from this device.";
+  } catch (error) {
+    $("leadLeakStatus").textContent = evidenceStorageError("Could not delete saved evidence from this device", error);
+  }
+});
 const RING = 326.7;
 const SEVERITY_LABEL = { critical: "Critical", warning: "Warnings", recommendation: "Recommendations" };
 const SEVERITY_SINGULAR = { critical: "Critical", warning: "Warning", recommendation: "Recommendation" };
@@ -134,6 +251,9 @@ async function targetTab() {
 }
 
 async function run() {
+  $("leadLeakPanel").hidden = true;
+  $("leadLeakList").replaceChildren();
+  $("leadLeakStatus").textContent = "";
   show("loading");
   $("domain").textContent = "Checking this page…";
   let tab;

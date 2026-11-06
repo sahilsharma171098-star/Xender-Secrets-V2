@@ -1,5 +1,12 @@
 # Xender Secrets V2 — Current State
 
+## SiteCheck Lead Leak repair (2026-11-06; XEND-EXT-LEAD-001)
+- Branch `lead-leak-detector-mvp`, PR #113: preserved and completed existing local repairs. Popup has one findings panel; bundled self-contained functions are passed to MV3 `executeScript`, with no module imports in the injected context or new permissions.
+- Named CTA links without destinations and missing same-page sections are reported as likely issues. Forms, disabled controls and script/router placeholders are not delivery failures. Legacy named anchors are accepted; reruns replace findings and remove stale highlights while restoring original outlines.
+- User marks are local, manual evidence only, scoped to origin/path with no query, fragment, page text or form values. Popup reload restores them; clearing highlights preserves evidence; explicit deletion removes evidence for the page. No network delivery verification is claimed.
+- Verified locally: clean npm install, 38/38 extension tests including packaged Chromium popup/injection/evidence flows, extension lint, all three browser packages and generated-page check. Remote CI must be checked on the pushed commit.
+- No merge, production deployment, store publication, payment or public checkout activation performed.
+
 ## Supplied ThinkPad health results (2026-10-24; XEND-AI-HEALTH-001)
 - Sahil supplied a local verification summary reporting private backups of nine checkouts plus local AutoTube source, integrity/sample-restore checks, main 9e21348 in a separate workspace, Antigravity 2.23.0 running/signed in with Google AI Pro, and 120/120 offline plus 7/7 evidence/handoff tests.
 - These are supplied local results, not direct Windows checks by this cloud reviewer. The original local commit 8c13d26/full report/private receipt are not accessible here. Safe record: docs/AI_WORKSTATION_REPORTED_HEALTH_2026-10-24.md. Historical snapshots below predate this supplied follow-up.

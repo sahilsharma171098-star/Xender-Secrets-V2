@@ -1,5 +1,2 @@
-// Content script entry for Lead Leak Detector – runs in the inspected page.
-import { detectLeadIssues } from "./lead-leak.js";
-// The result of the script is whatever the last evaluated expression returns.
-const issues = detectLeadIssues();
-issues;
+// MV3 popup injection entry points; pass these functions to scripting.executeScript.
+export { detectLeadIssues, clearHighlights, focusLeadIssue } from "./lead-leak.js";

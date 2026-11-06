@@ -1,174 +1,111 @@
-// Lead Leak Detector core logic
-// Runs in the context of the inspected page (content script).
-// Detects common broken CTA / form patterns and adds a visual highlight.
-
+// These functions are passed directly to chrome.scripting.executeScript. Keep
+// their dependencies inside each function so Chromium can serialize them.
 export function detectLeadIssues() {
   const issues = [];
-  // 1. Anchor tags with empty href, "#" or javascript:
-  document.querySelectorAll('a').forEach(a => {
-    const href = a.getAttribute('href') ?? '';
-    if (!href.trim() || href.trim() === '#' || href.trim().toLowerCase().startsWith('javascript:')) {
-      issues.push({type: 'broken-cta', selector: getUniqueSelector(a), reason: 'Empty or non‑navigable href'});
-    }
-  });
+  const ctaText = /\b(?:book(?:\s+(?:now|a|an))?|call(?:\s+us)?|contact(?:\s+us)?|consult(?:ation)?|enquir(?:e|y)|get\s+(?:a\s+)?(?:quote|started|in\s+touch)|inquir(?:e|y)|order(?:\s+now)?|request(?:\s+(?:a\s+)?quote)?|schedule|sign\s*up|start\s+(?:a\s+)?(?:free\s+)?trial|subscribe|talk\s+to\s+us)\b/i;
+  const highlightMarker = "data-xs-lead-leak-highlight";
+  const originalOutline = "data-xs-lead-leak-original-outline";
+  const originalOutlinePriority = "data-xs-lead-leak-original-outline-priority";
 
-  // 2. Buttons that look like CTA but disabled – only flag if not explicitly allowed
-  document.querySelectorAll('button').forEach(btn => {
-    if (btn.disabled && !btn.hasAttribute('data-allow-disabled')) {
-      issues.push({type: 'disabled-button', selector: getUniqueSelector(btn), reason: 'Button disabled'});
-    }
-  });
+  // A rerun must remove stale findings after the page or its links change.
+  // Keep this inline: executeScript serializes this function without imports.
+  for (const element of document.querySelectorAll(`[${highlightMarker}]`)) {
+    const value = element.getAttribute(originalOutline) || "";
+    if (value) element.style.setProperty("outline", value, element.getAttribute(originalOutlinePriority) || "");
+    else element.style.removeProperty("outline");
+    element.removeAttribute(highlightMarker);
+    element.removeAttribute(originalOutline);
+    element.removeAttribute(originalOutlinePriority);
+  }
 
-  // 3. Forms without a meaningful action – ignore if they have an onsubmit handler or a submit button
-  document.querySelectorAll('form').forEach(form => {
-    const act = form.getAttribute('action') ?? '';
-    const hasSubmit = form.querySelector('[type="submit"]') !== null;
-    const hasOnsubmit = typeof form.onsubmit === 'function' || form.getAttribute('onsubmit');
-    if (!act.trim() && !(hasSubmit || hasOnsubmit)) {
-      issues.push({type: 'form-no-action', selector: getUniqueSelector(form), reason: 'Form action missing and no submit handler'});
+  function selectorFor(element) {
+    const parts = [];
+    for (let current = element; current; current = current.parentElement) {
+      const tag = current.tagName.toLowerCase();
+      const siblings = current.parentElement
+        ? Array.from(current.parentElement.children).filter((child) => child.tagName === current.tagName)
+        : [current];
+      parts.unshift(`${tag}:nth-of-type(${siblings.indexOf(current) + 1})`);
     }
-    // 3b. Submit inputs/buttons that are disabled – only flag if not explicitly allowed
-    form.querySelectorAll('[type="submit"]').forEach(sub => {
-      if (sub.disabled && !sub.hasAttribute('data-allow-disabled')) {
-        issues.push({type: 'disabled-submit', selector: getUniqueSelector(sub), reason: 'Submit disabled'});
-      }
-    });
-  });
+    return parts.join(" > ");
+  }
 
-  // 4. Links/buttons that lead to same‑page anchor that does not exist:
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    const targetId = a.getAttribute('href').slice(1);
-    if (targetId && !document.getElementById(targetId)) {
-      issues.push({type: 'broken-anchor', selector: getUniqueSelector(a), reason: 'Anchor target missing'});
+  function looksLikeCta(anchor) {
+    const label = [
+      anchor.getAttribute("aria-label"),
+      anchor.getAttribute("title"),
+      anchor.textContent,
+    ].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+    return ctaText.test(label);
+  }
+
+  function isScriptControl(anchor) {
+    return anchor.hasAttribute("onclick")
+      || anchor.getAttribute("role") === "button"
+      || anchor.hasAttribute("aria-controls")
+      || anchor.hasAttribute("data-bs-toggle")
+      || anchor.hasAttribute("data-toggle");
+  }
+
+  for (const anchor of document.querySelectorAll("a")) {
+    const href = (anchor.getAttribute("href") || "").trim();
+    if ((!anchor.hasAttribute("href") || href === "") && looksLikeCta(anchor) && !isScriptControl(anchor)) {
+      issues.push({
+        type: "broken-cta",
+        selector: selectorFor(anchor),
+        reason: "Call-to-action link has no destination",
+      });
+      continue;
     }
-  });
 
-  // Highlight all found elements (preserve existing styles)
-  issues.forEach(issue => {
+    if (!href.startsWith("#") || href === "#" || href.startsWith("#/") || isScriptControl(anchor)) continue;
+    let targetId;
     try {
-      const el = document.querySelector(issue.selector);
-      if (el) {
-        // add a semi‑transparent red outline without overwriting existing outline styles
-        const existing = el.style.outline;
-        el.dataset.originalOutline = existing;
-        el.style.outline = '2px solid #ff5555';
-        el.dataset.leakHighlight = 'true';
-        // add tooltip
-        el.title = `[Lead Leak] ${issue.reason}`;
-      }
-    } catch {}
-  });
+      targetId = decodeURIComponent(href.slice(1));
+    } catch {
+      continue;
+    }
+    const namedTarget = Array.from(document.getElementsByName(targetId)).some((element) => element.tagName === "A");
+    if (targetId && !document.getElementById(targetId) && !namedTarget) {
+      issues.push({
+        type: "broken-anchor",
+        selector: selectorFor(anchor),
+        reason: "Link points to a missing section",
+      });
+    }
+  }
+
+  for (const issue of issues) {
+    const element = document.querySelector(issue.selector);
+    if (!element || element.hasAttribute(highlightMarker)) continue;
+    element.setAttribute(highlightMarker, "");
+    element.setAttribute(originalOutline, element.style.getPropertyValue("outline"));
+    element.setAttribute(originalOutlinePriority, element.style.getPropertyPriority("outline"));
+    element.style.setProperty("outline", "2px solid #e11d48", "important");
+  }
 
   return issues;
 }
 
-// Helper: generate a reasonably unique CSS selector for an element.
-function getUniqueSelector(el) {
-  if (el.id) return `#${el.id}`;
-  const parts = [];
-  while (el && el.nodeType === Node.ELEMENT_NODE && parts.length < 5) {
-    let part = el.tagName.toLowerCase();
-    if (el.className) {
-      const firstClass = el.className.split(/\s+/)[0];
-      part += `.${firstClass}`;
-    }
-    parts.unshift(part);
-    el = el.parentElement;
-  }
-  return parts.join(' > ');
-}
-
 export function clearHighlights() {
-  document.querySelectorAll('[data-leakHighlight]').forEach(el => {
-    if (el.dataset.originalOutline !== undefined) {
-      el.style.outline = el.dataset.originalOutline;
-      delete el.dataset.originalOutline;
-    } else {
-      el.style.outline = '';
-    }
-    el.title = '';
-    delete el.dataset.leakHighlight;
-  });
-}
+  const highlightMarker = "data-xs-lead-leak-highlight";
+  const originalOutline = "data-xs-lead-leak-original-outline";
+  const originalOutlinePriority = "data-xs-lead-leak-original-outline-priority";
 
-// Runs in the context of the inspected page (content script).
-// Detects common broken CTA / form patterns and adds a visual highlight.
-
-export function detectLeadIssues() {
-  const issues = [];
-  // 1. Anchor tags with empty href, "#" or javascript:
-  document.querySelectorAll('a').forEach(a => {
-    const href = a.getAttribute('href') ?? '';
-    if (!href.trim() || href.trim() === '#' || href.trim().toLowerCase().startsWith('javascript:')) {
-      issues.push({type: 'broken-cta', selector: getUniqueSelector(a), reason: 'Empty or non‑navigable href'});
-    }
-  });
-
-  // 2. Buttons that look like CTA but disabled:
-  document.querySelectorAll('button').forEach(btn => {
-    if (btn.disabled) {
-      issues.push({type: 'disabled-button', selector: getUniqueSelector(btn), reason: 'Button disabled'});
-    }
-  });
-
-  // 3. Forms without action or with action pointing to "#" or javascript:
-  document.querySelectorAll('form').forEach(form => {
-    const act = form.getAttribute('action') ?? '';
-    if (!act.trim() || act.trim() === '#' || act.trim().toLowerCase().startsWith('javascript:')) {
-      issues.push({type: 'form-no-action', selector: getUniqueSelector(form), reason: 'Form action missing or non‑navigable'});
-    }
-    // 3b. Submit inputs/buttons that are disabled
-    form.querySelectorAll('[type="submit"]').forEach(sub => {
-      if (sub.disabled) {
-        issues.push({type: 'disabled-submit', selector: getUniqueSelector(sub), reason: 'Submit disabled'});
-      }
-    });
-  });
-
-  // 4. Links/buttons that lead to same‑page anchor that does not exist:
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    const targetId = a.getAttribute('href').slice(1);
-    if (targetId && !document.getElementById(targetId)) {
-      issues.push({type: 'broken-anchor', selector: getUniqueSelector(a), reason: 'Anchor target missing'});
-    }
-  });
-
-  // Highlight all found elements
-  issues.forEach(issue => {
-    try {
-      const el = document.querySelector(issue.selector);
-      if (el) {
-        el.style.outline = '2px solid #ff5555';
-        el.dataset.leakHighlight = 'true';
-        // add tooltip
-        el.title = `[Lead Leak] ${issue.reason}`;
-      }
-    } catch {}
-  });
-
-  return issues;
-}
-
-// Helper: generate a reasonably unique CSS selector for an element.
-function getUniqueSelector(el) {
-  if (el.id) return `#${el.id}`;
-  const parts = [];
-  while (el && el.nodeType === Node.ELEMENT_NODE && parts.length < 5) {
-    let part = el.tagName.toLowerCase();
-    if (el.className) {
-      const firstClass = el.className.split(/\s+/)[0];
-      part += `.${firstClass}`;
-    }
-    parts.unshift(part);
-    el = el.parentElement;
+  for (const element of document.querySelectorAll(`[${highlightMarker}]`)) {
+    const value = element.getAttribute(originalOutline) || "";
+    const priority = element.getAttribute(originalOutlinePriority) || "";
+    if (value) element.style.setProperty("outline", value, priority);
+    else element.style.removeProperty("outline");
+    element.removeAttribute(highlightMarker);
+    element.removeAttribute(originalOutline);
+    element.removeAttribute(originalOutlinePriority);
   }
-  return parts.join(' > ');
 }
 
-export function clearHighlights() {
-  document.querySelectorAll('[data-leakHighlight]').forEach(el => {
-    el.style.outline = '';
-    el.title = '';
-    delete el.dataset.leakHighlight;
-  });
+export function focusLeadIssue(selector) {
+  const element = document.querySelector(selector);
+  if (!element) return false;
+  element.scrollIntoView({ block: "center", behavior: "smooth" });
+  return true;
 }

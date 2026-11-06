@@ -1,3 +1,10 @@
+## XEND-EXT-LEAD-001 — PR #113 repair (2026-11-06)
+
+- Owner: ChatGPT/Codex; existing branch `lead-leak-detector-mvp`, PR #113. Existing uncommitted changes were backed up privately and preserved.
+- Repaired serialized MV3 injection, duplicate popup DOM/imports, local manual evidence persistence, false positives, stale highlights and valid legacy named anchors.
+- Checks: 38/38 extension tests including real packaged Chromium popup flows; extension lint, clean npm install, generated-page check and Chrome/Edge/Firefox ZIP builds passed. npm reports four dependency advisories (one moderate, three high); no broad dependency upgrade performed.
+- Next: verify remote SHA and required CI after push; then owner review. No merge, production deployment, store publication, payments or public checkout activation. Delivery marks are manual local evidence, not provider receipts.
+
 ## XEND-AUTH-1101 — owner verification complete (2026-11-05)
 
 Owner completed Google sign-in. Same Chrome profile /api/auth/me returned ok:true with the signed-in account (personal details excluded from this public record). Authenticated read-only PayU config recognized the existing owner pilot; independent anonymous config remains checkoutEnabled:false. Account UI shows signed-in navigation. No cookies/tokens inspected or copied, no payment initiated. Production version remains 7eba4890; no smoke regression or rollback. Runtime-tested source revision 3c02caf; later commits only record documentation.

@@ -1,5 +1,12 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+## XEND-EXT-LEAD-001 — Lead Leak Detector reliability in SiteCheck (2026-11-06)
+Status: REVIEW · Owner: ChatGPT · Branch: `lead-leak-detector-mvp` · PR #113
+- Scope: repair the MV3 detector injection and popup, reduce deterministic false positives, persist user-marked evidence locally by page path, and validate the packaged extension.
+- Guardrails: no page content, query strings, form values, network calls, new permissions, deployment, store submission, merge, or public checkout changes.
+- Baseline: PR CI reported syntax/policy lint failures; local UI, browser E2E and evidence persistence are being verified before commit/push.
+- Repair verified locally: 38/38 extension tests, packaged Chromium injection/evidence/reload/deletion and reruns, unique popup IDs, lint, three browser ZIPs, clean install and generated-page consistency. Remote CI verification follows push. No merge or publication authorized.
+
 ## XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05)
 Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
 Owner: Claude (PM task `PM-SITECHECK-002`, resumed from `xender-pm-state`)
