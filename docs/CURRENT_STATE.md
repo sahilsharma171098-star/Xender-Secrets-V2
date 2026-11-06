@@ -219,3 +219,9 @@ New PBKDF2-SHA256 password hashes encode the 100000 cost in the hash string; unt
 Controlled deploy confirmed 2026-11-05 10:18 UTC: revision 3c02caf, Worker 7eba4890 (100%). CI 42009141705 passed; live anonymous health/providers/PayU config pass with public checkout OFF. Secret binding names/types and DO namespace IDs preserved. Owner-interactive login and authenticated /api/auth/me remain pending; PR #104 draft.
 
 Owner verification completed after user interaction on 2026-11-05: same-profile /api/auth/me returned ok:true with the signed-in owner account; account navigation reflects the signed-in user. Read-only authenticated PayU config recognizes the existing owner-only pilot while a separate anonymous request still returns checkoutEnabled:false. No payment initiated.
+
+### XEND-EXT-LEAD-001 follow-up — 2026-11-06
+- Owner: Codex; PR #113, lead-leak-detector-mvp. Fresh extension tests 38/38 and lint passed; three reproducible v2.0.0 ZIPs generated. Hosted offline retry on 79b8bb5 passed; live E2E skipped.
+- Fixed Windows screenshot capture ID hashing to UTF-16LE, matching the working E2E helper. Regenerated five actual demo screenshots and three promo assets; inspected the first screenshot visually. Synchronized Lead Leak/manual evidence copy across Chrome/Edge/Firefox descriptions and changelog.
+- npm audit: four dev-tool findings (Wrangler/Miniflare/sharp/undici); npm audit --omit=dev: zero. No dependency upgrade. Shipped ZIP excludes node_modules.
+- Remaining: native toolbar-click acceptance (E2E uses temporary test-only host grant), full visual owner approval, current hosted privacy/store dashboard verification, separate dependency remediation and payment release gates. No merge/deploy/store submission/public checkout activation. Pre-existing untracked extension/package-lock.json preserved.

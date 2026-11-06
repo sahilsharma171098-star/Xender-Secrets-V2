@@ -113,3 +113,9 @@ Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everyt
 - Live change (owner asked to fix every existing video): run 40460762967 applied 30/30. Backup of all 30 videos (snippet, status, thumbnail) in AutoTube `data/retrofit/backup.json` + `thumbs_before/`. Checked on public pages: 27 new titles, horror unlisted, test upload private, 15 live thumbnails match the reviewed covers. Plan locked (`apply: false`).
 - Checks: AutoTube 83/83 unit tests; HQ `node --test tests/operations/ai-workspace.test.mjs` 6/6.
 - Not done / next: Sahil merges AutoTube #8 (until then new daily uploads keep the old packaging), then #9 and HQ #80. Sahil pastes the YOUTUBE_FORMAT block into the ChatGPT Project and Gemini Gem; ChatGPT registers the v2 format profile (CQ-024). Watch CTR/AVD in YouTube Studio for 7 days before changing topics. Rollback if needed: `rollback: true` in AutoTube `data/retrofit/plan.json`.
+
+### XEND-EXT-LEAD-001 follow-up — 2026-11-06
+- Owner: Codex; PR #113, lead-leak-detector-mvp. Fresh extension tests 38/38 and lint passed; three reproducible v2.0.0 ZIPs generated. Hosted offline retry on 79b8bb5 passed; live E2E skipped.
+- Fixed Windows screenshot capture ID hashing to UTF-16LE, matching the working E2E helper. Regenerated five actual demo screenshots and three promo assets; inspected the first screenshot visually. Synchronized Lead Leak/manual evidence copy across Chrome/Edge/Firefox descriptions and changelog.
+- npm audit: four dev-tool findings (Wrangler/Miniflare/sharp/undici); npm audit --omit=dev: zero. No dependency upgrade. Shipped ZIP excludes node_modules.
+- Remaining: native toolbar-click acceptance (E2E uses temporary test-only host grant), full visual owner approval, current hosted privacy/store dashboard verification, separate dependency remediation and payment release gates. No merge/deploy/store submission/public checkout activation. Pre-existing untracked extension/package-lock.json preserved.

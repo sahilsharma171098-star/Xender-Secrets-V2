@@ -2,6 +2,9 @@ Check the current webpage for SEO basics, accessibility issues, usability proble
 
 Xender SiteCheck is a website checker for business owners, marketers and web teams. Open any normal web page, click the SiteCheck button, and in about a second you get a clear list of what to fix, why it matters and how to fix it. Free checks need no account. Audited page data stays local. Optional Pro offers priority CSV export and manual before/after comparisons for up to 20 pages, saved locally, with license verification by Xender Secrets.
 
+LEAD LEAK DETECTOR
+Check likely broken CTA destinations and missing same-page sections, highlight findings, and mark delivered/not delivered evidence locally for the page. Marks are your manual records; SiteCheck does not verify form or message delivery over the network.
+
 WHAT IT CHECKS (49 checks)
 
 SEO basics

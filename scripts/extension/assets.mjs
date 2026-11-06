@@ -23,7 +23,7 @@ fs.cpSync(chrome.dir, extDir, { recursive: true });
 const m = JSON.parse(fs.readFileSync(path.join(extDir, "manifest.json"), "utf8"));
 m.host_permissions = ["<all_urls>"]; // capture-only stand-in for the toolbar click's activeTab grant
 fs.writeFileSync(path.join(extDir, "manifest.json"), JSON.stringify(m));
-const hex = crypto.createHash("sha256").update(path.resolve(extDir)).digest("hex").slice(0, 32);
+const hex = crypto.createHash("sha256").update(process.platform === "win32" ? Buffer.from(path.resolve(extDir), "utf16le") : path.resolve(extDir)).digest("hex").slice(0, 32);
 const extId = [...hex].map((c) => String.fromCharCode(97 + parseInt(c, 16))).join("");
 
 const context = await chromium.launchPersistentContext("", {
