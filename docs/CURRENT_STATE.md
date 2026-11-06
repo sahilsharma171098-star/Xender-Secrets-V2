@@ -4,7 +4,8 @@
 - Branch `lead-leak-detector-mvp`, PR #113: preserved and completed existing local repairs. Popup has one findings panel; bundled self-contained functions are passed to MV3 `executeScript`, with no module imports in the injected context or new permissions.
 - Named CTA links without destinations and missing same-page sections are reported as likely issues. Forms, disabled controls and script/router placeholders are not delivery failures. Legacy named anchors are accepted; reruns replace findings and remove stale highlights while restoring original outlines.
 - User marks are local, manual evidence only, scoped to origin/path with no query, fragment, page text or form values. Popup reload restores them; clearing highlights preserves evidence; explicit deletion removes evidence for the page. No network delivery verification is claimed.
-- Verified locally: clean npm install, 38/38 extension tests including packaged Chromium popup/injection/evidence flows, extension lint, all three browser packages and generated-page check. Remote CI must be checked on the pushed commit.
+- Verified locally on PR #113: `npm ci`; 38/38 extension tests including packaged Chromium popup/injection/evidence flows; extension lint; Chrome/Edge/Firefox package build; 177/177 + 27/27 repository tests; generated-page check. Repository tests required temporary `safe.bareRepository=all` for their disposable bare remotes. Install reported 4 advisories (1 moderate, 3 high); no dependency upgrade was made.
+- Remote PR head `111be1d6e142efa85112e132d64a00bdcd1542a8`: offline checks, SiteCheck release-candidate checks and Workers preview build passed. Hosted live-e2e was skipped; local packaged Chromium E2E passed.
 - No merge, production deployment, store publication, payment or public checkout activation performed.
 
 ## Supplied ThinkPad health results (2026-10-24; XEND-AI-HEALTH-001)

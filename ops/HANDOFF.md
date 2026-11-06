@@ -1,47 +1,23 @@
-## XEND-EXT-LEAD-001 — PR #113 repair (2026-11-06)
-
-- Owner: ChatGPT/Codex; existing branch `lead-leak-detector-mvp`, PR #113. Existing uncommitted changes were backed up privately and preserved.
-- Repaired serialized MV3 injection, duplicate popup DOM/imports, local manual evidence persistence, false positives, stale highlights and valid legacy named anchors.
-- Checks: 38/38 extension tests including real packaged Chromium popup flows; extension lint, clean npm install, generated-page check and Chrome/Edge/Firefox ZIP builds passed. npm reports four dependency advisories (one moderate, three high); no broad dependency upgrade performed.
-- Next: verify remote SHA and required CI after push; then owner review. No merge, production deployment, store publication, payments or public checkout activation. Delivery marks are manual local evidence, not provider receipts.
-
-## XEND-AUTH-1101 — owner verification complete (2026-11-05)
-
-Owner completed Google sign-in. Same Chrome profile /api/auth/me returned ok:true with the signed-in account (personal details excluded from this public record). Authenticated read-only PayU config recognized the existing owner pilot; independent anonymous config remains checkoutEnabled:false. Account UI shows signed-in navigation. No cookies/tokens inspected or copied, no payment initiated. Production version remains 7eba4890; no smoke regression or rollback. Runtime-tested source revision 3c02caf; later commits only record documentation.
-
----
-
-## XEND-AUTH-1101 — 2026-11-05 Codex checkpoint
-
-Issue #90 / PR #104 (draft). Source revision 3c02caf6d925a90c106db181fceb8a8eb4a2e402 deployed as 7eba4890-526b-47b6-bb2d-1f282b87026e, 100%, at 10:18 UTC. CI 42009141705 passed; unit 177/177, serial browser 27/27, isolated auth/canonical workerd 6/6, dry-run pass. Initial parallel browser GPU failure did not recur in isolated/serial runs.
-
-New password hashes tagged at 100000; untagged legacy uses 180000 or fails closed with recovery guidance. Verified Google/OTP can recover same account; no password rewrite/reset, schema or entitlement migration. Production OTP unavailable. Password-only users without a verified recovery provider still require support.
-
-Live anonymous health/providers/PayU config pass; auth/me 401 expected; public checkout false. All original encrypted secret binding names/types and 3 DO namespace IDs verified preserved; custom domains, preview flags and logging reconciled in config. Strict preflight halted on real config drift; after reconciliation, only empty DO optional-property diff remained and normal --keep-vars deploy was used after code/namespace review.
-
-PENDING: owner completes Google account chooser in Chrome tab opened by this task; then inspect /api/auth/me in SAME browser session (never print cookies/tokens or put owner personal data in public evidence). Keep draft until authenticated proof. Issue receipt: https://github.com/sahilsharma171098-star/Xender-Secrets-V2/issues/90#issuecomment-6655483318 . Rollback baseline f906c15e-e744-4135-8a94-59b82f83049f; code rollback does not migrate tagged credentials or DB state. No regression observed; no rollback, payments/refunds or store publication.
-
----
-
 # Handoff — read this after AGENTS.md
 
-Generated 2026-11-05 05:09 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/xender-pm-mvp-v5yqxj`
+- Branch: `lead-leak-detector-mvp`
 - Last commits:
-  - `48c9313 MT-010 (XEND-EXT-PAY-001, gate G11): SiteCheck Pro chargeback runbook + regression tests`
-  - `b69d7c0 XEND-PM-001: Xender AI Project Manager MVP (xender-pm CLI) (#110)`
-  - `3243cee XEND-CF-PREVIEW-001: record PR #109 live`
-  - `d7d3ad3 Preview hygiene: SiteCheck owner pilot off in previews; GA only on production host (#109)`
-  - `8b7aaab feat(sitecheck): white-label copied report and CSV, dismissible human-review suggestion (2.0.0) (#106)`
+  - `111be1d fix(sitecheck): repair MV3 lead leak injection and popup evidence`
+  - `58e02d6 Add Lead Leak Detector MVP implementation and tests`
+  - `32702b8 Add Lead Leak Detector UI and detection logic`
+  - `f576d50 fix(auth): resolve Google OAuth PBKDF2 Error 1101 safely`
+  - `0635392 docs(sitecheck): chargeback runbook and regression tests (MT-010)`
 
 ## Working-tree snapshot at generation
-- ` M docs/PAYU_CHARGEBACK.md`
-- ` M docs/SITECHECK_PRO_QA_CHECKLIST.md`
+- ` M docs/CURRENT_STATE.md`
 - ` M docs/TASKS.md`
+- `?? extension/package-lock.json`
 
 ## Open tasks (docs/TASKS.md)
+- XEND-EXT-LEAD-001 — Lead Leak Detector reliability in SiteCheck (2026-11-06) — REVIEW · Owner: ChatGPT · Branch: `lead-leak-detector-mvp` · PR #113 · Commit `111be1d6e142efa85112e132d64a00bdcd1542a8`
 - XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
 - XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
@@ -77,6 +53,13 @@ Generated 2026-11-05 05:09 UTC by **claude** with `npm run ops:handoff`. Everyth
 4. Before you stop: update the notes below, run `npm run ops:handoff -- --agent <you>`, commit.
 
 ## Notes from the last agent
+
+### XEND-EXT-LEAD-001 — Lead Leak Detector reliability (2026-11-06)
+- Owner: ChatGPT/Codex. Existing branch `lead-leak-detector-mvp`, PR #113 remains open. Commit/remote SHA: `111be1d6e142efa85112e132d64a00bdcd1542a8`.
+- Repaired serialized MV3 injection, popup UI, conservative CTA/anchor detection, local page-scoped evidence persistence/deletion and stale highlight cleanup. No page content, query strings, form values, or network data are stored.
+- Verified: `npm ci`; extension lint/build/package; 38/38 extension tests including packaged Chromium E2E; repository tests 177/177 + 27/27 (with temporary `safe.bareRepository=all` for test-created bare remotes); generated-page check. `npm ci` reported four advisories (1 moderate, 3 high), not changed.
+- CI on this SHA: offline checks, SiteCheck release-candidate checks and Workers preview build passed; hosted live-e2e skipped. Local packaged Chromium E2E passed.
+- Next: Sahil review PR #113. No merge, production deployment, store submission, payments or public checkout activation. Pre-existing untracked `extension/package-lock.json` remains untouched.
 
 ### XEND-EXT-PAY-001 / MT-010 — chargeback runbook (2026-11-05)
 - Owner: Claude, via PM task `PM-SITECHECK-002` (resumed from `xender-pm-state` on main `b69d7c0` after PR #110 merged). Branch `claude/xender-pm-mvp-v5yqxj` restarted from main.
