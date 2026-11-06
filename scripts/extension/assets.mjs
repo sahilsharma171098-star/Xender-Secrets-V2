@@ -104,7 +104,7 @@ const shots = [
   { file: "2-seo-accessibility.png", host: "brightsmile.example", filter: "Accessibility", open: "a11y-form-labels", scrollTo: "#filters", title: "Find SEO and accessibility issues", sub: ["Missing titles and descriptions, images without alt text, unlabelled form fields, low contrast and more."] },
   { file: "3-clear-fixes.png", host: "brightsmile.example", open: "a11y-img-alt", scrollTo: '[data-check="a11y-img-alt"]', title: "Get clear fixes — not technical jargon", sub: ["Every issue explains why it matters and what to change, with the exact elements found on the page."] },
   { file: "4-conversion-friction.png", host: "urbanthreads.example", filter: "Conversion", open: "cro-cta-competing", scrollTo: "#filters", title: "Spot conversion friction", sub: ["Competing buttons, no visible contact method, crowded menus — clearly labelled as heuristics, not rules."] },
-  { file: "5-local-first.png", host: "brightsmile.example", scrollTo: ".tools", title: "Local-first. No browsing-history tracking.", sub: ["SiteCheck runs only when you click it, only on the current tab, and sends nothing anywhere."],
+  { file: "5-local-first.png", host: "brightsmile.example", scrollTo: ".tools", title: "Local-first. No browsing-history tracking.", sub: ["Page audits stay on your device. Only an optional Pro license key is sent to Xender for verification."],
     extra: `<p style="margin-top:22px;font-size:15px;color:#0b1220"><strong>Permissions:</strong> ${perms.map((p) => `<code style="background:#e8efff;color:#1d4ed8;padding:2px 7px;border-radius:6px;margin-right:6px">${p}</code>`).join("")}</p><p style="font-size:15px">No access to all websites · no analytics · no remote code</p>` },
 ];
 const scores = {};
