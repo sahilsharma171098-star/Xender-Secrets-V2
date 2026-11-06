@@ -12,6 +12,98 @@ export function detectLeadIssues() {
     }
   });
 
+  // 2. Buttons that look like CTA but disabled – only flag if not explicitly allowed
+  document.querySelectorAll('button').forEach(btn => {
+    if (btn.disabled && !btn.hasAttribute('data-allow-disabled')) {
+      issues.push({type: 'disabled-button', selector: getUniqueSelector(btn), reason: 'Button disabled'});
+    }
+  });
+
+  // 3. Forms without a meaningful action – ignore if they have an onsubmit handler or a submit button
+  document.querySelectorAll('form').forEach(form => {
+    const act = form.getAttribute('action') ?? '';
+    const hasSubmit = form.querySelector('[type="submit"]') !== null;
+    const hasOnsubmit = typeof form.onsubmit === 'function' || form.getAttribute('onsubmit');
+    if (!act.trim() && !(hasSubmit || hasOnsubmit)) {
+      issues.push({type: 'form-no-action', selector: getUniqueSelector(form), reason: 'Form action missing and no submit handler'});
+    }
+    // 3b. Submit inputs/buttons that are disabled – only flag if not explicitly allowed
+    form.querySelectorAll('[type="submit"]').forEach(sub => {
+      if (sub.disabled && !sub.hasAttribute('data-allow-disabled')) {
+        issues.push({type: 'disabled-submit', selector: getUniqueSelector(sub), reason: 'Submit disabled'});
+      }
+    });
+  });
+
+  // 4. Links/buttons that lead to same‑page anchor that does not exist:
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    const targetId = a.getAttribute('href').slice(1);
+    if (targetId && !document.getElementById(targetId)) {
+      issues.push({type: 'broken-anchor', selector: getUniqueSelector(a), reason: 'Anchor target missing'});
+    }
+  });
+
+  // Highlight all found elements (preserve existing styles)
+  issues.forEach(issue => {
+    try {
+      const el = document.querySelector(issue.selector);
+      if (el) {
+        // add a semi‑transparent red outline without overwriting existing outline styles
+        const existing = el.style.outline;
+        el.dataset.originalOutline = existing;
+        el.style.outline = '2px solid #ff5555';
+        el.dataset.leakHighlight = 'true';
+        // add tooltip
+        el.title = `[Lead Leak] ${issue.reason}`;
+      }
+    } catch {}
+  });
+
+  return issues;
+}
+
+// Helper: generate a reasonably unique CSS selector for an element.
+function getUniqueSelector(el) {
+  if (el.id) return `#${el.id}`;
+  const parts = [];
+  while (el && el.nodeType === Node.ELEMENT_NODE && parts.length < 5) {
+    let part = el.tagName.toLowerCase();
+    if (el.className) {
+      const firstClass = el.className.split(/\s+/)[0];
+      part += `.${firstClass}`;
+    }
+    parts.unshift(part);
+    el = el.parentElement;
+  }
+  return parts.join(' > ');
+}
+
+export function clearHighlights() {
+  document.querySelectorAll('[data-leakHighlight]').forEach(el => {
+    if (el.dataset.originalOutline !== undefined) {
+      el.style.outline = el.dataset.originalOutline;
+      delete el.dataset.originalOutline;
+    } else {
+      el.style.outline = '';
+    }
+    el.title = '';
+    delete el.dataset.leakHighlight;
+  });
+}
+
+// Runs in the context of the inspected page (content script).
+// Detects common broken CTA / form patterns and adds a visual highlight.
+
+export function detectLeadIssues() {
+  const issues = [];
+  // 1. Anchor tags with empty href, "#" or javascript:
+  document.querySelectorAll('a').forEach(a => {
+    const href = a.getAttribute('href') ?? '';
+    if (!href.trim() || href.trim() === '#' || href.trim().toLowerCase().startsWith('javascript:')) {
+      issues.push({type: 'broken-cta', selector: getUniqueSelector(a), reason: 'Empty or non‑navigable href'});
+    }
+  });
+
   // 2. Buttons that look like CTA but disabled:
   document.querySelectorAll('button').forEach(btn => {
     if (btn.disabled) {

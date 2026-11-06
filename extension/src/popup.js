@@ -1,6 +1,66 @@
 // Xender SiteCheck popup. Runs src/audit.js in the active tab (activeTab + scripting),
 // scores locally. Optional Pro sends only a license key to Xender for verification.
-import { CATEGORIES } from "./lib/checks.js";
+import { detectLeadIssues, clearHighlights } from "./lib/lead-leak.js";
+
+// Add click handler for Lead Leak Test
+$("leadLeakTest").addEventListener("click", async () => {
+  show("loading");
+  let tab;
+  try { tab = await targetTab(); } catch (e) { blocked(messageForError(e)); return; }
+  if (!tab?.id) { blocked(messageForError(null)); return; }
+  try {
+    const result = await api.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ["lib/lead-leak-run.js"]
+    });
+    const issues = result && result[0] && result[0].result ? result[0].result : [];
+    // Populate UI list
+    const listEl = $("leadLeakList");
+    listEl.innerHTML = "";
+    if (issues.length === 0) {
+      listEl.append(document.createTextNode("No lead‑leak issues detected."));
+    } else {
+      issues.forEach(issue => {
+        const li = document.createElement("li");
+        li.textContent = `${issue.type}: ${issue.reason}`;
+        // Add a Test button for guided manual testing
+        const testBtn = document.createElement("button");
+        testBtn.type = "button";
+        testBtn.className = "btn small";
+        testBtn.textContent = "Test";
+        testBtn.dataset.selector = issue.selector;
+        li.appendChild(document.createTextNode(' '));
+        li.appendChild(testBtn);
+        listEl.append(li);
+      });
+      // Replace the original loop that added only text
+        const li = document.createElement("li");
+        li.textContent = `${issue.type}: ${issue.reason}`;
+        listEl.append(li);
+      });
+    }
+    $("leadLeakPanel").hidden = false;
+    show("report"); // keep main UI visible
+  } catch (e) {
+    blocked(messageForError(e));
+  }
+});
+
+$("leadLeakClear").addEventListener("click", async () => {
+  let tab;
+  try { tab = await targetTab(); } catch (e) { blocked(messageForError(e)); return; }
+  if (!tab?.id) { blocked(messageForError(null)); return; }
+  try {
+    await api.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ["lib/lead-leak-clear.js"]
+    });
+    $("leadLeakPanel").hidden = true;
+    $("leadLeakList").innerHTML = "";
+    show("report");
+  } catch (e) { blocked(messageForError(e)); }
+});
+
 import { detectLeadIssues, clearHighlights } from "./lib/lead-leak.js";
 import { scoreReport } from "./lib/score.js";
 import { restrictionFor, messageForError } from "./lib/restricted.js";

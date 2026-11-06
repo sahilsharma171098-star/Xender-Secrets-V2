@@ -25,9 +25,21 @@
       <p>Analysing the page in your browser…</p>
     </section>
 
+    <section id="leadLeakPanel" hidden>
+      <h3>Lead Leak Findings</h3>
+      <ul id="leadLeakList"></ul>
+      <button class="btn" id="leadLeakClear" type="button">Clear Highlights</button>
+    </section>
+
     <section class="state" id="blocked" hidden>
       <div class="state-icon" aria-hidden="true">⦸</div>
       <p class="state-msg" id="blockedMsg"></p>
+    </section>
+
+    <section id="leadLeakPanel" hidden>
+      <h3>Lead Leak Findings</h3>
+      <ul id="leadLeakList"></ul>
+      <button class="btn" id="leadLeakClear" type="button">Clear Highlights</button>
     </section>
 
     <section id="report" hidden>
@@ -72,6 +84,18 @@
         </div>
         <p id="baselineStatus" class="pro-compare-status" role="status" aria-live="polite"></p>
       </section>
+
+    <section id="leadLeakPanel" hidden>
+      <h3>Lead Leak Findings</h3>
+      <ul id="leadLeakList"></ul>
+      <button class="btn" id="leadLeakClear" type="button">Clear Highlights</button>
+    </section>
+    </section>
+
+    <section id="leadLeakPanel" hidden>
+      <h3>Lead Leak Findings</h3>
+      <ul id="leadLeakList"></ul>
+      <button class="btn" id="leadLeakClear" type="button">Clear Highlights</button>
     </section>
 
     <section class="pro-license" aria-label="SiteCheck Pro">
@@ -90,6 +114,12 @@
         <button id="deactivatePro" class="pro-text-button" type="button" hidden>Remove saved key</button>
         <button id="clearBaselines" class="pro-text-button" type="button">Delete saved comparisons</button>
       </div>
+    </section>
+
+    <section id="leadLeakPanel" hidden>
+      <h3>Lead Leak Findings</h3>
+      <ul id="leadLeakList"></ul>
+      <button class="btn" id="leadLeakClear" type="button">Clear Highlights</button>
     </section>
     <aside class="cta" id="cta" hidden>
       <button class="cta-dismiss" id="ctaDismiss" type="button" aria-label="Not now: hide this suggestion for 30 days">Not now</button>
