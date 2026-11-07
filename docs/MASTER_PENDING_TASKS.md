@@ -2,28 +2,28 @@
 
 One backlog across products. `MT-###` IDs are stable; existing `XEND-*` IDs are kept in the "Links" column so
 nothing in `docs/TASKS.md` is duplicated. Status words as in `docs/MASTER_PROJECT_STATUS.md`.
-Owner action items are marked **[Sahil]**. Last updated 2026-11-04 (evening).
+Owner action items are marked **[Sahil]**. Last updated 2026-11-06 from current GitHub and read-only laptop metadata.
 
 ## P0 — SiteCheck Pro + PayU (XEND-EXT-PAY-001, issue #90)
 
 | ID | Task | Status | Depends on | Evidence | Next action | Links |
 | --- | --- | --- | --- | --- | --- | --- |
 | MT-001 | Decide owner-only gate: main's owner pilot vs PR #96 canary email | CODE COMPLETE | — | both paths tested; #96 clean + CI green at `12c2f2c` | **[Sahil]** either set `WORKSPACE_OWNER_EMAIL` secret (no merge needed) or merge #96 and set `SITECHECK_PRO_CANARY_EMAIL`. Use one, not both | PR #96 |
-| MT-002 | Merge payment fixes: lost-callback recovery + customer-safe callback pages + QA checklist | PARTLY DONE | push of the follow-up branch | admin re-verify merged as PR #99 (`8eef28c`, squash by Sahil 2026-11-04); Live E2E #272 green on it. The later commits never reached GitHub, so they are rebuilt on `995301a` as `claude/sitecheck-payu-recheck-20261104` (`018975c` callback pages, `751461b` checklist, `19dc349` MT-009); unit 146/146, reader+funnel 27/27, worker 4/4 | push → PR → CI → merge → confirm Live E2E on the new main | G6, MT-014 |
-| MT-014 | Failed PayU payment landed on a 404 (`/payment-failed` missing); ambiguous callbacks showed raw JSON | IN REVIEW (push pending) | MT-002 | `018975c` on `claude/sitecheck-payu-recheck-20261104` | merge with MT-002 | G9 |
-| MT-003 | Free Durable Object namespace capacity (99/100) so PR previews build | BLOCKED | Sahil authorization | PR #96 handoff, build `ab36ba2b…` error 10067 | list namespaces in Cloudflare dashboard, identify ones left by deleted previews, back up, **[Sahil]** approve deletion of ≥2 | XEND-CLEANUP-20261022 |
-| MT-004 | Deploy main (+MT-002) to production, keep checkout flag OFF, re-run live gate | PARTLY DONE | MT-002 | main `8eef28c` (#99) and `995301a` (#103) deployed: Xender Live E2E #272 and #275 green (gate includes `checkoutEnabled=false`) | after the follow-up PR merges, confirm Live E2E on that SHA | G7 |
+| MT-002 | Merge payment fixes: lost-callback recovery + customer-safe callback pages + QA checklist | MERGED (PR #105) | PR #99 | Callback pages, self-serve recheck, and QA checklist merged; latest main Live E2E run `42174727707` succeeded | Owner canary and real payment evidence remain separate | G6, MT-014 |
+| MT-014 | Failed PayU payment landed on a 404 (`/payment-failed` missing); ambiguous callbacks showed raw JSON | DONE (merged PR #105) | MT-002 | PR #105 merged 2026-11-04 | None for code; live payment behavior remains untested | G9 |
+| MT-003 | Free Durable Object namespace capacity so PR previews build | PREVIEW VERIFIED; ACCOUNT COUNT UNVERIFIED | Sahil authorization for cleanup | PR #113 Workers preview build passed; prior cleanup reported 72 namespaces, not re-read here | If cleanup is still desired, recheck current ownership/data and obtain approval before removing any branch or namespace | XEND-CLEANUP-20261022 |
+| MT-004 | Deploy main and rerun live gate without enabling public checkout | MAIN CHECKS PASSED | MT-002 | main `8a6e29f`; Xender Live E2E run `42174727707` succeeded | Confirm account-side checkout setting separately before any owner canary | G7 |
 | MT-005 | Owner ₹499 canary purchase | BLOCKED | MT-001, MT-004 | — | **[Sahil]** follow `docs/SITECHECK_PRO_QA_CHECKLIST.md` sections 0–6 | G9 |
 | MT-006 | Verify capture → ledger → licence → extension unlock → reinstall restore | TESTING PENDING | MT-005 | — | check PayU dashboard, `/api/sitecheck/entitlement`, generate key, restore after reinstall | G9 |
 | MT-007 | Confirm webhook delivery format and `productinfo` round-trip | TESTING PENDING | MT-005 | handler accepts form-encoded only; productinfo has an em dash | if "Order mismatch"/415 seen, settle with MT-002 and fix in code | G8 |
 | MT-008 | Real full refund → automatic revocation | TESTING PENDING | MT-006 | refund query in `/api/sitecheck/license/verify` | **[Sahil]** refund in PayU dashboard; verify Pro off within 15 min | G10 |
-| MT-009 | Customer self-serve "re-check my payment" (no admin needed) | IN REVIEW (push pending) | MT-002 | `19dc349` on `claude/sitecheck-payu-recheck-20261104`; `tests/unit/payu-recheck.test.mjs` | merge with MT-002 | — |
-| MT-010 | Chargeback path | NOT STARTED | — | manual reconcile only | document PayU chargeback notification; keep manual until signed source exists | G11 |
+| MT-009 | Customer self-serve "re-check my payment" (no admin needed) | MERGED (PR #105) | MT-002 | PR #105 merged 2026-11-04 | Real payment testing remains pending | — |
+| MT-010 | Chargeback path | RUNBOOK MERGED (PR #111); LIVE EVENT UNTESTED | — | Manual owner-only reconcile documented and regression-tested | Keep manual until a signed provider source exists; no real chargeback observed | G11 |
 | MT-011 | GST receipt/invoice + refund terms review for ₹499 | TESTING PENDING | — | pages exist | review copy against actual PayU receipt after MT-005 | G12 |
 | MT-012 | Chrome Web Store SiteCheck v2.0.0 submission | BLOCKED | MT-006–MT-011 | manifests 2.0.0; tests 28/28 | build zip, **[Sahil]** submit in dashboard, record approval | G13 |
 | MT-013 | Public launch | NOT STARTED | all above | — | **[Sahil]** authorize `SITECHECK_PRO_CHECKOUT_ENABLED=true` | G14 |
-| MT-015 | White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) | IN REVIEW (push pending) | — | `claude/sitecheck-whitelabel-cta-20261104` (`2caf7ff`, `f77c216` on `995301a`); extension 31/31, lint ✓ | PR → merge before the 2.0.0 zip is built | — |
-| MT-016 | v2.1: page-load metrics on device, Show on page, Pro white-label PDF | CODE COMPLETE (draft) | MT-012 approved | `claude/sitecheck-v21-local-ux-20261104` (`a049b61`, `55e43e9`, stacked on MT-015); 46/46, package ✓ | open as draft PR; after 2.0.0 approval bump to 2.1.0, update `/sitecheck-privacy` + `/sitecheck-pro` copy, submit update | — |
+| MT-015 | White-label copy/CSV + dismissible human-review suggestion (ships in 2.0.0) | MERGED (PR #106) | — | PR #106 merged 2026-11-04 | Build and submit store package only after owner review | — |
+| MT-016 | v2.1: page-load metrics on device, Show on page, Pro white-label PDF | OPEN DRAFT (PR #108) | MT-012 approved | Draft PR #108 remains open | Hold pending 2.0.0 approval and owner review; update privacy/Pro copy before a store update | — |
 | MT-017 | Launch on Product Hunt / Reddit | NOT STARTED | MT-012 approved **and** MT-006 passed | — | only then; ask for honest reviews, never offer anything in return (store policy) | G15 |
 
 ## P1 — AutoTube
@@ -31,9 +31,9 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-04 (evening).
 | ID | Task | Status | Depends on | Evidence | Next action | Links |
 | --- | --- | --- | --- | --- | --- | --- |
 | MT-020 | Give Claude read/write access to private `autotube` repo | BLOCKED | Sahil | API 404 from this session | **[Sahil]** add repo to Claude's GitHub access | — |
-| MT-021 | Reconcile laptop checkout (detached at `lab-out/final-biryani`, untracked `autotube/`, `final_720p.mp4`) | NOT STARTED | — | observed 2026-11-03 | inspect untracked folder before any pull; back up; never discard | XEND-CLEANUP-20261022 |
-| MT-022 | Merge state of AutoTube PR #8 (format) / #9 (retrofit) | unverified | MT-020 | TASKS.md says Sahil merge pending | check, then merge or close | XEND-YT-FORMAT-001 |
-| MT-025 | Daily video workflow failing (3 failures emailed on 2 Nov); 4 Nov merge PR fails safety tests | BLOCKED | MT-020 | GitHub notification emails | read run logs, fix on a branch; don't merge the failing PR | XEND-YT-01 |
+| MT-021 | Reconcile local AutoTube content worktrees | IN PROGRESS; PRESERVED | — | Two AutoTube worktrees have uncommitted/untracked state; their contents were not opened or moved | Owner review and a safe content/source comparison before any sync | XEND-CLEANUP-20261022 |
+| MT-022 | Merge state of AutoTube PR #8 (format) / #9 (retrofit) | DONE (both merged) | MT-020 | GitHub reports #8 and #9 merged; current draft retrofit is #13 | Keep #13 separate for current review; do not infer live publishing | XEND-YT-FORMAT-001 |
+| MT-025 | AutoTube workflow reliability | NEEDS REVIEW | MT-020 | A successful main run was observed 2026-11-04; recent feature-branch runs include failures | Review current logs on open PRs #29 and #30 before merge; do not enable publishing | XEND-YT-01 |
 | MT-023 | Hindi pipeline quality pass (voice, captions, music, thumbnails, QA gate) + one offline sample | NOT STARTED | MT-020 | — | render offline sample, review before any publish | XEND-YT-QUALITY-001 |
 | MT-024 | US/UK English channel config inside AutoTube (no second engine) | NOT STARTED | MT-023 | — | channel profile + research-source rules | — |
 
@@ -42,10 +42,10 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-04 (evening).
 | ID | Task | Status | Depends on | Evidence | Next action | Links |
 | --- | --- | --- | --- | --- | --- | --- |
 | MT-030 | Do not submit the old 1.0.0 zip | **[Sahil]** | — | 1.0.0 could not work at all | upload `gridsnip-1.1.0.zip` instead (MT-036) | R2, R3 |
-| MT-031 | Move source into HQ (`projects/gridsnip/`), secret-scan, register in PROJECTS.md | IN REVIEW (push pending) | — | `claude/gridsnip-v1.1-20261104` (`f1292c5` on `995301a`); task entry XEND-GRIDSNIP-001 in `docs/TASKS.md` | merge | R1 |
+| MT-031 | Move source into HQ (`projects/gridsnip/`), secret-scan, register in PROJECTS.md | OPEN PR #107 | — | GitHub PR #107 is open; store/live API state not verified | Review current PR checks and privacy disclosures before merge | R1 |
 | MT-032 | Free tier design (BYO key only, or capped server proxy with cost approval) | CODE COMPLETE (BYO key) | MT-031 | placeholder key | pick one; listing must match | R2 |
 | MT-033 | Paid tier via SiteCheck licence infra (INR PayU) — Gumroad placeholder removed | NOT STARTED (placeholder removed) | MT-006 | placeholder permalink | reuse `/api/sitecheck/license/*` pattern with product id `gridsnip` | R3 |
-| MT-034 | Privacy policy page + CWS data disclosure ("Website content") | IN REVIEW (push pending) | MT-031 | `/gridsnip-privacy` generated from `projects/gridsnip/store/privacy-policy.md`; check:pages clean | merge, then confirm the page is live | R4 |
+| MT-034 | Privacy policy page + CWS data disclosure ("Website content") | OPEN PR #107 | MT-031 | Proposed in PR #107; not yet confirmed live | Merge only after review, then verify the public page before store submission | R4 |
 | MT-036 | GridSnip 1.1.0 store submission | BLOCKED | merge `claude/gridsnip-v1.1-20261104` (privacy page must be live) | zip + store kit on the laptop | **[Sahil]** test once with own Gemini key, upload zip, paste store answers, submit | R1–R5 |
 | MT-035 | Replace `alert()`, error recovery, complex-table accuracy tests | CODE COMPLETE (live accuracy untested) | MT-031 | — | — | R5 |
 
@@ -75,5 +75,5 @@ Owner action items are marked **[Sahil]**. Last updated 2026-11-04 (evening).
 | ID | Task | Status | Next action |
 | --- | --- | --- | --- |
 | MT-110 | Give Claude sessions GitHub write access to `Xender-Secrets-V2` and `autotube` | BLOCKED | **[Sahil]** connect GitHub to Claude with these repos |
-| MT-120 | Keep/close decision for 20 open PRs (list in MASTER_PROJECT_STATUS) | NOT STARTED | triage after MT-110; close only with Sahil's OK |
-| MT-121 | Update local laptop checkout of HQ repo (behind origin at `ebc6646`) | NOT STARTED | `git fetch` on the laptop before local work |
+| MT-120 | Review 24 open Xender HQ PRs and 3 open AutoTube PRs | INVENTORY REFRESHED; OWNER TRIAGE PENDING | See `MASTER_PROJECT_STATUS.md`; review each against current main and close only with owner approval |
+| MT-121 | Select and update one canonical local HQ checkout | IN PROGRESS; NO FAST-FORWARD PERFORMED | GitHub main is `8a6e29f`; clean local main clones lag and four worktrees have uncommitted state. Select the canonical checkout, back up, and compare before any update (XEND-CLEANUP-20261022) |
