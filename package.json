@@ -2,6 +2,9 @@
   "name": "xender-secrets-v2",
   "version": "1.0.0",
   "private": true,
+  "bin": {
+    "xender-pm": "scripts/pm/xender-pm.mjs"
+  },
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "dev:remote-ai": "wrangler dev",
@@ -19,7 +22,7 @@
     "extension:build": "node scripts/extension/build.mjs",
     "extension:package": "node scripts/extension/build.mjs --package",
     "extension:lint": "node scripts/extension/lint.mjs",
-    "extension:test": "node --test extension/tests/unit.test.mjs extension/tests/audit.test.mjs extension/tests/extension-e2e.test.mjs",
+    "extension:test": "node --test extension/tests/unit.test.mjs extension/tests/audit.test.mjs extension/tests/lead-leak.test.mjs extension/tests/extension-e2e.test.mjs",
     "extension:assets": "node scripts/extension/assets.mjs && node scripts/extension/icons.mjs",
     "test:worker": "node --test tests/worker/canonical-worker.test.mjs",
     "seo:links": "node scripts/seo/normalize-links.mjs",
@@ -29,9 +32,13 @@
     "ai:list": "node scripts/ops/ai-workspace.mjs list",
     "ai:doctor": "node scripts/ops/ai-workspace.mjs doctor",
     "ai:prepare": "node scripts/ops/ai-workspace.mjs prepare",
-    "ai:task": "node scripts/ops/task-workspace.mjs"
+    "ai:task": "node scripts/ops/task-workspace.mjs",
+    "pm": "node scripts/pm/xender-pm.mjs",
+    "test:pm": "node --test tests/unit/xender-pm.test.mjs",
+    "pm:demo": "node scripts/pm/demo.mjs"
   },
   "devDependencies": {
+    "jsdom": "^31.0.0",
     "playwright": "1.57.0",
     "wrangler": "^4.0.0"
   }

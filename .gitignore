@@ -12,3 +12,6 @@ prospects-out/
 
 # Private AI briefs, generated assets and result receipts
 .xender-ai/
+
+# xender-pm local working state (shared via `npm run pm -- sync-state` to the xender-pm-state branch)
+ops/pm/state/

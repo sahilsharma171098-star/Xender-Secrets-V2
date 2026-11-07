@@ -4,7 +4,7 @@ Implemented 2026-10-06 in `src/growth.mjs` (server), `public/xs-growth.js` (brow
 
 ## Principles
 - First-party events (this system): no cookies, no fingerprinting, no visitor/session IDs.
-- Google Analytics 4 (added 2026-11-04, XEND-GA4-001, at Sahil's request): property stream `G-C95XL2M3ZQ` on every public page except `/admin`, defined once in `scripts/commercial/analytics.mjs` and enforced by `npm run check:pages`. It sets Google's `_ga` cookies; the tag is disabled (Google's `ga-disable-<ID>` flag) for GPC/DNT visitors and framed loads. Disclosed in `/privacy`. Never send names, emails, phones or lead fields to GA. First-party counters stay the source of truth for leads and revenue.
+- Google Analytics 4 (added 2026-11-04, XEND-GA4-001, at Sahil's request): property stream `G-C95XL2M3ZQ` on every public page except `/admin`, defined once in `scripts/commercial/analytics.mjs` and enforced by `npm run check:pages`. It sets Google's `_ga` cookies; the tag is disabled (Google's `ga-disable-<ID>` flag) on any host other than `www.xendersecrets.com`/`xendersecrets.com` (Cloudflare previews, localhost, tests), for GPC/DNT visitors and for framed loads. Disclosed in `/privacy`. Never send names, emails, phones or lead fields to GA. First-party counters stay the source of truth for leads and revenue.
 - Events are stored as **daily aggregate counters**, not per-visitor rows.
 - Visitors with Global Privacy Control or Do Not Track send no events (lead forms still work).
 - Raw leads are readable only with the `ADMIN_TOKEN` Worker secret. Never in the public repo.

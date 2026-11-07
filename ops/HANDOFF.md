@@ -1,5 +1,6 @@
 # Handoff — read this after AGENTS.md
 
+<<<<<<< HEAD
 Generated 2026-11-04 15:54 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
@@ -10,15 +11,35 @@ Generated 2026-11-04 15:54 UTC by **claude** with `npm run ops:handoff`. Everyth
   - `85287fc XEND-CF-PREVIEW-001: queue CQ-025 (delete 54 merged branches) for ChatGPT`
   - `9316415 docs(hq): log the 2026-11-04 evening release prep; #99 live, follow-ups rebuilt on 995301a`
   - `faa3db4 XEND-CF-PREVIEW-001: record preview-build cause and branch cleanup plan`
+=======
+Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+
+## Where the work is
+- Branch: `lead-leak-detector-mvp`
+- Last commits:
+  - `111be1d fix(sitecheck): repair MV3 lead leak injection and popup evidence`
+  - `58e02d6 Add Lead Leak Detector MVP implementation and tests`
+  - `32702b8 Add Lead Leak Detector UI and detection logic`
+  - `f576d50 fix(auth): resolve Google OAuth PBKDF2 Error 1101 safely`
+  - `0635392 docs(sitecheck): chargeback runbook and regression tests (MT-010)`
+>>>>>>> origin/main
 
 ## Working-tree snapshot at generation
-- none — working tree clean
+- ` M docs/CURRENT_STATE.md`
+- ` M docs/TASKS.md`
+- `?? extension/package-lock.json`
 
 ## Open tasks (docs/TASKS.md)
+<<<<<<< HEAD
 - XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04) — REVIEW (branches `claude/sitecheck-payu-recheck-20261104`, `claude/sitecheck-whitelabel-cta-20261104`; draft `claude/sitecheck-v21-local-ux-20261104`)
 - XEND-GRIDSNIP-001 — GridSnip OCR 1.1.0: working, honest store build (2026-11-04) — REVIEW (branch `claude/gridsnip-v1.1-20261104`)
 - XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03) — REVIEW (docs on branch `claude/xend-master-backlog-20261103`, PR #100; recovery fix merged as PR #99 `8eef28c` on 2026-11-04)
 - XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04) — BLOCKED (54 merged-branch deletions queued for ChatGPT as CQ-025 in `docs/CHATGPT_ACTION_QUEUE.md`)
+=======
+- XEND-EXT-LEAD-001 — Lead Leak Detector reliability in SiteCheck (2026-11-06) — REVIEW · Owner: ChatGPT · Branch: `lead-leak-detector-mvp` · PR #113 · Commit `111be1d6e142efa85112e132d64a00bdcd1542a8`
+- XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
+- XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
+>>>>>>> origin/main
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -53,6 +74,7 @@ Generated 2026-11-04 15:54 UTC by **claude** with `npm run ops:handoff`. Everyth
 
 ## Notes from the last agent
 
+<<<<<<< HEAD
 ### XEND-CLEANUP-20261022 — master inventory dashboard continuation (2026-11-06)
 - Owner: ChatGPT. Updated `docs/MASTER_PROJECT_STATUS.md`, `docs/MASTER_PENDING_TASKS.md`, `PROJECTS.md`, and the cleanup task record on local branch `chatgpt/xend-cleanup-dashboard-20261106`, based on open PR #100. Existing dirty worktrees and local project folders were not changed.
 - Not published: PowerShell command execution was refused because local-network access is disabled. The handoff generator, Git checks, commit, push, and follow-up PR remain pending. No production or account changes were made.
@@ -65,6 +87,29 @@ Generated 2026-11-04 15:54 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Checks run: see `docs/EXECUTION_LOG.md` (2026-11-04 evening). Main + all four squashed together: unit 146, extension 31, GridSnip 16, reader+funnel 27, worker 4, ops 42, check:pages and link check clean.
 - After each merge: Workers Builds production build ✓ and "Xender Live E2E" ✓ on the new SHA (`checkoutEnabled=false`); after GridSnip, `/gridsnip-privacy` must load before Sahil submits GridSnip 1.1.0.
 - Never set `SITECHECK_PRO_CHECKOUT_ENABLED`. Workers Builds *preview* fails on every PR (Durable Object namespace limit) — known, not caused by these branches.
+=======
+### XEND-EXT-LEAD-001 — Lead Leak Detector reliability (2026-11-06)
+- Owner: ChatGPT/Codex. Existing branch `lead-leak-detector-mvp`, PR #113 remains open. Commit/remote SHA: `111be1d6e142efa85112e132d64a00bdcd1542a8`.
+- Repaired serialized MV3 injection, popup UI, conservative CTA/anchor detection, local page-scoped evidence persistence/deletion and stale highlight cleanup. No page content, query strings, form values, or network data are stored.
+- Verified: `npm ci`; extension lint/build/package; 38/38 extension tests including packaged Chromium E2E; repository tests 177/177 + 27/27 (with temporary `safe.bareRepository=all` for test-created bare remotes); generated-page check. `npm ci` reported four advisories (1 moderate, 3 high), not changed.
+- CI on this SHA: offline checks, SiteCheck release-candidate checks and Workers preview build passed; hosted live-e2e skipped. Local packaged Chromium E2E passed.
+- Next: Sahil review PR #113. No merge, production deployment, store submission, payments or public checkout activation. Pre-existing untracked `extension/package-lock.json` remains untouched.
+
+### XEND-EXT-PAY-001 / MT-010 — chargeback runbook (2026-11-05)
+- Owner: Claude, via PM task `PM-SITECHECK-002` (resumed from `xender-pm-state` on main `b69d7c0` after PR #110 merged). Branch `claude/xender-pm-mvp-v5yqxj` restarted from main.
+- Added `docs/PAYU_CHARGEBACK.md`, `tests/unit/payu-chargeback.test.mjs` (4/4), and a QA checklist 5.4 link. Docs and tests only.
+- Checks run: `npm test` unit 176/176 and browser 27/27; payu + licence group 36/36; `extension:lint` passed; `extension:test` 31/31; `check:pages` clean; `test:pm` 23/23. Browser suites need Playwright resolvable from the repo: this host has no `node_modules`, so the pre-installed `/opt/node-tools` copy was symlinked into git-ignored `node_modules/`.
+- Policy decided by Sahil (PR #111 review, 2026-11-05): reply before PayU `Reply Before`; revoke only on `Closed Customer Favour`. Runbook updated. Open: G11 row in PR #100 to point here. No chargeback has occurred, so live verification of G11 is still pending.
+
+### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04, review fixes 2026-11-05)
+- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (current main merged in, no force-push). Guide: `docs/XENDER_PM.md`. **Not merged, not deployed.**
+- Review 5774186840 blockers: (1) approvals now come from the selected work items, not just the owner's words; `PM-SITECHECK-001` needs `--approve deploy,merge` before any auto-run (MT-004), and old task files are re-checked at dispatch. (2) State is local in git-ignored `ops/pm/state/` until `npm run pm -- sync-state`, which shares it on branch `xender-pm-state` with history-based conflict detection, a secret scan and fast-forward-only push; a fresh clone pulls it on `resume`.
+- Real smoke test 2026-11-05 (`ops/pm/evidence/SMOKE-2026-11-05.md`): real Claude CLI read-only task `PM-SITECHECK-002` (MT-010) → checkpoint → `sync-state` (first real push, `xender-pm-state` @ `6c44adc`) → fresh clone resume → second real Claude run → fast-forward `a9a472f` → pull on the first clone. `main` untouched. Codex/Gemini not tested (not installed).
+- Use it first: `npm run pm -- status` (a fresh clone pulls shared tasks on `resume`; `npm run pm -- pull` gets all). Resume: `npm run pm -- resume PM-SITECHECK-001 --agent <you>`. Next action there is MT-004 verify-only (Live E2E 41892558789 green on `d7d3ad3`), then MT-010 docs.
+- Checks run 2026-11-05: xender-pm 22/22; unit 171/171; operations 40/40; `pm:demo` PASS; `check:pages` clean. Fresh-clone resume is tested against a local bare remote, not against GitHub.
+- Not done: no Codex/Gemini run (CLIs absent on the cloud host); no non-read-only real agent run; PR CI ran offline checks only (live-e2e skipped on PRs); PR #100's backlog file still shows MT-002/003/009/014/015 as open (the PM shows them corrected).
+
+>>>>>>> origin/main
 ### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
 - Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.
 - Done: GitHub auto-delete of merged branches ON. Pending Sahil: `bash ops/cleanup/delete-merged-branches-20261104.sh` (54 merged branches; previews auto-delete and free slots). Do not add a new Durable Object class until slots are freed.
@@ -103,3 +148,9 @@ Generated 2026-11-04 15:54 UTC by **claude** with `npm run ops:handoff`. Everyth
 - Live change (owner asked to fix every existing video): run 40460762967 applied 30/30. Backup of all 30 videos (snippet, status, thumbnail) in AutoTube `data/retrofit/backup.json` + `thumbs_before/`. Checked on public pages: 27 new titles, horror unlisted, test upload private, 15 live thumbnails match the reviewed covers. Plan locked (`apply: false`).
 - Checks: AutoTube 83/83 unit tests; HQ `node --test tests/operations/ai-workspace.test.mjs` 6/6.
 - Not done / next: Sahil merges AutoTube #8 (until then new daily uploads keep the old packaging), then #9 and HQ #80. Sahil pastes the YOUTUBE_FORMAT block into the ChatGPT Project and Gemini Gem; ChatGPT registers the v2 format profile (CQ-024). Watch CTR/AVD in YouTube Studio for 7 days before changing topics. Rollback if needed: `rollback: true` in AutoTube `data/retrofit/plan.json`.
+
+### XEND-EXT-LEAD-001 follow-up — 2026-11-06
+- Owner: Codex; PR #113, lead-leak-detector-mvp. Fresh extension tests 38/38 and lint passed; three reproducible v2.0.0 ZIPs generated. Hosted offline retry on 79b8bb5 passed; live E2E skipped.
+- Fixed Windows screenshot capture ID hashing to UTF-16LE, matching the working E2E helper. Regenerated five actual demo screenshots and three promo assets; inspected the first screenshot visually. Synchronized Lead Leak/manual evidence copy across Chrome/Edge/Firefox descriptions and changelog.
+- npm audit: four dev-tool findings (Wrangler/Miniflare/sharp/undici); npm audit --omit=dev: zero. No dependency upgrade. Shipped ZIP excludes node_modules.
+- Remaining: native toolbar-click acceptance (E2E uses temporary test-only host grant), full visual owner approval, current hosted privacy/store dashboard verification, separate dependency remediation and payment release gates. No merge/deploy/store submission/public checkout activation. Pre-existing untracked extension/package-lock.json preserved.

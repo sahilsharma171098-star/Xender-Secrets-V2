@@ -29,7 +29,7 @@ extension/
 | `npm run extension:build` | Writes `extension/dist/{chrome,edge,firefox}/` |
 | `npm run extension:package` | Also writes reproducible zips `extension/dist/xender-sitecheck-{chrome,edge,firefox}.zip` and prints sha256 |
 | `npm run extension:lint` | Syntax, policy (no eval/network/storage/remote code/HTML injection), manifest, store-copy and permission-doc checks |
-| `npm run extension:test` | Unit + audit-rule + real-extension tests (needs `npm install --no-save playwright`) |
+| `npm run extension:test` | Unit + audit-rule + Lead Leak + real-extension browser tests (dependencies from the root `npm ci`) |
 | `npm run extension:assets` | Regenerates store screenshots, promo tiles and icons from the real extension |
 
 Optional Firefox validation: `npx web-ext@10 lint --source-dir extension/dist/firefox` (0 errors, 0 warnings on 1.0.0).
@@ -40,7 +40,7 @@ Optional Firefox validation: `npx web-ext@10 lint --source-dir extension/dist/fi
 Then open any website and click the SiteCheck icon. Full manual smoke test: `store/release-checklist.md`.
 
 ## Privacy model
-Permissions: `activeTab`, `scripting` only. No host permissions, background, content scripts or storage. The extension makes no network requests; results live in popup memory. See `store/privacy-policy.md` (also published at `/sitecheck-privacy`) and `store/permission-justification.md`.
+Page analysis runs only after a user action and remains local. The optional Pro flow validates only the entered license key. License keys and user-marked, page-scoped Lead Leak evidence use local extension storage; query strings, page content and form values are not stored. No background script, content scripts, browser sync or broad host permissions are used. See `store/privacy-policy.md` (also published at `/sitecheck-privacy`) and `store/permission-justification.md`.
 
 ## Adding a check
 1. Add the logic in `src/audit.js` (`record(...)` / `fromList(...)`, never read field values).

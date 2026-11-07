@@ -1,15 +1,12 @@
 /**
- * Google login prefers dedicated account OAuth credentials.
- * Older Xender deployments use WORKSPACE_* for the same Google OAuth web client.
- * Never expose either secret to the browser: this helper is used server-side only.
+ * Xender website sign-in uses ONLY a dedicated Google OAuth Web application client.
+ * Workspace integration OAuth credentials are unrelated, even if both use Google.
  *
- * The Google Cloud OAuth client's Authorized redirect URIs must contain:
- * https://www.xendersecrets.com/api/auth/oauth/google/callback
+ * Keep client ID and secret in Cloudflare encrypted Worker Secrets. Never log or
+ * expose their values in public provider discovery responses.
  */
 export function googleOAuthCredentials(env = {}) {
-  if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET)
-    return { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET };
-  if (env.WORKSPACE_GOOGLE_CLIENT_ID && env.WORKSPACE_GOOGLE_CLIENT_SECRET)
-    return { clientId: env.WORKSPACE_GOOGLE_CLIENT_ID, clientSecret: env.WORKSPACE_GOOGLE_CLIENT_SECRET };
-  return null;
+  const clientId = typeof env.GOOGLE_CLIENT_ID === "string" ? env.GOOGLE_CLIENT_ID.trim() : "";
+  const clientSecret = typeof env.GOOGLE_CLIENT_SECRET === "string" ? env.GOOGLE_CLIENT_SECRET.trim() : "";
+  return clientId && clientSecret ? { clientId, clientSecret } : null;
 }

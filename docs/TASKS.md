@@ -1,5 +1,6 @@
 # Xender Secrets V2 — Shared AI Task Board
 
+<<<<<<< HEAD
 ## XEND-EXT-LEAD-001 — Lead Leak Detector MVP (2026-11-06)
 Status: DONE (merged PR #113 to main `8a6e29f`; main Live E2E and SEO audit succeeded)
 Owner: ChatGPT
@@ -9,6 +10,38 @@ Owner: ChatGPT
 
 ## XEND-PM-001 — Xender AI Project Manager MVP
 Status: DONE (merged PR #110 on 2026-11-05; not a production deployment)
+=======
+## XEND-EXT-LEAD-001 — Lead Leak Detector reliability in SiteCheck (2026-11-06)
+Status: REVIEW · Owner: ChatGPT · Branch: `lead-leak-detector-mvp` · PR #113 · Commit `111be1d6e142efa85112e132d64a00bdcd1542a8`
+- Scope: repair the MV3 detector injection and popup, reduce deterministic false positives, persist user-marked evidence locally by page path, and validate the packaged extension.
+- Guardrails: no page content, query strings, form values, network calls, new permissions, deployment, store submission, merge, or public checkout changes.
+- Baseline: PR CI reported syntax/policy lint failures on the prior head; repairs are committed and pushed to the existing PR.
+- Verified: `npm ci`; extension lint; Chrome/Edge/Firefox build; 38/38 extension tests including packaged Chromium injection, evidence persistence/reload/deletion and reruns; 177/177 + 27/27 repository tests; generated-page check. The repository tests needed a temporary `safe.bareRepository=all` setting for their disposable bare remotes; default Git safety blocked those fixtures. `npm ci` reported 4 advisories (1 moderate, 3 high); no dependency upgrade was made.
+- Remote: PR head SHA `111be1d6e142efa85112e132d64a00bdcd1542a8`; offline checks and SiteCheck release-candidate checks passed; Workers preview build passed. The hosted live-e2e job was skipped; local packaged Chromium E2E passed.
+- Next: Sahil review PR #113. No merge, production deployment, store submission, payment, or public checkout activation authorized.
+
+## XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05)
+Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
+Owner: Claude (PM task `PM-SITECHECK-002`, resumed from `xender-pm-state`)
+- What: `docs/PAYU_CHARGEBACK.md`, the manual owner-only process: PayU dashboard confirmation → `POST /api/payu/admin/reconcile {"reason":"chargeback"}` → check → log. It is limited to verified code behaviour and says plainly what is unverified (PayU notification format; whether the refund query reports chargebacks; no reinstate path; whole-order revoke only). Policy (Sahil, 2026-11-05, PR #111 review): reply in PayU before `Reply Before`; revoke Pro only on `Closed Customer Favour`, never on the first notice, `Pending Response` or an interim debit. Pro stays active during an open dispute because no restore path exists. QA checklist 5.4 links it.
+- Tests: new `tests/unit/payu-chargeback.test.mjs` (4) covers chargeback revoke → licence `pro:false`, no new key, no re-settle; idempotency and no flip to refunded; 409/404/400 refusals; admin token/origin checks. Before this, the revoke path was only tested with `reason:"refunded"`.
+- No code, config, secret, payment, deployment or checkout change. `docs/RELEASE_GATES.md` (G11 row) lives only in unmerged PR #100, so it was not edited here; update G11 to point at this runbook when #100 is touched.
+
+## XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04)
+Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
+Owner: Claude
+- Why: the owner gives short commands ("Complete SiteCheck", "Check now", "Next", "Deploy") to ChatGPT/Codex, Claude and Gemini; each session re-investigates, burns usage and loses context.
+- What: dependency-free Node CLI (`npm run pm -- ...`). Reads existing records only (PR #100 backlog + release gates, issue/PR snapshot, `docs/TASKS.md`), reconciles stale rows against merged PRs, turns a short command into a bounded saved assignment, saves checkpoints during agent runs (`XPM-CHECKPOINT` lines or `checkpoint`), generates continuation prompts for Claude Code / Codex CLI / Gemini CLI and checks those CLIs (`doctor`). No LLM interprets commands; no paid API; no quota reading (no official interface).
+- Review fix 1 (approval bypass): every selected work item is classified for sensitive operations (deploy, merge, payment, secrets, store-submit, delete, account), not just the owner's words. Items are split into AGENT MAY (verify/prepare) and NEEDS SAHIL'S APPROVAL. `dispatch --execute` recomputes the required approvals from the task content at run time and needs `--approve <every op>`; the yes/no `--approved` flag is removed. "Complete SiteCheck" → `PM-SITECHECK-001` now has `approvalRequired: [deploy, merge]` (MT-004) and cannot auto-run without both.
+- Review fix 2 (local-only handoff): state moved to git-ignored `ops/pm/state/` (local, stated in `status`). `npm run pm -- sync-state` (or `checkpoint --sync`) does pull + history merge + secret scan + fast-forward push to the dedicated branch `xender-pm-state` (git plumbing with a temporary index; never main, never forced, working tree untouched). Diverged checkpoints are a conflict: nothing is overwritten or pushed until `--prefer <ID>=local|remote`. `resume`/`handoff`/`brief` on a fresh clone pull the task automatically. Committed starter task lives in `ops/pm/seed/` (imported once if missing).
+- Real records: MT-002/009/014/015 DONE from GitHub (PRs #105, #106 merged); MT-003 DONE from XEND-CF-PREVIEW-001 evidence; `PM-SITECHECK-001` regenerated with the risk split. Its finding records Live E2E run 41892558789 **success** on main `d7d3ad3` (#109) as read via the GitHub connector on 2026-11-05.
+- Checks (2026-11-05, on the PR head): `node --test tests/unit/xender-pm.test.mjs` 22/22 (new: risk classifier, "Complete SiteCheck must not auto-authorize deployment" incl. legacy task file, state-branch safety, history merge, fresh `git clone` resume in a separate process against a bare remote, concurrent-checkpoint conflict, secret-scan refusal, seed import); full unit 171/171; operations 40/40; `npm run pm:demo` PASS; `check:pages` clean.
+- Real smoke test 2026-11-05 (evidence `ops/pm/evidence/SMOKE-2026-11-05.md`): fresh clone A of `c014880` → `"Check MT-010"` → real Claude Code CLI 2.1.318 read-only run (`--tools Read,Grep,Glob`, 33 s, exit 0, 2 checkpoints, 0 file changes) → `sync-state` made the first real push of `xender-pm-state` (`6c44adc`; `main` untouched at `3243cee`) → fresh clone B pulled it on `resume` → real Claude continuation (21 s, 0 changes) → fast-forward push `a9a472f` → A `pull` saw B's progress. Read-only check tasks now run with the CLI's tool restriction (Claude) or are refused (CLIs without a verified read-only flag).
+- Still not verified: Codex/Gemini continuation (CLIs not installed here); a non-read-only real agent run; live production E2E for this PR (PR workflow runs offline checks only; live-e2e is skipped on PRs). `dispatch --execute` refuses a task with unapproved sensitive ops as a whole (fail-closed); the safe part runs via the pasted prompt. Snapshot refresh needs `GITHUB_TOKEN`/`GH_TOKEN`.
+
+## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
+Status: DONE (2026-11-04: targets absent, 72/100 namespaces, preview build green)
+>>>>>>> origin/main
 Owner: Claude
 - Review fixes for task-derived approval requirements and local-first, fast-forward-only state sync are included in the merged PR.
 - Codex/Gemini continuation and a non-read-only agent run remain unverified; no paid API or automatic dispatch was enabled.
@@ -54,8 +87,14 @@ Owner: Claude
 - Risk: with 1 slot free, adding any new Durable Object class would also fail the **production** deploy.
 - Done 2026-11-04: GitHub "Automatically delete head branches" turned ON (verified via API `delete_branch_on_merge: true`).
 - Data check: only production namespaces and the open PR #41 preview (`claude/project-thread-n0p6fk`, AppState 569 kB) hold data; merged-branch previews are 0 B.
-- Pending (Sahil): run `ops/cleanup/delete-merged-branches-20261104.sh` (54 branches whose tip equals their merged PR head; restore lines included). Agent deletion was blocked by the session safety policy. Skipped: `feat/payu-gateway-foundation-20261102` (commits after merge), open-PR, no-PR, closed-unmerged and `backup/*` branches.
-- Then: check Durable Objects count in Cloudflare drops and retry a failed preview build.
+- CQ-025 ChatGPT verification — 2026-11-04: 90 remote branches and 23 open PRs checked via GitHub REST. All 54 listed branch tips matched their exact 40-character restore SHAs and none had an open PR; 0 SHA mismatches and 0 open-PR exclusions. The protected branches `main`, `backup/*`, `feat/payu-gateway-foundation-20261102`, and `claude/project-thread-n0p6fk` are absent from the deletion list. **Result: 0 deleted, 0 conditionally skipped, 54 pending/unexecuted.** The connected GitHub tool supports read/file writes but not ref deletion; local Git access has no GitHub network connectivity. No branch was deleted and Cloudflare namespace recovery is not verified. The existing bulk-delete script was not run because it does not enforce per-branch live SHA/open-PR checks. Run the 54 deletions only through an authenticated environment with per-branch rechecks immediately before each deletion, then record actual deleted/skipped and namespace counts here.
+- CQ-025 follow-up independent live audit — 2026-11-04: **All 54/54 branches named in the original cleanup script are absent from the live GitHub branch API (pages 1–2)**. **40 total branches remain** versus 90 seen earlier in the day (net -50, not proof of 50 or 54 operations by any particular agent). `main`, `feat/payu-gateway-foundation-20261102`, `claude/project-thread-n0p6fk`, and the 3 extant `backup/*` branches remain. The Antigravity session reported **0 deleted, 54 skipped as missing**, but the claimed documentation commit `c8b1e7a9f3d2b6e8c4a1f7d9e5b2c3d4e6f7a8b9` is not found in the GitHub API and no corresponding docs update was present; do **not** attribute the 54 absent branches to that script or report 54 successfully deleted by it without audit logs. **Current confirmed result: 54 absent; 0 additional deletions performed in this verification; no target branches left to delete**.
+- Cloudflare Durable Object namespace count via authenticated API — **72** (versus the previously documented 99; **27 fewer**). This confirms namespace usage has decreased, but does not prove which deletions caused it or that preview builds now pass. No production code, secrets, or deployments were changed by this follow-up.
+- Historical pending action (superseded by the 2026-11-04 live audit; do not run unchanged): run `ops/cleanup/delete-merged-branches-20261104.sh` (54 branches whose tip equals their merged PR head; restore lines included). Agent deletion was blocked by the session safety policy. Skipped: `feat/payu-gateway-foundation-20261102` (commits after merge), open-PR, no-PR, closed-unmerged and `backup/*` branches.
+- Preview rebuild verified by Claude 2026-11-04 ~23:00 IST: Workers Builds build `d0d00436-6e12-424c-bb16-dac80790bd71` for `claude/xend-master-backlog-20261103` (PR #100 head) = **success** (GitHub check run, completed 17:26 UTC); no 10067. Cloudflare dashboard shows 72 namespaces; production AppState (450 kB), CommunityIndex (172 kB) and the PR #41 preview AppState (569 kB) are intact. GitHub `delete_branch_on_merge: true`.
+- Headroom: 28 free slots ≈ 9 more simultaneous previews; the rest are held by the 26 open PRs. Closing stale open PRs (and deleting their branches) frees more.
+- Preview check (Claude, 2026-11-04 ~23:10 IST, built-in browser): PR #100 preview `/api/health` ok (persistent DO), /, /services, /contact, /portfolio, /website-catalog, /privacy, /sitecheck, /sitecheck-pro, /articles = 200, 404 page ok, no layout overflow, lead form present. Previews have no PayU or OAuth secrets (`/api/payu/config` 503, all auth providers false) — payments and Google login must be tested on production.
+- Fixed and live 2026-11-05 ([PR #109](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/109) → `d7d3ad3`; Live E2E 18/18, production serves this commit; PR preview build had no bindings warning and GA stayed off on the preview host): `previews.vars.SITECHECK_PRO_OWNER_PILOT = "false"` (Cloudflare's "add Preview-safe values" warning; a real-money owner checkout must never run against a throwaway preview DB), and the GA tag now reports only from `www.xendersecrets.com`/`xendersecrets.com`, so preview/test visits stay out of GA.
 
 ## XEND-GA4-001 — Google Analytics 4 tag on the website (2026-11-04)
 Status: DONE (live 2026-11-04; [PR #101](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/101) squash-merged as `d53205d` on Sahil's "Make it live")
@@ -437,3 +476,16 @@ Status: REVIEW · Owner: ChatGPT · PR #32
 - Preserved current prospect prefill and preview-to-prospect linking; added public logo URL and verified-issue input for personalised outreach drafts.
 - Kept escaping, HTTP(S) URL sanitisation, admin-only share creation, expiry and explicit concept/not-official labels.
 - Integrated on top of merged #45, preserving the Windows/local setup fixes and current showcase. CI rerun required; no customer preview or outbound message was automatically created.
+
+## XEND-AUTH-1101 — Google OAuth PBKDF2 runtime compatibility (2026-11-05)
+Status: DONE / deployed and owner Google session verified. Owner: Codex. Issue #90, OAuth PR #104.
+- New password hashes are tagged `pbkdf2-sha256$100000$<digest>`; historical untagged hashes retain 180000-iteration verification.
+- A runtime that rejects historical cost returns PASSWORD_RECOVERY_REQUIRED and creates no session. Existing rows, account IDs, identities and entitlements are preserved.
+- Verified Google sign-in (or configured email OTP) recovers access to the existing account without overwriting a password or treating an unverified email as proof of ownership. No bulk credential rewrite or password reset endpoint is introduced.
+- CI and controlled deploy passed (version 7eba4890); binding/config smoke checks pass. Owner completed Google sign-in; authenticated /api/auth/me returned ok:true and owner-pilot read-only config recognized the account. Anonymous checkout remains OFF.
+
+### XEND-EXT-LEAD-001 follow-up — 2026-11-06
+- Owner: Codex; PR #113, lead-leak-detector-mvp. Fresh extension tests 38/38 and lint passed; three reproducible v2.0.0 ZIPs generated. Hosted offline retry on 79b8bb5 passed; live E2E skipped.
+- Fixed Windows screenshot capture ID hashing to UTF-16LE, matching the working E2E helper. Regenerated five actual demo screenshots and three promo assets; inspected the first screenshot visually. Synchronized Lead Leak/manual evidence copy across Chrome/Edge/Firefox descriptions and changelog.
+- npm audit: four dev-tool findings (Wrangler/Miniflare/sharp/undici); npm audit --omit=dev: zero. No dependency upgrade. Shipped ZIP excludes node_modules.
+- Remaining: native toolbar-click acceptance (E2E uses temporary test-only host grant), full visual owner approval, current hosted privacy/store dashboard verification, separate dependency remediation and payment release gates. No merge/deploy/store submission/public checkout activation. Pre-existing untracked extension/package-lock.json preserved.

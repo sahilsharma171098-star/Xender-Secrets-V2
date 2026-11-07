@@ -197,6 +197,7 @@ Plan, baseline and checkpoints: `docs/SEO_TRAFFIC_PLAN.md`. Rules for every item
 
 ## Added by Claude — 2026-11-04 (XEND-CF-PREVIEW-001)
 ### CQ-025 — Delete 54 merged GitHub branches to free Cloudflare preview slots (P1, ChatGPT, Sahil approved 4 Nov 2026)
+- **CLOSED 2026-11-04:** all 54 targets absent; 72/100 namespaces; preview build `d0d00436` success (see XEND-CF-PREVIEW-001 in `docs/TASKS.md`).
 - Why: Cloudflare preview builds fail with code 10067 (99/100 Durable Object namespaces used on the free plan). Each stale branch preview holds 3; previews auto-delete when their branch is deleted. Claude's session cannot delete branches (GitHub proxy + safety policy), so Sahil asked for ChatGPT to do it.
 - Action: delete exactly the 54 branches listed in `ops/cleanup/delete-merged-branches-20261104.sh` from `sahilsharma171098-star/Xender-Secrets-V2` (GitHub connector, or `git push origin --delete …` as in that file). Before deleting each, confirm its tip SHA still equals the SHA in the script's restore lines and that it has no open PR; skip any that changed.
 - Never delete: `main`, `backup/*`, `feat/payu-gateway-foundation-20261102`, `claude/project-thread-n0p6fk` (open PR #41, holds preview data), or any branch with an open PR.

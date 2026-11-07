@@ -141,3 +141,49 @@ test("admin recovery settles a captured payment whose callback and webhook were 
     assert.equal(JSON.stringify(again).includes(user.email),false,"no customer PII in admin response");
   }finally{globalThis.fetch=priorFetch;db.close();}
 });
+test("browser callback always lands the customer on a page: failed, pending or verified — never raw JSON or a 404",async()=>{
+  const priorFetch=globalThis.fetch;
+  const callback=(fields,override={})=>{
+    const values={...fields,status:"success",...override};
+    const hashParts=[salt,values.status,"","","","","",values.udf5||"",values.udf4||"",values.udf3||"",values.udf2||"",values.udf1||"",values.email,values.firstname,values.productinfo,values.amount,values.txnid,values.key];
+    values.hash=sha512(hashParts.join("|"));
+    return new Request(origin+"/api/payu/callback",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams(values)});
+  };
+  const target=r=>{assert.equal(r.status,303);return r.headers.get("location");};
+  const verifyAs=(f,payu)=>{globalThis.fetch=async()=>{if(payu instanceof Error)throw payu;return new Response(JSON.stringify({transaction_details:{[f.txnid]:{mihpayid:"55555555555",...payu}}}),{headers:{"content-type":"application/json"}});};};
+  try{
+    {const {db,env}=newHarness();const f=await initiate(env);
+     assert.equal(target(await handlePayu(callback(f,{status:"failure"}),env)),origin+"/sitecheck-pro?payment=failed");
+     db.close();}
+    {const {db,env}=newHarness();const f=await initiate(env);verifyAs(f,{status:"success",unmappedstatus:"auth",amt:"499.00"});
+     assert.equal(target(await handlePayu(callback(f),env)),origin+"/sitecheck-pro?payment=pending","authorized but not captured");
+     assert.equal(db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements").get().n,0);
+     db.close();}
+    {const {db,env}=newHarness();const f=await initiate(env);verifyAs(f,new Error("PayU down"));
+     assert.equal(target(await handlePayu(callback(f),env)),origin+"/sitecheck-pro?payment=pending","verification unavailable");
+     db.close();}
+    {const {db,env}=newHarness();const f=await initiate(env);verifyAs(f,{status:"success",unmappedstatus:"captured",amt:"499.00"});
+     const echoed=callback(f,{productinfo:"SiteCheck Pro - One-time License"});
+     assert.equal(target(await handlePayu(echoed,env)),origin+"/sitecheck-pro?payment=pending","signed but altered echo is recoverable, not an error page");
+     assert.equal(db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements").get().n,0,"mismatch never grants");
+     db.close();}
+    {const {db,env}=newHarness();const f=await initiate(env);verifyAs(f,{status:"success",unmappedstatus:"captured",amt:"499.00"});
+     assert.equal(target(await handlePayu(callback(f),env)),origin+"/sitecheck-pro?payment=verified");
+     assert.equal(db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements").get().n,1);
+     db.close();}
+    {const {db,env}=newHarness();const f=await initiate(env);
+     const forged=new Request(origin+"/api/payu/callback",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({...f,status:"success",hash:"0".repeat(128)})});
+     assert.equal((await handlePayu(forged,env)).status,400,"forged signature is still rejected outright");
+     db.close();}
+  }finally{globalThis.fetch=priorFetch;}
+});
+test("webhook keeps machine status codes so PayU retries instead of losing the event",async()=>{
+  const {db,env}=newHarness();const priorFetch=globalThis.fetch;
+  try{
+    const f=await initiate(env);
+    globalThis.fetch=async()=>{throw new Error("PayU down");};
+    assert.equal((await handlePayu(validPayuCallback(f),env)).status,503,"verification down: PayU should retry");
+    assert.equal((await handlePayu(validPayuCallback(f,{productinfo:"SiteCheck Pro - One-time License"}),env)).status,400,"mismatch stays a 400 for the machine path");
+    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM extension_entitlements").get().n,0);
+  }finally{globalThis.fetch=priorFetch;db.close();}
+});

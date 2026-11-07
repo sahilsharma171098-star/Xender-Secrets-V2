@@ -50,6 +50,9 @@
     }
   },
   "previews": {
+    "vars": {
+      "SITECHECK_PRO_OWNER_PILOT": "false"
+    },
     "ai": {
       "binding": "AI"
     },
@@ -74,5 +77,38 @@
     "required": [
       "ADMIN_TOKEN"
     ]
-  }
+  },
+  "routes": [
+    {
+      "pattern": "xendersecrets.com",
+      "zone_name": "xendersecrets.com",
+      "custom_domain": true,
+      "enabled": true,
+      "previews_enabled": false
+    },
+    {
+      "pattern": "www.xendersecrets.com",
+      "zone_name": "xendersecrets.com",
+      "custom_domain": true,
+      "enabled": true,
+      "previews_enabled": false
+    }
+  ],
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  },
+  "workers_dev": true,
+  "preview_urls": true
 }
