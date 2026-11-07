@@ -9,48 +9,83 @@ Status words: **VERIFIED COMPLETE** (observed working in production), **CODE COM
 branch with passing tests, not proven live), **DEPLOYMENT PENDING**, **TESTING PENDING**, **BLOCKED**,
 **NOT STARTED**. "Unverified" means nobody in this session could observe it — not that it is broken.
 
-Last updated: 2026-11-03 by Claude (session `session_01FXbkRsKDMFoegtCxmLPPw6`).
+Last updated: 2026-11-06 by ChatGPT from GitHub metadata, workflow results, and read-only local checkout metadata.
 
-## Access this session actually had (2026-11-03)
+## Access and verification scope (2026-11-06)
 
 | System | Access | Consequence |
 | --- | --- | --- |
-| GitHub `Xender-Secrets-V2` (public) | read (clone, public REST API) — **no write**: session token invalid, repo not attached | could test and commit locally; could not push, comment, merge |
-| GitHub `autotube` (private) | none via API (404); local laptop checkout only | AutoTube state not verified |
-| Cloudflare | Workers list/metadata only (deprecated bindings MCP) | no deploy, no secrets view, no Durable Object namespace list |
-| www.xendersecrets.com | blocked by this session's egress allowlist | production state taken from GitHub Actions live gate, not direct probes |
-| Chrome Web Store dashboard | Claude in Chrome failed to connect | store status unverified |
-| Laptop (ThinkPad, Windows) | `~/Xender`, `~/source/repos`, `~/.gemini/antigravity/scratch` granted | local repos and GridSnip source inspected |
+| GitHub | Read access verified for the four registered repositories; latest commits, open PRs, and workflow summaries checked | No PR was merged or closed by this audit |
+| Production and providers | No Cloudflare, Render, PayU, store, social-account, or production mutation performed | Production state is limited to the latest GitHub Actions evidence below |
+| Laptop | Read-only names, Git refs/status, and TCP listeners checked in common project folders | No local project contents, credentials, private records, or media were copied into this public repo |
 
 ## Product map
 
 | Product | Canonical source | Runs on | Verified state (evidence) | Status |
 | --- | --- | --- | --- | --- |
-| Website + API | this repo `public/`, `src/` | Cloudflare Worker `xender-secrets-v2` | main `1faa0a4` served in production: "Xender Live E2E" run 41485101193 — *Wait for Cloudflare to serve this commit* ✓, *Verify SiteCheck Pro route…* ✓, *Run live Xender E2E* ✓. Worker last modified 2026-11-02 16:51 UTC | VERIFIED COMPLETE (for what the E2E covers) |
-| SiteCheck Pro backend (₹499 PayU) | `src/payu-*.mjs`, `src/sitecheck-license.mjs` | same Worker | live gate asserts `/api/payu/config` → `release=sitecheck-pro-v2.0.0`, `checkoutEnabled=false` for anonymous; `/sitecheck-pro` serves release meta. **No real payment ever observed.** | TESTING PENDING (real ₹499 canary) |
-| SiteCheck PR #96 (canary email gate) | branch `feat/sitecheck-payu-private-canary-20261102` @ `12c2f2c` | — | GitHub: mergeable=clean; *Offline checks* ✓, *sitecheck-rc* ✓; Cloudflare preview build ✗ (Durable Object namespace quota, 99/100). Locally re-run: unit 137/137, browser 26/26, extension 28/28 + lint, worker 4/4, ops 40/40 | CODE COMPLETE, owner decision |
-| SiteCheck lost-callback recovery | branch `claude/sitecheck-payu-recovery-20261103` @ `708e876` (local, not pushed) | — | unit 136/136 (+1 new), browser 26/26; merges cleanly with PR #96 (138/138) | CODE COMPLETE, push pending |
-| SiteCheck extension | `extension/` | Chrome/Edge/Firefox | manifests at **2.0.0** in `extension/dist/*`; extension tests 28/28, lint ✓. Store listing/approval **unverified** this session | DEPLOYMENT PENDING |
-| GridSnip OCR | **not in HQ**: laptop `~/.gemini/antigravity/scratch/gridsnip_extension` (v1.0.0) + `gridsnip-release.zip` | Chrome Web Store draft (item `flejimiajadjeghbjcgkonenbiikaeif`) | Source read: free tier sends placeholder `YOUR_GEMINI_API_KEY` without a user key; "$14 Unlimited" paywall verifies Gumroad with placeholder `YOUR_PRODUCT`; cropped screenshot goes to Google Gemini (must be disclosed) | BLOCKED — do not submit |
-| AutoTube | private repo `autotube`; laptop checkout `~/Xender/autotube` | GitHub Actions | laptop checkout is a **detached HEAD at `origin/lab-out/final-biryani`** with untracked `autotube/` and `final_720p.mp4`; remote state not readable here | unverified |
-| Lead pipeline / Command Center | `src/pipeline.mjs`, `operations/` | Worker + Google Sheets | per PROJECTS.md: daily cron not enabled; Apps Script importer inactive | BLOCKED (owner OAuth / approval) |
-| Instagram cross-post | AutoTube + Windsor | — | TASKS.md XEND-IG-CROSSPOST-001 IN_PROGRESS | unverified |
-| Shopify (`xendersecrets.myshopify.com`) | Shopify | Shopify | not audited this session | NOT STARTED (this backlog) |
-| International payments (PayU USD/GBP, PayPal, Stripe) | — | — | not audited this session; PayU international approval must not be assumed | NOT STARTED (this backlog) |
-| Screen Recorder (Firefox) | `projects/screen-recorder/` (pending) | AMO | submitted 2026-10-16 per PROJECTS.md; review result unverified | unverified |
-| Claude Code executor | `.github/workflows/claude-code.yml` | GitHub Actions | recent runs on main: *skipped*; TASKS.md says OAuth secret missing | BLOCKED |
+| Website + API | `Xender-Secrets-V2` (`public/`, `src/`) | Cloudflare Worker | main `8a6e29f` (2026-11-06); Xender Live E2E run `42174727707` and SEO live audit `42174727741` both succeeded | VERIFIED for the checks covered; no manual production probe in this audit |
+| SiteCheck Pro / PayU | `Xender-Secrets-V2` (`src/payu-*.mjs`, `src/sitecheck-license.mjs`) | same Worker | latest main checks succeeded; the owner-only/public checkout gates remain controlled; no real purchase or refund was verified here | TESTING PENDING; owner canary and store actions remain owner-controlled |
+| SiteCheck extension | `Xender-Secrets-V2` (`extension/`) | Chrome / Edge / Firefox stores | Lead Leak Detector merged in PR #113; offline checks and SiteCheck RC passed, Workers preview build passed; hosted live-e2e on the PR was skipped | CODE COMPLETE; store submission/review is separate and unverified |
+| GridSnip OCR | PR #107 proposes canonical source under `projects/gridsnip/` | Chrome Web Store | PR #107 remains open; no store submission or live Gemini API test verified | REVIEW; owner validation and submission pending |
+| AutoTube | private repo `autotube` | GitHub Actions | main `61fdf37` (2026-11-04); open PRs #13, #29, #30; latest successful main workflow observed 2026-11-04. Two local AutoTube worktrees contain uncommitted items | ACTIVE; preserve local work; publishing and Episode Studio parity not verified |
+| Amazon SP-API connector | private repo `xender-amazon-spapi` | Render (per existing registry) | main `0b998b2` (2026-10-03); no open PR and no local Git checkout found in the audited roots | DEPLOYMENT / authorization status not reverified |
+| AutoTube legal pages | public repo `autotube-legal` | static hosting (per existing registry) | main `eef2d6f8` (2026-10-20); no open PR; a separate local folder copy remains untouched | CANONICAL REPO IDENTIFIED; deployment not reverified |
+| Lead pipeline / Command Center | `src/pipeline.mjs`, `operations/` | Worker + private Google Sheet | Worker feed exists; importer/OAuth activation remains pending per `PROJECTS.md` | BLOCKED on owner-side authorization/setup |
+| Instagram cross-post | AutoTube and connected social tooling | — | `XEND-IG-CROSSPOST-001` remains in progress; no publishing was attempted | IN PROGRESS; platform results unverified |
+| Shopify and international payments | existing private/provider accounts | — | no account activity or transaction evidence checked | NOT AUDITED |
+| Screen Recorder (Firefox) | open PR #58 proposes HQ source; local/store status per existing task record | AMO | PR #58 is open; submission/review result not checked here | REVIEW / status unverified |
+| Claude Code executor | `.github/workflows/claude-code.yml` | GitHub Actions | recent main executor runs were skipped; no credential state was inspected | BLOCKED per existing task record |
 
-## Open pull requests in this repo (2026-11-03, public API)
+## Completed since the prior snapshot
 
-20 open. Payment-critical: **#96**. Docs/registry only: #94, #88, #87, #86, #85, #83, #81, #73. Older feature
-or WIP branches needing a keep/close decision: #79, #72, #71 (WIP footer), #59, #58, #44 (Razorpay persistence),
-#41, #29, #27 (superseded SiteCheck branch?), #24, #23. Disposition is tracked as MT-120 in the backlog; nothing
-was merged or closed in this session.
+- PR #113 merged 2026-11-06 as main `8a6e29f`; the main Live E2E and SEO live-audit runs succeeded. PR checks: offline checks, SiteCheck RC, and Workers preview passed; the PR live-e2e job was skipped.
+- PRs #110 (Project Manager) and #111 (chargeback runbook), plus #104–#106 and #109, are merged. No production checkout activation, store submission, payment, refund, or social publishing is implied.
+- The task-specific laptop inventory was refreshed without deleting, moving, syncing, or overwriting any pre-existing checkout.
+
+## Open pull requests (2026-11-06, GitHub API)
+
+Open means the PR still needs current-main review or an owner decision; it does not prove the work is incomplete. No PR was merged or closed during this audit.
+
+| Repo | PR | Status | Title |
+| --- | --- | --- | --- |
+| Xender-Secrets-V2 | #112 | Draft | Reconcile SiteCheck launch evidence and preserve public checkout gates |
+| Xender-Secrets-V2 | #108 | Draft | SiteCheck v2.1 on-device metrics, Show on page, and Pro PDF |
+| Xender-Secrets-V2 | #107 | Open | GridSnip OCR 1.1.0 and privacy page |
+| Xender-Secrets-V2 | #102 | Draft | Dedicated Google login credentials and safe OAuth callback errors |
+| Xender-Secrets-V2 | #100 | Open | Master backlog, release gates, and revenue tracker |
+| Xender-Secrets-V2 | #96 | Draft | Owner-only PayU test checkout; public checkout OFF |
+| Xender-Secrets-V2 | #94 | Open | Revenue-first open-source benchmark |
+| Xender-Secrets-V2 | #88 | Open | Register Midnight Evidence Lab under canonical AutoTube |
+| Xender-Secrets-V2 | #87 | Draft | Shopify customer-acquisition runbook and gated creatives |
+| Xender-Secrets-V2 | #86 | Open | Reconcile scattered Xender work and triage PRs |
+| Xender-Secrets-V2 | #85 | Open | Record HUD production deployment and reader follow-up |
+| Xender-Secrets-V2 | #83 | Draft | AutoTube voice and script quality |
+| Xender-Secrets-V2 | #81 | Draft | Canva design workflow |
+| Xender-Secrets-V2 | #79 | Draft | Forge Fitness interactive 3D concept |
+| Xender-Secrets-V2 | #73 | Open | Laptop inventory and canonical project mapping |
+| Xender-Secrets-V2 | #72 | Draft | Global footer updates |
+| Xender-Secrets-V2 | #71 | Draft | Global footer worldwide / India updates |
+| Xender-Secrets-V2 | #59 | Draft | Chrome store release preparations |
+| Xender-Secrets-V2 | #58 | Open | Firefox Screen Recorder source |
+| Xender-Secrets-V2 | #41 | Open | AI website builder MVP |
+| Xender-Secrets-V2 | #29 | Open | QA automation suite |
+| Xender-Secrets-V2 | #27 | Open | Earlier SiteCheck extension branch |
+| Xender-Secrets-V2 | #24 | Open | Instagram week-one execution |
+| Xender-Secrets-V2 | #23 | Open | LinkedIn execution |
+| autotube | [autotube#30](https://github.com/sahilsharma171098-star/autotube/pull/30) | Open | Automatic pictures for the daily run (off by default) |
+| autotube | [autotube#29](https://github.com/sahilsharma171098-star/autotube/pull/29) | Open | Gate Shorts, queued clips, and episodes behind pictures |
+| autotube | [autotube#13](https://github.com/sahilsharma171098-star/autotube/pull/13) | Draft | Retrofit covers on 13 Hindi Shorts |
+
+## Laptop inventory and preservation (2026-11-06)
+
+- The audited roots contained 21 existing Git worktrees across the Xender HQ and AutoTube repositories before this documentation worktree was created. Four had uncommitted or untracked state (two per repository); all were left untouched. The exact local filenames and content are intentionally not copied here.
+- Multiple clean Xender `main` clones are behind the current GitHub `main` at `8a6e29f`. No clone was fast-forwarded. The newest source of truth is the GitHub `main` branch; choose one local working clone before future implementation.
+- Local-only folders include trading-bot prototypes, private AI/workspace tooling, extension/package exports, AutoTube media work, and standalone website exports. Their contents and external account state were not audited or migrated.
+- TCP listeners were observed on local ports 8787 and 8765; this confirms listeners only, not application health or data integrity.
+- Private local data remains local. No secrets, tokens, customer/prospect records, account data, or media were added to this public dashboard.
 
 ## Infrastructure risks observed
 
-- **Durable Object namespaces 99/100** (reported in PR #96 handoff from build `ab36ba2b…`): every PR preview
-  that declares the three DO classes fails. Not re-measured here (no tool access). Cleanup needs owner
-  authorization after ownership/data review.
-- Local `~/Xender/Xender-Secrets-V2` checkout is on `main` at `ebc6646` (PR #84) — **behind origin**, which
-  already has #89, #92 backend and the freshness gate. Fetch before any local work.
+- Main's latest Xender Live E2E and SEO live-audit checks succeeded, and the PR #113 Workers preview build passed. The Durable Object namespace inventory was not re-read during this audit.
+- Four dirty worktrees and multiple stale clean clones remain intentionally preserved. Do not delete, overwrite, or bulk-sync them until the owner selects the canonical checkout and confirms backups.
+- External production, payment, store, social publishing, and private-sheet state remain unverified except where a linked GitHub check explicitly says otherwise.

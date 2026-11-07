@@ -1,14 +1,32 @@
 # Xender Secrets V2 — Shared AI Task Board
 
-## XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04)
-Status: REVIEW (branches `claude/sitecheck-payu-recheck-20261104`, `claude/sitecheck-whitelabel-cta-20261104`; draft `claude/sitecheck-v21-local-ux-20261104`)
+## XEND-EXT-LEAD-001 — Lead Leak Detector MVP (2026-11-06)
+Status: DONE (merged PR #113 to main `8a6e29f`; main Live E2E and SEO audit succeeded)
+Owner: ChatGPT
+- PR checks: offline checks, SiteCheck release-candidate checks, and Workers preview passed; the hosted PR live-e2e job was skipped.
+- Local evidence recorded before merge: extension lint/build and tests passed, including packaged Chromium coverage; no store submission or public checkout change was made.
+- The original task checkout still has an untracked local package-lock file. It was not changed or moved during this dashboard audit.
+
+## XEND-PM-001 — Xender AI Project Manager MVP
+Status: DONE (merged PR #110 on 2026-11-05; not a production deployment)
 Owner: Claude
-- Context: PR #99 was squash-merged by Sahil as `8eef28c` with only the admin re-verify commit; the later commits on that branch never reached GitHub, so they move to a new branch on main `995301a`.
+- Review fixes for task-derived approval requirements and local-first, fast-forward-only state sync are included in the merged PR.
+- Codex/Gemini continuation and a non-read-only agent run remain unverified; no paid API or automatic dispatch was enabled.
+
+## XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook
+Status: DONE (merged PR #111 on 2026-11-05; real chargeback handling remains untested)
+Owner: Claude
+- The manual owner-only runbook and regression tests are merged. No PayU payment, refund, or dispute was performed for this task.
+
+## XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04)
+Status: REVIEW (PayU follow-up merged in PR #105, white-label merged in PR #106; v2.1 draft remains PR #108)
+Owner: Claude
+- Context: PR #99 was squash-merged by Sahil as `8eef28c`; the follow-up callback and self-serve changes later merged in PR #105, and white-label changes merged in PR #106.
 - PayU (`claude/sitecheck-payu-recheck-20261104`): browser callback always lands on `/sitecheck-pro?payment=failed|pending|verified` (no 404, no raw JSON; webhook keeps retry status codes; forged signatures still 400); owner canary checklist `docs/SITECHECK_PRO_QA_CHECKLIST.md`; customer "Check my payment again" (`POST /api/payu/recheck`, own pending orders only, 14 days, max 3, one check per minute, settles only captured + exact amount). Checkout flag untouched (stays OFF).
 - White-label (`claude/sitecheck-whitelabel-cta-20261104`, ships in 2.0.0): copied report/CSV carry no sales pitch, Pro copy/CSV/file name are white-label, "Not now" hides the human-review suggestion for 30 days and Pro never sees it.
 - v2.1 (draft, stacked on white-label): on-device page-load metrics, "Show on page" outlines, Pro PDF report. Hold until the Chrome Web Store approves 2.0.0, then bump to 2.1.0 and update `/sitecheck-privacy` + `/sitecheck-pro` copy.
 - Checks (on `995301a`): unit 146/146, reader+funnel 27/27, worker 4/4, check:pages and link check clean (PayU branch); extension lint + 31/31 (white-label), 46/46 + package (v2.1).
-- Next: PRs → CI → merge PayU and white-label → confirm Workers Builds production + "Xender Live E2E" on the new main (checkoutEnabled=false) → Sahil's ₹499 canary per the checklist.
+- Next: verify current production gates and store status, then Sahil may perform the owner-only ₹499 canary per the checklist. Public checkout remains off until explicitly approved.
 
 ## XEND-GRIDSNIP-001 — GridSnip OCR 1.1.0: working, honest store build (2026-11-04)
 Status: REVIEW (branch `claude/gridsnip-v1.1-20261104`)
@@ -21,14 +39,16 @@ Owner: Claude
 ## XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03)
 Status: REVIEW (docs on branch `claude/xend-master-backlog-20261103`, PR #100; recovery fix merged as PR #99 `8eef28c` on 2026-11-04)
 Owner: Claude
+- Dashboard follow-up inventory was refreshed 2026-11-06 on a separate branch stacked on PR #100; see `docs/MASTER_PROJECT_STATUS.md`. The parent PR remains open pending review.
 - What: one evidence-based backlog across products (`docs/MASTER_PENDING_TASKS.md`, MT-### IDs linked to existing XEND IDs), `docs/MASTER_PROJECT_STATUS.md`, `docs/RELEASE_GATES.md` (SiteCheck Pro G1–G14, GridSnip R1–R5), `docs/REVENUE_TRACKER.md`, `docs/EXECUTION_LOG.md`.
 - Verified 2026-11-03: main `1faa0a4` live (Live E2E run 41485101193 incl. SiteCheck checkout-OFF gate); PR #96 clean, CI green, suites re-run locally (unit 137, browser 26, extension 28, worker 4, ops 40).
 - Fix: `POST /api/payu/admin/verify` settles a captured payment whose callback and webhook were both lost (commit `708e876`, unit 136/136; merges with #96 → 138/138).
 - Not done: push/merge/deploy (no GitHub write in session), real ₹499 canary and refund (Sahil), CWS submission, AutoTube/Shopify/intl audits.
 - Next: merge last, after the XEND-SITECHECK-002 and XEND-GRIDSNIP-001 PRs; then owner canary MT-005.
 ## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
-Status: BLOCKED (54 merged-branch deletions queued for ChatGPT as CQ-025 in `docs/CHATGPT_ACTION_QUEUE.md`)
+Status: REVIEW (Workers preview passed on PR #113; namespace count and remaining branch cleanup were not rechecked)
 Owner: Claude
+- Updated 2026-11-06: PR #113's Workers preview build and the latest main Live E2E passed. The namespace-count failure and 72-namespace count below are historical evidence; current account inventory was not read.
 - Cause (Cloudflare build log, build `91bb22c3`): `wrangler preview` fails with code 10067, "reached the Workers Free limit of 100 Durable Object namespaces". Account uses 99: production (AppState, CommunityIndex, ContentThread) + 3 per branch preview. Every PR preview build has failed since ~2 Nov (#92 onward); production deploys on `main` are unaffected.
 - Why they pile up: each preview has Auto-deletion ON (deleted when its branch is deleted), but GitHub never deleted merged branches.
 - Risk: with 1 slot free, adding any new Durable Object class would also fail the **production** deploy.
@@ -192,13 +212,18 @@ Owner: Claude builds, ChatGPT reviews
 - Open decision: WhatsApp cold first-touch cap (25/day) vs the SOP rule that a public business number is not opt-in.
 
 ## XEND-CLEANUP-20261022 — Back up and retire redundant setups
-Status: BLOCKED (Cloudflare preview cleanup complete; account/laptop audit for other setups pending)
+Status: REVIEW (read-only laptop/GitHub inventory refreshed 2026-11-06; any migration or deletion remains on hold)
 Owner: ChatGPT
 
 - Backup/configuration recovery file saved for 34 merged-PR previews; their owned namespaces were empty on inspection.
 - Sahil explicitly approved the recorded 34 previews. All 34 deleted on 2026-10-22 after fresh empty-object checks, without force; all 34 now return Preview not found (404). 75 empty namespaces removed; total 99 → 24. Production deployment and three production namespaces unchanged. Pre-cleanup backup and completion report retained.
 - Backup-branch auto builds suppressed for exactly two previews. Broad global suppression was rejected and not applied.
-- ThinkPad folders, n8n instances, Render services and production namespaces remain retained pending dependency/data recovery checks.
+- 2026-11-06 audit: GitHub has four registered project repositories; 24 Xender HQ PRs and 3 AutoTube PRs remain open. The master dashboard records current heads, checks, and pending decisions.
+- 21 pre-existing Xender/AutoTube Git worktrees were found in the audited laptop roots; four have uncommitted or untracked state. All were left unchanged. Several clean `main` clones lag GitHub; none were fast-forwarded.
+- Dashboard continuation: refreshed `docs/MASTER_PROJECT_STATUS.md`, `docs/MASTER_PENDING_TASKS.md`, and `PROJECTS.md` on local branch `chatgpt/xend-cleanup-dashboard-20261106`, based on open PR #100. Changes remain local and uncommitted. PowerShell command execution was blocked because local-network access is disabled, so the handoff generator, Git checks, commit, push, and follow-up PR could not be completed. Next: restore command access, run the handoff and documentation checks, then publish as a follow-up to #100.
+- Local-only trading, AI/workspace, extension, media, and website-export folders remain local. Their content, dependencies, and external-account state were not audited or migrated.
+- No local file, branch, project folder, provider setting, or production resource was deleted, overwritten, moved, or synchronized. Private data and credentials were not copied into the public repo.
+- Next: review the master dashboard and choose one canonical laptop checkout. Any removal, migration of private sources, store action, provider/account change, or production change requires its own explicit approval.
 
 Operational tasks are in the private `OS Tasks` tab; this file indexes technical work only. Use the same IDs in PRs and handoffs.
 
