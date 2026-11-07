@@ -1,45 +1,24 @@
 # Handoff — read this after AGENTS.md
 
-<<<<<<< HEAD
-Generated 2026-11-04 15:54 UTC by **claude** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
+Generated 2026-11-07 17:54 UTC by **chatgpt** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
 
 ## Where the work is
-- Branch: `claude/xend-master-backlog-20261103`
+- Branch: `chatgpt/pr100-fix-20261107`
 - Last commits:
-  - `7cee30b Merge remote-tracking branch 'origin/main' into claude/xend-master-backlog-20261103`
-  - `4f92272 XEND-CF-PREVIEW-001: point task status at CQ-025`
-  - `85287fc XEND-CF-PREVIEW-001: queue CQ-025 (delete 54 merged branches) for ChatGPT`
-  - `9316415 docs(hq): log the 2026-11-04 evening release prep; #99 live, follow-ups rebuilt on 995301a`
-  - `faa3db4 XEND-CF-PREVIEW-001: record preview-build cause and branch cleanup plan`
-=======
-Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everything above the notes section is rebuilt on each run.
-
-## Where the work is
-- Branch: `lead-leak-detector-mvp`
-- Last commits:
-  - `111be1d fix(sitecheck): repair MV3 lead leak injection and popup evidence`
-  - `58e02d6 Add Lead Leak Detector MVP implementation and tests`
-  - `32702b8 Add Lead Leak Detector UI and detection logic`
+  - `65c69fa docs: reconcile master backlog with current main`
+  - `294b862 docs: update Xender master project dashboard (#115)`
+  - `8a6e29f Lead Leak Detector MVP (#113)`
   - `f576d50 fix(auth): resolve Google OAuth PBKDF2 Error 1101 safely`
   - `0635392 docs(sitecheck): chargeback runbook and regression tests (MT-010)`
->>>>>>> origin/main
 
 ## Working-tree snapshot at generation
-- ` M docs/CURRENT_STATE.md`
 - ` M docs/TASKS.md`
-- `?? extension/package-lock.json`
 
 ## Open tasks (docs/TASKS.md)
-<<<<<<< HEAD
-- XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04) — REVIEW (branches `claude/sitecheck-payu-recheck-20261104`, `claude/sitecheck-whitelabel-cta-20261104`; draft `claude/sitecheck-v21-local-ux-20261104`)
+- XEND-SITECHECK-002 — SiteCheck Pro: PayU follow-ups, white-label exports, v2.1 draft (2026-11-04) — REVIEW (PayU follow-up merged in PR #105, white-label merged in PR #106; v2.1 draft remains PR #108)
 - XEND-GRIDSNIP-001 — GridSnip OCR 1.1.0: working, honest store build (2026-11-04) — REVIEW (branch `claude/gridsnip-v1.1-20261104`)
 - XEND-MASTER-001 — Master backlog, release gates and revenue tracker (2026-11-03) — REVIEW (docs on branch `claude/xend-master-backlog-20261103`, PR #100; recovery fix merged as PR #99 `8eef28c` on 2026-11-04)
-- XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04) — BLOCKED (54 merged-branch deletions queued for ChatGPT as CQ-025 in `docs/CHATGPT_ACTION_QUEUE.md`)
-=======
-- XEND-EXT-LEAD-001 — Lead Leak Detector reliability in SiteCheck (2026-11-06) — REVIEW · Owner: ChatGPT · Branch: `lead-leak-detector-mvp` · PR #113 · Commit `111be1d6e142efa85112e132d64a00bdcd1542a8`
-- XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
-- XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04) — REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
->>>>>>> origin/main
+- XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04) — REVIEW (Workers preview passed on PR #113; namespace count and remaining branch cleanup were not rechecked)
 - XEND-HUD-001 — Core pages rebuilt as one connected 3D story (2026-10-29) — IN_PROGRESS (branch `claude/xend-hud-site-001`; Sahil said "live kar" on 29 Oct 2026 after reviewing the 8-page preview)
 - XEND-YT-FORMAT-001 — One YouTube format for every agent + fix the existing videos (2026-10-27) — REVIEW (existing videos fixed live 27 Oct; AutoTube #8 merge and CQ-024 pending)
 - XEND-CATALOG-IMMERSIVE-002 — Production-quality vertical rebuild (2026-10-24) — PLANNED (phase 2 not implemented)
@@ -51,7 +30,7 @@ Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everyt
 - XEND-AI-NVIDIA-GROK-001 — Add NVIDIA and xAI/Grok (2026-10-22) — BLOCKED (registry and selectable task routing delivered; account/model/quota activation pending)
 - XEND-AI-INTEGRATION-001 — Shared Google AI tool workspace (2026-10-22) — BLOCKED (ThinkPad health report supplied; original evidence review, fresh model execution and Gemini skill save pending)
 - XEND-HQ-01 — Worker-first HQ integration of PR #46 + PR #57 (2026-10-22) — BLOCKED (code merged/deployed via #63 and #64; importer activation pending)
-- XEND-CLEANUP-20261022 — Back up and retire redundant setups — BLOCKED (Cloudflare preview cleanup complete; account/laptop audit for other setups pending)
+- XEND-CLEANUP-20261022 — Back up and retire redundant setups — REVIEW (read-only laptop/GitHub inventory refreshed 2026-11-06; any migration or deletion remains on hold)
 - XEND-YT-COURSE-001 — Free faceless YouTube course + YouTube CTA (2026-10-21) — BLOCKED (course page recorded live; channel profile-link completion unverified)
 - XEND-AGENT-REACH-001 — Local multi-platform prospect research (2026-10-11) — REVIEW (branch `chatgpt/xend-agent-reach-001`)
 - XEND-ACQ-002 — No-website prospect finder + admin outreach list (2026-10-10) — REVIEW (branch `claude/acq-002-maps-prospects`)
@@ -74,11 +53,14 @@ Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everyt
 
 ## Notes from the last agent
 
-<<<<<<< HEAD
+### PR #100 reconciliation ? 2026-11-07
+- PRs #110, #111, #113 and #115 merged; PR #100 pending.
+- Earlier notes below are historical snapshots.
+
 ### XEND-CLEANUP-20261022 — master inventory dashboard continuation (2026-11-06)
 - Owner: ChatGPT. Updated `docs/MASTER_PROJECT_STATUS.md`, `docs/MASTER_PENDING_TASKS.md`, `PROJECTS.md`, and the cleanup task record on local branch `chatgpt/xend-cleanup-dashboard-20261106`, based on open PR #100. Existing dirty worktrees and local project folders were not changed.
-- Not published: PowerShell command execution was refused because local-network access is disabled. The handoff generator, Git checks, commit, push, and follow-up PR remain pending. No production or account changes were made.
-- Next: restore local command access; run `npm run ops:handoff -- --agent chatgpt`, `git diff --check`, and the handoff test; inspect the branch diff and publish a follow-up PR targeting #100.
+- Update: Dashboard published via merged PR #115 on 2026-11-07.
+- Next: Validate PR #100 documentation reconciliation.
 
 ### XEND-SITECHECK-002 + XEND-GRIDSNIP-001 — rebuilt on main `995301a`, waiting for a push (2026-11-04 evening)
 - Owner: Claude. PR #99 was squash-merged by Sahil as `8eef28c` (admin re-verify only); Live E2E #272 and #275 (`995301a`) green on main.
@@ -87,9 +69,9 @@ Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everyt
 - Checks run: see `docs/EXECUTION_LOG.md` (2026-11-04 evening). Main + all four squashed together: unit 146, extension 31, GridSnip 16, reader+funnel 27, worker 4, ops 42, check:pages and link check clean.
 - After each merge: Workers Builds production build ✓ and "Xender Live E2E" ✓ on the new SHA (`checkoutEnabled=false`); after GridSnip, `/gridsnip-privacy` must load before Sahil submits GridSnip 1.1.0.
 - Never set `SITECHECK_PRO_CHECKOUT_ENABLED`. Workers Builds *preview* fails on every PR (Durable Object namespace limit) — known, not caused by these branches.
-=======
+
 ### XEND-EXT-LEAD-001 — Lead Leak Detector reliability (2026-11-06)
-- Owner: ChatGPT/Codex. Existing branch `lead-leak-detector-mvp`, PR #113 remains open. Commit/remote SHA: `111be1d6e142efa85112e132d64a00bdcd1542a8`.
+- Owner: ChatGPT/Codex. Existing branch `lead-leak-detector-mvp`, PR #113 subsequently merged on 2026-11-06. Commit/remote SHA: `111be1d6e142efa85112e132d64a00bdcd1542a8`.
 - Repaired serialized MV3 injection, popup UI, conservative CTA/anchor detection, local page-scoped evidence persistence/deletion and stale highlight cleanup. No page content, query strings, form values, or network data are stored.
 - Verified: `npm ci`; extension lint/build/package; 38/38 extension tests including packaged Chromium E2E; repository tests 177/177 + 27/27 (with temporary `safe.bareRepository=all` for test-created bare remotes); generated-page check. `npm ci` reported four advisories (1 moderate, 3 high), not changed.
 - CI on this SHA: offline checks, SiteCheck release-candidate checks and Workers preview build passed; hosted live-e2e skipped. Local packaged Chromium E2E passed.
@@ -102,14 +84,12 @@ Generated 2026-11-06 05:55 UTC by **chatgpt** with `npm run ops:handoff`. Everyt
 - Policy decided by Sahil (PR #111 review, 2026-11-05): reply before PayU `Reply Before`; revoke only on `Closed Customer Favour`. Runbook updated. Open: G11 row in PR #100 to point here. No chargeback has occurred, so live verification of G11 is still pending.
 
 ### XEND-PM-001 — Xender AI Project Manager MVP (2026-11-04, review fixes 2026-11-05)
-- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (current main merged in, no force-push). Guide: `docs/XENDER_PM.md`. **Not merged, not deployed.**
+- Owner: Claude. Branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110) (current main merged in, no force-push). Guide: `docs/XENDER_PM.md`. **PR #110 merged on 2026-11-05; not deployed.**
 - Review 5774186840 blockers: (1) approvals now come from the selected work items, not just the owner's words; `PM-SITECHECK-001` needs `--approve deploy,merge` before any auto-run (MT-004), and old task files are re-checked at dispatch. (2) State is local in git-ignored `ops/pm/state/` until `npm run pm -- sync-state`, which shares it on branch `xender-pm-state` with history-based conflict detection, a secret scan and fast-forward-only push; a fresh clone pulls it on `resume`.
 - Real smoke test 2026-11-05 (`ops/pm/evidence/SMOKE-2026-11-05.md`): real Claude CLI read-only task `PM-SITECHECK-002` (MT-010) → checkpoint → `sync-state` (first real push, `xender-pm-state` @ `6c44adc`) → fresh clone resume → second real Claude run → fast-forward `a9a472f` → pull on the first clone. `main` untouched. Codex/Gemini not tested (not installed).
 - Use it first: `npm run pm -- status` (a fresh clone pulls shared tasks on `resume`; `npm run pm -- pull` gets all). Resume: `npm run pm -- resume PM-SITECHECK-001 --agent <you>`. Next action there is MT-004 verify-only (Live E2E 41892558789 green on `d7d3ad3`), then MT-010 docs.
 - Checks run 2026-11-05: xender-pm 22/22; unit 171/171; operations 40/40; `pm:demo` PASS; `check:pages` clean. Fresh-clone resume is tested against a local bare remote, not against GitHub.
 - Not done: no Codex/Gemini run (CLIs absent on the cloud host); no non-read-only real agent run; PR CI ran offline checks only (live-e2e skipped on PRs); PR #100's backlog file still shows MT-002/003/009/014/015 as open (the PM shows them corrected).
-
->>>>>>> origin/main
 ### XEND-CF-PREVIEW-001 — Preview builds fail on the 100 Durable Object limit (2026-11-04)
 - Owner: Claude. Cause read in the Cloudflare build log: code 10067, 99/100 DO namespaces used (3 production + 3 per stale branch preview). Production deploys fine.
 - Done: GitHub auto-delete of merged branches ON. Pending Sahil: `bash ops/cleanup/delete-merged-branches-20261104.sh` (54 merged branches; previews auto-delete and free slots). Do not add a new Durable Object class until slots are freed.

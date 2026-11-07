@@ -1,34 +1,25 @@
 # Xender Secrets V2 — Shared AI Task Board
 
-<<<<<<< HEAD
-## XEND-EXT-LEAD-001 — Lead Leak Detector MVP (2026-11-06)
-Status: DONE (merged PR #113 to main `8a6e29f`; main Live E2E and SEO audit succeeded)
-Owner: ChatGPT
-- PR checks: offline checks, SiteCheck release-candidate checks, and Workers preview passed; the hosted PR live-e2e job was skipped.
-- Local evidence recorded before merge: extension lint/build and tests passed, including packaged Chromium coverage; no store submission or public checkout change was made.
-- The original task checkout still has an untracked local package-lock file. It was not changed or moved during this dashboard audit.
-
-## XEND-PM-001 — Xender AI Project Manager MVP
-Status: DONE (merged PR #110 on 2026-11-05; not a production deployment)
-=======
 ## XEND-EXT-LEAD-001 — Lead Leak Detector reliability in SiteCheck (2026-11-06)
-Status: REVIEW · Owner: ChatGPT · Branch: `lead-leak-detector-mvp` · PR #113 · Commit `111be1d6e142efa85112e132d64a00bdcd1542a8`
+Status: DONE (PR #113 merged 2026-11-06; store and checkout gates pending)
 - Scope: repair the MV3 detector injection and popup, reduce deterministic false positives, persist user-marked evidence locally by page path, and validate the packaged extension.
 - Guardrails: no page content, query strings, form values, network calls, new permissions, deployment, store submission, merge, or public checkout changes.
 - Baseline: PR CI reported syntax/policy lint failures on the prior head; repairs are committed and pushed to the existing PR.
 - Verified: `npm ci`; extension lint; Chrome/Edge/Firefox build; 38/38 extension tests including packaged Chromium injection, evidence persistence/reload/deletion and reruns; 177/177 + 27/27 repository tests; generated-page check. The repository tests needed a temporary `safe.bareRepository=all` setting for their disposable bare remotes; default Git safety blocked those fixtures. `npm ci` reported 4 advisories (1 moderate, 3 high); no dependency upgrade was made.
 - Remote: PR head SHA `111be1d6e142efa85112e132d64a00bdcd1542a8`; offline checks and SiteCheck release-candidate checks passed; Workers preview build passed. The hosted live-e2e job was skipped; local packaged Chromium E2E passed.
-- Next: Sahil review PR #113. No merge, production deployment, store submission, payment, or public checkout activation authorized.
+- Next: PR #113 merged; native toolbar, store approval and payment gates still require verification.
+
+- Post-merge note: preserve the original Lead Leak checkout and its untracked extension/package-lock.json.
 
 ## XEND-EXT-PAY-001 / MT-010 — SiteCheck Pro chargeback runbook (gate G11) (2026-11-05)
-Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj` restarted from main `b69d7c0`; PR pending Sahil review — not merged, not deployed)
+Status: DONE (PR #111 merged 2026-11-05; live chargeback untested)
 Owner: Claude (PM task `PM-SITECHECK-002`, resumed from `xender-pm-state`)
 - What: `docs/PAYU_CHARGEBACK.md`, the manual owner-only process: PayU dashboard confirmation → `POST /api/payu/admin/reconcile {"reason":"chargeback"}` → check → log. It is limited to verified code behaviour and says plainly what is unverified (PayU notification format; whether the refund query reports chargebacks; no reinstate path; whole-order revoke only). Policy (Sahil, 2026-11-05, PR #111 review): reply in PayU before `Reply Before`; revoke Pro only on `Closed Customer Favour`, never on the first notice, `Pending Response` or an interim debit. Pro stays active during an open dispute because no restore path exists. QA checklist 5.4 links it.
 - Tests: new `tests/unit/payu-chargeback.test.mjs` (4) covers chargeback revoke → licence `pro:false`, no new key, no re-settle; idempotency and no flip to refunded; 409/404/400 refusals; admin token/origin checks. Before this, the revoke path was only tested with `reason:"refunded"`.
 - No code, config, secret, payment, deployment or checkout change. `docs/RELEASE_GATES.md` (G11 row) lives only in unmerged PR #100, so it was not edited here; update G11 to point at this runbook when #100 is touched.
 
 ## XEND-PM-001 — Xender AI Project Manager MVP (`xender-pm`) (2026-11-04)
-Status: REVIEW (branch `claude/xender-pm-mvp-v5yqxj`, [PR #110](https://github.com/sahilsharma171098-star/Xender-Secrets-V2/pull/110); both review blockers from review 5774186840 fixed 2026-11-05; awaiting Sahil review/merge — not merged, not deployed)
+Status: DONE (PR #110 merged 2026-11-05; no production activation)
 Owner: Claude
 - Why: the owner gives short commands ("Complete SiteCheck", "Check now", "Next", "Deploy") to ChatGPT/Codex, Claude and Gemini; each session re-investigates, burns usage and loses context.
 - What: dependency-free Node CLI (`npm run pm -- ...`). Reads existing records only (PR #100 backlog + release gates, issue/PR snapshot, `docs/TASKS.md`), reconciles stale rows against merged PRs, turns a short command into a bounded saved assignment, saves checkpoints during agent runs (`XPM-CHECKPOINT` lines or `checkpoint`), generates continuation prompts for Claude Code / Codex CLI / Gemini CLI and checks those CLIs (`doctor`). No LLM interprets commands; no paid API; no quota reading (no official interface).
@@ -41,7 +32,6 @@ Owner: Claude
 
 ## XEND-CF-PREVIEW-001 — Cloudflare preview builds failing: Durable Object limit (2026-11-04)
 Status: DONE (2026-11-04: targets absent, 72/100 namespaces, preview build green)
->>>>>>> origin/main
 Owner: Claude
 - Review fixes for task-derived approval requirements and local-first, fast-forward-only state sync are included in the merged PR.
 - Codex/Gemini continuation and a non-read-only agent run remain unverified; no paid API or automatic dispatch was enabled.
