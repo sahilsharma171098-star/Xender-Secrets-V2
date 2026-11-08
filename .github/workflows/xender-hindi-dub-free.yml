@@ -1,0 +1,39 @@
+name: Xender Hindi documentary free voice audition
+on:
+  push:
+    branches: [automation/hindi-dub-free-20261108]
+    paths:
+      - '.github/workflows/xender-hindi-dub-free.yml'
+      - 'docs/video-production/hindi-voice/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hindi-voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free neural speech generator
+        run: python -m pip install --disable-pip-version-check edge-tts==7.2.7
+      - name: Generate Hindi male audition without paid APIs
+        shell: bash
+        run: |
+          mkdir -p output
+          python - <<'PY'
+          import asyncio, edge_tts
+          text = "सोचिए, आप मैकडॉनल्ड्स में बर्गर खरीदने जाते हैं। लेकिन क्या आप जानते हैं कि इस कंपनी की कमाई का एक बड़ा हिस्सा सिर्फ बर्गर बेचने से नहीं आता? असली कहानी उसके फ़्रैंचाइज़ी मॉडल, ज़मीन और किराये के समझौतों में छिपी है। आज हम आंकड़ों के साथ समझेंगे कि दुनिया भर में फैला यह कारोबार काम कैसे करता है।"
+          async def run():
+              await edge_tts.Communicate(text, voice="hi-IN-MadhurNeural", rate="-3%").save("output/xender_hindi_audition.mp3")
+          asyncio.run(run())
+          print("Hindi neural sample generated")
+          PY
+          ffprobe -v error -show_entries format=duration,size -of default=nw=1 output/xender_hindi_audition.mp3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xender-hindi-natural-voice-audition
+          path: output/xender_hindi_audition.mp3
+          retention-days: 7
