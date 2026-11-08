@@ -29,8 +29,8 @@ jobs:
       - name: Install Hindi voice synthesis
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq espeak-ng
-          python -m pip install --disable-pip-version-check 'kokoro-onnx>=0.6.0' 'misaki[en]' soundfile
+          sudo apt-get install -y -qq espeak-ng ffmpeg
+          python -m pip install --disable-pip-version-check 'kokoro-onnx>=0.6.0' 'misaki[en]' soundfile gTTS==2.5.4
       - name: Download open-source neural voice model
         run: |
           mkdir -p model
