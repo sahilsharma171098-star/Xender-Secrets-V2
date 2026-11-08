@@ -60,23 +60,49 @@ def segments_for(text):
                 parts.extend(' '.join(words[i:i+15]) for i in range(0,len(words),15))
     return [p for p in parts if p.strip()]
 
+def render_phrase(tts,g2p,phrase,depth=0):
+    """Never silently skip a phrase. Split problematic inputs; last resort speech fallback."""
+    phonemes,_=g2p(phrase)
+    audio=np.array([],dtype=np.float32)
+    if phonemes:
+        audio,sr=tts.create(phonemes,voice=VOICE,speed=0.98,is_phonemes=True)
+        if sr!=SAMPLE_RATE:raise RuntimeError(f"sample rate={sr}")
+        audio=np.asarray(audio,dtype=np.float32)
+    words=phrase.split()
+    seconds=len(audio)/SAMPLE_RATE
+    if seconds>=max(0.5,len(words)*0.205):
+        return audio,0
+    if len(words)>=4 and depth<5:
+        midpoint=len(words)//2
+        left,lc=render_phrase(tts,g2p," ".join(words[:midpoint]),depth+1)
+        right,rc=render_phrase(tts,g2p," ".join(words[midpoint:]),depth+1)
+        tiny=np.zeros(int(0.09*SAMPLE_RATE),dtype=np.float32)
+        return np.concatenate((left,tiny,right)),lc+rc
+    # Some Hindi phonemes trigger an empty waveform in Kokoro. Preserve the words.
+    from gtts import gTTS
+    import subprocess, tempfile
+    with tempfile.NamedTemporaryFile(suffix=".mp3") as tmp:
+        gTTS(text=phrase,lang="hi",tld="co.in").save(tmp.name)
+        raw=subprocess.check_output(["ffmpeg","-v","error","-i",tmp.name,"-ar",str(SAMPLE_RATE),"-ac","1","-f","f32le","pipe:1"])
+    emergency=np.frombuffer(raw,dtype="<f4").copy()
+    if len(emergency)<SAMPLE_RATE//3:raise RuntimeError("Cannot render speech for "+phrase)
+    print("FALLBACK_SHORT_PHRASE",phrase,flush=True)
+    return emergency,1
+
 def voice_audio(tts,g2p,text):
     phrase_durations=[]
     voice_samples=[]
     elapsed=0.0
+    backup_count=0
     for phrase in segments_for(text):
-        phonemes,_=g2p(phrase)
-        if not phonemes:continue
-        audio,sr=tts.create(phonemes,voice=VOICE,speed=0.98,is_phonemes=True)
-        if sr!=SAMPLE_RATE:raise RuntimeError(f"sample rate={sr}")
-        audio=np.asarray(audio,dtype=np.float32)
+        audio,fallback=render_phrase(tts,g2p,phrase)
+        backup_count+=fallback
         begin=elapsed
         voice_samples.append(audio)
-        elapsed += len(audio)/sr
-        phrase_durations.append({"start_sec":round(begin,3),"end_sec":round(elapsed,3),"text":phrase})
-        # Allow thought breaks after a completed phrase.
+        elapsed += len(audio)/SAMPLE_RATE
+        phrase_durations.append({"start_sec":round(begin,3),"end_sec":round(elapsed,3),"text":phrase,"fallback":fallback})
         pause=0.35 if any(x in phrase for x in "?!") else 0.23
-        voice_samples.append(np.zeros(int(pause*sr),np.float32))
+        voice_samples.append(np.zeros(int(pause*SAMPLE_RATE),np.float32))
         elapsed += pause
     if not voice_samples:raise RuntimeError("Empty voice audio")
     return np.concatenate(voice_samples),phrase_durations
@@ -100,12 +126,12 @@ def main():
         if not eligible:raise RuntimeError(f"Cannot time-fit scene {num} without clipping")
         best=max(eligible,key=lambda v:v[0])
         dur,text,a,phrases=best
-        if dur<10:raise RuntimeError(f"Excessively short scene {num}")
+        if dur<max(10, len(text.split())*0.205):raise RuntimeError(f"Suspiciously short scene {num}")
         final=np.pad(a,(0,max(0,30*SAMPLE_RATE-len(a))))[:30*SAMPLE_RATE]
         name=f"scene_{num:02d}.wav"
         sf.write(OUT/name,final,SAMPLE_RATE,subtype="PCM_16")
         info.append({"scene":num,"voice":VOICE,"raw_seconds":round(dur,2),"seconds":30,
-                     "original":original,"spoken":text,"file":name,"phrases":phrases})
+                     "original":original,"spoken":text,"file":name,"phrases":phrases,"fallback_phrases":sum(x["fallback"] for x in phrases)})
         (OUT/f"manifest_{START:02d}_{END:02d}.json").write_text(json.dumps(info,ensure_ascii=False,indent=2),encoding="utf8")
     print("BATCH_COMPLETE",len(info),flush=True)
 
