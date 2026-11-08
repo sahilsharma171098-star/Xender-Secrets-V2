@@ -68,35 +68,41 @@ with session.get(qurl,stream=True,timeout=(30,400)) as res:
 if last is None:raise RuntimeError("No response")
 (out/"result.json").write_text(json.dumps(last,ensure_ascii=False,indent=2)[:20000])
 def find_file(j):
-    if isinstance(j,str):
-        if ".mp3" in j or ".wav" in j:return j
     if isinstance(j,dict):
-        for k in ["url","path","audio","file","name"]:
-            if k in j:
-                v=find_file(j[k])
-                if v:return v
+        # Gradio's streaming output may have no filename extension.
+        for k in ["url","path"]:
+            v=j.get(k)
+            if isinstance(v,str) and (v.startswith("https://") or v.startswith("/tmp/")):return v
         for v in j.values():
-            v=find_file(v)
-            if v:return v
+            p=find_file(v)
+            if p:return p
     if isinstance(j,list):
         for v in j:
-            v=find_file(v)
-            if v:return v
+            p=find_file(v)
+            if p:return p
+    if isinstance(j,str) and (".mp3" in j or ".wav" in j):return j
     return None
 p=find_file(last)
 if not p:raise RuntimeError("No audio file in result")
-if p.startswith("https://"):
-    dl=p
-elif p.startswith("/"):
-    dl=BASE+p
-else:
-    dl=BASE+"/gradio_api/file="+urllib.parse.quote(p,safe="/")
-audio=session.get(dl,timeout=90)
-print("DOWNLOAD",audio.status_code,len(audio.content),audio.headers.get("Content-Type"),flush=True)
-audio.raise_for_status()
-if len(audio.content)<20000:raise RuntimeError("Returned audio too small")
-suffix=".wav" if ".wav" in p else ".mp3"
-f=out/("Xender_Indic_Parler_Hindi_Male_Audition"+suffix)
-f.write_bytes(audio.content)
-(out/"metadata.json").write_text(json.dumps({"model":"AI4Bharat Indic Parler-TTS","speaker":"Rohit","script":TEXT,"description":DESCRIPTION,"url_source":BASE,"usage":"audition only"},ensure_ascii=False,indent=2))
-print("SUCCESS",f,flush=True)
+candidates=[p] if p.startswith("https://") else []
+path=last[0].get("path") if isinstance(last,list) and isinstance(last[0],dict) else None
+if path:
+    candidates.extend([
+       BASE+"/gradio_api/file="+urllib.parse.quote(path,safe="/"),
+       BASE+"/file="+urllib.parse.quote(path,safe="/"),
+    ])
+audio=None
+for dl in candidates:
+    try:
+        res=session.get(dl,timeout=90)
+        print("DOWNLOAD",res.status_code,len(res.content),res.headers.get("Content-Type"),"from",dl[:120],flush=True)
+        if res.ok and len(res.content)>20000 and not res.headers.get("Content-Type","").startswith("text/html"):
+            audio=res
+            break
+    except requests.RequestException as e:
+        print("Download error",str(e)[:120],flush=True)
+if audio is None:raise RuntimeError("No downloadable audio from public Gradio result")
+outpath=out/"Xender_Indic_Parler_Hindi_Male_Audition.mp3"
+outpath.write_bytes(audio.content)
+(out/"metadata.json").write_text(json.dumps({"model":"AI4Bharat Indic Parler-TTS","speaker":"Rohit","script":TEXT,"description":DESCRIPTION,"usage":"audition only"},ensure_ascii=False,indent=2))
+print("SUCCESS",outpath, outpath.stat().st_size,flush=True)
