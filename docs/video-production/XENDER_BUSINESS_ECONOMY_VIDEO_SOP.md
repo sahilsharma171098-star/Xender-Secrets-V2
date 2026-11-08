@@ -56,3 +56,15 @@ The approved McDonald's reference **was rendered with offline PIL/FFmpeg**, not 
 “Follow `docs/video-production/XENDER_BUSINESS_ECONOMY_VIDEO_SOP.md` for every Xender Business/Economy Short. Research and fact-check a new topic, script exactly six ~8-second scenes, generate six cohesive cinematic AI stills, animate with the actual OpenMontage `animated-explainer` pipeline where runnable, add natural English narration/music/captions, validate a 48-second vertical MP4, then return final MP4, thumbnail, sources, editables and QA evidence. Do not publish or incur paid charges. Never mark fallback as OpenMontage-rendered.”
 
 **Change control:** Treat v1.0's aesthetic, pacing and approval gate as fixed until the owner requests a new version. Do not silently replace this SOP.
+
+
+## Voiceover hard gate — added after 12-minute documentary review, 2026-11-08
+**OWNER FEEDBACK: Existing long-form video voice sounds obviously artificial, unacceptable.** Never treat technically audible eSpeak narration as a publishable voiceover.
+
+- Do **not** use `espeak`, `espeak-ng`, `pyttsx3`, or pitch/tempo-edited robotic synthesizers for a final Xender documentary voice.
+- Require **natural, expressive, broadcast-quality neutral US/UK English neural TTS or properly recorded human speech**. Narration must include humanlike emphasis, breath pauses, varied prosody, clean pronunciation of brand names, dates and statistics, and stable loudness.
+- Before a full 12-minute synthesis, render **30–45 seconds of voice audition**, listen through, and verify it sounds organic. For premium paid TTS, seek explicit credit/cost authorization first; do not silently spend.
+- Time the narration to scenes by revising narration and allowing natural breaks; **never force speech into a 30-second box with >1.03× speed manipulation**.
+- Verify no clipped words, stuttering, excessive robotic intonation, synthetic artifacts or odd pronunciation at start, minute 6 and ending. Listening QC is required; waveform / duration checks alone are not sufficient.
+- For long-form Business & Economy documentaries: default 12:00 runtime, 16:9, 24fps, chaptered; the locked 48-second Short style remains separate. Do not misrepresent a text-to-speech render as a human recording or an OpenMontage runtime render.
+- Existing 2026-11-08 *McDonald's 12-minute documentary* uses `espeak` and is **voice-QA FAILED / DO NOT PUBLISH** until full narration is replaced and audition/QA pass.
