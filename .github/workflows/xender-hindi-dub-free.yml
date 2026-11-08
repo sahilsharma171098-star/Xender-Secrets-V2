@@ -29,7 +29,7 @@ jobs:
           from pathlib import Path
           from gtts import gTTS
           from mutagen.mp3 import MP3
-          scenes=json.loads(Path('docs/video-production/hindi-short-script.json').read_text(encoding='utf-8'))
+          scenes=json.loads(Path('docs/video-production/hindi-short-script-v3.json').read_text(encoding='utf-8'))
           Path('output/scenes_used.json').write_text(json.dumps(scenes,ensure_ascii=False,indent=2),encoding='utf-8')
           assert len(scenes)==24
           results=[]
