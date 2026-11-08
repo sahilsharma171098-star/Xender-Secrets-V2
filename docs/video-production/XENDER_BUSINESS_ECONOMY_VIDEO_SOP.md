@@ -77,3 +77,11 @@ The approved McDonald's reference **was rendered with offline PIL/FFmpeg**, not 
 - A 24-scene Hindi script was prepared in the current conversation as `Xender_McDonalds_12min_Hindi_Narration_Script.md`. Its proposed 30-second segment timing is preliminary, not audio-verified.
 - **Current delivery status: Hindi script prepared; natural Hindi voice NOT generated; Hindi-dubbed MP4 NOT rendered.** Never mark the project Hindi-voice complete before a real audio recording and 12-minute synced MP4 pass QA.
 - Recommended audition: male Hindi documentary voice; first render 30–45 seconds and verify natural accent, timing, brand names and numbers. Inworld Manoj (hi) was found as an available option; a paid 30-second audition estimated 2 Higgsfield credits and must not be purchased without owner approval.
+
+
+## Hindi McDonald's long-form production update — 2026-11-08 (supersedes earlier pending status)
+- **Technically rendered:** `Xender_McDonalds_12min_Hindi_Documentary_FINAL.mp4` in the 2026-11-08 ChatGPT conversation artifact; 720.000s, 1280×720, H.264/AAC, 24 cinematic scenes, 98 selectable Hindi subtitle cues.
+- Original English eSpeak narration removed. 24 new Hindi speech segments generated without paid credits. All individual clips fit their 30s scenes with no forced tempo increase or clipping.
+- **Provenance:** Google Translate TTS via `gTTS`, **NOT TTSMaker**, NOT OpenMontage, NOT a human recording. TTSMaker automation was blocked by unavailable browser access/CAPTCHA. The generated video is a review-only fallback, not the owner's requested TTSMaker-produced audio.
+- GitHub free voice automation is isolated on `automation/hindi-dub-free-20261108`, workflow `.github/workflows/xender-hindi-dub-free.yml`; main website/AutoTube untouched.
+- **Quality gate remains open:** Human listening assessment of voice naturalness, Hindi pronunciation, and subtitle timing is required; commercial licensing for this fallback voice was not independently established. **DO NOT PUBLISH** or mark final production-approved until these gates pass. The earlier 'Hindi MP4 NOT rendered' statement above is historical and superseded by this section.
