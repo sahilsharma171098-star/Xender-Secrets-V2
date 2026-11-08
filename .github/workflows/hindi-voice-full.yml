@@ -1,0 +1,32 @@
+name: Hindi Documentary Voice - Full 24 Scenes (NO PUBLISH)
+on:
+  push:
+    branches:
+      - experiments/hindi-voice-20261108
+    paths:
+      - ops/content-production/hindi_voice_full.py
+      - ops/content-production/mcdonalds_12min_hindi_script.md
+      - .github/workflows/hindi-voice-full.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hindi-voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free Google Hindi TTS
+        run: python -m pip install --disable-pip-version-check gTTS==2.5.4 mutagen==1.47.0
+      - name: Generate 24 timed Hindi narration clips
+        run: python ops/content-production/hindi_voice_full.py
+      - name: Upload Hindi voice artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xender-mcdonalds-hindi-voice-24-scenes
+          path: hindi-full-output/*
+          retention-days: 7
