@@ -1,0 +1,30 @@
+name: Hindi Neural Voice Audition (isolated, no publish)
+on:
+  push:
+    branches:
+      - experiments/hindi-voice-20261108
+    paths:
+      - 'ops/content-production/hindi_voice_pilot.py'
+      - '.github/workflows/hindi-voice-audition.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install free neural speech tool
+        run: python -m pip install --disable-pip-version-check edge-tts==7.2.7
+      - name: Create Hindi audition
+        run: python ops/content-production/hindi_voice_pilot.py
+      - name: Save audition audio for owner QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: hindi-voice-audition
+          path: hindi-voice-output/*
+          retention-days: 7
