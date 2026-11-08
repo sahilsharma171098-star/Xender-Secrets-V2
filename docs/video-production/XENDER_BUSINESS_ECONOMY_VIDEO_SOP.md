@@ -80,8 +80,8 @@ The approved McDonald's reference **was rendered with offline PIL/FFmpeg**, not 
 
 
 ## Hindi McDonald's long-form production update — 2026-11-08 (supersedes earlier pending status)
-- **Technically rendered:** `Xender_McDonalds_12min_Hindi_Documentary_FINAL.mp4` in the 2026-11-08 ChatGPT conversation artifact; 720.000s, 1280×720, H.264/AAC, 24 cinematic scenes, 98 selectable Hindi subtitle cues.
-- Original English eSpeak narration removed. 24 new Hindi speech segments generated without paid credits. All individual clips fit their 30s scenes with no forced tempo increase or clipping.
+- **Technically rendered:** `Xender_McDonalds_12min_Hindi_Documentary_FINAL.mp4` in the 2026-11-08 ChatGPT conversation artifact; 720.000s, 1280×720, H.264/AAC, 24 cinematic scenes, 122 selectable Hindi subtitle cues.
+- Original English eSpeak narration removed. 24 new Hindi speech segments generated without paid credits (661.34 seconds of spoken Hindi). All individual clips fit their 30s scenes with no forced tempo increase or clipping.
 - **Provenance:** Google Translate TTS via `gTTS`, **NOT TTSMaker**, NOT OpenMontage, NOT a human recording. TTSMaker automation was blocked by unavailable browser access/CAPTCHA. The generated video is a review-only fallback, not the owner's requested TTSMaker-produced audio.
 - GitHub free voice automation is isolated on `automation/hindi-dub-free-20261108`, workflow `.github/workflows/xender-hindi-dub-free.yml`; main website/AutoTube untouched.
 - **Quality gate remains open:** Human listening assessment of voice naturalness, Hindi pronunciation, and subtitle timing is required; commercial licensing for this fallback voice was not independently established. **DO NOT PUBLISH** or mark final production-approved until these gates pass. The earlier 'Hindi MP4 NOT rendered' statement above is historical and superseded by this section.
