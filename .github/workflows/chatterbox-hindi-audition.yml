@@ -1,0 +1,30 @@
+name: Chatterbox Hindi Expressive Voice Audition (free, no publish)
+on:
+  push:
+    branches: [experiments/chatterbox-hindi-voice-audition-20261108]
+    paths:
+      - ops/content-production/chatterbox_hindi_audition.py
+      - .github/workflows/chatterbox-hindi-audition.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install public-demo client requirements
+        run: python -m pip install requests
+      - name: Generate original Hindi storytelling audition
+        run: python ops/content-production/chatterbox_hindi_audition.py
+      - name: Upload audio if generated
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xender-chatterbox-hindi-voice-audition
+          path: chatterbox-hindi-audition/
+          retention-days: 5
