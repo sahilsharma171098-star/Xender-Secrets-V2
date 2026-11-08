@@ -68,3 +68,12 @@ The approved McDonald's reference **was rendered with offline PIL/FFmpeg**, not 
 - Verify no clipped words, stuttering, excessive robotic intonation, synthetic artifacts or odd pronunciation at start, minute 6 and ending. Listening QC is required; waveform / duration checks alone are not sufficient.
 - For long-form Business & Economy documentaries: default 12:00 runtime, 16:9, 24fps, chaptered; the locked 48-second Short style remains separate. Do not misrepresent a text-to-speech render as a human recording or an OpenMontage runtime render.
 - Existing 2026-11-08 *McDonald's 12-minute documentary* uses `espeak` and is **voice-QA FAILED / DO NOT PUBLISH** until full narration is replaced and audition/QA pass.
+
+
+## Hindi language override — McDonald's 12-minute documentary (owner request, 2026-11-08)
+- The **12-minute McDonald's long-form documentary must be narrated in natural conversational Hindi**, NOT English. Neutral Indian Hindi accent; naturally spoken technical terms such as franchise, rent, royalty, real estate are acceptable.
+- Hindi subtitles/captions must match the Hindi narration; the current English narration and captions are not final.
+- Keep approved cinematic visuals, story research and overall 12-minute structure. Do not alter English-language Shorts SOP globally; this owner instruction specifically resolves the language for the long-form McDonald's film.
+- A 24-scene Hindi script was prepared in the current conversation as `Xender_McDonalds_12min_Hindi_Narration_Script.md`. Its proposed 30-second segment timing is preliminary, not audio-verified.
+- **Current delivery status: Hindi script prepared; natural Hindi voice NOT generated; Hindi-dubbed MP4 NOT rendered.** Never mark the project Hindi-voice complete before a real audio recording and 12-minute synced MP4 pass QA.
+- Recommended audition: male Hindi documentary voice; first render 30–45 seconds and verify natural accent, timing, brand names and numbers. Inworld Manoj (hi) was found as an available option; a paid 30-second audition estimated 2 Higgsfield credits and must not be purchased without owner approval.
