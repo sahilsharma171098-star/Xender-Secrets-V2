@@ -1,0 +1,30 @@
+name: Indic Parler Hindi Voice Audition — Free Preview Only
+on:
+  push:
+    branches:
+      - experiments/indic-parler-hindi-audition-20261108
+    paths:
+      - ops/content-production/indic_parler_audition.py
+      - .github/workflows/indic-parler-hindi-audition.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  voice-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Gradio demo client (no paid API)
+        run: python -m pip install --disable-pip-version-check gradio_client==1.13.3 requests
+      - name: Generate Hindi expressive documentary sample
+        run: python ops/content-production/indic_parler_audition.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xender-indic-parler-hindi-audition
+          path: indic-parler-audition/*
+          retention-days: 5
