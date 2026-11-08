@@ -75,7 +75,7 @@ The approved McDonald's reference **was rendered with offline PIL/FFmpeg**, not 
 - Hindi subtitles/captions must match the Hindi narration; the current English narration and captions are not final.
 - Keep approved cinematic visuals, story research and overall 12-minute structure. Do not alter English-language Shorts SOP globally; this owner instruction specifically resolves the language for the long-form McDonald's film.
 - A 24-scene Hindi script was prepared in the current conversation as `Xender_McDonalds_12min_Hindi_Narration_Script.md`. Its proposed 30-second segment timing is preliminary, not audio-verified.
-- **Current delivery status: Hindi script prepared; natural Hindi voice NOT generated; Hindi-dubbed MP4 NOT rendered.** Never mark the project Hindi-voice complete before a real audio recording and 12-minute synced MP4 pass QA.
+- **Verified technical delivery 2026-11-08:** 24 Google Hindi gTTS MP3 narration clips generated on an isolated GitHub Actions branch and a 12:00 / 1280×720 / 24fps Hindi MP4 rendered with Hindi captions. The previous English robotic track was removed. This is NOT TTSMaker audio. A human listening review for expressiveness and Hindi pronunciation is still REQUIRED before publishing.
 - Recommended audition: male Hindi documentary voice; first render 30–45 seconds and verify natural accent, timing, brand names and numbers. Inworld Manoj (hi) was found as an available option; a paid 30-second audition estimated 2 Higgsfield credits and must not be purchased without owner approval.
 
 
@@ -85,3 +85,11 @@ The approved McDonald's reference **was rendered with offline PIL/FFmpeg**, not 
 - **Provenance:** Google Translate TTS via `gTTS`, **NOT TTSMaker**, NOT OpenMontage, NOT a human recording. TTSMaker automation was blocked by unavailable browser access/CAPTCHA. The generated video is a review-only fallback, not the owner's requested TTSMaker-produced audio.
 - GitHub free voice automation is isolated on `automation/hindi-dub-free-20261108`, workflow `.github/workflows/xender-hindi-dub-free.yml`; main website/AutoTube untouched.
 - **Quality gate remains open:** Human listening assessment of voice naturalness, Hindi pronunciation, and subtitle timing is required; commercial licensing for this fallback voice was not independently established. **DO NOT PUBLISH** or mark final production-approved until these gates pass. The earlier 'Hindi MP4 NOT rendered' statement above is historical and superseded by this section.
+
+
+## Automation result — 2026-11-08
+- GitHub isolated branch: `experiments/hindi-voice-20261108`.
+- Full automation job: https://github.com/sahilsharma171098-star/Xender-Secrets-V2/actions/runs/42458819415 (**success**).
+- Hindi narration engine used: **free gTTS** (Google Hindi text-to-speech); TTSMaker webpage automation was unavailable through the connected browser, and Microsoft's Edge neural voice returned 403. Do not mislabel the resulting MP4 as TTSMaker or a human recording.
+- MP4 produced in the current conversation: `Xender_McDonalds_12min_Hindi_Final_Review.mp4`. Format verified: 720.000s, H.264 1280x720 @ 24fps, Hindi AAC, Hindi mov_text subtitles. 24 audio scenes, 103 approximate subtitle cues; voice time-stretching not used.
+- **Publishing gate:** Pending an actual listener confirming natural Hindi pronunciation and voice quality. No platform upload authorized or performed.
