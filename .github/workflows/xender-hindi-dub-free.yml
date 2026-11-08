@@ -5,7 +5,7 @@ on:
     paths:
       - '.github/workflows/xender-hindi-dub-free.yml'
       - 'docs/video-production/hindi-voice/**'
-      - 'docs/video-production/hindi-short-script.json'
+      - 'docs/video-production/hindi-short-script-v3.json'
   workflow_dispatch:
 permissions:
   contents: read
@@ -54,6 +54,6 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: xender-hindi-12min-timing-fit
+          name: xender-hindi-12min-final-voice
           path: output/
           retention-days: 7
