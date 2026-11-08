@@ -1,4 +1,4 @@
-name: Xender Hindi documentary free voice audition
+name: Xender Hindi documentary free voice render
 on:
   push:
     branches: [automation/hindi-dub-free-20261108]
@@ -11,27 +11,47 @@ permissions:
 jobs:
   hindi-voice:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install free Hindi speech generator
-        run: python -m pip install --disable-pip-version-check gTTS==2.5.4
-      - name: Generate Hindi male audition without paid APIs
+        run: python -m pip install --disable-pip-version-check gTTS==2.5.4 mutagen==1.47.0
+      - name: Generate all 24 Hindi narration segments without paid APIs
         shell: bash
         run: |
           mkdir -p output
           python - <<'PY'
+          import json,time
+          from pathlib import Path
           from gtts import gTTS
-          text = "सोचिए, आप मैकडॉनल्ड्स में बर्गर खरीदने जाते हैं। लेकिन क्या आप जानते हैं कि इस कंपनी की कमाई का एक बड़ा हिस्सा सिर्फ बर्गर बेचने से नहीं आता? असली कहानी उसके फ़्रैंचाइज़ी मॉडल, ज़मीन और किराये के समझौतों में छिपी है। आज हम आंकड़ों के साथ समझेंगे कि दुनिया भर में फैला यह कारोबार काम कैसे करता है।"
-          gTTS(text,lang="hi",slow=False).save("output/xender_hindi_audition.mp3")
-          print("Hindi sample generated")
+          from mutagen.mp3 import MP3
+          scenes=json.loads(Path('docs/video-production/hindi-voice/scenes.json').read_text(encoding='utf-8'))
+          assert len(scenes)==24
+          results=[]
+          for item in scenes:
+              n=item['scene']; txt=item['text']
+              dest=Path(f'output/scene_{n:02d}.mp3')
+              for attempt in range(3):
+                  try:
+                      gTTS(txt,lang='hi',slow=False).save(str(dest))
+                      if dest.stat().st_size<2000: raise RuntimeError('empty audio')
+                      break
+                  except Exception:
+                      if attempt==2: raise
+                      time.sleep(3*(attempt+1))
+              seconds=round(MP3(str(dest)).info.length,3)
+              results.append({'scene':n,'duration':seconds,'characters':len(txt),'bytes':dest.stat().st_size})
+              print(f'VOICE {n:02d}/24: {seconds:.2f}s',flush=True)
+              time.sleep(0.5)
+          Path('output/durations.json').write_text(json.dumps(results,indent=2))
+          Path('output/PROVENANCE.txt').write_text('Google Translate TTS via gTTS, not TTSMaker; no paid credits. Generated as review-only narration. Do not claim human recording.\n')
+          print('COMPLETE 24/24',flush=True)
           PY
-          test -s output/xender_hindi_audition.mp3 && ls -lh output/xender_hindi_audition.mp3
       - uses: actions/upload-artifact@v4
         with:
-          name: xender-hindi-natural-voice-audition
-          path: output/xender_hindi_audition.mp3
+          name: xender-hindi-24-scene-narration
+          path: output/
           retention-days: 7
