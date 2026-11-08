@@ -4,7 +4,7 @@ import json, os, re, sys, time, urllib.parse
 from pathlib import Path
 import requests
 
-URL="https://resembleai-chatterbox-multilingual-tts-hi.hf.space"
+URL="https://resembleai-chatterbox-multilingual-tts.hf.space"
 OUT=Path("chatterbox-hindi-audition")
 OUT.mkdir(parents=True,exist_ok=True)
 TEXT=(
