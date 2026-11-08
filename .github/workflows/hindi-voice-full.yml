@@ -1,15 +1,17 @@
-name: Hindi Documentary Voice - Full 24 Scenes (NO PUBLISH)
+name: Xender Hindi Documentary Voice (zero paid API; NO PUBLISH)
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - experiments/hindi-voice-20261108
+    branches: [main]
     paths:
       - ops/content-production/hindi_voice_full.py
       - ops/content-production/mcdonalds_12min_hindi_script.md
       - .github/workflows/hindi-voice-full.yml
-  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: xender-hindi-voice-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   hindi-voice:
     runs-on: ubuntu-latest
@@ -19,11 +21,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install free Google Hindi TTS
+      - name: Install free Hindi speech tool
         run: python -m pip install --disable-pip-version-check gTTS==2.5.4 mutagen==1.47.0
       - name: Generate 24 timed Hindi narration clips
         run: python ops/content-production/hindi_voice_full.py
-      - name: Upload Hindi voice artifact
+      - name: Upload narration and exact spoken scripts (review only)
         if: always()
         uses: actions/upload-artifact@v4
         with:
