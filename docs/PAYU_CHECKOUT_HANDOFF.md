@@ -1,6 +1,6 @@
 # SiteCheck Pro (India INR) — PayU release handoff
 
-Scope: Xender SiteCheck only. GridSnip OCR is explicitly Phase 2. Branch: PR #92, linked issue #90. All changes are draft and must not be deployed or paid checkout enabled before release gates pass.
+Scope: SiteCheck only; GridSnip is Phase 2. Implementation is on main. Historical PR #92 notes below are superseded by docs/SITECHECK_LAUNCH_2026-11-05.md. Public paid checkout remains OFF.
 
 ## Product and payment implementation
 
@@ -41,7 +41,7 @@ Required checks on PR HEAD:
 3. Restore across popup restart/reinstall using generated license; download a safe CSV from a real audited page. Confirm free features continue without a license.
 4. Issue an authorized **full refund through PayU** for that purchase; confirm PayU refund query returns success and Pro revokes at next reconciliation. Also test a partial refund and failed/pending status without inappropriate revocation.
 5. Verify GST receipt/invoice handling, bank settlement, support instructions, checkout retry/error handling, and refund/chargeback escalation. A chargeback webhook with merchant-verified signature is **not yet configured**; admin manual verification applies for now.
-6. Only then merge PR #92, deploy Cloudflare Worker after confirming production secrets and no regressions, explicitly enable \`SITECHECK_PRO_CHECKOUT_ENABLED=true\`, build Chrome extension v2.0.0 zip, submit to Chrome Web Store, and verify **actual approval** and live purchase activation. A GitHub merge alone does not deploy this Worker.
+6. After real payment, restore and refund gates pass, submit the tested v2.0.0 candidate with accurate disclosures and private reviewer access. Public checkout stays OFF during store review. Actual store approval, settlement/receipt evidence and a later explicit owner launch decision are required before enabling public paid checkout. Inspect current Cloudflare build integration before any merge.
 7. Monitor first captured orders, licensing 5xx and refund events. Roll back checkout flag if fulfillment fails. Do not claim international acceptance; PayU USD/GBP approval is separate.
 
 No real payment, refund, merchant webhook setup, merchant dashboard settlement, GitHub merge, Worker deploy, or Chrome Web Store publication has been performed by this PR implementation.
